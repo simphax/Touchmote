@@ -12,7 +12,7 @@ namespace WiiTUIO.Provider
     /// <summary>
     /// The WiiProvider implements <see cref="IProvider"/> in order to offer a type of object which uses the Wiimote to generate new event frames.
     /// </summary>
-    public class WiiProvider
+    public class WiiProvider : IProvider
     {
         #region CalibrationRectangle
         /// <summary>
