@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -191,8 +192,8 @@ namespace WiiTUIO.Provider
                 {
                     // Only add it to to the table if it will not be rejected out of hand.
                     ProcessPair pPair = new ProcessPair(pTracker, pInput);
-                    if (pPair.fRanking < pTracker.PredictionScale)
-                        lTable.Add(pPair);
+                    //if (pPair.fRanking < pTracker.PredictionScale)
+                    lTable.Add(pPair);
                 }
             }
 
@@ -392,12 +393,12 @@ namespace WiiTUIO.Provider
         /// <summary>
         /// The number of inputs the tracker should recieve before we are confident it is definately active.
         /// </summary>
-        public static uint StrongLockThreshold = 5;
+        public static uint StrongLockThreshold = 0;
 
         /// <summary>
         /// The number of non-inputs the tracker should recieve before we are confident it is definately dead. 
         /// </summary>
-        public static uint StrongLockLostThreshold = 5;
+        public static uint StrongLockLostThreshold = 0;
         #endregion
 
         #region Properties
@@ -496,7 +497,7 @@ namespace WiiTUIO.Provider
 
             // Save the state.
             this.eTrackerState = TrackerState.Discover;
-            this.PredictionScale = 100;
+            this.PredictionScale = Math.Max(Util.ScreenWidth, Util.ScreenHeight);
         }
 
         /// <summary>
