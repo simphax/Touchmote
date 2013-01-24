@@ -134,6 +134,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="WiiProvider\IProvider.cs" />
+    <Compile Include="WiiProvider\Pointer\MouseSimulator.cs" />
     <Compile Include="WiiProvider\Pointer\ScreenPositionCalculator.cs" />
     <Compile Include="WiiProvider\Pointer\Util.cs" />
     <Compile Include="WiiProvider\Pointer\WiiPointerProvider.cs" />

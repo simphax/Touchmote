@@ -51,83 +51,7 @@ namespace WiiTUIO.Provider
 
         WiimoteButtonsStruct PressedButtons;
 
-        private bool TouchMode = true;
-
         private WiimoteLib.Point lastpoint;
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct MOUSEINPUT
-        {
-            public int dx;
-            public int dy;
-            public uint mouseData;
-            public uint dwFlags;
-            public uint time;
-            public IntPtr dwExtraInfo;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct KEYBDINPUT
-        {
-            public ushort wVk;
-            public ushort wScan;
-            public uint dwFlags;
-            public uint time;
-            public IntPtr dwExtraInfo;
-        }
-
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct INPUT
-        {
-            public int type;
-            public MOUSEINPUT mi;
-        }
-
-        const uint MOUSEEVENTF_MOVE = 0x0001;
-        const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
-        const uint MOUSEEVENTF_LEFTUP = 0x0004;
-        const uint MOUSEEVENTF_RIGHTDOWN = 0x0008;
-        const uint MOUSEEVENTF_RIGHTUP = 0x0010;
-        const uint MOUSEEVENTF_MIDDLEDOWN = 0x0020;
-        const uint MOUSEEVENTF_MIDDLEUP = 0x0040;
-        const uint MOUSEEVENTF_XDOWN = 0x0080;
-        const uint MOUSEEVENTF_XUP = 0x0100;
-        const uint MOUSEEVENTF_WHEEL = 0x0800;
-        const uint MOUSEEVENTF_VIRTUALDESK = 0x4000;
-        const uint MOUSEEVENTF_ABSOLUTE = 0x8000;
-
-        const int INPUT_MOUSE = 0;
-        const int INPUT_KEYBOARD = 1;
-        const int INPUT_HARDWARE = 2;
-
-        /// <summary>
-        /// Struct representing a point.
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential)]
-        public struct POINT
-        {
-            public int X;
-            public int Y;
-
-            public static implicit operator System.Windows.Point(POINT point)
-            {
-                return new System.Windows.Point(point.X, point.Y);
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the cursor's position, in screen coordinates.
-        /// </summary>
-        /// <see>See MSDN documentation for further information.</see>
-        [DllImport("user32.dll")]
-        public static extern bool GetCursorPos(out POINT lpPoint);
-
-        [DllImport("User32.Dll")]
-        public static extern long SetCursorPos(int x, int y);
-
-        [DllImport("User32.Dll")]
-        static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
         #region CalibrationRectangle
         /// <summary>
@@ -535,32 +459,6 @@ namespace WiiTUIO.Provider
 
             // Contain active sensor data.
             List<SpatioTemporalInput> lInputs = new List<SpatioTemporalInput>();
-            /*
-            // For each IR sensor with data.
-            IRSensor[] tSensors = pState.IRState.IRSensors;
-            for (int iSensor = 0; iSensor < tSensors.Length; ++iSensor)
-            {
-                // If the sensor has data - queue an input for it.
-                if (tSensors[iSensor].Found)
-                {
-                    // Extract the data from the sensor.
-                    int x = tSensors[iSensor].RawPosition.X;
-                    int y = tSensors[iSensor].RawPosition.Y;
-                    float fWarpedX = x;
-                    float fWarpedY = y;
-
-                    // If we have transformation enabled
-                    if (TransformResults)
-                    {
-                        // Transform the coordinates with the warper.
-                        pWarper.warp(x, y, ref fWarpedX, ref fWarpedY);
-                    }
-
-                    // Make it into an input.
-                    lInputs.Add(new SpatioTemporalInput((double)fWarpedX, (double)fWarpedY));
-                }
-            }
-            */
 
             bool pointerOutOfReach = false;
 
@@ -617,30 +515,8 @@ namespace WiiTUIO.Provider
                 {
                     if (mousewait == 0)
                     {
-                        SetCursorPos(newpoint.X, newpoint.Y);
-
-                        //Faking a small movement by a mouse, to keep the cursor showing.
-                        INPUT input = new INPUT();
-                        input.type = INPUT_MOUSE;
-                        input.mi.mouseData = 0;
-                        input.mi.time = 0;
-                        input.mi.dx = 1;//* (int)(65536.0f / (2560));//x being coord in pixels
-                        input.mi.dy = 1;// *(int)(65536.0f / (1440));//y being coord in pixels
-                        input.mi.dwFlags = MOUSEEVENTF_MOVE;
-
-                        INPUT input2 = new INPUT();
-                        input2.type = INPUT_MOUSE;
-                        input2.mi.mouseData = 0;
-                        input2.mi.time = 0;
-                        input2.mi.dx = -1;//* (int)(65536.0f / (2560));//x being coord in pixels
-                        input2.mi.dy = -1;// *(int)(65536.0f / (1440));//y being coord in pixels
-                        input2.mi.dwFlags = MOUSEEVENTF_MOVE;
-
-                        INPUT[] inputs = { input };
-                        INPUT[] inputs2 = { input2 };
-
-                        SendInput(1, inputs, Marshal.SizeOf(input));
-                        SendInput(1, inputs2, Marshal.SizeOf(input2));
+                        MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
+                        MouseSimulator.WakeCursor();
                     }
                     else
                     {
@@ -749,9 +625,6 @@ namespace WiiTUIO.Provider
             }
 
             // Prepare the frame to recieve new inputs.
-            //while (this.lFrame.Count > 0) 
-            //    this.lFrame.Dequeue();
-
             if (this.lFrame != null)
                 this.lFrame = null;
             this.lFrame = new Queue<WiiContact>(1);
@@ -767,33 +640,6 @@ namespace WiiTUIO.Provider
             // Ship it out!
             this.OnNewFrame(this, pFrame);
 
-            //}
-            //SolidBrush b = new SolidBrush(System.Drawing.Color.Red);
-
-            //InvalidateRect(IntPtr.Zero, IntPtr.Zero, true);
-
-            //screenpaint.FillEllipse(b, point.X, point.Y, 100, 100);
-            //Debug.WriteLine("X:" + newpos.X + " Y:" + newpos.Y);
-
-            /*
-            // Has the 'A' button changed?
-            if (!bLastTriggerState && pState.ButtonState.B)
-            {
-                // Click the button programmatically.
-                Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    Button_Calibrate.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                }), null);
-            }
-            bLastTriggerState = pState.ButtonState.B;
-            */
-
-            // Update the battery state on the GUI.
-            //Dispatcher.BeginInvoke(new Action(delegate()
-            //{
-            //    // float f = (((100.0f * 48.0f * (float)(ws.Battery / 48.0f))) / 192.0f);
-            //    Bar_Battery.Value = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
-            //}), null);
             this.BatteryState = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
 
             // Release mutual exclusion.
