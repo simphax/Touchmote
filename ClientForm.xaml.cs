@@ -35,7 +35,7 @@ namespace WiiTUIO
             PEN
         }
 
-        private Mode currentMode = Mode.PEN;
+        private Mode currentMode = Mode.POINTER;
 
 
         /// <summary>
@@ -763,11 +763,11 @@ namespace WiiTUIO
                 {
                     // Update the button to say we are connected.
                     btnConnect.Content = "Disconnect";
-                    btnCalibrate.IsEnabled = true;
                     bConnected = true;
 
                     if(this.pWiiProvider is WiiProvider)
                     {
+                        btnCalibrate.IsEnabled = true;
                         // Load calibration data.
                         PersistentCalibrationData oData = loadPersistentCalibration("./Calibration.dat");
                         if (oData != null)
@@ -899,12 +899,12 @@ namespace WiiTUIO
 
         private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
-            if (ModeComboBox.SelectedItem != null)
+            if (ModeComboBox.SelectedItem != null && ((ComboBoxItem)ModeComboBox.SelectedItem).Content != null)
             {
                 ComboBoxItem cbItem = (ComboBoxItem)ModeComboBox.SelectedItem;
                 if (cbItem.Content.ToString() == "Wii Sensor Bar")
                 {
-                    bConnected = true; //Hack so we dont do anything than disconnecting.
+                    bConnected = true; //Hack so we wont do anything than disconnect.
                     this.ConnectDisconnect();
                     this.currentMode = Mode.POINTER;
                 }

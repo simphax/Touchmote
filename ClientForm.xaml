@@ -22,7 +22,7 @@
                     <StackPanel>
                         <Label Content="Touch recognize mode"/>
                         <ComboBox Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1">
-                            <ComboBoxItem>Wii Sensor Bar</ComboBoxItem>
+                            <ComboBoxItem IsSelected="True">Wii Sensor Bar</ComboBoxItem>
                             <ComboBoxItem>IR Pen</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
