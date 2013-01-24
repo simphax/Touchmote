@@ -46,6 +46,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\HIDLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="InputSimulator">
+      <HintPath>.\InputSimulator.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -130,6 +133,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="WiiProvider\IProvider.cs" />
+    <Compile Include="WiiProvider\Pointer\ScreenPositionCalculator.cs" />
+    <Compile Include="WiiProvider\Pointer\Util.cs" />
+    <Compile Include="WiiProvider\Pointer\WiiPointerProvider.cs" />
     <Compile Include="WiiProvider\ContactType.cs" />
     <Compile Include="WiiProvider\FrameEventArgs.cs" />
     <Compile Include="WiiProvider\SpatiotemporalClassifier.cs" />
@@ -160,6 +167,7 @@
   <ItemGroup>
     <Resource Include="icon.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

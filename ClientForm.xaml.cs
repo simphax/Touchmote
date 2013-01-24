@@ -28,10 +28,20 @@ namespace WiiTUIO
     /// </summary>
     public partial class ClientForm : UserControl
     {
+
+        private enum Mode
+        {
+            POINTER,
+            PEN
+        }
+
+        private Mode currentMode = Mode.PEN;
+
+
         /// <summary>
         /// A reference to the WiiProvider we want to use to get/forward input.
         /// </summary>
-        private WiiProvider pWiiProvider = null;
+        private IProvider pWiiProvider = null;
 
         /// <summary>
         /// A reference to an OSC data transmitter.
@@ -426,7 +436,14 @@ namespace WiiTUIO
             try
             {
                 // Connect a Wiimote, hook events then start.
-                this.pWiiProvider = new WiiProvider();
+                if (this.currentMode == Mode.POINTER)
+                {
+                    this.pWiiProvider = new WiiPointerProvider();
+                }
+                else
+                {
+                    this.pWiiProvider = new WiiProvider();
+                }
                 this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
                 this.pWiiProvider.OnBatteryUpdate += new Action<int>(pWiiProvider_OnBatteryUpdate);
                 this.pWiiProvider.start();
@@ -719,6 +736,13 @@ namespace WiiTUIO
         /// <param name="e"></param>
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
+
+            this.ConnectDisconnect();
+            
+        }
+
+        public void ConnectDisconnect()
+        {
             // If we are in reconnect mode..
             if (bReconnect)
             {
@@ -742,13 +766,16 @@ namespace WiiTUIO
                     btnCalibrate.IsEnabled = true;
                     bConnected = true;
 
-                    // Load calibration data.
-                    PersistentCalibrationData oData = loadPersistentCalibration("./Calibration.dat");
-                    if (oData != null)
+                    if(this.pWiiProvider is WiiProvider)
                     {
-                        this.pWiiProvider.setCalibrationData(oData.Source, oData.Destination, oData.ScreenSize);
-                        btnCalibrate.Content = "Re-Calibrate";
-                        App.TB.ShowBalloonTip("WiiTUIO", "Calibration loaded", BalloonIcon.Info);
+                        // Load calibration data.
+                        PersistentCalibrationData oData = loadPersistentCalibration("./Calibration.dat");
+                        if (oData != null)
+                        {
+                            ((WiiProvider)this.pWiiProvider).setCalibrationData(oData.Source, oData.Destination, oData.ScreenSize);
+                            btnCalibrate.Content = "Re-Calibrate";
+                            App.TB.ShowBalloonTip("WiiTUIO", "Calibration loaded", BalloonIcon.Info);
+                        }
                     }
                 }
                 else
@@ -798,7 +825,7 @@ namespace WiiTUIO
                 this.pCalibrationWindow.CalibrationCanvas.OnCalibrationFinished += new Action<WiiProvider.CalibrationRectangle, WiiProvider.CalibrationRectangle, Vector>(CalibrationCanvas_OnCalibrationFinished);
 
                 // Begin the calibration.
-                this.pCalibrationWindow.CalibrationCanvas.beginCalibration(this.pWiiProvider);
+                this.pCalibrationWindow.CalibrationCanvas.beginCalibration((WiiProvider)this.pWiiProvider);
             }
             catch (Exception pError)
             {
@@ -869,6 +896,26 @@ namespace WiiTUIO
         }
 
         #endregion
+
+        private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            if (ModeComboBox.SelectedItem != null)
+            {
+                ComboBoxItem cbItem = (ComboBoxItem)ModeComboBox.SelectedItem;
+                if (cbItem.Content.ToString() == "Wii Sensor Bar")
+                {
+                    bConnected = true; //Hack so we dont do anything than disconnecting.
+                    this.ConnectDisconnect();
+                    this.currentMode = Mode.POINTER;
+                }
+                else if (cbItem.Content.ToString() == "IR Pen")
+                {
+                    bConnected = true;
+                    this.ConnectDisconnect();
+                    this.currentMode = Mode.PEN;
+                }
+            }
+        }
 
         
     }

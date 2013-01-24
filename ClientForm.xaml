@@ -5,7 +5,7 @@
   xmlns:tb="http://www.hardcodet.net/taskbar">
     <Border BorderThickness="4"
        Background="White"
-       CornerRadius="10">
+       CornerRadius="10" Height="403">
         <Border.BorderBrush>
             <LinearGradientBrush>
                 <!--<GradientStop Color="Red" Offset="0.0" />
@@ -18,6 +18,15 @@
         </Border.BorderBrush>
         <Grid>
             <StackPanel>
+                <GroupBox Header="Mode" Margin="10" Padding="10,0,10,10">
+                    <StackPanel>
+                        <Label Content="Touch recognize mode"/>
+                        <ComboBox Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1">
+                            <ComboBoxItem>Wii Sensor Bar</ComboBoxItem>
+                            <ComboBoxItem>IR Pen</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                </GroupBox>
                 <GroupBox Header="TUIO Settings" Margin="10" Padding="10,0,10,10">
                     <StackPanel>
                         <Grid>
@@ -30,45 +39,45 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Row="0" Grid.Column="0">IP Address</Label>
-                            <Label Grid.Row="0" Grid.Column="1">TUIO Port</Label>
+                            <Label Grid.Row="0" Grid.Column="0" Content="IP Address"/>
+                            <Label Grid.Row="0" Grid.Column="1" Content="TUIO Port"/>
                             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
-                                <TextBox Name="txtIPAddress" Width="100">127.0.0.1</TextBox>
-                                <Label>:</Label>
+                                <TextBox x:Name="txtIPAddress" Width="100" Text="127.0.0.1"/>
+                                <Label Content=":"/>
                             </StackPanel>
-                            <TextBox Name="txtPort" Grid.Row="1" Grid.Column="1">3333</TextBox>
+                            <TextBox x:Name="txtPort" Grid.Row="1" Grid.Column="1" Text="3333"/>
                         </Grid>
                         <DockPanel Margin="0,5,0,0">
-                            <CheckBox Name="chkTUIOEnabled" Content="TUIO Multi Touch Events" Checked="chkTUIOEnabled_Checked" Unchecked="chkTUIOEnabled_Unchecked" VerticalAlignment="Center" />
-                            <Button Name="btnAboutTUIO" Click="btnAboutTUIO_Click" HorizontalAlignment="Right" Padding="5,0">?</Button>
+                            <CheckBox x:Name="chkTUIOEnabled" Content="TUIO Multi Touch Events" Checked="chkTUIOEnabled_Checked" Unchecked="chkTUIOEnabled_Unchecked" VerticalAlignment="Center" />
+                            <Button x:Name="btnAboutTUIO" Click="btnAboutTUIO_Click" HorizontalAlignment="Right" Padding="5,0" Content="?"/>
                         </DockPanel>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Windows Touch Settings" Margin="10,0" Padding="10">
                     <DockPanel>
-                        <CheckBox Name="chkWin7Enabled" Content="Win 7 Multi Touch Events" Checked="chkWin7Enabled_Checked" Unchecked="chkWin7Enabled_Unchecked" VerticalAlignment="Center" />
-                        <Button Name="btnAboutWinTouch" Click="btnAboutWinTouch_Click" HorizontalAlignment="Right" Margin="5,0,0,0" Padding="5,0">?</Button>
+                        <CheckBox x:Name="chkWin7Enabled" Content="Win 7 Multi Touch Events" Checked="chkWin7Enabled_Checked" Unchecked="chkWin7Enabled_Unchecked" VerticalAlignment="Center" />
+                        <Button x:Name="btnAboutWinTouch" Click="btnAboutWinTouch_Click" HorizontalAlignment="Right" Margin="5,0,0,0" Padding="5,0" Content="?"/>
                     </DockPanel>
                 </GroupBox>
                 <GroupBox Header="WiiMote" Margin="10,0" Padding="10">
                     <StackPanel>
                         <DockPanel>
-                            <Button Name="btnConnect" Click="btnConnect_Click" Margin="0,0,0,10" Width="75">Connect</Button>
-                            <Button Name="btnCalibrate" Click="btnCalibrate_Click" IsEnabled="False" HorizontalAlignment="Right" Margin="0,0,0,10" Width="75">Calibrate</Button>
+                            <Button x:Name="btnConnect" Click="btnConnect_Click" Margin="0,0,0,10" Width="75" Content="Connect"/>
+                            <Button x:Name="btnCalibrate" Click="btnCalibrate_Click" IsEnabled="False" HorizontalAlignment="Right" Margin="0,0,0,10" Width="75" Content="Calibrate"/>
                         </DockPanel>
                         <DockPanel>
-                            <ProgressBar Name="barBattery" Maximum="200" Width="170" Height="35" Canvas.ZIndex="1" />
+                            <ProgressBar x:Name="barBattery" Maximum="200" Width="170" Height="35" Panel.ZIndex="1" />
                             <Rectangle Fill="LightGray" RadiusX="3" RadiusY="3" Stroke="DarkGray" Width="15" Height="24" Margin="-10,0,0,0" />
                         </DockPanel>
                     </StackPanel>
                 </GroupBox>
                 <DockPanel Margin="10">
-                    <Button Name="btnExit"  Click="btnExit_Click"  Width="60" HorizontalAlignment="Right" Margin="80, 0, 5, 0">Quit</Button>
+                    <Button x:Name="btnExit"  Click="btnExit_Click"  Width="60" HorizontalAlignment="Right" Margin="80, 0, 5, 0" Content="Quit"/>
                     <!--<Button Name="btnHide"  Click="btnHide_Click"  Width="60" HorizontalAlignment="Right" Margin="5, 0, 5, 0">Hide</Button>-->
-                    <Button Name="btnAbout" Click="btnAbout_Click" Width="60" HorizontalAlignment="Right" Margin="5, 0, 5, 0">About</Button>
+                    <Button x:Name="btnAbout" Click="btnAbout_Click" Width="60" HorizontalAlignment="Right" Margin="5, 0, 5, 0" Content="About"/>
                 </DockPanel>
             </StackPanel>
-            <Canvas>
+            <Canvas Margin="260,15,-260,63">
                 <Border Name="brdOverlay" MouseDown="brdOverlay_MouseDown" CornerRadius="7" Visibility="Hidden" Padding="5" >
                 </Border>
             </Canvas>
