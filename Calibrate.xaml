@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="WiiTUIO.Calibrate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    MinHeight="50" MinWidth="50">
+    <Canvas>
+        <Canvas Name="CalibrationPoint" Height="100" Width="100" ClipToBounds="False" Canvas.Top="0" Canvas.Left="0">
+            <Ellipse Stroke="Black" Fill="White" Height="50" Width="50" Canvas.Top="25" Canvas.Left="25" StrokeThickness="2"/>
+            <Line X1="50" Y1="0" X2="50" Y2="100" Stroke="Black" StrokeThickness="1" />
+            <Line X1="0" Y1="50" X2="100" Y2="50" Stroke="Black" StrokeThickness="1" />
+        </Canvas>
+    </Canvas>
+</UserControl>
