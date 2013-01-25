@@ -309,6 +309,7 @@ namespace WiiTUIO
             Dispatcher.BeginInvoke(new Action(delegate()
             {
                 this.barBattery.Value = obj;
+                this.barBattery.IsIndeterminate = false;
             }), null);
         }
 
@@ -518,6 +519,7 @@ namespace WiiTUIO
             if (!this.tryingToConnect)
             {
                 btnConnect.Content = "Waiting...";
+                barBattery.IsIndeterminate = true;
                 Thread thread = new Thread(new ThreadStart(tryCreatingProvider));
                 thread.Start();
             }
@@ -582,6 +584,7 @@ namespace WiiTUIO
             if (this.pWiiProvider != null)
                 this.pWiiProvider.stop();
             this.pWiiProvider = null;
+            this.barBattery.IsIndeterminate = false;
             this.pWiiProvider_OnDisconnect(1);
         }
         #endregion
