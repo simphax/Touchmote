@@ -116,14 +116,21 @@ namespace WiiTUIO
                 }
             }
             
+            Application.Current.Exit += appWillExit;
+
             // Create a calibration window and hide it.
             this.pCalibrationWindow = new CalibrationWindow();
             this.pCalibrationWindow.Visibility = Visibility.Hidden;
         }
 
+        private void appWillExit(object sender, ExitEventArgs e)
+        {
+            this.disconnectProvider();
+        }
+
 
         /// <summary>
-        /// This is called when the battery state changes.
+        /// This is called when the wii remote is connected
         /// </summary>
         /// <param name="obj"></param>
         private void pWiiProvider_OnConnect(int obj)
@@ -153,7 +160,7 @@ namespace WiiTUIO
         }
 
         /// <summary>
-        /// This is called when the battery state changes.
+        /// This is called when the wii remote is disconnected
         /// </summary>
         /// <param name="obj"></param>
         private void pWiiProvider_OnDisconnect(int obj)
@@ -584,7 +591,11 @@ namespace WiiTUIO
             if (this.pWiiProvider != null)
                 this.pWiiProvider.stop();
             this.pWiiProvider = null;
-            this.barBattery.IsIndeterminate = false;
+            try
+            {
+                this.barBattery.IsIndeterminate = false;
+            } catch(Exception e) {}
+
             this.pWiiProvider_OnDisconnect(1);
         }
         #endregion
@@ -909,9 +920,9 @@ namespace WiiTUIO
         /// <param name="e"></param>
         private void btnExit_Click(object sender, RoutedEventArgs e)
         {
-            App.TB.Dispose();
             Application.Current.Shutdown(0);
         }
+
 
         /// <summary>
         /// Called when the 'About' button is clicked.

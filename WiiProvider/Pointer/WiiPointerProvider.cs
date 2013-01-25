@@ -297,6 +297,15 @@ namespace WiiTUIO.Provider
             // Set the running flag.
             this.bRunning = true;
 
+            try
+            {
+                MouseSimulator.SetSystemCursor("toucharrow.cur");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
             OnConnect(1);
 
             // Release processing.
@@ -313,12 +322,16 @@ namespace WiiTUIO.Provider
 
             // Set the running flag.
             this.bRunning = false;
+            
+            this.teardownWiimoteConnection();
 
             // Reset the classifier.
             this.InputClassifier.reset();
 
             // Release processing.
             pDeviceMutex.ReleaseMutex();
+
+            MouseSimulator.ResetSystemCursor();
 
             OnDisconnect(1);
         }
@@ -412,6 +425,9 @@ namespace WiiTUIO.Provider
             // If we don't have a device then do nothing.
             if (this.pDevice == null)
                 return;
+
+            this.pDevice.SetLEDs(false, false, false, false);
+            this.pDevice.SetRumble(false);
 
             // Close the connection and dispose of the device.
             this.pDevice.Disconnect();

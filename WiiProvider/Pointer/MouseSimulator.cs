@@ -9,6 +9,66 @@ namespace WiiTUIO.Provider
     public static class MouseSimulator
     {
 
+        
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr LoadCursorFromFile(string lpFileName);
+
+        [DllImport("user32.dll")]
+        static extern bool SetSystemCursor(IntPtr hcur, uint id);
+
+        [DllImport("user32.dll")]
+        static extern bool DestroyCursor(IntPtr hcur);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr LoadCursor(IntPtr hInstance, uint id);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr CopyIcon(IntPtr hcur);
+
+        static IntPtr hOldCursor;
+
+        enum IDC_STANDARD_CURSORS : uint
+        {
+            IDC_ARROW = 32512,
+            IDC_IBEAM = 32513,
+            IDC_WAIT = 32514,
+            IDC_CROSS = 32515,
+            IDC_UPARROW = 32516,
+            IDC_SIZE = 32640,
+            IDC_ICON = 32641,
+            IDC_SIZENWSE = 32642,
+            IDC_SIZENESW = 32643,
+            IDC_SIZEWE = 32644,
+            IDC_SIZENS = 32645,
+            IDC_SIZEALL = 32646,
+            IDC_NO = 32648,
+            IDC_HAND = 32649,
+            IDC_APPSTARTING = 32650,
+            IDC_HELP = 32651
+        }
+
+
+        private static Dictionary<IDC_STANDARD_CURSORS, IntPtr> cursorCopies = new Dictionary<IDC_STANDARD_CURSORS, IntPtr>()
+	{
+	    {IDC_STANDARD_CURSORS.IDC_ARROW, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_IBEAM, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_WAIT, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_CROSS, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_UPARROW, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_SIZE, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_ICON, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_SIZENWSE, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_SIZENESW, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_SIZEWE, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_SIZENS, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_SIZEALL, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_NO, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_HAND, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_APPSTARTING, IntPtr.Zero},
+	    {IDC_STANDARD_CURSORS.IDC_HELP, IntPtr.Zero},
+	};
+
         [StructLayout(LayoutKind.Sequential)]
         struct MOUSEINPUT
         {
@@ -85,6 +145,30 @@ namespace WiiTUIO.Provider
             SetCursorPos(x,y);
         }
 
+        public static void ResetSystemCursor() 
+        {
+            foreach (KeyValuePair<IDC_STANDARD_CURSORS, IntPtr> pair in cursorCopies)
+            {
+                SetSystemCursor(pair.Value, (uint)pair.Key);
+                DestroyCursor(pair.Value);
+            }
+        }
+
+        public static void SetSystemCursor(string path)
+        {
+            IntPtr cursor = LoadCursorFromFile(path);
+            //Dictionaries can not be changed while enumerating so we loop a list instead.
+            List<IDC_STANDARD_CURSORS> keys = new List<IDC_STANDARD_CURSORS>(cursorCopies.Keys);
+            foreach (IDC_STANDARD_CURSORS key in keys)
+            {
+                IntPtr cursorCopy = CopyIcon(cursor);
+                cursorCopies[key] = CopyIcon(LoadCursor(IntPtr.Zero, (uint)key));
+                SetSystemCursor(cursorCopy, (uint)key);
+                DestroyCursor(cursorCopy);
+            }
+            DestroyCursor(cursor);
+            
+        }
         /// <summary>
         /// Fake a small movement by a mouse, to keep the cursor showing.
         /// </summary>
