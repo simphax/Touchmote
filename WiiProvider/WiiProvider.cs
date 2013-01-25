@@ -132,6 +132,9 @@ namespace WiiTUIO.Provider
         /// </summary>
         public event Action<int> OnBatteryUpdate;
 
+        public event Action<int> OnConnect;
+        public event Action<int> OnDisconnect;
+
         /// <summary>
         /// The internal battery state.
         /// </summary>
@@ -239,6 +242,8 @@ namespace WiiTUIO.Provider
             // Set the running flag.
             this.bRunning = true;
 
+            OnConnect(1);
+
             // Release processing.
             //pDeviceMutex.ReleaseMutex();
         }
@@ -259,6 +264,7 @@ namespace WiiTUIO.Provider
 
             // Release processing.
             pDeviceMutex.ReleaseMutex();
+            OnDisconnect(1);
         }
         #endregion
 

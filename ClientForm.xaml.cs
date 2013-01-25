@@ -37,6 +37,8 @@ namespace WiiTUIO
 
         private Mode currentMode = Mode.POINTER;
 
+        private bool tryingToConnect = false;
+
 
         /// <summary>
         /// A reference to the WiiProvider we want to use to get/forward input.
@@ -89,6 +91,56 @@ namespace WiiTUIO
             // Create a calibration window and hide it.
             this.pCalibrationWindow = new CalibrationWindow();
             this.pCalibrationWindow.Visibility = Visibility.Hidden;
+        }
+
+
+        /// <summary>
+        /// This is called when the battery state changes.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void pWiiProvider_OnConnect(int obj)
+        {
+            // Dispatch it.
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.bConnected = true;
+
+                // Update the button to say we are connected.
+                btnConnect.IsEnabled = true;
+                btnConnect.Content = "Disconnect";
+
+                if (this.pWiiProvider is WiiProvider)
+                {
+                    btnCalibrate.IsEnabled = true;
+                    // Load calibration data.
+                    PersistentCalibrationData oData = loadPersistentCalibration("./Calibration.dat");
+                    if (oData != null)
+                    {
+                        ((WiiProvider)this.pWiiProvider).setCalibrationData(oData.Source, oData.Destination, oData.ScreenSize);
+                        btnCalibrate.Content = "Re-Calibrate";
+                        App.TB.ShowBalloonTip("WiiTUIO", "Calibration loaded", BalloonIcon.Info);
+                    }
+                }
+            }), null);
+        }
+
+        /// <summary>
+        /// This is called when the battery state changes.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void pWiiProvider_OnDisconnect(int obj)
+        {
+            // Dispatch it.
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.bConnected = false;
+                btnConnect.IsEnabled = true;
+                btnConnect.Content = "Connect";
+                btnCalibrate.IsEnabled = false;
+                btnCalibrate.Content = "Calibrate";
+                bConnected = false;
+                barBattery.Value = 0;
+            }), null);
         }
 
         /// <summary>
@@ -428,10 +480,35 @@ namespace WiiTUIO
         #endregion
 
         #region WiiProvider
+
+
         /// <summary>
         /// Try to create the WiiProvider (this involves connecting to the Wiimote).
         /// </summary>
-        private bool createProviders()
+        private void connectProvider()
+        {
+            if (!this.tryingToConnect)
+            {
+                btnConnect.Content = "Waiting...";
+                Thread thread = new Thread(new ThreadStart(tryCreatingProvider));
+                thread.Start();
+            }
+        }
+
+        private void tryCreatingProvider()
+        {
+            this.tryingToConnect = true;
+            while (!this.createProvider() && this.tryingToConnect)
+            {
+                System.Threading.Thread.Sleep(2000);
+            }
+            this.tryingToConnect = false;
+        }
+
+        /// <summary>
+        /// Try to create the WiiProvider (this involves connecting to the Wiimote).
+        /// </summary>
+        private bool createProvider()
         {
             try
             {
@@ -446,6 +523,8 @@ namespace WiiTUIO
                 }
                 this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
                 this.pWiiProvider.OnBatteryUpdate += new Action<int>(pWiiProvider_OnBatteryUpdate);
+                this.pWiiProvider.OnConnect += new Action<int>(pWiiProvider_OnConnect);
+                this.pWiiProvider.OnDisconnect += new Action<int>(pWiiProvider_OnDisconnect);
                 this.pWiiProvider.start();
                 return true;
             }
@@ -454,12 +533,12 @@ namespace WiiTUIO
                 // Tear down.
                 try
                 {
-                    this.disconnectProviders();
+                    //this.disconnectProvider();
                 }
                 catch { }
 
                 // Report the error.
-                showMessage(pError.Message, MessageType.Error);
+                //showMessage(pError.Message, MessageType.Error);
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
@@ -468,12 +547,14 @@ namespace WiiTUIO
         /// <summary>
         /// Tear down the provider connections.
         /// </summary>
-        private void disconnectProviders()
+        private void disconnectProvider()
         {
+            this.tryingToConnect = false;
             // Disconnect the Wiimote.
             if (this.pWiiProvider != null)
                 this.pWiiProvider.stop();
             this.pWiiProvider = null;
+            this.pWiiProvider_OnDisconnect(1);
         }
         #endregion
 
@@ -498,7 +579,7 @@ namespace WiiTUIO
         ~ClientForm()
         {
             // Disconnect the providers.
-            this.disconnectProviders();
+            this.disconnectProvider();
         }
 
         private Hyperlink createHyperlink(string sText, string sUri)
@@ -736,69 +817,16 @@ namespace WiiTUIO
         /// <param name="e"></param>
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
-
-            this.ConnectDisconnect();
-            
-        }
-
-        public void ConnectDisconnect()
-        {
-            // If we are in reconnect mode..
-            if (bReconnect)
+            if (!this.bConnected && !this.tryingToConnect)
             {
-                disconnectProviders();
-                btnConnect.Content = "Connect";
-                btnCalibrate.IsEnabled = false;
-                btnCalibrate.Content = "Calibrate";
-                bConnected = false;
-                bReconnect = false;
-                barBattery.Value = 0;
+                this.connectProvider();
             }
-
-            // If we have been asked to connect.
-            if (!bConnected)
-            {
-                // Connect.
-                if (createProviders())
-                {
-                    // Update the button to say we are connected.
-                    btnConnect.Content = "Disconnect";
-                    bConnected = true;
-
-                    if(this.pWiiProvider is WiiProvider)
-                    {
-                        btnCalibrate.IsEnabled = true;
-                        // Load calibration data.
-                        PersistentCalibrationData oData = loadPersistentCalibration("./Calibration.dat");
-                        if (oData != null)
-                        {
-                            ((WiiProvider)this.pWiiProvider).setCalibrationData(oData.Source, oData.Destination, oData.ScreenSize);
-                            btnCalibrate.Content = "Re-Calibrate";
-                            App.TB.ShowBalloonTip("WiiTUIO", "Calibration loaded", BalloonIcon.Info);
-                        }
-                    }
-                }
-                else
-                {
-                    disconnectProviders();
-                    btnConnect.Content = "Connect";
-                    btnCalibrate.IsEnabled = false;
-                    btnCalibrate.Content = "Calibrate";
-                    bConnected = false;
-                    barBattery.Value = 0;
-                }
-            }
-
-            // Otherwise be sure I am disconnected.
             else
             {
-                disconnectProviders();
-                btnConnect.Content = "Connect";
-                btnCalibrate.IsEnabled = false;
-                btnCalibrate.Content = "Calibrate";
-                bConnected = false;
-                barBattery.Value = 0;
+                this.disconnectProvider();
             }
+
+            
         }
 
         /// <summary>
@@ -904,14 +932,12 @@ namespace WiiTUIO
                 ComboBoxItem cbItem = (ComboBoxItem)ModeComboBox.SelectedItem;
                 if (cbItem.Content.ToString() == "Wii Sensor Bar")
                 {
-                    bConnected = true; //Hack so we wont do anything than disconnect.
-                    this.ConnectDisconnect();
+                    this.disconnectProvider();
                     this.currentMode = Mode.POINTER;
                 }
                 else if (cbItem.Content.ToString() == "IR Pen")
                 {
-                    bConnected = true;
-                    this.ConnectDisconnect();
+                    this.disconnectProvider();
                     this.currentMode = Mode.PEN;
                 }
             }

@@ -8,6 +8,8 @@ namespace WiiTUIO.Provider
     public interface IProvider 
     {
 
+        event Action<int> OnConnect;
+        event Action<int> OnDisconnect;
         event Action<int> OnBatteryUpdate;
         event EventHandler<FrameEventArgs> OnNewFrame;
 
