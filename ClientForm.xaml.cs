@@ -87,7 +87,35 @@ namespace WiiTUIO
         {
             // Load from the XAML.
             InitializeComponent();
+            
+            foreach (string arg in Environment.GetCommandLineArgs())
+            {
+                if (arg == "-tuio")
+                {
+                    this.chkTUIOEnabled_Checked(null, null);
+                }
 
+                if (arg == "-touch")
+                {
+                    this.chkWin7Enabled_Checked(null,null);
+                }
+
+                if (arg == "-pointer")
+                {
+                    this.cbiPointer.IsSelected = true;
+                }
+
+                if (arg == "-pen")
+                {
+                    this.cbiPen.IsSelected = true;
+                }
+
+                if (arg == "-connect")
+                {
+                    this.connectProvider();
+                }
+            }
+            
             // Create a calibration window and hide it.
             this.pCalibrationWindow = new CalibrationWindow();
             this.pCalibrationWindow.Visibility = Visibility.Hidden;
@@ -930,12 +958,12 @@ namespace WiiTUIO
             if (ModeComboBox.SelectedItem != null && ((ComboBoxItem)ModeComboBox.SelectedItem).Content != null)
             {
                 ComboBoxItem cbItem = (ComboBoxItem)ModeComboBox.SelectedItem;
-                if (cbItem.Content.ToString() == "Wii Sensor Bar")
+                if (cbItem == cbiPointer)
                 {
                     this.disconnectProvider();
                     this.currentMode = Mode.POINTER;
                 }
-                else if (cbItem.Content.ToString() == "IR Pen")
+                else if (cbItem == cbiPen)
                 {
                     this.disconnectProvider();
                     this.currentMode = Mode.PEN;
