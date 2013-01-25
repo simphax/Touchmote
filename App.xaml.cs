@@ -23,7 +23,7 @@ namespace WiiTUIO
         {
             // Initialise the Tray Icon
             TB = (TaskbarIcon)FindResource("tbNotifyIcon");
-            TB.ShowBalloonTip("WiiTUIO", "WiiTUIO is running", BalloonIcon.Info);
+            TB.ShowBalloonTip("Touchmote", "Touchmote is running", BalloonIcon.Info);
             base.OnStartup(e);
         }
 

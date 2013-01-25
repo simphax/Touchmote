@@ -146,7 +146,7 @@ namespace WiiTUIO
                     {
                         ((WiiProvider)this.pWiiProvider).setCalibrationData(oData.Source, oData.Destination, oData.ScreenSize);
                         btnCalibrate.Content = "Re-Calibrate";
-                        App.TB.ShowBalloonTip("WiiTUIO", "Calibration loaded", BalloonIcon.Info);
+                        App.TB.ShowBalloonTip("Touchmote", "Calibration loaded", BalloonIcon.Info);
                     }
                 }
             }), null);
@@ -180,7 +180,7 @@ namespace WiiTUIO
             if (!savePersistentCalibration("./Calibration.dat", new PersistentCalibrationData(pSource, pDestination, vScreenSize)))
             {
                 // Error - Failed to save calibration data
-                MessageBox.Show("Failed to save calibration data", "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Failed to save calibration data", "Touchmote", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             // Close the calibration window.
@@ -687,7 +687,7 @@ namespace WiiTUIO
             if (chkTUIOEnabled.IsChecked == true)
             {
                 chkTUIOEnabled.IsChecked = false;
-                App.TB.ShowBalloonTip("WiiTUIO", "Changes to the settings have been made.\nThe TUIO events have been disabled...", BalloonIcon.Info);
+                App.TB.ShowBalloonTip("Touchmote", "Changes to the settings have been made.\nThe TUIO events have been disabled...", BalloonIcon.Info);
             }
         }
 
@@ -703,7 +703,7 @@ namespace WiiTUIO
             if (chkWin7Enabled.IsChecked == true)
             {
                 chkWin7Enabled.IsChecked = false;
-                App.TB.ShowBalloonTip("WiiTUIO", "Changes to the settings have been made.\nThe TUIO events have been disabled...", BalloonIcon.Info);
+                App.TB.ShowBalloonTip("Touchmote", "Changes to the settings have been made.\nThe TUIO events have been disabled...", BalloonIcon.Info);
             }
         }
 
@@ -885,7 +885,7 @@ namespace WiiTUIO
             }
             catch (Exception pError)
             {
-                MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(pError.Message, "Touchmote", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -924,12 +924,15 @@ namespace WiiTUIO
             pMessage.FontSize = 11.0;
             pMessage.FontWeight = FontWeights.Bold;
 
-            pMessage.Inlines.Add("WiiTUIO is an application which stabilises the IR sources captured by a Wii Remote (Wiimote) and presents them as TUIO and Windows 7 Touch messages.\n\n");
-            pMessage.Inlines.Add("WiiTUIO was written by John Hardy & Christopher Bull of the HighWire Programme at Lancaster University.\nYou can contact us at:\n  ");
-            pMessage.Inlines.Add(createHyperlink("hardyj2@unix.lancs.ac.uk", "mailto:hardyj2@unix.lancs.ac.uk"));
-            pMessage.Inlines.Add("\n  ");
-            pMessage.Inlines.Add(createHyperlink("c.bull@lancaster.ac.uk", "mailto:c.bull@lancaster.ac.uk"));
+            pMessage.Inlines.Add("Touchmote communicates with a Wii Remote to simulate touch events as a TUIO server or Windows 7/8 touch messages.\n\n");
+            pMessage.Inlines.Add("You will have to pair the Wii Remote manually before connecting with Touchmote.\n");
+            pMessage.Inlines.Add("Please visit ");
+            pMessage.Inlines.Add(createHyperlink("touchmote.net", "http://www.touchmote.net/"));
+            pMessage.Inlines.Add(" for more information\n\n");
+
             pMessage.Inlines.Add("\n\nCredits:\n  ");
+            pMessage.Inlines.Add(createHyperlink("WiiTUIO project", "http://code.google.com/p/wiituio/"));
+            pMessage.Inlines.Add("\n  ");
             pMessage.Inlines.Add(createHyperlink("Johnny Chung Lee", "http://johnnylee.net/projects/wii/"));
             pMessage.Inlines.Add("\n  ");
             pMessage.Inlines.Add(createHyperlink("Brian Peek", "http://www.brianpeek.com/"));
