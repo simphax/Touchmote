@@ -27,8 +27,6 @@ namespace WiiTUIO.Provider
         [DllImport("user32.dll")]
         static extern IntPtr CopyIcon(IntPtr hcur);
 
-        static IntPtr hOldCursor;
-
         enum IDC_STANDARD_CURSORS : uint
         {
             IDC_ARROW = 32512,

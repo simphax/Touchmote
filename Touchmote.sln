@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiiTUIO", "WiiTUIO\WiiTUIO.csproj", "{87CC8302-A614-490E-9100-1059AF5FE8FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSC.NET", "OSC.NET\OSC.NET.csproj", "{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87CC8302-A614-490E-9100-1059AF5FE8FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87CC8302-A614-490E-9100-1059AF5FE8FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87CC8302-A614-490E-9100-1059AF5FE8FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87CC8302-A614-490E-9100-1059AF5FE8FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
