@@ -22,7 +22,7 @@ namespace WiiTUIO.Provider
     /// <summary>
     /// Interaction logic for WiiProviderSettings.xaml
     /// </summary>
-    public partial class WiiProviderSettings : Window
+    public partial class WiiProviderSettings : UserControl
     {
 
 
@@ -232,11 +232,6 @@ namespace WiiTUIO.Provider
         }
         #endregion
 
-        private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            this.Hide();
-            e.Cancel = true;
-        }
 
     }
 }

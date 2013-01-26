@@ -17,7 +17,7 @@ namespace WiiTUIO.Provider
     /// <summary>
     /// Interaction logic for WiiPointerProviderSettings.xaml
     /// </summary>
-    public partial class WiiPointerProviderSettings : Window
+    public partial class WiiPointerProviderSettings : UserControl
     {
         public WiiPointerProviderSettings()
         {
@@ -46,16 +46,5 @@ namespace WiiTUIO.Provider
             Settings.Default.pointer_moveCursor = false;
         }
 
-        private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            this.Hide();
-            e.Cancel = true;
-        }
-
-        private void Window_GotFocus_1(object sender, RoutedEventArgs e)
-        {
-            cbMoveCursor.IsChecked = Settings.Default.pointer_moveCursor;
-            cbSystemCursor.IsChecked = Settings.Default.pointer_changeSystemCursor;
-        }
     }
 }

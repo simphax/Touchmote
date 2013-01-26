@@ -9,9 +9,9 @@ using System.Windows;
 using WiimoteLib;
 using System.Runtime.InteropServices;
 using System.Drawing;
-using System.Windows.Forms;
 using WindowsInput;
 using WiiTUIO.Properties;
+using System.Windows.Controls;
 
 namespace WiiTUIO.Provider
 {
@@ -21,7 +21,7 @@ namespace WiiTUIO.Provider
     public class WiiPointerProvider : IProvider
     {
 
-        private Window settingsWindow = null;
+        private UserControl settingsControl = null;
 
         private string cursor = "toucharrow.cur";
 
@@ -224,10 +224,8 @@ namespace WiiTUIO.Provider
 
             Settings.Default.SettingChanging += SettingChanging;
 
-            this.settingsWindow = new WiiPointerProviderSettings();
+            this.settingsControl = new WiiPointerProviderSettings();
             
-            this.settingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            this.settingsWindow.Hide();
 
         }
 
@@ -647,9 +645,9 @@ namespace WiiTUIO.Provider
         }
         #endregion
 
-        public void showSettingsWindow()
+        public UserControl getSettingsControl()
         {
-            this.settingsWindow.Show();
+            return this.settingsControl;
         }
     }
 }

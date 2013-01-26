@@ -56,6 +56,15 @@
                 <Button Name="btnConfigDone" Click="btnConfigDone_Click" Content="Done" Canvas.Left="236" Canvas.Top="126" Width="44" Background="#FFECECEC" BorderBrush="Gainsboro" Height="25"/>
                 <Label Content="Touchmote settings" Canvas.Left="10" Canvas.Top="10" FontFamily="Segoe UI Light" FontSize="18"/>
             </Canvas>
+            <Canvas Name="providerSettingsOverlay" Height="161" Width="290" Background="White" Visibility="Hidden">
+                <Canvas.Effect>
+                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                </Canvas.Effect>
+                <Canvas Name="providerSettingsContent" Height="130" Width="290" Canvas.Top="0">
+                    
+                </Canvas>
+                <Button Name="btnProviderSettingsDone" Click="btnProviderSettingsDone_Click" Content="Done" Canvas.Left="236" Canvas.Top="126" Width="44" Background="#FFECECEC" BorderBrush="Gainsboro" Height="25"/>
+            </Canvas>
             <Border Name="brdOverlay" MouseDown="brdOverlay_MouseDown" Visibility="Hidden" Padding="5" >
             </Border>
         </Canvas>

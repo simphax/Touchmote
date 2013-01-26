@@ -150,6 +150,7 @@
     <Compile Include="Input\WiiProvider\Settings\CalibrationWindow.xaml.cs">
       <DependentUpon>CalibrationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WiimotePairing.cs" />
     <Compile Include="Output\IProviderHandler.cs" />
     <Compile Include="Output\OutputFactory.cs" />
     <Compile Include="Output\Settings\TUIOSettings.xaml.cs">

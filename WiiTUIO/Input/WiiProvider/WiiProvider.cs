@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using WiimoteLib;
+using System.Windows.Controls;
 
 namespace WiiTUIO.Provider
 {
@@ -77,7 +78,7 @@ namespace WiiTUIO.Provider
 
         #region Properties and Constructor
 
-        private WiiProviderSettings settingsWindow = null;
+        private WiiProviderSettings settingsControl = null;
 
         /// <summary>
         /// Boolean which indicates if we are generating input or not.
@@ -185,16 +186,13 @@ namespace WiiTUIO.Provider
             // Enable the calibration.
             this.TransformResults = true;
 
-            this.settingsWindow = new WiiProviderSettings(this);
-            this.settingsWindow.Visibility = Visibility.Hidden;
-            this.settingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            this.settingsControl = new WiiProviderSettings(this);
         }
         #endregion
 
-        public void showSettingsWindow()
+        public UserControl getSettingsControl()
         {
-            this.settingsWindow.Visibility = Visibility.Visible;
-            this.settingsWindow.Show();
+            return settingsControl;
         }
 
         #region SpatioTemporalClassifier Event Handling
@@ -502,5 +500,30 @@ namespace WiiTUIO.Provider
             pDeviceMutex.ReleaseMutex();
         }
         #endregion
+
+        event Action<int> IProvider.OnConnect
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
+        }
+
+        event Action<int> IProvider.OnDisconnect
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
+        }
+
+        event Action<int> IProvider.OnBatteryUpdate
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
+        }
+
+        event EventHandler<FrameEventArgs> IProvider.OnNewFrame
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
+        }
+
     }
 }

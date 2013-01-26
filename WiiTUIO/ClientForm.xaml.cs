@@ -195,9 +195,7 @@ namespace WiiTUIO
                 tbConnected.Visibility = Visibility.Collapsed;
                 tbConnect.Visibility = Visibility.Visible;
 
-                batteryLabel.Content = "";
-
-                bConnected = false;
+                batteryLabel.Content = "0%";
 
                 disconnectProviderHandler();
 
@@ -685,7 +683,9 @@ namespace WiiTUIO
         {
             if (this.pWiiProvider != null)
             {
-                this.pWiiProvider.showSettingsWindow();
+                this.providerSettingsContent.Children.Clear();
+                this.providerSettingsContent.Children.Add(this.pWiiProvider.getSettingsControl());
+                this.providerSettingsOverlay.Visibility = Visibility.Visible;
             }
         }
 
@@ -719,7 +719,7 @@ namespace WiiTUIO
 
         private void PairWiimotes_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
 
@@ -781,6 +781,11 @@ namespace WiiTUIO
         private void btnConfigDone_Click(object sender, RoutedEventArgs e)
         {
             this.hideConfig();
+        }
+
+        private void btnProviderSettingsDone_Click(object sender, RoutedEventArgs e)
+        {
+            this.providerSettingsOverlay.Visibility = Visibility.Hidden;
         }   
     }
 

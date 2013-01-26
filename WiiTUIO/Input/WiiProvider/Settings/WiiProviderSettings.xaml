@@ -1,9 +1,9 @@
-﻿<Window x:Class="WiiTUIO.Provider.WiiProviderSettings"
+﻿<UserControl x:Class="WiiTUIO.Provider.WiiProviderSettings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="IR Pen Settings" Height="145" Width="223" Closing="Window_Closing_1" Icon="/Touchmote;component/icon.ico">
+        Height="130" Width="290">
     <Grid>
-        <Button Content="Recalibrate IR pen" Name="btnCalibrate" IsEnabled="False" HorizontalAlignment="Left" Margin="46,38,0,0" VerticalAlignment="Top" Width="115" Click="btnCalibrate_Click" Height="36"/>
+        <Button Content="Recalibrate IR pen" Name="btnCalibrate" IsEnabled="False" HorizontalAlignment="Left" Margin="84,50,0,0" VerticalAlignment="Top" Width="115" Click="btnCalibrate_Click" Height="36"/>
 
     </Grid>
-</Window>
+</UserControl>
