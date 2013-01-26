@@ -9,7 +9,7 @@
             
         <Canvas Margin="2,2,3,3" Background="White">
             <Canvas.Effect>
-                <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                <DropShadowEffect Opacity="0.3" BlurRadius="4" ShadowDepth="1"/>
             </Canvas.Effect>
                         <Label Content="Touchmote" FontSize="24" FontFamily="Segoe UI Light" Canvas.Left="10" Canvas.Top="8"/>
                         <ComboBox Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="71" Canvas.Top="60" FontFamily="Segoe UI Semilight">
@@ -46,13 +46,17 @@
 
 
         </Canvas>
-        <Canvas Margin="22,22,23,23" Background="White" Visibility="Hidden">
-            <Canvas.Effect>
-                <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
-            </Canvas.Effect>
-            <Border Name="configOverlay" MouseDown="brdOverlay_MouseDown" CornerRadius="0" Visibility="Hidden" Padding="5" >
-            </Border>
-            <Border Name="brdOverlay" MouseDown="brdOverlay_MouseDown" CornerRadius="0" Visibility="Hidden" Padding="5" >
+        <Canvas Margin="22,22,23,23">
+            <Canvas Name="configOverlay" Height="161" Width="290" Background="White" Visibility="Hidden">
+                <Canvas.Effect>
+                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                </Canvas.Effect>
+                <CheckBox Name="cbWindowsStart" Content="Start Touchmote with Windows" Canvas.Left="73" Canvas.Top="58" FontFamily="Segoe UI Semilight" Checked="cbWindowsStart_Checked" Unchecked="cbWindowsStart_Unchecked"/>
+                <CheckBox Name="cbConnectOnStart" Content="Connect on startup" Canvas.Left="73" Canvas.Top="89" FontFamily="Segoe UI Semilight" Checked="cbConnectOnStart_Checked" Unchecked="cbConnectOnStart_Unchecked" />
+                <Button Name="btnConfigDone" Click="btnConfigDone_Click" Content="Done" Canvas.Left="236" Canvas.Top="126" Width="44" Background="#FFECECEC" BorderBrush="Gainsboro" Height="25"/>
+                <Label Content="Touchmote settings" Canvas.Left="10" Canvas.Top="10" FontFamily="Segoe UI Light" FontSize="18"/>
+            </Canvas>
+            <Border Name="brdOverlay" MouseDown="brdOverlay_MouseDown" Visibility="Hidden" Padding="5" >
             </Border>
         </Canvas>
         

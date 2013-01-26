@@ -94,5 +94,29 @@ namespace WiiTUIO.Properties {
                 this["tuio_port"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool windowsStart {
+            get {
+                return ((bool)(this["windowsStart"]));
+            }
+            set {
+                this["windowsStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool connectOnStart {
+            get {
+                return ((bool)(this["connectOnStart"]));
+            }
+            set {
+                this["connectOnStart"] = value;
+            }
+        }
     }
 }

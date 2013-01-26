@@ -33,6 +33,7 @@ namespace WiiTUIO
 
         private void appWillExit(object sender, ExitEventArgs e)
         {
+            WiiTUIO.Properties.Settings.Default.Save();
             TB.Dispose();
         }
 

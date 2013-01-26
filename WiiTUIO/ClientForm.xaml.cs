@@ -126,9 +126,31 @@ namespace WiiTUIO
                     this.cbiTUIO.IsSelected = true;
                     break;
             }
+
+            this.cbConnectOnStart.IsChecked = Settings.Default.connectOnStart;
+            this.cbWindowsStart.IsChecked = Settings.Default.windowsStart;
             
             Application.Current.Exit += appWillExit;
 
+        }
+
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.FrameworkElement.Initialized"/> event.
+        /// </summary>
+        /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
+        protected override void OnInitialized(EventArgs e)
+        {
+            // Create the providers.
+            this.createProvider();
+            this.createProviderHandler();
+
+            if (Settings.Default.connectOnStart)
+            {
+                this.connectProvider();
+            }
+
+            // Call the base class.
+            base.OnInitialized(e);
         }
 
         private void appWillExit(object sender, ExitEventArgs e)
@@ -323,7 +345,20 @@ namespace WiiTUIO
         }
         #endregion
         #endregion
-        
+
+
+        private void showConfig()
+        {
+            this.configOverlay.Visibility = Visibility.Visible;
+
+        }
+
+        private void hideConfig()
+        {
+            this.configOverlay.Visibility = Visibility.Hidden;
+
+        }
+
         #region Create and Die
 
         /// <summary>
@@ -514,19 +549,7 @@ namespace WiiTUIO
         #endregion
 
         #region Form Stuff
-        /// <summary>
-        /// Raises the <see cref="E:System.Windows.FrameworkElement.Initialized"/> event.
-        /// </summary>
-        /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
-        protected override void OnInitialized(EventArgs e)
-        {
-            // Create the providers.
-            this.createProvider();
-            this.createProviderHandler();
 
-            // Call the base class.
-            base.OnInitialized(e);
-        }
 
         ~ClientForm()
         {
@@ -732,8 +755,33 @@ namespace WiiTUIO
 
         private void ConfigImg_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            this.showConfig();
+        }
 
-        }       
+        private void cbWindowsStart_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.Default.windowsStart = true;
+        }
+
+        private void cbWindowsStart_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Settings.Default.windowsStart = false;
+        }
+
+        private void cbConnectOnStart_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.Default.connectOnStart = true;
+        }
+
+        private void cbConnectOnStart_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Settings.Default.connectOnStart = false;
+        }
+
+        private void btnConfigDone_Click(object sender, RoutedEventArgs e)
+        {
+            this.hideConfig();
+        }   
     }
 
     
