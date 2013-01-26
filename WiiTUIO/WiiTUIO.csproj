@@ -225,6 +225,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="info-icon.png" />
+    <Resource Include="close-icon.png" />
+    <Resource Include="connect-icon.png" />
+    <Resource Include="config-icon.png" />
     <Content Include="toucharrow.cur">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

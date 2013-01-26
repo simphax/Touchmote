@@ -75,7 +75,7 @@ namespace WiiTUIO
         {
             // Load from the XAML.
             InitializeComponent();
-            
+            /*
             foreach (string arg in Environment.GetCommandLineArgs())
             {
                 if (arg == "-tuio")
@@ -103,6 +103,29 @@ namespace WiiTUIO
                     this.connectProvider();
                 }
             }
+            */
+
+            InputFactory.InputType inputType = InputFactory.getType(Settings.Default.input);
+            OutputFactory.OutputType outputType = OutputFactory.getType(Settings.Default.output);
+
+            switch (inputType)
+            {
+                case InputFactory.InputType.POINTER:
+                    this.cbiPointer.IsSelected = true;
+                    break;
+                case InputFactory.InputType.PEN:
+                    this.cbiPen.IsSelected = true;
+                    break;
+            }
+            switch (outputType)
+            {
+                case OutputFactory.OutputType.TOUCH:
+                    this.cbiTouch.IsSelected = true;
+                    break;
+                case OutputFactory.OutputType.TUIO:
+                    this.cbiTUIO.IsSelected = true;
+                    break;
+            }
             
             Application.Current.Exit += appWillExit;
 
@@ -126,8 +149,8 @@ namespace WiiTUIO
                 this.bConnected = true;
 
                 // Update the button to say we are connected.
-                btnConnect.IsEnabled = true;
-                btnConnect.Content = "Disconnect";
+                tbWaiting.Visibility = Visibility.Collapsed;
+                tbConnected.Visibility = Visibility.Visible;
 
                 connectProviderHandler();
 
@@ -146,10 +169,13 @@ namespace WiiTUIO
             Dispatcher.BeginInvoke(new Action(delegate()
             {
                 this.bConnected = false;
-                btnConnect.IsEnabled = true;
-                btnConnect.Content = "Connect";
+
+                tbConnected.Visibility = Visibility.Collapsed;
+                tbConnect.Visibility = Visibility.Visible;
+
+                batteryLabel.Content = "";
+
                 bConnected = false;
-                barBattery.Value = 0;
 
                 disconnectProviderHandler();
 
@@ -190,8 +216,7 @@ namespace WiiTUIO
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-                this.barBattery.Value = obj;
-                this.barBattery.IsIndeterminate = false;
+                this.batteryLabel.Content = obj.ToString() + "%";
             }), null);
         }
 
@@ -399,8 +424,10 @@ namespace WiiTUIO
         {
             if (!this.tryingToConnect)
             {
-                btnConnect.Content = "Waiting...";
-                barBattery.IsIndeterminate = true;
+
+                this.tbConnect.Visibility = Visibility.Collapsed;
+                this.tbWaiting.Visibility = Visibility.Visible;
+
                 Thread thread = new Thread(new ThreadStart(tryConnectingProvider));
                 thread.Start();
             }
@@ -483,11 +510,6 @@ namespace WiiTUIO
             if (this.pWiiProvider != null)
                 this.pWiiProvider.stop();
             //this.pWiiProvider = null;
-            Dispatcher.BeginInvoke(new Action(delegate()
-            {
-                this.barBattery.IsIndeterminate = false;
-
-            }), null);
         }
         #endregion
 
@@ -672,7 +694,46 @@ namespace WiiTUIO
             }
         }
 
-        
+        private void PairWiimotes_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+        private void Icon_MouseEnter(object sender, MouseEventArgs e)
+        {
+            ((Image)sender).Opacity = ((Image)sender).Opacity + 0.2;
+        }
+
+        private void Icon_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ((Image)sender).Opacity = ((Image)sender).Opacity - 0.2;
+        }
+
+        private void InfoImg_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            this.btnAbout_Click(null, null);
+        }
+
+        private void imgClose_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            this.btnConnect_Click(null, null);
+        }
+
+        private void imgConnect_MouseEnter(object sender, MouseEventArgs e)
+        {
+            imgConnect.Opacity = 0.6;
+        }
+
+        private void imgConnect_MouseLeave(object sender, MouseEventArgs e)
+        {
+            imgConnect.Opacity = 0.4;
+        }
+
+        private void ConfigImg_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }       
     }
 
     
