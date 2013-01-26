@@ -22,5 +22,29 @@ namespace WiiTUIO.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool pointer_changeSystemCursor {
+            get {
+                return ((bool)(this["pointer_changeSystemCursor"]));
+            }
+            set {
+                this["pointer_changeSystemCursor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool pointer_moveCursor {
+            get {
+                return ((bool)(this["pointer_moveCursor"]));
+            }
+            set {
+                this["pointer_moveCursor"] = value;
+            }
+        }
     }
 }

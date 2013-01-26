@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace WiiTUIO.Provider
 {
@@ -15,6 +16,8 @@ namespace WiiTUIO.Provider
 
         void start();
         void stop();
+
+        void showSettingsWindow();
 
     }
 }

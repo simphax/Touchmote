@@ -1,0 +1,9 @@
+﻿<Window x:Class="WiiTUIO.Provider.CalibrationWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:this="clr-namespace:WiiTUIO.Provider"
+    Title="Calibration Window" Height="480" Width="640" KeyUp="Window_KeyUp_1">
+    <Grid>
+        <this:Calibrate x:Name="CalibrationCanvas" Background="CornflowerBlue" Margin="0, 0, 0, 0"></this:Calibrate>
+    </Grid>
+</Window>

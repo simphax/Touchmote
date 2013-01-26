@@ -55,10 +55,6 @@ namespace WiiTUIO
         /// </summary>
         private ProviderHandler pTouchDevice = null;
 
-        /// <summary>
-        /// A refrence to the calibration window.
-        /// </summary>
-        private CalibrationWindow pCalibrationWindow = null;
 
         /// <summary>
         /// Boolean to tell if we are connected to the mote and network.
@@ -118,9 +114,6 @@ namespace WiiTUIO
             
             Application.Current.Exit += appWillExit;
 
-            // Create a calibration window and hide it.
-            this.pCalibrationWindow = new CalibrationWindow();
-            this.pCalibrationWindow.Visibility = Visibility.Hidden;
         }
 
         private void appWillExit(object sender, ExitEventArgs e)
@@ -144,18 +137,6 @@ namespace WiiTUIO
                 btnConnect.IsEnabled = true;
                 btnConnect.Content = "Disconnect";
 
-                if (this.pWiiProvider is WiiProvider)
-                {
-                    btnCalibrate.IsEnabled = true;
-                    // Load calibration data.
-                    PersistentCalibrationData oData = loadPersistentCalibration("./Calibration.dat");
-                    if (oData != null)
-                    {
-                        ((WiiProvider)this.pWiiProvider).setCalibrationData(oData.Source, oData.Destination, oData.ScreenSize);
-                        btnCalibrate.Content = "Re-Calibrate";
-                        App.TB.ShowBalloonTip("Touchmote", "Calibration loaded", BalloonIcon.Info);
-                    }
-                }
             }), null);
         }
 
@@ -171,31 +152,11 @@ namespace WiiTUIO
                 this.bConnected = false;
                 btnConnect.IsEnabled = true;
                 btnConnect.Content = "Connect";
-                btnCalibrate.IsEnabled = false;
-                btnCalibrate.Content = "Calibrate";
                 bConnected = false;
                 barBattery.Value = 0;
             }), null);
         }
 
-        /// <summary>
-        /// This is called when calibration is finished.
-        /// </summary>
-        private void CalibrationCanvas_OnCalibrationFinished(WiiProvider.CalibrationRectangle pSource, WiiProvider.CalibrationRectangle pDestination, Vector vScreenSize)
-        {
-            // Persist the calibration data
-            if (!savePersistentCalibration("./Calibration.dat", new PersistentCalibrationData(pSource, pDestination, vScreenSize)))
-            {
-                // Error - Failed to save calibration data
-                MessageBox.Show("Failed to save calibration data", "Touchmote", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            // Close the calibration window.
-            if (pCalibrationWindow != null)
-            {
-                pCalibrationWindow.Visibility = System.Windows.Visibility.Hidden;
-            }
-        }
 
         private Mutex pCommunicationMutex = new Mutex();
         private static int iFrame = 0;
@@ -290,11 +251,7 @@ namespace WiiTUIO
         /// <param name="e"></param>
         private void pWiiProvider_OnNewFrame(object sender, FrameEventArgs e)
         {
-            // Are we calibrating.
-            if (this.pCalibrationWindow != null)
-                if (this.pCalibrationWindow.CalibrationCanvas.IsCalibrating)
-                    return;
-
+            
             // If dispatching events is enabled.
             if (bConnected)
             {
@@ -326,6 +283,8 @@ namespace WiiTUIO
 
         private void showMessage(string sMessage, MessageType eType)
         {
+            Console.WriteLine(sMessage);
+            /*
             TextBlock pMessage = new TextBlock();
             pMessage.Text = sMessage;
             pMessage.TextWrapping = TextWrapping.Wrap;
@@ -338,6 +297,7 @@ namespace WiiTUIO
                 pMessage.FontSize = 16.0;
             }
             showMessage(pMessage, 750.0, eType);
+            */
         }
 
         private void showMessage(UIElement pMessage, MessageType eType)
@@ -527,21 +487,47 @@ namespace WiiTUIO
             {
                 btnConnect.Content = "Waiting...";
                 barBattery.IsIndeterminate = true;
-                Thread thread = new Thread(new ThreadStart(tryCreatingProvider));
+                Thread thread = new Thread(new ThreadStart(tryConnectingProvider));
                 thread.Start();
             }
         }
 
-        private void tryCreatingProvider()
+        private void tryConnectingProvider()
         {
             this.tryingToConnect = true;
-            while (!this.createProvider() && this.tryingToConnect)
+            while (this.tryingToConnect && !this.startProvider())
             {
                 System.Threading.Thread.Sleep(2000);
             }
             this.tryingToConnect = false;
         }
 
+        /// <summary>
+        /// Try to create the WiiProvider (this involves connecting to the Wiimote).
+        /// </summary>
+        private bool startProvider()
+        {
+            try
+            {
+                this.pWiiProvider.start();
+                return true;
+            }
+            catch (Exception pError)
+            {
+                // Tear down.
+                try
+                {
+                    //this.disconnectProvider();
+                }
+                catch { }
+
+                // Report the error.
+                showMessage(pError.Message, MessageType.Error);
+                //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+        
         /// <summary>
         /// Try to create the WiiProvider (this involves connecting to the Wiimote).
         /// </summary>
@@ -562,7 +548,6 @@ namespace WiiTUIO
                 this.pWiiProvider.OnBatteryUpdate += new Action<int>(pWiiProvider_OnBatteryUpdate);
                 this.pWiiProvider.OnConnect += new Action<int>(pWiiProvider_OnConnect);
                 this.pWiiProvider.OnDisconnect += new Action<int>(pWiiProvider_OnDisconnect);
-                this.pWiiProvider.start();
                 return true;
             }
             catch (Exception pError)
@@ -575,7 +560,7 @@ namespace WiiTUIO
                 catch { }
 
                 // Report the error.
-                //showMessage(pError.Message, MessageType.Error);
+                showMessage(pError.Message, MessageType.Error);
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
@@ -590,13 +575,11 @@ namespace WiiTUIO
             // Disconnect the Wiimote.
             if (this.pWiiProvider != null)
                 this.pWiiProvider.stop();
-            this.pWiiProvider = null;
+            //this.pWiiProvider = null;
             try
             {
                 this.barBattery.IsIndeterminate = false;
             } catch(Exception e) {}
-
-            this.pWiiProvider_OnDisconnect(1);
         }
         #endregion
 
@@ -608,7 +591,7 @@ namespace WiiTUIO
         protected override void OnInitialized(EventArgs e)
         {
             // Create the providers.
-            //this.createProviders();
+            this.createProvider();
 
             // Add text change events
             txtIPAddress.TextChanged += txtIPAddress_TextChanged;
@@ -641,51 +624,7 @@ namespace WiiTUIO
 
         #endregion
 
-        #region Persistent Calibration Data
-        /// <summary>
-        /// Creates and saves a file which contains the calibration data.
-        /// </summary>
-        /// <param name="sFile">The location of the file to persist to</param>
-        /// <param name="oData">The calibration data to persist</param>
-        public static bool savePersistentCalibration(string sFile, PersistentCalibrationData oData)
-        {
-            try
-            {
-                FileStream stream = File.Open(sFile, FileMode.Create);
-                new BinaryFormatter().Serialize(stream, oData);
-                stream.Close();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
 
-        /// <summary>
-        /// Loads the specified file, which should contain calibration data.
-        /// </summary>
-        /// <param name="sFile">The location of the file to load</param>
-        public static PersistentCalibrationData loadPersistentCalibration(string sFile)
-        {
-            try
-            {
-                if (File.Exists(sFile))
-                {
-                    // De-serialise data from file
-                    Stream stream = File.Open(sFile, FileMode.Open);
-                    PersistentCalibrationData data = (PersistentCalibrationData)new BinaryFormatter().Deserialize(stream);
-                    stream.Close();
-                    return data;
-                }
-                return null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-        #endregion
 
         #region UI Events
 
@@ -871,37 +810,7 @@ namespace WiiTUIO
             
         }
 
-        /// <summary>
-        /// Called when the calibrate button has been clicked.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnCalibrate_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Create a new calibration window.
-                //if (pCalibrationWindow == null)
-                //    this.pCalibrationWindow = new CalibrationWindow();
-                //else
-                this.pCalibrationWindow.Visibility = System.Windows.Visibility.Visible;
 
-                //this.pCalibrationWindow.Topmost = true;
-                this.pCalibrationWindow.WindowStyle = WindowStyle.None;
-                this.pCalibrationWindow.WindowState = WindowState.Maximized;
-                this.pCalibrationWindow.Show();
-
-                // Event handler for the finish calibration.
-                this.pCalibrationWindow.CalibrationCanvas.OnCalibrationFinished += new Action<WiiProvider.CalibrationRectangle, WiiProvider.CalibrationRectangle, Vector>(CalibrationCanvas_OnCalibrationFinished);
-
-                // Begin the calibration.
-                this.pCalibrationWindow.CalibrationCanvas.beginCalibration((WiiProvider)this.pWiiProvider);
-            }
-            catch (Exception pError)
-            {
-                MessageBox.Show(pError.Message, "Touchmote", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
 
         /// <summary>
         /// Called when the hide button is clicked.
@@ -979,48 +888,29 @@ namespace WiiTUIO
                 {
                     this.disconnectProvider();
                     this.currentMode = Mode.POINTER;
+
+                    this.createProvider();
                 }
                 else if (cbItem == cbiPen)
                 {
                     this.disconnectProvider();
                     this.currentMode = Mode.PEN;
+
+                    this.createProvider();
                 }
+            }
+        }
+
+        private void btnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.pWiiProvider != null)
+            {
+                this.pWiiProvider.showSettingsWindow();
             }
         }
 
         
     }
 
-    #region Persistent Calibration Data Serialisation Helper
-    /// <summary>
-    /// Wrapper class for persistent calibration data.
-    /// This classes is required for saving data and is also returned from a load.
-    /// </summary>
-    [Serializable]
-    public class PersistentCalibrationData
-    {
-        /// <summary> The source calibration rectangle. </summary>
-        public WiiProvider.CalibrationRectangle Source { get; private set; }
-        /// <summary> The destination calibration rectangle. </summary>
-        public WiiProvider.CalibrationRectangle Destination { get; private set; }
-        /// <summary> The screen size. </summary>
-        public Vector ScreenSize { get; private set; }
-        /// <summary> When the calibration data swas created. </summary>
-        public DateTime TimeStamp { get; private set; }
-
-        /// <summary>
-        /// Creates a wrapper object for persisting calibration data.
-        /// </summary>
-        /// <param name="pSource">The source calibration rectangle</param>
-        /// <param name="pDestination">The destination calibration rectangle</param>
-        /// <param name="vScreenSize">The screen size</param>
-        public PersistentCalibrationData(WiiProvider.CalibrationRectangle pSource, WiiProvider.CalibrationRectangle pDestination, Vector vScreenSize)
-        {
-            this.Source = pSource;
-            this.Destination = pDestination;
-            this.ScreenSize = vScreenSize;
-            this.TimeStamp = DateTime.Now;
-        }
-    }
-    #endregion
+    
 }

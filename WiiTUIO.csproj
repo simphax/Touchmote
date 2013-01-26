@@ -105,13 +105,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Calibrate.xaml">
+    <Page Include="WiiProvider\Settings\Calibrate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CalibrationWindow.xaml">
+    <Page Include="WiiProvider\Settings\CalibrationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
@@ -128,13 +128,21 @@
     <Compile Include="ClientForm.xaml.cs">
       <DependentUpon>ClientForm.xaml</DependentUpon>
     </Compile>
+    <Page Include="WiiProvider\Settings\WiiPointerProviderSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WiiProvider\Settings\WiiProviderSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Calibrate.xaml.cs">
+    <Compile Include="WiiProvider\Settings\Calibrate.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>Calibrate.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CalibrationWindow.xaml.cs">
+    <Compile Include="WiiProvider\Settings\CalibrationWindow.xaml.cs">
       <DependentUpon>CalibrationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -157,24 +165,28 @@
     <Compile Include="WiiProvider\Pointer\WiiPointerProvider.cs" />
     <Compile Include="WiiProvider\ContactType.cs" />
     <Compile Include="WiiProvider\FrameEventArgs.cs" />
+    <Compile Include="WiiProvider\Settings\WiiPointerProviderSettings.xaml.cs">
+      <DependentUpon>WiiPointerProviderSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WiiProvider\SpatiotemporalClassifier.cs" />
     <Compile Include="WiiProvider\Warper.cs" />
     <Compile Include="WiiProvider\WiiContact.cs" />
     <Compile Include="WiiProvider\WiiProvider.cs" />
+    <Compile Include="WiiProvider\Settings\WiiProviderSettings.xaml.cs">
+      <DependentUpon>WiiProviderSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WinTouch\HumanInterfaceDevice.cs" />
     <Compile Include="WinTouch\ProviderHandler.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Lancaster.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="OSC.NET\OSC.NET.csproj">

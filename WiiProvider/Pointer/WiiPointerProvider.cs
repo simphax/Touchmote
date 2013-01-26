@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Windows.Forms;
 using WindowsInput;
+using WiiTUIO.Properties;
 
 namespace WiiTUIO.Provider
 {
@@ -19,6 +20,10 @@ namespace WiiTUIO.Provider
     /// </summary>
     public class WiiPointerProvider : IProvider
     {
+
+        private Window settingsWindow = null;
+
+        private string cursor = "toucharrow.cur";
 
         private bool ShowMouse = true;
 
@@ -146,11 +151,6 @@ namespace WiiTUIO.Provider
         public Vector ScreenSize { get; protected set; }
 
         /// <summary>
-        /// A reference to a warper which we use to transform points from the device.
-        /// </summary>
-        private Warper pWarper;
-
-        /// <summary>
         /// A property to determine if this input provider is running (and thus generating events).
         /// </summary>
         public bool IsRunning { get { return this.bRunning; } }
@@ -215,24 +215,25 @@ namespace WiiTUIO.Provider
             this.InputClassifier.OnUpdate += new SpatioTemporalClassifier.TrackerEventHandler(handleInputClassifier_OnUpdate);
             this.InputClassifier.OnEnd += new SpatioTemporalClassifier.TrackerEventHandler(handleInputClassifier_OnEnd);
 
-            // Set default source and destination rectangles.
-            //this.pWarper = new Warper();
-            //this.setCalibrationData(new CalibrationRectangle(), new CalibrationRectangle(), new Vector(1.0, 1.0));
-
-            // Enable the calibration.
-            //this.TransformResults = true;
-
-
-
             lastpoint = new WiimoteLib.Point();
             lastpoint.X = 0;
             lastpoint.Y = 0;
 
-            //desktopDC = GetDC(IntPtr.Zero);
-            //screenpaint = Graphics.FromHdc(desktopDC);
 
             PressedButtons = new WiimoteButtonsStruct();
 
+            Settings.Default.SettingChanging += SettingChanging;
+
+            this.settingsWindow = new WiiPointerProviderSettings();
+            
+            this.settingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            this.settingsWindow.Hide();
+
+        }
+
+        private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
+        {
+            
         }
         #endregion
 
@@ -297,13 +298,16 @@ namespace WiiTUIO.Provider
             // Set the running flag.
             this.bRunning = true;
 
-            try
+            if (Settings.Default.pointer_changeSystemCursor)
             {
-                MouseSimulator.SetSystemCursor("toucharrow.cur");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
+                try
+                {
+                    MouseSimulator.SetSystemCursor(cursor);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
             }
 
             OnConnect(1);
@@ -334,35 +338,6 @@ namespace WiiTUIO.Provider
             MouseSimulator.ResetSystemCursor();
 
             OnDisconnect(1);
-        }
-        #endregion
-
-        #region Calibration
-        /// <summary>
-        /// Setup the calibration data which we want to use to transform points received by this Wiimote device before presenting
-        /// them to the higher level application.
-        /// </summary>
-        /// <param name="pSource">The source rectangle.</param>
-        /// <param name="pDestination">The destination rectangle.</param>
-        /// <param name="vSize">The size of the screen which we will use to normalise input coordinates.</param>
-        public void setCalibrationData(CalibrationRectangle pSource, CalibrationRectangle pDestination, Vector vSize)
-        {
-            // Set the source and destination.
-            this.pWarper.setSource((float)pSource.TopLeft.X, (float)pSource.TopLeft.Y,
-                                    (float)pSource.TopRight.X, (float)pSource.TopRight.Y,
-                                    (float)pSource.BottomLeft.X, (float)pSource.BottomLeft.Y,
-                                    (float)pSource.BottomRight.X, (float)pSource.BottomRight.Y);
-
-            this.pWarper.setDestination((float)pDestination.TopLeft.X, (float)pDestination.TopLeft.Y,
-                                        (float)pDestination.TopRight.X, (float)pDestination.TopRight.Y,
-                                        (float)pDestination.BottomLeft.X, (float)pDestination.BottomLeft.Y,
-                                        (float)pDestination.BottomRight.X, (float)pDestination.BottomRight.Y);
-
-            // Save the newly computed screen size.
-            this.ScreenSize = vSize;
-
-            // Compute the new values.
-            this.pWarper.computeWarp();
         }
         #endregion
 
@@ -535,7 +510,7 @@ namespace WiiTUIO.Provider
                 TouchHold = true;
                 isFirstTouch = true;
 
-                if (ShowMouse && !pointerOutOfReach)
+                if (ShowMouse && !pointerOutOfReach && Settings.Default.pointer_moveCursor)
                 {
                     if (mousewait == 0)
                     {
@@ -671,5 +646,10 @@ namespace WiiTUIO.Provider
 
         }
         #endregion
+
+        public void showSettingsWindow()
+        {
+            this.settingsWindow.Show();
+        }
     }
 }

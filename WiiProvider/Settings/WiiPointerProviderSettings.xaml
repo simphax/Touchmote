@@ -1,0 +1,11 @@
+﻿<Window x:Class="WiiTUIO.Provider.WiiPointerProviderSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Wii Sensor Bar Settings" Height="167" Width="208" Icon="/Touchmote;component/icon.ico" GotFocus="Window_GotFocus_1" Closing="Window_Closing_1">
+    <Grid>
+        <CheckBox Name="cbSystemCursor" Content="Change System Cursor" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" IsChecked="True" Unchecked="systemCursor_Unchecked" Checked="systemCursor_Checked"/>
+        <CheckBox Name="cbMoveCursor" Content="Move Cursor When Pointing" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" IsChecked="True" Unchecked="moveCursor_Unchecked" Checked="moveCursor_Checked"/>
+        <Label Content="Pointer Settings" HorizontalAlignment="Left" Height="45" Margin="10,10,0,0" VerticalAlignment="Top" Width="180" FontSize="20" Foreground="#FF169CCF"/>
+
+    </Grid>
+</Window>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows;
 
 namespace WiiTUIO.Provider
 {
@@ -143,6 +144,13 @@ namespace WiiTUIO.Provider
         public static void SetCursorPosition(int x, int y)
         {
             SetCursorPos(x,y);
+        }
+
+        public static Point GetCursorPosition()
+        {
+            POINT point = new POINT();
+            GetCursorPos(out point);
+            return new Point(point.X, point.Y);
         }
 
         public static void ResetSystemCursor() 

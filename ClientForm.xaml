@@ -20,7 +20,8 @@
                             <ComboBoxItem Name="cbiPointer" IsSelected="True">Wii Sensor Bar</ComboBoxItem>
                             <ComboBoxItem Name="cbiPen">IR Pen</ComboBoxItem>
                         </ComboBox>
-                    </StackPanel>
+                    <Button x:Name="btnSettings" HorizontalAlignment="Right" Margin="0,10,0,0" Width="75" Content="Settings" Click="btnSettings_Click"/>
+                </StackPanel>
                 </GroupBox>
                 <GroupBox Header="TUIO Settings" Margin="10" Padding="10,0,10,10">
                     <StackPanel>
@@ -50,15 +51,15 @@
                 </GroupBox>
                 <GroupBox Header="Windows Touch Settings" Margin="10,0" Padding="10">
                     <DockPanel>
-                        <CheckBox x:Name="chkWin7Enabled" Content="Win 7 Multi Touch Events" Checked="chkWin7Enabled_Checked" Unchecked="chkWin7Enabled_Unchecked" VerticalAlignment="Center" />
+                        <CheckBox x:Name="chkWin7Enabled" Content="Windows Multi Touch" Checked="chkWin7Enabled_Checked" Unchecked="chkWin7Enabled_Unchecked" VerticalAlignment="Center" />
                         <Button x:Name="btnAboutWinTouch" Click="btnAboutWinTouch_Click" HorizontalAlignment="Right" Margin="5,0,0,0" Padding="5,0" Content="?"/>
                     </DockPanel>
                 </GroupBox>
-                <GroupBox Header="WiiMote" Margin="10,0" Padding="10">
+                <GroupBox Header="Wiimote" Margin="10,0" Padding="10">
                     <StackPanel>
                         <DockPanel>
                             <Button x:Name="btnConnect" Click="btnConnect_Click" Margin="0,0,0,10" Width="75" Content="Connect"/>
-                            <Button x:Name="btnCalibrate" Click="btnCalibrate_Click" IsEnabled="False" HorizontalAlignment="Right" Margin="0,0,0,10" Width="75" Content="Calibrate"/>
+                            
                         </DockPanel>
                         <DockPanel>
                             <ProgressBar x:Name="barBattery" Maximum="200" Width="180" Height="35" Panel.ZIndex="1" />
@@ -71,7 +72,7 @@
                     <Button x:Name="btnAbout" Click="btnAbout_Click" Width="60" HorizontalAlignment="Right" Margin="5, 0, 5, 0" Content="About"/>
                 </DockPanel>
             </StackPanel>
-        <Canvas Margin="2,2,6,6">
+        <Canvas Margin="281,-11,-273,19">
             <Border Name="brdOverlay" MouseDown="brdOverlay_MouseDown" CornerRadius="0" Visibility="Hidden" Padding="5" >
             </Border>
         </Canvas>

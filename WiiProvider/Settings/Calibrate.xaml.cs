@@ -12,9 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using WiiTUIO.Provider;
-
-namespace WiiTUIO
+namespace WiiTUIO.Provider
 {
     /// <summary>
     /// A Canvas which we can use to calibrate the Wiimote.

@@ -76,6 +76,9 @@ namespace WiiTUIO.Provider
         #endregion
 
         #region Properties and Constructor
+
+        private WiiProviderSettings settingsWindow = null;
+
         /// <summary>
         /// Boolean which indicates if we are generating input or not.
         /// </summary>
@@ -181,8 +184,18 @@ namespace WiiTUIO.Provider
 
             // Enable the calibration.
             this.TransformResults = true;
+
+            this.settingsWindow = new WiiProviderSettings(this);
+            this.settingsWindow.Visibility = Visibility.Hidden;
+            this.settingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
         #endregion
+
+        public void showSettingsWindow()
+        {
+            this.settingsWindow.Visibility = Visibility.Visible;
+            this.settingsWindow.Show();
+        }
 
         #region SpatioTemporalClassifier Event Handling
         /// <summary>
@@ -258,6 +271,8 @@ namespace WiiTUIO.Provider
 
             // Set the running flag.
             this.bRunning = false;
+
+            this.teardownWiimoteConnection();
 
             // Reset the classifier.
             this.InputClassifier.reset();
@@ -353,6 +368,9 @@ namespace WiiTUIO.Provider
             if (this.pDevice == null)
                 return;
 
+            this.pDevice.SetLEDs(false, false, false, false);
+            this.pDevice.SetRumble(false);
+
             // Close the connection and dispose of the device.
             this.pDevice.Disconnect();
             this.pDevice.Dispose();
@@ -440,8 +458,24 @@ namespace WiiTUIO.Provider
             FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), this.lFrame);
             this.lFrame = null;
 
-            // Ship it out!
-            this.OnNewFrame(this, pFrame);
+           /*
+            //Don't send inputs if we are calibrating
+            if (this.settingsWindow.pCalibrationWindow != null)
+            {
+                if (this.settingsWindow.pCalibrationWindow.CalibrationCanvas.IsCalibrating)
+                {
+                }
+                else
+                {
+                    this.OnNewFrame(this, pFrame);
+                }
+            }
+            else
+            {*/
+                // Ship it out!
+                this.OnNewFrame(this, pFrame);
+            //}
+
 
             /*
             // Has the 'A' button changed?
