@@ -105,13 +105,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="WiiProvider\Settings\Calibrate.xaml">
+    <Page Include="Input\WiiProvider\Settings\Calibrate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WiiProvider\Settings\CalibrationWindow.xaml">
+    <Page Include="Input\WiiProvider\Settings\CalibrationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
@@ -128,23 +128,34 @@
     <Compile Include="ClientForm.xaml.cs">
       <DependentUpon>ClientForm.xaml</DependentUpon>
     </Compile>
-    <Page Include="WiiProvider\Settings\WiiPointerProviderSettings.xaml">
+    <Page Include="Input\WiiProvider\Settings\WiiPointerProviderSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WiiProvider\Settings\WiiProviderSettings.xaml">
+    <Page Include="Input\WiiProvider\Settings\WiiProviderSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Output\Settings\TUIOSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WiiProvider\Settings\Calibrate.xaml.cs">
+    <Compile Include="Input\InputFactory.cs" />
+    <Compile Include="Input\WiiProvider\Settings\Calibrate.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>Calibrate.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WiiProvider\Settings\CalibrationWindow.xaml.cs">
+    <Compile Include="Input\WiiProvider\Settings\CalibrationWindow.xaml.cs">
       <DependentUpon>CalibrationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Output\IProviderHandler.cs" />
+    <Compile Include="Output\OutputFactory.cs" />
+    <Compile Include="Output\Settings\TUIOSettings.xaml.cs">
+      <DependentUpon>TUIOSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Output\TUIOProviderHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -158,25 +169,25 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="WiiProvider\IProvider.cs" />
-    <Compile Include="WiiProvider\Pointer\MouseSimulator.cs" />
-    <Compile Include="WiiProvider\Pointer\ScreenPositionCalculator.cs" />
-    <Compile Include="WiiProvider\Pointer\Util.cs" />
-    <Compile Include="WiiProvider\Pointer\WiiPointerProvider.cs" />
-    <Compile Include="WiiProvider\ContactType.cs" />
-    <Compile Include="WiiProvider\FrameEventArgs.cs" />
-    <Compile Include="WiiProvider\Settings\WiiPointerProviderSettings.xaml.cs">
+    <Compile Include="Input\WiiProvider\IProvider.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\MouseSimulator.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\ScreenPositionCalculator.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\Util.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\WiiPointerProvider.cs" />
+    <Compile Include="Input\WiiProvider\ContactType.cs" />
+    <Compile Include="Input\WiiProvider\FrameEventArgs.cs" />
+    <Compile Include="Input\WiiProvider\Settings\WiiPointerProviderSettings.xaml.cs">
       <DependentUpon>WiiPointerProviderSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WiiProvider\SpatiotemporalClassifier.cs" />
-    <Compile Include="WiiProvider\Warper.cs" />
-    <Compile Include="WiiProvider\WiiContact.cs" />
-    <Compile Include="WiiProvider\WiiProvider.cs" />
-    <Compile Include="WiiProvider\Settings\WiiProviderSettings.xaml.cs">
+    <Compile Include="Input\WiiProvider\SpatiotemporalClassifier.cs" />
+    <Compile Include="Input\WiiProvider\Warper.cs" />
+    <Compile Include="Input\WiiProvider\WiiContact.cs" />
+    <Compile Include="Input\WiiProvider\WiiProvider.cs" />
+    <Compile Include="Input\WiiProvider\Settings\WiiProviderSettings.xaml.cs">
       <DependentUpon>WiiProviderSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinTouch\HumanInterfaceDevice.cs" />
-    <Compile Include="WinTouch\ProviderHandler.cs" />
+    <Compile Include="Output\WinTouch\HumanInterfaceDevice.cs" />
+    <Compile Include="Output\WinTouch\ProviderHandler.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

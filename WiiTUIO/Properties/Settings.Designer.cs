@@ -46,5 +46,53 @@ namespace WiiTUIO.Properties {
                 this["pointer_moveCursor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("pointer")]
+        public string input {
+            get {
+                return ((string)(this["input"]));
+            }
+            set {
+                this["input"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("touch")]
+        public string output {
+            get {
+                return ((string)(this["output"]));
+            }
+            set {
+                this["output"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
+        public string tuio_IP {
+            get {
+                return ((string)(this["tuio_IP"]));
+            }
+            set {
+                this["tuio_IP"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3333")]
+        public int tuio_port {
+            get {
+                return ((int)(this["tuio_port"]));
+            }
+            set {
+                this["tuio_port"] = value;
+            }
+        }
     }
 }

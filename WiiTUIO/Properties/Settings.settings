@@ -8,5 +8,17 @@
     <Setting Name="pointer_moveCursor" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="input" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pointer</Value>
+    </Setting>
+    <Setting Name="output" Type="System.String" Scope="User">
+      <Value Profile="(Default)">touch</Value>
+    </Setting>
+    <Setting Name="tuio_IP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1</Value>
+    </Setting>
+    <Setting Name="tuio_port" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3333</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -20,6 +19,10 @@ using Hardcodet.Wpf.TaskbarNotification;
 using OSC.NET;
 using WiiTUIO.WinTouch;
 using WiiTUIO.Provider;
+using WiiTUIO.Input;
+using WiiTUIO.Properties;
+using System.Windows.Input;
+using WiiTUIO.Output;
 
 namespace WiiTUIO
 {
@@ -29,31 +32,20 @@ namespace WiiTUIO
     public partial class ClientForm : UserControl
     {
 
-        private enum Mode
-        {
-            POINTER,
-            PEN
-        }
-
-        private Mode currentMode = Mode.POINTER;
+        private bool providerHandlerConnected = false;
 
         private bool tryingToConnect = false;
-
 
         /// <summary>
         /// A reference to the WiiProvider we want to use to get/forward input.
         /// </summary>
         private IProvider pWiiProvider = null;
 
-        /// <summary>
-        /// A reference to an OSC data transmitter.
-        /// </summary>
-        private OSCTransmitter pUDPWriter = null;
 
         /// <summary>
         /// A reference to the windows 7 HID driver data provider.  This takes data from the <see cref="pWiiProvider"/> and transforms it.
         /// </summary>
-        private ProviderHandler pTouchDevice = null;
+        private IProviderHandler pProviderHandler = null;
 
 
         /// <summary>
@@ -88,12 +80,12 @@ namespace WiiTUIO
             {
                 if (arg == "-tuio")
                 {
-                    this.chkTUIOEnabled_Checked(null, null);
+                    this.cbiTUIO.IsSelected = true;
                 }
 
                 if (arg == "-touch")
                 {
-                    this.chkWin7Enabled_Checked(null,null);
+                    this.cbiTouch.IsSelected = true;
                 }
 
                 if (arg == "-pointer")
@@ -137,7 +129,11 @@ namespace WiiTUIO
                 btnConnect.IsEnabled = true;
                 btnConnect.Content = "Disconnect";
 
+                connectProviderHandler();
+
             }), null);
+
+
         }
 
         /// <summary>
@@ -154,95 +150,14 @@ namespace WiiTUIO
                 btnConnect.Content = "Connect";
                 bConnected = false;
                 barBattery.Value = 0;
+
+                disconnectProviderHandler();
+
             }), null);
         }
 
 
         private Mutex pCommunicationMutex = new Mutex();
-        private static int iFrame = 0;
-        /// <summary>
-        /// Process an event frame and convert the data into a TUIO message.
-        /// </summary>
-        /// <param name="e"></param>
-        private void processEventFrame(FrameEventArgs e)
-        {
-            // Obtain mutual exclusion.
-            this.pCommunicationMutex.WaitOne();
-
-            // If Windows 7 events are enabled.
-            if (bWindowsTouch)
-            {
-                // For every contact in the list of contacts.
-                foreach (WiiContact pContact in e.Contacts)
-                {
-                    // Construct a new HID frame based on the contact type.
-                    switch (pContact.Type)
-                    {
-                        case ContactType.Start:
-                            this.pTouchDevice.enqueueContact(HidContactState.Adding, pContact);
-                            break;
-                        case ContactType.Move:
-                            this.pTouchDevice.enqueueContact(HidContactState.Updated, pContact);
-                            break;
-                        case ContactType.End:
-                            this.pTouchDevice.enqueueContact(HidContactState.Removing, pContact);
-                            break;
-                    }
-                }
-
-                // Flush the contacts?
-                this.pTouchDevice.sendContacts();
-            }
-
-
-            // If TUIO events are enabled.
-            if (bTUIOTouch)
-            {
-                // Create an new TUIO Bundle
-                OSCBundle pBundle = new OSCBundle();
-
-                // Create a fseq message and save it.  This is to associate a unique frame id with a bundle of SET and ALIVE.
-                OSCMessage pMessageFseq = new OSCMessage("/tuio/2Dcur");
-                pMessageFseq.Append("fseq");
-                pMessageFseq.Append(++iFrame);//(int)e.Timestamp);
-                pBundle.Append(pMessageFseq);
-
-                // Create a alive message.
-                OSCMessage pMessageAlive = new OSCMessage("/tuio/2Dcur");
-                pMessageAlive.Append("alive");
-
-                // Now we want to take the raw frame data and draw points based on its data.
-                foreach (WiiContact pContact in e.Contacts)
-                {
-                    // Compile the set message.
-                    OSCMessage pMessage = new OSCMessage("/tuio/2Dcur");
-                    pMessage.Append("set");                 // set
-                    pMessage.Append((int)pContact.ID);           // session
-                    pMessage.Append((float)pContact.NormalPosition.X);   // x
-                    pMessage.Append((float)pContact.NormalPosition.Y);   // y
-                    pMessage.Append(0f);                 // dx
-                    pMessage.Append(0f);                 // dy
-                    pMessage.Append(0f);                 // motion
-                    pMessage.Append((float)pContact.Size.X);   // height
-                    pMessage.Append((float)pContact.Size.Y);   // width
-
-                    // Append it to the bundle.
-                    pBundle.Append(pMessage);
-
-                    // Append the alive message for this contact to tbe bundle.
-                    pMessageAlive.Append((int)pContact.ID);
-                }
-
-                // Save the alive message.
-                pBundle.Append(pMessageAlive);
-
-                // Send the message off.
-                this.pUDPWriter.Send(pBundle);
-            }
-
-            // And release it!
-            pCommunicationMutex.ReleaseMutex();
-        }
 
         /// <summary>
         /// This is called when the WiiProvider has a new set of input to send.
@@ -258,7 +173,10 @@ namespace WiiTUIO
                 // Call these in another thread.
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    processEventFrame(e);
+                    if (this.pProviderHandler != null && providerHandlerConnected)
+                    {
+                        this.pProviderHandler.processEventFrame(e);
+                    }
                 }), null);
             }
         }
@@ -383,21 +301,21 @@ namespace WiiTUIO
         
         #region Create and Die
 
-        #region Windows Touch
-
         /// <summary>
         /// Create the link to the Windows 7 HID driver.
         /// </summary>
         /// <returns></returns>
-        private bool connectWindowsTouch()
+        private bool createProviderHandler()
         {
             try
             {
                 // Close any open connections.
-                disconnectWindowsTouch();
+                disconnectProviderHandler();
 
                 // Reconnect with the new API.
-                this.pTouchDevice = new ProviderHandler();
+                this.pProviderHandler = OutputFactory.createProviderHandler(Settings.Default.output);
+                this.pProviderHandler.OnConnect += pProviderHandler_OnConnect;
+                this.pProviderHandler.OnDisconnect += pProviderHandler_OnDisconnect;
                 return true;
             }
             catch (Exception pError)
@@ -405,7 +323,44 @@ namespace WiiTUIO
                 // Tear down.
                 try
                 {
-                    this.disconnectWindowsTouch();
+                    this.disconnectProviderHandler();
+                }
+                catch { }
+
+                // Report the error.
+                showMessage(pError.Message, MessageType.Error);
+                //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        void pProviderHandler_OnDisconnect()
+        {
+            providerHandlerConnected = false;
+        }
+
+        void pProviderHandler_OnConnect()
+        {
+            providerHandlerConnected = true;
+        }
+
+        /// <summary>
+        /// Create the link to the Windows 7 HID driver.
+        /// </summary>
+        /// <returns></returns>
+        private bool connectProviderHandler()
+        {
+            try
+            {
+                this.pProviderHandler.connect();
+                return true;
+            }
+            catch (Exception pError)
+            {
+                // Tear down.
+                try
+                {
+                    this.disconnectProviderHandler();
                 }
                 catch { }
 
@@ -420,60 +375,19 @@ namespace WiiTUIO
         /// Destroy the link to the Windows 7 HID driver.
         /// </summary>
         /// <returns></returns>
-        private void disconnectWindowsTouch()
+        private void disconnectProviderHandler()
         {
             // Remove any provider links.
             //if (this.pTouchDevice != null)
             //    this.pTouchDevice.Provider = null;
-            this.pTouchDevice = null;
+            if (this.pProviderHandler != null)
+            {
+                this.pProviderHandler.disconnect();
+            }
         }
 
         #endregion
 
-        #region UDP TUIO
-        /// <summary>
-        /// Connect the UDP transmitter using the port and IP specified above.
-        /// </summary>
-        /// <returns></returns>
-        private bool connectTransmitter()
-        {
-            try
-            {
-                // Close any open connections.
-                disconnectTransmitter();
-
-                // Reconnect with the new API.
-                pUDPWriter = new OSCTransmitter(txtIPAddress.Text, Int32.Parse(txtPort.Text));
-                pUDPWriter.Connect();
-                return true;
-            }
-            catch (Exception pError)
-            {
-                // Tear down.
-                try
-                {
-                    this.disconnectTransmitter();
-                }
-                catch { }
-
-                // Report the error.
-                showMessage(pError.Message, MessageType.Error);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Disconnect the UDP Transmitter.
-        /// </summary>
-        /// <returns></returns>
-        private void disconnectTransmitter()
-        {
-            // Close any open connections.
-            if (pUDPWriter != null)
-                pUDPWriter.Close();
-            pUDPWriter = null;
-        }
-        #endregion
 
         #region WiiProvider
 
@@ -536,14 +450,7 @@ namespace WiiTUIO
             try
             {
                 // Connect a Wiimote, hook events then start.
-                if (this.currentMode == Mode.POINTER)
-                {
-                    this.pWiiProvider = new WiiPointerProvider();
-                }
-                else
-                {
-                    this.pWiiProvider = new WiiProvider();
-                }
+                this.pWiiProvider = InputFactory.createInputProvider(Settings.Default.input);
                 this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
                 this.pWiiProvider.OnBatteryUpdate += new Action<int>(pWiiProvider_OnBatteryUpdate);
                 this.pWiiProvider.OnConnect += new Action<int>(pWiiProvider_OnConnect);
@@ -576,10 +483,11 @@ namespace WiiTUIO
             if (this.pWiiProvider != null)
                 this.pWiiProvider.stop();
             //this.pWiiProvider = null;
-            try
+            Dispatcher.BeginInvoke(new Action(delegate()
             {
                 this.barBattery.IsIndeterminate = false;
-            } catch(Exception e) {}
+
+            }), null);
         }
         #endregion
 
@@ -592,10 +500,7 @@ namespace WiiTUIO
         {
             // Create the providers.
             this.createProvider();
-
-            // Add text change events
-            txtIPAddress.TextChanged += txtIPAddress_TextChanged;
-            txtPort.TextChanged += txtPort_TextChanged;
+            this.createProviderHandler();
 
             // Call the base class.
             base.OnInitialized(e);
@@ -622,43 +527,9 @@ namespace WiiTUIO
         });
         #endregion
 
-        #endregion
-
 
 
         #region UI Events
-
-        /// <summary>
-        /// Called when the IP Address has been changed.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtIPAddress_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            // Flag that we want to reconnect.
-            bReconnect = true;
-            if (chkTUIOEnabled.IsChecked == true)
-            {
-                chkTUIOEnabled.IsChecked = false;
-                App.TB.ShowBalloonTip("Touchmote", "Changes to the settings have been made.\nThe TUIO events have been disabled...", BalloonIcon.Info);
-            }
-        }
-
-        /// <summary>
-        /// Called when the port has been changed.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtPort_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            // Flag that we want to reconnect.
-            bReconnect = true;
-            if (chkWin7Enabled.IsChecked == true)
-            {
-                chkWin7Enabled.IsChecked = false;
-                App.TB.ShowBalloonTip("Touchmote", "Changes to the settings have been made.\nThe TUIO events have been disabled...", BalloonIcon.Info);
-            }
-        }
 
         /// <summary>
         /// Called when there is a mouse down event over the 'brdOverlay'
@@ -669,126 +540,6 @@ namespace WiiTUIO
         private void brdOverlay_MouseDown(object sender, MouseButtonEventArgs e)
         {
             messageFadeOut(750.0);
-        }
-
-        /// <summary>
-        /// Called when the TUIO checkbox is checked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void chkTUIOEnabled_Checked(object sender, RoutedEventArgs e)
-        {
-            // Acquire mutual exclusion.
-            pCommunicationMutex.WaitOne();
-
-            // Enable the TUIO touch and disconnect the provider.
-            this.disconnectTransmitter();
-            if (this.connectTransmitter())
-            {
-                bTUIOTouch = true;
-                chkTUIOEnabled.IsChecked = true;
-            }
-            else
-            {
-                bTUIOTouch = false;
-                chkTUIOEnabled.IsChecked = false;
-            }
-
-            // Release the mutex.
-            pCommunicationMutex.ReleaseMutex();
-        }
-
-        /// <summary>
-        /// Called when the TUIO checkbox is unchecked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void chkTUIOEnabled_Unchecked(object sender, RoutedEventArgs e)
-        {
-            // Acquire mutual exclusion.
-            pCommunicationMutex.WaitOne();
-
-            // Disable the TUIO touch and disconnect the provider.
-            bTUIOTouch = false;
-            this.disconnectTransmitter();
-
-            // Release the mutex.
-            pCommunicationMutex.ReleaseMutex();
-        }
-
-        /// <summary>
-        /// Called when the Win7 checkbox is checked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void chkWin7Enabled_Checked(object sender, RoutedEventArgs e)
-        {
-            // Acquire mutual exclusion.
-            pCommunicationMutex.WaitOne();
-
-            // Enable the windows touch and disconnect the provider.
-            this.disconnectWindowsTouch();
-            if (this.connectWindowsTouch())
-            {
-                bWindowsTouch = true;
-                chkWin7Enabled.IsChecked = true;
-            }
-            else
-            {
-                bWindowsTouch = false;
-                chkWin7Enabled.IsChecked = false;
-            }
-
-            // Release the mutex.
-            pCommunicationMutex.ReleaseMutex();
-        }
-
-        /// <summary>
-        /// Called when the Win7 checkbox is unchecked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void chkWin7Enabled_Unchecked(object sender, RoutedEventArgs e)
-        {
-            // Acquire mutual exclusion.
-            pCommunicationMutex.WaitOne();
-
-            // Disable the windows touch and disconnect the provider.
-            bWindowsTouch = false;
-            this.disconnectWindowsTouch();
-
-            // Release the mutex.
-            pCommunicationMutex.ReleaseMutex();
-        }
-
-        /// <summary>
-        /// Called when the question mark is clicked next to the TUIO touch events check box
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnAboutTUIO_Click(object sender, RoutedEventArgs e)
-        {
-            showMessage("TUIO is an open framework that defines a common protocol and API for tangible multitouch surfaces.\n\nThis program is capable of generating events compatible with this protocol.", MessageType.Info);
-        }
-
-        /// <summary>
-        /// Called when the question mark is clicked next to the Win7 touch events check box
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnAboutWinTouch_Click(object sender, RoutedEventArgs e)
-        {
-            TextBlock pMessage = new TextBlock();
-            pMessage.TextWrapping = TextWrapping.Wrap;
-            pMessage.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            pMessage.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            pMessage.FontSize = 12.0;
-            pMessage.FontWeight = FontWeights.Bold;
-
-            pMessage.Inlines.Add("This application can communicate with Windows 7 via the UniSoftHID driver.  This allows it to emulate native muli-touch events in Windows 7.\n\nThe touch messages this application generates are a cut down version of the Multitouch.Driver.Logic namespace within MultiTouchVista.  Please don't ask them for support!\n\nThe UniSoftHID driver can be found bundled with 'MultiTouchVista' here: ");
-            pMessage.Inlines.Add(createHyperlink("MultiTouchVista", "http://multitouchvista.codeplex.com/releases/view/28979"));
-
-            showMessage(pMessage, MessageType.Info);
         }
 
         /// <summary>
@@ -806,20 +557,6 @@ namespace WiiTUIO
             {
                 this.disconnectProvider();
             }
-
-            
-        }
-
-
-
-        /// <summary>
-        /// Called when the hide button is clicked.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnHide_Click(object sender, RoutedEventArgs e)
-        {
-            //App.TB.TrayPopup.
         }
 
         /// <summary>
@@ -887,15 +624,13 @@ namespace WiiTUIO
                 if (cbItem == cbiPointer)
                 {
                     this.disconnectProvider();
-                    this.currentMode = Mode.POINTER;
-
+                    Settings.Default.input = InputFactory.getType(InputFactory.InputType.POINTER);
                     this.createProvider();
                 }
                 else if (cbItem == cbiPen)
                 {
                     this.disconnectProvider();
-                    this.currentMode = Mode.PEN;
-
+                    Settings.Default.input = InputFactory.getType(InputFactory.InputType.PEN);
                     this.createProvider();
                 }
             }
@@ -906,6 +641,34 @@ namespace WiiTUIO
             if (this.pWiiProvider != null)
             {
                 this.pWiiProvider.showSettingsWindow();
+            }
+        }
+
+        private void OutputComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (OutputComboBox.SelectedItem != null)
+            {
+                ComboBoxItem cbItem = (ComboBoxItem)OutputComboBox.SelectedItem;
+                if (cbItem == cbiTUIO)
+                {
+                    this.disconnectProviderHandler();
+                    Settings.Default.output = OutputFactory.getType(OutputFactory.OutputType.TUIO);
+                    this.createProviderHandler();
+                }
+                else if (cbItem == cbiTouch)
+                {
+                    this.disconnectProviderHandler();
+                    Settings.Default.output = OutputFactory.getType(OutputFactory.OutputType.TOUCH);
+                    this.createProviderHandler();
+                }
+            }
+        }
+
+        private void btnOutputSettings_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.pProviderHandler != null)
+            {
+                this.pProviderHandler.showSettingsWindow();
             }
         }
 

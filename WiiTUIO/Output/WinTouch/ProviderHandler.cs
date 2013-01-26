@@ -9,6 +9,7 @@ using System.Threading;
 
 using WiiTUIO.Provider;
 using HIDLibrary;
+using WiiTUIO.Output;
 
 /*
  * This code is based on code in the MulitTouch.Driver.Logic namespace provided with the MultiTouchVista project.
@@ -22,8 +23,55 @@ namespace WiiTUIO.WinTouch
     /// <summary>
     /// This class forwards WiiProvider events to the windows stack.
     /// </summary>
-    public class ProviderHandler
+    public class ProviderHandler : IProviderHandler
     {
+
+        #region IProviderHandler
+        public event Action OnConnect;
+
+        public event Action OnDisconnect;
+
+        public void processEventFrame(FrameEventArgs e)
+        {
+            // For every contact in the list of contacts.
+            foreach (WiiContact pContact in e.Contacts)
+            {
+                // Construct a new HID frame based on the contact type.
+                switch (pContact.Type)
+                {
+                    case ContactType.Start:
+                        this.enqueueContact(HidContactState.Adding, pContact);
+                        break;
+                    case ContactType.Move:
+                        this.enqueueContact(HidContactState.Updated, pContact);
+                        break;
+                    case ContactType.End:
+                        this.enqueueContact(HidContactState.Removing, pContact);
+                        break;
+                }
+            }
+
+            // Flush the contacts?
+            this.sendContacts();
+        }
+
+
+        public void connect()
+        {
+            OnConnect();
+        }
+
+        public void disconnect()
+        {
+            OnDisconnect();
+        }
+
+        public void showSettingsWindow()
+        {
+            ;
+        }
+
+        #endregion
 
         #region HID Device Properties
         /// <summary>
@@ -229,6 +277,8 @@ namespace WiiTUIO.WinTouch
             // Ship it out!
             this.pDevice.WriteReport(pReport);
         }
+
+
     }
 
     /// <summary>
