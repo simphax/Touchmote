@@ -392,6 +392,7 @@ namespace WiiTUIO
 
                 // Report the error.
                 showMessage(pError.Message, MessageType.Error);
+                this.driverNotInstalled();
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
@@ -866,11 +867,35 @@ namespace WiiTUIO
             this.providerSettingsOverlay.Visibility = Visibility.Hidden;
         }
 
-        private void linkInstallDriver_Click(object sender, RoutedEventArgs e)
+        private void driverNotInstalled()
         {
-            
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.driverMissingOverlay.Visibility = Visibility.Visible;
+            }), null);
         }
 
+        private void linkInstallDriver_Click(object sender, RoutedEventArgs e)
+        {
+            Launcher.LaunchAsAdministrator("\"install driver.cmd\"",new Action(delegate()
+            {
+                this.driverInstalled();
+            }));
+        }
+
+        private void driverInstalled()
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.driverMissingOverlay.Visibility = Visibility.Hidden;
+                this.driverInstalledOverlay.Visibility = Visibility.Visible;
+            }), null);
+        }
+
+        private void btnRestart_Click(object sender, RoutedEventArgs e)
+        {
+            Launcher.RestartComputer();
+        }
 
     }
 

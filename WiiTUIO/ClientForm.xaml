@@ -81,6 +81,17 @@
                         You will need to restart your computer after the installation.
                 </TextBlock>
             </Canvas>
+            <Canvas Name="driverInstalledOverlay" Height="161" Width="290" Background="White" Visibility="Hidden">
+                <Canvas.Effect>
+                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                </Canvas.Effect>
+                <Label Content="Driver Installed" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18" Foreground="#FF90B83B"/>
+                <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="50" Height="40" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                        The driver has been installed. Please restart your computer to finish installation.
+                </TextBlock>
+                <Button Click="btnRestart_Click" Content="Restart now" Canvas.Left="93" Canvas.Top="95" Width="108" Height="32" BorderBrush="#FFC9C9C9" Background="#FFF1F1F1"/>
+
+            </Canvas>
             <Canvas Name="pairWiimoteOverlay" Height="161" Width="290" Background="White" Visibility="Hidden">
                 <Canvas.Effect>
                     <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
