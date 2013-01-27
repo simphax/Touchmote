@@ -5,32 +5,32 @@
   xmlns:tb="http://www.hardcodet.net/taskbar"
     Background="Transparent" Padding="6,6,6,6" Height="218" Width="347">
     <Grid Margin="0" Background="Transparent">
-            
-            
+
+
         <Canvas Margin="2,2,3,3" Background="White">
             <Canvas.Effect>
                 <DropShadowEffect Opacity="0.3" BlurRadius="4" ShadowDepth="1"/>
             </Canvas.Effect>
-                        <Label Content="Touchmote" FontSize="24" FontFamily="Segoe UI Light" Canvas.Left="10" Canvas.Top="8"/>
-                        <ComboBox Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="71" Canvas.Top="60" FontFamily="Segoe UI Semilight">
-                            <ComboBoxItem Name="cbiPointer" IsSelected="True">Wii Sensor Bar</ComboBoxItem>
-                            <ComboBoxItem Name="cbiPen">IR Pen</ComboBoxItem>
-                        </ComboBox>
+            <Label Content="Touchmote" FontSize="24" FontFamily="Segoe UI Light" Canvas.Left="10" Canvas.Top="8"/>
+            <ComboBox Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="71" Canvas.Top="60" FontFamily="Segoe UI Semilight">
+                <ComboBoxItem Name="cbiPointer" IsSelected="True">Wii Sensor Bar</ComboBoxItem>
+                <ComboBoxItem Name="cbiPen">IR Pen</ComboBoxItem>
+            </ComboBox>
             <TextBlock Canvas.Left="267" Canvas.Top="64" FontFamily="Segoe UI Semilight">                                
                         <Hyperlink Click="btnSettings_Click">Configure
                         </Hyperlink>
             </TextBlock>
             <ComboBox Visibility="Collapsed"  Name="OutputComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="OutputComboBox_SelectionChanged">
-                        <ComboBoxItem Name="cbiTUIO">TUIO Multi Touch Events</ComboBoxItem>
-                        <ComboBoxItem Name="cbiTouch" IsSelected="True">Windows Multi Touch</ComboBoxItem>
-                    </ComboBox>
-                    <Button Visibility="Collapsed" x:Name="btnOutputSettings" HorizontalAlignment="Right" Margin="0,10,0,0" Width="75" Content="Settings" Click="btnOutputSettings_Click"/>
+                <ComboBoxItem Name="cbiTUIO">TUIO Multi Touch Events</ComboBoxItem>
+                <ComboBoxItem Name="cbiTouch" IsSelected="True">Windows Multi Touch</ComboBoxItem>
+            </ComboBox>
+            <Button Visibility="Collapsed" x:Name="btnOutputSettings" HorizontalAlignment="Right" Margin="0,10,0,0" Width="75" Content="Settings" Click="btnOutputSettings_Click"/>
             <!--<Button Name="btnHide"  Click="btnHide_Click"  Width="60" HorizontalAlignment="Right" Margin="5, 0, 5, 0">Hide</Button>-->
             <TextBlock Name="tbConnect" Canvas.Left="15" Canvas.Top="137" FontSize="36" FontFamily="Segoe UI Light">                                
                         <Hyperlink Click="btnConnect_Click" TextDecorations="" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">
                             <Image Name="imgConnect" Height="25" Width="24" Source="Resources/connect-icon.png" Opacity="0.4" Cursor="Hand" Stretch="None"/> Connect
                         </Hyperlink>
-                    </TextBlock>
+            </TextBlock>
             <TextBlock Name="tbWaiting" Visibility="Collapsed" Canvas.Left="14" Canvas.Top="137" FontSize="36" FontFamily="Segoe UI Light" Foreground="#FFFDB800">                               
                         <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="Resources/close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Waiting...
             </TextBlock>
@@ -61,9 +61,25 @@
                     <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
                 </Canvas.Effect>
                 <Canvas Name="providerSettingsContent" Height="130" Width="290" Canvas.Top="0">
-                    
+
                 </Canvas>
                 <Button Name="btnProviderSettingsDone" Click="btnProviderSettingsDone_Click" Content="Done" Canvas.Left="236" Canvas.Top="126" Width="44" Background="#FFECECEC" BorderBrush="Gainsboro" Height="25"/>
+            </Canvas>
+            <Canvas Name="driverMissingOverlay" Height="161" Width="290" Background="White" Visibility="Hidden">
+                <Canvas.Effect>
+                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                </Canvas.Effect>
+                <Label Content="Driver Missing" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18" Foreground="#FFD13B3B"/>
+                <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="50" Height="40" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                        You will need to install the UniSoftHID driver before you can use Touchmote as a multi touch device.
+                </TextBlock>
+                <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="90" Height="25" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                    <Hyperlink Click="linkInstallDriver_Click" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">Click here to install
+                        </Hyperlink>
+                </TextBlock>
+                <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="115" Height="36" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                        You will need to restart your computer after the installation.
+                </TextBlock>
             </Canvas>
             <Canvas Name="pairWiimoteOverlay" Height="161" Width="290" Background="White" Visibility="Hidden">
                 <Canvas.Effect>
@@ -97,6 +113,6 @@
             <Border Name="brdOverlay" MouseDown="brdOverlay_MouseDown" Visibility="Hidden" Padding="5" >
             </Border>
         </Canvas>
-        
+
     </Grid>
 </UserControl>

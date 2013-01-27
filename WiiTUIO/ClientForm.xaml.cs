@@ -866,6 +866,11 @@ namespace WiiTUIO
             this.providerSettingsOverlay.Visibility = Visibility.Hidden;
         }
 
+        private void linkInstallDriver_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
 
     }
 
