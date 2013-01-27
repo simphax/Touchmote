@@ -65,6 +65,35 @@
                 </Canvas>
                 <Button Name="btnProviderSettingsDone" Click="btnProviderSettingsDone_Click" Content="Done" Canvas.Left="236" Canvas.Top="126" Width="44" Background="#FFECECEC" BorderBrush="Gainsboro" Height="25"/>
             </Canvas>
+            <Canvas Name="pairWiimoteOverlay" Height="161" Width="290" Background="White" Visibility="Hidden">
+                <Canvas.Effect>
+                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                </Canvas.Effect>
+                <Canvas Name="pairWiimoteOverlayPairing" Height="161" Width="290">
+                    <Label Name="pairingTitle" Content="Pairing Wiimote" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18"/>
+                    <Image MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="256" Canvas.Top="13" Width="24" Source="close-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
+                    <ProgressBar Name="pairProgress" Height="4" Canvas.Left="0" Canvas.Top="49" Width="290" IsIndeterminate="True" RenderTransformOrigin="0.5,0.5" Foreground="#FF2096CD" BorderBrush="#FFF5F1F1" Background="#FFF7F7F7">
+                        <ProgressBar.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleY="-1"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </ProgressBar.RenderTransform>
+                    </ProgressBar>
+                    <TextBlock Name="pairWiimoteText" Canvas.Left="10" TextWrapping="Wrap" Text="Trying to pair..." Canvas.Top="96" Height="26" Width="270" FontFamily="Segoe UI Semilight" FontSize="16" TextAlignment="Center"/>
+                    <TextBlock Name="pairWiimoteTryAgain" Visibility="Hidden" Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="120" Height="26" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                        <Hyperlink Click="pairWiimoteTryAgain_Click" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">Try again
+                        </Hyperlink>
+                    </TextBlock>
+                </Canvas>
+                <Canvas Name="pairWiimoteOverlayDone" Height="161" Width="290" Visibility="Hidden">
+                    <Label Content="Pairing Successful!" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18"/>
+                    <Image Name="imgClosePairCheck" MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="256" Canvas.Top="13" Width="24" Source="check-icon.png" Opacity="0.6" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
+                    <Image Height="100" Canvas.Left="98" Canvas.Top="47" Width="100" Source="checkmark-big.png"/>
+                </Canvas>
+            </Canvas>
             <Border Name="brdOverlay" MouseDown="brdOverlay_MouseDown" Visibility="Hidden" Padding="5" >
             </Border>
         </Canvas>

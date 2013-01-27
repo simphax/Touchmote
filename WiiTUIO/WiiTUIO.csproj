@@ -52,6 +52,24 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -150,7 +168,6 @@
     <Compile Include="Input\WiiProvider\Settings\CalibrationWindow.xaml.cs">
       <DependentUpon>CalibrationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WiimotePairing.cs" />
     <Compile Include="Output\IProviderHandler.cs" />
     <Compile Include="Output\OutputFactory.cs" />
     <Compile Include="Output\Settings\TUIOSettings.xaml.cs">
@@ -230,6 +247,8 @@
     <Resource Include="close-icon.png" />
     <Resource Include="connect-icon.png" />
     <Resource Include="config-icon.png" />
+    <Resource Include="check-icon.png" />
+    <Resource Include="checkmark-big.png" />
     <Content Include="toucharrow.cur">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -239,6 +258,13 @@
       <Project>{14bd1d44-261d-4fc2-a7dd-a3cda413d790}</Project>
       <Name>OSC.NET</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WiiCPP\WiiCPP.vcxproj">
+      <Project>{78eb9de8-b6fc-47f3-970f-0b4fcb0f38a8}</Project>
+      <Name>WiiCPP</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

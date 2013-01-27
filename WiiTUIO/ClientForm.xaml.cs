@@ -29,7 +29,7 @@ namespace WiiTUIO
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class ClientForm : UserControl
+    public partial class ClientForm : UserControl, WiiCPP.WiiPairListener
     {
 
         private bool providerHandlerConnected = false;
@@ -41,6 +41,7 @@ namespace WiiTUIO
         /// </summary>
         private IProvider pWiiProvider = null;
 
+        WiiCPP.WiiPair wiiPair = null;
 
         /// <summary>
         /// A reference to the windows 7 HID driver data provider.  This takes data from the <see cref="pWiiProvider"/> and transforms it.
@@ -73,6 +74,7 @@ namespace WiiTUIO
         /// </summary>
         public ClientForm()
         {
+            
             // Load from the XAML.
             InitializeComponent();
             /*
@@ -131,6 +133,9 @@ namespace WiiTUIO
             this.cbWindowsStart.IsChecked = Settings.Default.windowsStart;
             
             Application.Current.Exit += appWillExit;
+
+            wiiPair = new WiiCPP.WiiPair();
+            wiiPair.addListener(this);
 
         }
 
@@ -719,9 +724,81 @@ namespace WiiTUIO
 
         private void PairWiimotes_Click(object sender, RoutedEventArgs e)
         {
-            
+            this.pairWiimoteOverlay.Visibility = Visibility.Visible;
+            this.pairWiimoteOverlayPairing.Visibility = Visibility.Visible;
+            this.pairWiimoteOverlayDone.Visibility = Visibility.Hidden;
+            this.runWiiPair();
         }
 
+        private void runWiiPair() {
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+            this.pairingTitle.Content = "Pairing Wiimote";
+            this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
+            }), null);
+            Thread thread = new Thread(new ThreadStart(wiiPair.start));
+            thread.Start();
+        }
+
+        private void stopWiiPair() {
+            wiiPair.stop();
+        }
+
+        public void onPairingSuccess(WiiCPP.WiiPairSuccessReport report)
+        {
+            Console.WriteLine("Success report: number=" + report.numberPaired + " permanent=" + report.permanent);
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.pairWiimoteOverlayPairing.Visibility = Visibility.Hidden;
+                this.pairWiimoteOverlayDone.Visibility = Visibility.Visible;
+            }), null);
+        }
+
+
+        private void pairWiimoteTryAgain_Click(object sender, RoutedEventArgs e)
+        {
+            this.stopWiiPair();
+            this.runWiiPair();
+        }
+
+        public void onPairingCancelled()
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+            this.pairingTitle.Content = "Pairing Cancelled";
+            this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
+
+            this.pairProgress.IsIndeterminate = false;
+            }), null);
+        }
+
+        public void onPairingStarted()
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+
+            this.pairProgress.IsIndeterminate = true;
+            }), null);
+        }
+
+        public void pairingConsole(string message)
+        {
+            Console.Write(message);
+        }
+
+        public void pairingMessage(string message, WiiCPP.WiiPairListener.MessageType type)
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.pairWiimoteText.Text = message;
+            }), null);
+        }
+
+        private void imgClosePair_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            this.stopWiiPair();
+            this.pairWiimoteOverlay.Visibility = Visibility.Hidden;
+        }
 
         private void Icon_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -786,7 +863,9 @@ namespace WiiTUIO
         private void btnProviderSettingsDone_Click(object sender, RoutedEventArgs e)
         {
             this.providerSettingsOverlay.Visibility = Visibility.Hidden;
-        }   
+        }
+
+
     }
 
     
