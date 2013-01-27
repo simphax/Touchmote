@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Height="160" Width="280">
     <Grid>
-        <CheckBox Name="cbSystemCursor" Content="Change System Cursor" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" IsChecked="True" Unchecked="systemCursor_Unchecked" Checked="systemCursor_Checked" FontFamily="Segoe UI Semilight"/>
-        <CheckBox Name="cbMoveCursor" Content="Move Cursor When Pointing" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" IsChecked="True" Unchecked="moveCursor_Unchecked" Checked="moveCursor_Checked" FontFamily="Segoe UI Semilight"/>
-        <Label Content="Pointer Settings" HorizontalAlignment="Left" Height="45" Margin="10,10,0,0" VerticalAlignment="Top" Width="180" FontSize="20" Foreground="#FF169CCF" FontFamily="Segoe UI Light"/>
+        <CheckBox Name="cbSystemCursor" Content="Change System Cursor" HorizontalAlignment="Left" Margin="62,61,0,0" VerticalAlignment="Top" IsChecked="True" Unchecked="systemCursor_Unchecked" Checked="systemCursor_Checked" FontFamily="Segoe UI Semilight"/>
+        <CheckBox Name="cbMoveCursor" Content="Move Cursor When Pointing" HorizontalAlignment="Left" Margin="62,97,0,0" VerticalAlignment="Top" IsChecked="True" Unchecked="moveCursor_Unchecked" Checked="moveCursor_Checked" FontFamily="Segoe UI Semilight"/>
+        <Label Content="Pointer Settings" HorizontalAlignment="Left" Height="45" Margin="10,10,0,0" VerticalAlignment="Top" Width="180" FontSize="20" Foreground="Black" FontFamily="Segoe UI Light"/>
 
     </Grid>
 </UserControl>

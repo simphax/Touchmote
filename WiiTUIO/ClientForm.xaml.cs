@@ -23,6 +23,8 @@ using WiiTUIO.Input;
 using WiiTUIO.Properties;
 using System.Windows.Input;
 using WiiTUIO.Output;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace WiiTUIO
 {
@@ -31,6 +33,10 @@ namespace WiiTUIO
     /// </summary>
     public partial class ClientForm : UserControl, WiiCPP.WiiPairListener
     {
+
+        String appKey = "Touchmote";
+
+        RegistryKey winStartupRegisterKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         private bool providerHandlerConnected = false;
 
@@ -130,7 +136,7 @@ namespace WiiTUIO
             }
 
             this.cbConnectOnStart.IsChecked = Settings.Default.connectOnStart;
-            this.cbWindowsStart.IsChecked = Settings.Default.windowsStart;
+            this.cbWindowsStart.IsChecked = this.winStartupRegisterKey.GetValue("Touchmote") != null;
             
             Application.Current.Exit += appWillExit;
 
@@ -176,6 +182,7 @@ namespace WiiTUIO
                 this.bConnected = true;
 
                 // Update the button to say we are connected.
+                tbConnected.Visibility = Visibility.Collapsed;
                 tbWaiting.Visibility = Visibility.Collapsed;
                 tbConnected.Visibility = Visibility.Visible;
 
@@ -198,6 +205,7 @@ namespace WiiTUIO
                 this.bConnected = false;
 
                 tbConnected.Visibility = Visibility.Collapsed;
+                tbWaiting.Visibility = Visibility.Collapsed;
                 tbConnect.Visibility = Visibility.Visible;
 
                 batteryLabel.Content = "0%";
@@ -252,7 +260,8 @@ namespace WiiTUIO
         private void showMessage(string sMessage, MessageType eType)
         {
             Console.WriteLine(sMessage);
-            /*
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
             TextBlock pMessage = new TextBlock();
             pMessage.Text = sMessage;
             pMessage.TextWrapping = TextWrapping.Wrap;
@@ -264,8 +273,8 @@ namespace WiiTUIO
                 pMessage.Foreground = new SolidColorBrush(Colors.White);
                 pMessage.FontSize = 16.0;
             }
-            showMessage(pMessage, 750.0, eType);
-            */
+
+            }), null);
         }
 
         private void showMessage(UIElement pMessage, MessageType eType)
@@ -275,6 +284,8 @@ namespace WiiTUIO
 
         private void showMessage(UIElement pElement, double fTimeout, MessageType eType)
         {
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
             // Show (and possibly initialise) the error message overlay
             brdOverlay.Height = this.ActualHeight - 8;
             brdOverlay.Width = this.ActualWidth - 8;
@@ -295,6 +306,8 @@ namespace WiiTUIO
 
             // Fade in and out.
             messageFadeIn(fTimeout, false);
+            
+            }), null);
         }
 
         private void messageFadeIn(double fTimeout, bool bFadeOut)
@@ -626,6 +639,10 @@ namespace WiiTUIO
         /// <param name="e"></param>
         private void btnAbout_Click(object sender, RoutedEventArgs e)
         {
+
+            this.infoOverlay.Visibility = Visibility.Visible;
+
+            /*
             TextBlock pMessage = new TextBlock();
             pMessage.TextWrapping = TextWrapping.Wrap;
             pMessage.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -661,6 +678,7 @@ namespace WiiTUIO
             pMessage.Inlines.Add(createHyperlink("WPFNotifyIcon", "http://www.hardcodet.net/projects/wpf-notifyicon"));
 
             showMessage(pMessage, MessageType.Info);
+             * */
         }
 
         #endregion
@@ -838,12 +856,13 @@ namespace WiiTUIO
 
         private void cbWindowsStart_Checked(object sender, RoutedEventArgs e)
         {
-            Settings.Default.windowsStart = true;
+            Console.WriteLine(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            this.winStartupRegisterKey.SetValue(appKey, System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
         }
 
         private void cbWindowsStart_Unchecked(object sender, RoutedEventArgs e)
         {
-            Settings.Default.windowsStart = false;
+            this.winStartupRegisterKey.DeleteValue(appKey, false);
         }
 
         private void cbConnectOnStart_Checked(object sender, RoutedEventArgs e)
@@ -877,7 +896,7 @@ namespace WiiTUIO
 
         private void linkInstallDriver_Click(object sender, RoutedEventArgs e)
         {
-            Launcher.LaunchAsAdministrator("\"install driver.cmd\"",new Action(delegate()
+            Launcher.LaunchAsAdministrator("install driver.cmd",new Action(delegate()
             {
                 this.driverInstalled();
             }));
@@ -895,6 +914,17 @@ namespace WiiTUIO
         private void btnRestart_Click(object sender, RoutedEventArgs e)
         {
             Launcher.RestartComputer();
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
+        private void infoOverlay_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.infoOverlay.Visibility = Visibility.Hidden;
         }
 
     }

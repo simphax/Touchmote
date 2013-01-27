@@ -19,8 +19,11 @@ namespace WiiTUIO
                 System.Diagnostics.ProcessStartInfo procStartInfo =
                     new System.Diagnostics.ProcessStartInfo();
 
-                procStartInfo.WorkingDirectory = "C:\\Users\\Simon\\Desktop\\Touchmote\\WiiTUIO\\bin\\Release\\Driver";
-                procStartInfo.FileName = "C:\\Users\\Simon\\Desktop\\Touchmote\\WiiTUIO\\bin\\Release\\Driver\\install driver.cmd";
+                procStartInfo.WorkingDirectory = System.AppDomain.CurrentDomain.BaseDirectory+"Driver\\";
+                
+                procStartInfo.FileName = procStartInfo.WorkingDirectory + file;
+                Console.WriteLine(procStartInfo.WorkingDirectory);
+                Console.WriteLine(procStartInfo.FileName);
                 // The following commands are needed to redirect the standard output.
                 // This means that it will be redirected to the Process.StandardOutput StreamReader.
                 procStartInfo.RedirectStandardOutput = true;

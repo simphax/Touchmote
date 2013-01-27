@@ -14,7 +14,7 @@
             <Label Content="Touchmote" FontSize="24" FontFamily="Segoe UI Light" Canvas.Left="10" Canvas.Top="8"/>
             <ComboBox Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="71" Canvas.Top="60" FontFamily="Segoe UI Semilight">
                 <ComboBoxItem Name="cbiPointer" IsSelected="True">Wii Sensor Bar</ComboBoxItem>
-                <ComboBoxItem Name="cbiPen">IR Pen</ComboBoxItem>
+                <ComboBoxItem Name="cbiPen" Visibility="Collapsed">IR Pen</ComboBoxItem>
             </ComboBox>
             <TextBlock Canvas.Left="267" Canvas.Top="64" FontFamily="Segoe UI Semilight">                                
                         <Hyperlink Click="btnSettings_Click">Configure
@@ -120,6 +120,18 @@
                     <Image Name="imgClosePairCheck" MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="256" Canvas.Top="13" Width="24" Source="Resources/check-icon.png" Opacity="0.6" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
                     <Image Height="100" Canvas.Left="98" Canvas.Top="47" Width="100" Source="Resources/checkmark-big.png"/>
                 </Canvas>
+            </Canvas>
+            <Canvas Name="infoOverlay" Height="161" Width="290" Background="White" MouseLeftButtonDown="infoOverlay_MouseDown" Visibility="Hidden">
+                <Canvas.Effect>
+                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                </Canvas.Effect>
+                <Label Content="Touchmote v1.0b1" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18"/>
+                <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="56" Height="54" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                        Touchmote provides a way for a Wiimote to communicate with Windows as a touch device
+                </TextBlock>
+                <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="106" Height="27" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">        
+                        Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for license and credits
+                </TextBlock>
             </Canvas>
             <Border Name="brdOverlay" MouseDown="brdOverlay_MouseDown" Visibility="Hidden" Padding="5" >
             </Border>

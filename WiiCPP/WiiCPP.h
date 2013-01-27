@@ -139,7 +139,7 @@ namespace WiiCPP {
 				else
 				{
 					ShowErrorCode(_T("Error enumerating radios"), GetLastError());
-					listener->pairingMessage("Error enumerating radios",WiiPairListener::MessageType::ERR);
+					listener->pairingMessage("Could not find any bluetooth devices",WiiPairListener::MessageType::ERR);
 					listener->onPairingCancelled();
 					return;
 				}
@@ -202,7 +202,7 @@ namespace WiiCPP {
 						}
 						else
 						{
-							listener->pairingMessage("Could not search for bluetooth devices",WiiPairListener::MessageType::ERR);
+							listener->pairingMessage("Could not find any bluetooth devices",WiiPairListener::MessageType::ERR);
 							ShowErrorCode(_T("Error enumerating devices"), GetLastError());
 							listener->onPairingCancelled();
 							return;
@@ -235,6 +235,8 @@ namespace WiiCPP {
 										} else {
 											listener->pairingMessage("Removing old Wiimote",WiiPairListener::MessageType::SUCCESS);
 										}
+									} else {
+										listener->pairingMessage("Found a new Wiimote",WiiPairListener::MessageType::SUCCESS);
 									}
 								}
 
