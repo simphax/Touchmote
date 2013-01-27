@@ -23,7 +23,7 @@ namespace WiiTUIO.Provider
 
         private UserControl settingsControl = null;
 
-        private string cursor = "toucharrow.cur";
+        private string cursor = "Resources/touchcursor.cur";
 
         private bool ShowMouse = true;
 

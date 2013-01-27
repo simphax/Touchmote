@@ -862,6 +862,7 @@ namespace WiiTUIO
 
         private void btnProviderSettingsDone_Click(object sender, RoutedEventArgs e)
         {
+            Settings.Default.Save();
             this.providerSettingsOverlay.Visibility = Visibility.Hidden;
         }
 

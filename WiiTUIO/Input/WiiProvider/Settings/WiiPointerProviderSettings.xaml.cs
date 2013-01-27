@@ -23,7 +23,8 @@ namespace WiiTUIO.Provider
         {
             InitializeComponent();
 
-            
+            this.cbSystemCursor.IsChecked = Settings.Default.pointer_changeSystemCursor;
+            this.cbSystemCursor.IsChecked = Settings.Default.pointer_moveCursor;
         }
 
         private void systemCursor_Checked(object sender, RoutedEventArgs e)

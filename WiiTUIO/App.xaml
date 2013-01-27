@@ -5,7 +5,7 @@
     xmlns:local="clr-namespace:WiiTUIO">
     <Application.Resources>
         <ResourceDictionary>
-            <tb:TaskbarIcon x:Key="tbNotifyIcon" IconSource="icon.ico" ToolTipText="Click to edit Touchmote settings" TrayBalloonTipClicked="TaskbarIcon_TrayBalloonTipClicked_1">
+            <tb:TaskbarIcon x:Key="tbNotifyIcon" IconSource="Resources/icon.ico" ToolTipText="Click to edit Touchmote settings" TrayBalloonTipClicked="TaskbarIcon_TrayBalloonTipClicked_1">
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu>
                         <MenuItem Name="mnuExit" Header="Exit" Click="mnuExit_Click" />

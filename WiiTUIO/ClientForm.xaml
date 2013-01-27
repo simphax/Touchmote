@@ -28,21 +28,21 @@
             <!--<Button Name="btnHide"  Click="btnHide_Click"  Width="60" HorizontalAlignment="Right" Margin="5, 0, 5, 0">Hide</Button>-->
             <TextBlock Name="tbConnect" Canvas.Left="15" Canvas.Top="137" FontSize="36" FontFamily="Segoe UI Light">                                
                         <Hyperlink Click="btnConnect_Click" TextDecorations="" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">
-                            <Image Name="imgConnect" Height="25" Width="24" Source="connect-icon.png" Opacity="0.4" Cursor="Hand" Stretch="None"/> Connect
+                            <Image Name="imgConnect" Height="25" Width="24" Source="Resources/connect-icon.png" Opacity="0.4" Cursor="Hand" Stretch="None"/> Connect
                         </Hyperlink>
                     </TextBlock>
             <TextBlock Name="tbWaiting" Visibility="Collapsed" Canvas.Left="14" Canvas.Top="137" FontSize="36" FontFamily="Segoe UI Light" Foreground="#FFFDB800">                               
-                        <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Waiting...
+                        <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="Resources/close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Waiting...
             </TextBlock>
             <TextBlock Name="tbConnected" Visibility="Collapsed" Canvas.Left="15" Canvas.Top="137" FontSize="36" FontFamily="Segoe UI Light" Foreground="#FF8BCB30">                                
-                        <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Connected
+                        <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="Resources/close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Connected
             </TextBlock>
             <Label Name="batteryLabel" Content="0%" Canvas.Left="177" Canvas.Top="133" FontSize="36" HorizontalContentAlignment="Right" FontFamily="Segoe UI Light" Width="143"/>
             <Label Content="Wiimote battery" Canvas.Left="234" Canvas.Top="122" FontSize="11" FontFamily="Segoe UI Semilight"/>
             <Label Content="Mode" Canvas.Left="15" Canvas.Top="60" FontFamily="Segoe UI Semilight"/>
             <TextBlock Canvas.Left="199" Canvas.Top="96" FontSize="16" FontFamily="Segoe UI Semilight"><Hyperlink Click="PairWiimotes_Click">Pair new Wiimote</Hyperlink></TextBlock>
-            <Image MouseLeftButtonUp="InfoImg_MouseUp" Height="16" Canvas.Left="282" Canvas.Top="10" Width="16" Source="info-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
-            <Image MouseLeftButtonUp="ConfigImg_MouseUp" Height="16" Canvas.Left="305" Canvas.Top="10" Width="16" Source="config-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
+            <Image MouseLeftButtonUp="InfoImg_MouseUp" Height="16" Canvas.Left="282" Canvas.Top="10" Width="16" Source="Resources/info-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
+            <Image MouseLeftButtonUp="ConfigImg_MouseUp" Height="16" Canvas.Left="305" Canvas.Top="10" Width="16" Source="Resources/config-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
 
 
         </Canvas>
@@ -71,7 +71,7 @@
                 </Canvas.Effect>
                 <Canvas Name="pairWiimoteOverlayPairing" Height="161" Width="290">
                     <Label Name="pairingTitle" Content="Pairing Wiimote" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18"/>
-                    <Image MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="256" Canvas.Top="13" Width="24" Source="close-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
+                    <Image MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="256" Canvas.Top="13" Width="24" Source="Resources/close-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
                     <ProgressBar Name="pairProgress" Height="4" Canvas.Left="0" Canvas.Top="49" Width="290" IsIndeterminate="True" RenderTransformOrigin="0.5,0.5" Foreground="#FF2096CD" BorderBrush="#FFF5F1F1" Background="#FFF7F7F7">
                         <ProgressBar.RenderTransform>
                             <TransformGroup>
@@ -90,8 +90,8 @@
                 </Canvas>
                 <Canvas Name="pairWiimoteOverlayDone" Height="161" Width="290" Visibility="Hidden">
                     <Label Content="Pairing Successful!" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18"/>
-                    <Image Name="imgClosePairCheck" MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="256" Canvas.Top="13" Width="24" Source="check-icon.png" Opacity="0.6" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
-                    <Image Height="100" Canvas.Left="98" Canvas.Top="47" Width="100" Source="checkmark-big.png"/>
+                    <Image Name="imgClosePairCheck" MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="256" Canvas.Top="13" Width="24" Source="Resources/check-icon.png" Opacity="0.6" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
+                    <Image Height="100" Canvas.Left="98" Canvas.Top="47" Width="100" Source="Resources/checkmark-big.png"/>
                 </Canvas>
             </Canvas>
             <Border Name="brdOverlay" MouseDown="brdOverlay_MouseDown" Visibility="Hidden" Padding="5" >
