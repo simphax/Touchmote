@@ -287,6 +287,7 @@
     <Content Include="Resources\touchcursor.cur">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\sync.png" />
     <Resource Include="Resources\icon.ico" />
     <Resource Include="Resources\info-icon.png" />
     <Resource Include="Resources\close-icon.png" />

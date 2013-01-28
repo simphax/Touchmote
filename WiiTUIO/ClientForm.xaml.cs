@@ -61,21 +61,6 @@ namespace WiiTUIO
         private bool bConnected = false;
 
         /// <summary>
-        /// Boolean to tell if we have received a reconnect command.
-        /// </summary>
-        private bool bReconnect = false;
-
-        /// <summary>
-        /// Are windows touch events enabled.
-        /// </summary>
-        private bool bWindowsTouch = false;
-
-        /// <summary>
-        /// Are TUIO touch events enabled.
-        /// </summary>
-        private bool bTUIOTouch = false;
-
-        /// <summary>
         /// Construct a new Window.
         /// </summary>
         public ClientForm()
@@ -83,35 +68,6 @@ namespace WiiTUIO
             
             // Load from the XAML.
             InitializeComponent();
-            /*
-            foreach (string arg in Environment.GetCommandLineArgs())
-            {
-                if (arg == "-tuio")
-                {
-                    this.cbiTUIO.IsSelected = true;
-                }
-
-                if (arg == "-touch")
-                {
-                    this.cbiTouch.IsSelected = true;
-                }
-
-                if (arg == "-pointer")
-                {
-                    this.cbiPointer.IsSelected = true;
-                }
-
-                if (arg == "-pen")
-                {
-                    this.cbiPen.IsSelected = true;
-                }
-
-                if (arg == "-connect")
-                {
-                    this.connectProvider();
-                }
-            }
-            */
 
             InputFactory.InputType inputType = InputFactory.getType(Settings.Default.input);
             OutputFactory.OutputType outputType = OutputFactory.getType(Settings.Default.output);
@@ -147,7 +103,6 @@ namespace WiiTUIO
 
             if (!Settings.Default.pairedOnce)
             {
-                this.linkPair.Visibility = Visibility.Hidden;
                 this.tbConnect.Visibility = Visibility.Hidden;
                 this.tbPair.Visibility = Visibility.Visible;
             }
@@ -160,9 +115,11 @@ namespace WiiTUIO
             {
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    this.linkPair.Visibility = Visibility.Visible;
                     this.tbPair.Visibility = Visibility.Hidden;
-                    this.tbConnect.Visibility = Visibility.Visible;
+                    if(!tryingToConnect && !bConnected)
+                    {
+                        this.tbConnect.Visibility = Visibility.Visible;
+                    }
                 }), null);
             }
         }
@@ -837,6 +794,14 @@ namespace WiiTUIO
             Dispatcher.BeginInvoke(new Action(delegate()
             {
                 this.pairWiimoteText.Text = message;
+                if (message == "Scanning...")
+                {
+                    pairWiimotePressSync.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    pairWiimotePressSync.Visibility = Visibility.Hidden;
+                }
             }), null);
         }
 
