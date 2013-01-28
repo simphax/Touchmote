@@ -50,7 +50,17 @@ namespace WiiTUIO
 
         public static void RestartComputer()
         {
-            System.Diagnostics.Process.Start("shutdown.exe", "-r -t 0");
+            System.Diagnostics.ProcessStartInfo procStartInfo =
+                    new System.Diagnostics.ProcessStartInfo();
+
+            procStartInfo.RedirectStandardOutput = true;
+            procStartInfo.UseShellExecute = false;
+            procStartInfo.CreateNoWindow = true;
+            procStartInfo.FileName = "shutdown.exe";
+            procStartInfo.Arguments = "-r -t 0";
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            proc.StartInfo = procStartInfo;
+            proc.Start();
         }
     }
 }
