@@ -8,8 +8,8 @@ using System.Diagnostics;
 using System.Threading;
 
 using WiiTUIO.Provider;
-using HIDLibrary;
 using WiiTUIO.Output;
+using HidLibrary;
 
 /*
  * This code is based on code in the MulitTouch.Driver.Logic namespace provided with the MultiTouchVista project.
@@ -112,12 +112,13 @@ namespace WiiTUIO.WinTouch
             this.lCurrentContacts = new Queue<HidContactInfo>();
             this.dLastContacts = new Dictionary<int, HidContactInfo>();
             this.pContactLock = new Mutex();
-            
+
             // Access the HID device driver.
-            this.pDevice = HidDevices.Enumerate(0xdddd, 0x0001).FirstOrDefault();
+            IEnumerable<HidDevice> devices = HidDevices.Enumerate(0xdddd, 0x0001);
+            this.pDevice = devices.FirstOrDefault();
             if (this.pDevice == null)
                 throw new InvalidOperationException("Universal Software HID driver was not found. Please ensure that it is installed.");
-            this.pDevice.Open(HidDevice.DeviceMode.Overlapped, HidDevice.DeviceMode.NonOverlapped);
+            this.pDevice.OpenDevice(HidDevice.DeviceMode.Overlapped, HidDevice.DeviceMode.NonOverlapped);
         }
 
         /// <summary>
@@ -232,6 +233,7 @@ namespace WiiTUIO.WinTouch
         /// <param name="lContacts">The list of contacts to send.</param>
         private void sendContacts(List<HidContactInfo> lContacts)
         {
+            
             // Create a new report.
             MultiTouchReport pReport = new MultiTouchReport((byte)lContacts.Count, true);
             int iProcessedContacts = 0;
@@ -260,8 +262,9 @@ namespace WiiTUIO.WinTouch
                     this.sendReport(pReport);
 
                     // Create a new report and mark it as a second report.
-                    pReport = new MultiTouchReport((byte)lContacts.Count, false);
+                    pReport = null;//new MultiTouchReport((byte)lContacts.Count, false);
                 }
+             
             }
         }
 
@@ -275,12 +278,12 @@ namespace WiiTUIO.WinTouch
             pReport.prepareData();
 
             // Ship it out!
-            this.pDevice.WriteReport(pReport);
+            this.pDevice.WriteReport(pReport,null);
         }
 
 
     }
-
+    
     /// <summary>
     /// A helper class which extends the HIDReport type by adding some extra features.
     /// </summary>
@@ -309,7 +312,7 @@ namespace WiiTUIO.WinTouch
         /// <summary>
         /// The size of one report in bytes.
         /// </summary>
-        private const int ReportLength = MaxContactsPerReport * (HidContactInfo.HidContactInfoSize) + 1;
+        private const int ReportLength = MaxContactsPerReport * (HidContactInfo.HidContactInfoSize) + 2;
 
         /// <summary>
         /// The list of HID
@@ -353,10 +356,12 @@ namespace WiiTUIO.WinTouch
             using (BinaryWriter pWriter = new BinaryWriter(new MemoryStream(Data)))
             {
                 // For each contact - get its data represented in the correct format.
-                foreach (HidContactInfo pContact in this.lContacts)
+                for (int i = 0; i<MaxContactsPerReport && i<this.lContacts.Count;i++)
                 {
+                    HidContactInfo pContact = this.lContacts[i];
                     byte[] tBuffer = pContact.ToBytes();
                     pWriter.Write(tBuffer);
+
                 }
                 
                 // Fill any remaining space with 0's.
@@ -366,10 +371,9 @@ namespace WiiTUIO.WinTouch
                     byte[] buffer = new byte[(HidContactInfo.HidContactInfoSize) * iSpace];
                     pWriter.Write(buffer);
                 }
-
                 // If it is our first report then write the byte which contains the number in the report sequence.
                 if (bFirstReport)
-                    pWriter.Write(iTrueContactCount);
+                    pWriter.Write((byte)iTrueContactCount);
                 else
                     pWriter.Write((byte)0);
             }
@@ -389,4 +393,5 @@ namespace WiiTUIO.WinTouch
             return pStringBuilder.ToString();
         }
     }
+  
 }
