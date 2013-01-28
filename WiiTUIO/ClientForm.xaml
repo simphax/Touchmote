@@ -7,7 +7,7 @@
     <Grid Margin="0" Background="Transparent">
 
 
-        <Canvas Margin="2,2,3,3" Background="White">
+        <Canvas Margin="2,2,3,3" Background="White" Name="canvasMain">
             <Canvas.Effect>
                 <DropShadowEffect Opacity="0.3" BlurRadius="4" ShadowDepth="1"/>
             </Canvas.Effect>
@@ -26,6 +26,11 @@
             </ComboBox>
             <Button Visibility="Collapsed" x:Name="btnOutputSettings" HorizontalAlignment="Right" Margin="0,10,0,0" Width="75" Content="Settings" Click="btnOutputSettings_Click"/>
             <!--<Button Name="btnHide"  Click="btnHide_Click"  Width="60" HorizontalAlignment="Right" Margin="5, 0, 5, 0">Hide</Button>-->
+            <TextBlock Visibility="Hidden" Name="tbPair" Canvas.Left="15" Canvas.Top="137" FontSize="36" FontFamily="Segoe UI Light">                                
+                        <Hyperlink Click="PairWiimotes_Click" TextDecorations="" MouseEnter="imgPair_MouseEnter" MouseLeave="imgPair_MouseLeave">
+                            <Image Name="imgPair" Height="25" Width="24" Source="Resources/connect-icon.png" Opacity="0.4" Cursor="Hand" Stretch="None"/> Pair Wiimote
+                        </Hyperlink>
+            </TextBlock>
             <TextBlock Name="tbConnect" Canvas.Left="15" Canvas.Top="137" FontSize="36" FontFamily="Segoe UI Light">                                
                         <Hyperlink Click="btnConnect_Click" TextDecorations="" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">
                             <Image Name="imgConnect" Height="25" Width="24" Source="Resources/connect-icon.png" Opacity="0.4" Cursor="Hand" Stretch="None"/> Connect
@@ -40,7 +45,7 @@
             <Label Name="batteryLabel" Content="0%" Canvas.Left="177" Canvas.Top="133" FontSize="36" HorizontalContentAlignment="Right" FontFamily="Segoe UI Light" Width="143"/>
             <Label Content="Wiimote battery" Canvas.Left="234" Canvas.Top="122" FontSize="11" FontFamily="Segoe UI Semilight"/>
             <Label Content="Mode" Canvas.Left="15" Canvas.Top="60" FontFamily="Segoe UI Semilight"/>
-            <TextBlock Canvas.Left="199" Canvas.Top="96" FontSize="16" FontFamily="Segoe UI Semilight"><Hyperlink Click="PairWiimotes_Click">Pair new Wiimote</Hyperlink></TextBlock>
+            <TextBlock Name="linkPair" Canvas.Left="199" Canvas.Top="96" FontSize="16" FontFamily="Segoe UI Semilight"><Hyperlink Click="PairWiimotes_Click">Pair new Wiimote</Hyperlink></TextBlock>
             <Image MouseLeftButtonUp="InfoImg_MouseUp" Height="16" Canvas.Left="282" Canvas.Top="10" Width="16" Source="Resources/info-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
             <Image MouseLeftButtonUp="ConfigImg_MouseUp" Height="16" Canvas.Left="305" Canvas.Top="10" Width="16" Source="Resources/config-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
 

@@ -143,6 +143,28 @@ namespace WiiTUIO
             wiiPair = new WiiCPP.WiiPair();
             wiiPair.addListener(this);
 
+            Settings.Default.PropertyChanged += Settings_PropertyChanged;
+
+            if (!Settings.Default.pairedOnce)
+            {
+                this.linkPair.Visibility = Visibility.Hidden;
+                this.tbConnect.Visibility = Visibility.Hidden;
+                this.tbPair.Visibility = Visibility.Visible;
+            }
+
+        }
+
+        void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (Settings.Default.pairedOnce)
+            {
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    this.linkPair.Visibility = Visibility.Visible;
+                    this.tbPair.Visibility = Visibility.Hidden;
+                    this.tbConnect.Visibility = Visibility.Visible;
+                }), null);
+            }
         }
 
         /// <summary>
@@ -365,12 +387,14 @@ namespace WiiTUIO
 
         private void showConfig()
         {
+            this.disableMainControls();
             this.configOverlay.Visibility = Visibility.Visible;
 
         }
 
         private void hideConfig()
         {
+            this.enableMainControls();
             this.configOverlay.Visibility = Visibility.Hidden;
 
         }
@@ -639,7 +663,6 @@ namespace WiiTUIO
         /// <param name="e"></param>
         private void btnAbout_Click(object sender, RoutedEventArgs e)
         {
-
             this.infoOverlay.Visibility = Visibility.Visible;
 
             /*
@@ -709,6 +732,7 @@ namespace WiiTUIO
             {
                 this.providerSettingsContent.Children.Clear();
                 this.providerSettingsContent.Children.Add(this.pWiiProvider.getSettingsControl());
+                this.disableMainControls();
                 this.providerSettingsOverlay.Visibility = Visibility.Visible;
             }
         }
@@ -743,6 +767,7 @@ namespace WiiTUIO
 
         private void PairWiimotes_Click(object sender, RoutedEventArgs e)
         {
+            this.disableMainControls();
             this.pairWiimoteOverlay.Visibility = Visibility.Visible;
             this.pairWiimoteOverlayPairing.Visibility = Visibility.Visible;
             this.pairWiimoteOverlayDone.Visibility = Visibility.Hidden;
@@ -766,6 +791,8 @@ namespace WiiTUIO
         public void onPairingSuccess(WiiCPP.WiiPairSuccessReport report)
         {
             Console.WriteLine("Success report: number=" + report.numberPaired + " permanent=" + report.permanent);
+
+            Settings.Default.pairedOnce = true;
             Dispatcher.BeginInvoke(new Action(delegate()
             {
                 this.pairWiimoteOverlayPairing.Visibility = Visibility.Hidden;
@@ -817,6 +844,7 @@ namespace WiiTUIO
         {
             this.stopWiiPair();
             this.pairWiimoteOverlay.Visibility = Visibility.Hidden;
+            this.enableMainControls();
         }
 
         private void Icon_MouseEnter(object sender, MouseEventArgs e)
@@ -837,6 +865,16 @@ namespace WiiTUIO
         private void imgClose_MouseUp(object sender, MouseButtonEventArgs e)
         {
             this.btnConnect_Click(null, null);
+        }
+
+        private void imgPair_MouseEnter(object sender, MouseEventArgs e)
+        {
+            imgConnect.Opacity = 0.6;
+        }
+
+        private void imgPair_MouseLeave(object sender, MouseEventArgs e)
+        {
+            imgConnect.Opacity = 0.4;
         }
 
         private void imgConnect_MouseEnter(object sender, MouseEventArgs e)
@@ -884,12 +922,14 @@ namespace WiiTUIO
         {
             Settings.Default.Save();
             this.providerSettingsOverlay.Visibility = Visibility.Hidden;
+            this.enableMainControls();
         }
 
         private void driverNotInstalled()
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
+                this.disableMainControls();
                 this.driverMissingOverlay.Visibility = Visibility.Visible;
             }), null);
         }
@@ -898,8 +938,20 @@ namespace WiiTUIO
         {
             Launcher.LaunchAsAdministrator("install driver.cmd",new Action(delegate()
             {
-                this.driverInstalled();
+                
             }));
+            this.driverMissingOverlay.IsEnabled = false;
+            Thread thread = new Thread(new ThreadStart(waitForDriver));
+            thread.Start();
+        }
+
+        private void waitForDriver()
+        {
+            while (!ProviderHandler.HasDriver())
+            {
+                System.Threading.Thread.Sleep(3000);
+            }
+            this.driverInstalled();
         }
 
         private void driverInstalled()
@@ -925,6 +977,15 @@ namespace WiiTUIO
         private void infoOverlay_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.infoOverlay.Visibility = Visibility.Hidden;
+        }
+
+        private void disableMainControls() {
+            this.canvasMain.IsEnabled = false;
+        }
+
+        private void enableMainControls()
+        {
+            this.canvasMain.IsEnabled = true;
         }
 
     }

@@ -26,6 +26,12 @@ namespace WiiTUIO.WinTouch
     public class ProviderHandler : IProviderHandler
     {
 
+        public static bool HasDriver() {
+            IEnumerable<HidDevice> devices = HidDevices.Enumerate(0xdddd, 0x0001);
+            return devices.FirstOrDefault() != null;
+        }
+
+
         #region IProviderHandler
         public event Action OnConnect;
 

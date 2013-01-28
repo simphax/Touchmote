@@ -24,7 +24,7 @@ namespace WiiTUIO
         {
             // Initialise the Tray Icon
             TB = (TaskbarIcon)FindResource("tbNotifyIcon");
-            TB.ShowBalloonTip("Touchmote is running", "Click here to set up", BalloonIcon.Info);
+            TB.ShowBalloonTip("Touchmote is running", "Click here to set it up", BalloonIcon.Info);
 
             Application.Current.Exit += appWillExit;
 

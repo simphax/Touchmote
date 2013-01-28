@@ -118,5 +118,17 @@ namespace WiiTUIO.Properties {
                 this["connectOnStart"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool pairedOnce {
+            get {
+                return ((bool)(this["pairedOnce"]));
+            }
+            set {
+                this["pairedOnce"] = value;
+            }
+        }
     }
 }
