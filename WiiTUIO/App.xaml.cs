@@ -7,6 +7,7 @@ using System.Windows;
 
 using Hardcodet.Wpf.TaskbarNotification;
 using System.Windows.Controls;
+using System.Diagnostics;
 
 namespace WiiTUIO
 {
@@ -22,6 +23,14 @@ namespace WiiTUIO
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            Process thisProc = Process.GetCurrentProcess();
+            if (Process.GetProcessesByName(thisProc.ProcessName).Length > 1)
+            {
+                MessageBox.Show("Touchmote is already running. Look for it in the taskbar.");
+                Application.Current.Shutdown(-2);
+                return;
+            }
+
             // Initialise the Tray Icon
             TB = (TaskbarIcon)FindResource("tbNotifyIcon");
             TB.ShowBalloonTip("Touchmote is running", "Click here to set it up", BalloonIcon.Info);
@@ -33,8 +42,11 @@ namespace WiiTUIO
 
         private void appWillExit(object sender, ExitEventArgs e)
         {
-            WiiTUIO.Properties.Settings.Default.Save();
-            TB.Dispose();
+            if (e.ApplicationExitCode != -2)
+            {
+                WiiTUIO.Properties.Settings.Default.Save();
+                TB.Dispose();
+            }
         }
 
 
@@ -49,3 +61,4 @@ namespace WiiTUIO
         }
     }
 }
+
