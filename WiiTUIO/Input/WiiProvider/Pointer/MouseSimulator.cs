@@ -10,7 +10,7 @@ namespace WiiTUIO.Provider
     public static class MouseSimulator
     {
 
-        
+        private static IntPtr lastCursor;
 
         [DllImport("user32.dll")]
         public static extern IntPtr LoadCursorFromFile(string lpFileName);
@@ -136,6 +136,14 @@ namespace WiiTUIO.Provider
         static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
 
+        //Temporary solution to the "diamond cursor" trouble.
+        public static void RefreshMainCursor()
+        {
+            IntPtr cursorCopy = CopyIcon(lastCursor);
+            SetSystemCursor(cursorCopy, (uint)IDC_STANDARD_CURSORS.IDC_ARROW);
+            DestroyCursor(cursorCopy);
+        }
+
         /// <summary>
         /// Sets the cursor position
         /// </summary>
@@ -158,21 +166,22 @@ namespace WiiTUIO.Provider
                 SetSystemCursor(pair.Value, (uint)pair.Key);
                 DestroyCursor(pair.Value);
             }
+
+            DestroyCursor(lastCursor);
         }
 
         public static void SetSystemCursor(string path)
         {
-            IntPtr cursor = LoadCursorFromFile(path);
+            lastCursor = LoadCursorFromFile(path);
             //Dictionaries can not be changed while enumerating so we loop a list instead.
             List<IDC_STANDARD_CURSORS> keys = new List<IDC_STANDARD_CURSORS>(cursorCopies.Keys);
             foreach (IDC_STANDARD_CURSORS key in keys)
             {
-                IntPtr cursorCopy = CopyIcon(cursor);
+                IntPtr cursorCopy = CopyIcon(lastCursor);
                 cursorCopies[key] = CopyIcon(LoadCursor(IntPtr.Zero, (uint)key));
                 SetSystemCursor(cursorCopy, (uint)key);
                 DestroyCursor(cursorCopy);
             }
-            DestroyCursor(cursor);
             
         }
         /// <summary>

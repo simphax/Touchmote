@@ -25,11 +25,13 @@ namespace WiiTUIO.Provider
 
         private string cursor = "Resources/touchcursor.cur";
 
+        private bool changeSystemCursor = false;
+
         private bool ShowMouse = true;
 
         private int initrumble = 0;
 
-        private int mousewait = 0;
+        private bool mouseWait = false;
 
         private int TouchHoldThreshold = 10;
 
@@ -246,7 +248,7 @@ namespace WiiTUIO.Provider
             // Enqueue a contact removed event.
             lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.End, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize, pSource, pTracker));
             //pSource.reset();
-
+            mouseWait = false;
         }
 
         /// <summary>
@@ -296,7 +298,9 @@ namespace WiiTUIO.Provider
             // Set the running flag.
             this.bRunning = true;
 
-            if (Settings.Default.pointer_changeSystemCursor)
+            this.changeSystemCursor = Settings.Default.pointer_changeSystemCursor;
+
+            if (this.changeSystemCursor)
             {
                 try
                 {
@@ -371,14 +375,13 @@ namespace WiiTUIO.Provider
             // If something went wrong - notify the user..
             catch (Exception pError)
             {
-                /*
+                
                 // Ensure we are ok.
                 try
                 {
                     this.teardownWiimoteConnection();
                 }
                 finally { }
-                */
                 // Say we screwed up.
                 pErrorReport = pError;
                 //throw new Exception("Error establishing connection: " + , pError);
@@ -474,6 +477,20 @@ namespace WiiTUIO.Provider
 
             WiimoteState ws = e.WiimoteState;
 
+
+            //Temporary solution to the "diamond cursor" problem.
+            if (this.changeSystemCursor)
+            {
+                try
+                {
+                    MouseSimulator.RefreshMainCursor();
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine(error.ToString());
+                }
+            }
+
             if (ws.ButtonState.A)
             {
 
@@ -496,11 +513,9 @@ namespace WiiTUIO.Provider
                     }
                 }
 
-
-
                 lInputs.Add(new SpatioTemporalInput((double)newpoint.X, (double)newpoint.Y));
 
-                mousewait = 5;
+                mouseWait = true;
             }
             else
             {
@@ -510,115 +525,113 @@ namespace WiiTUIO.Provider
 
                 if (ShowMouse && !pointerOutOfReach && Settings.Default.pointer_moveCursor)
                 {
-                    if (mousewait == 0)
+                    if (!mouseWait)
                     {
                         MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
                         MouseSimulator.WakeCursor();
-                    }
-                    else
-                    {
-                        mousewait--;
+
                     }
                 }
-            }
 
-            if (ws.ButtonState.B && !PressedButtons.B)
-            {
-                //if (TouchMode)
-                //{
-                InputSimulator.SimulateKeyDown(VirtualKeyCode.RETURN);
-                //}
-                //else
-                //{
-                //InputSimulator.SimulateKeyDown(VirtualKeyCode.RBUTTON);
-                //}
-                PressedButtons.B = true;
-            }
-            else if (PressedButtons.B && !ws.ButtonState.B)
-            {
-                InputSimulator.SimulateKeyUp(VirtualKeyCode.RETURN);
-                //InputSimulator.SimulateKeyUp(VirtualKeyCode.RBUTTON);
-                PressedButtons.B = false;
-            }
+                if (ws.ButtonState.B && !PressedButtons.B)
+                {
+                    //if (TouchMode)
+                    //{
+                    InputSimulator.SimulateKeyDown(VirtualKeyCode.RETURN);
+                    //}
+                    //else
+                    //{
+                    //InputSimulator.SimulateKeyDown(VirtualKeyCode.RBUTTON);
+                    //}
+                    PressedButtons.B = true;
+                }
+                else if (PressedButtons.B && !ws.ButtonState.B)
+                {
+                    InputSimulator.SimulateKeyUp(VirtualKeyCode.RETURN);
+                    //InputSimulator.SimulateKeyUp(VirtualKeyCode.RBUTTON);
+                    PressedButtons.B = false;
+                }
 
 
-            if (ws.ButtonState.Up && !PressedButtons.Up)
-            {
-                InputSimulator.SimulateKeyDown(VirtualKeyCode.UP);
-                PressedButtons.Up = true;
-            }
-            else if (!ws.ButtonState.Up && PressedButtons.Up)
-            {
-                InputSimulator.SimulateKeyUp(VirtualKeyCode.UP);
-                PressedButtons.Up = false;
-            }
+                if (ws.ButtonState.Up && !PressedButtons.Up)
+                {
+                    InputSimulator.SimulateKeyDown(VirtualKeyCode.UP);
+                    PressedButtons.Up = true;
+                }
+                else if (!ws.ButtonState.Up && PressedButtons.Up)
+                {
+                    InputSimulator.SimulateKeyUp(VirtualKeyCode.UP);
+                    PressedButtons.Up = false;
+                }
 
-            if (ws.ButtonState.Down && !PressedButtons.Down)
-            {
-                InputSimulator.SimulateKeyDown(VirtualKeyCode.DOWN);
-                PressedButtons.Down = true;
-            }
-            else if (!ws.ButtonState.Down && PressedButtons.Down)
-            {
-                InputSimulator.SimulateKeyUp(VirtualKeyCode.DOWN);
-                PressedButtons.Down = false;
-            }
+                if (ws.ButtonState.Down && !PressedButtons.Down)
+                {
+                    InputSimulator.SimulateKeyDown(VirtualKeyCode.DOWN);
+                    PressedButtons.Down = true;
+                }
+                else if (!ws.ButtonState.Down && PressedButtons.Down)
+                {
+                    InputSimulator.SimulateKeyUp(VirtualKeyCode.DOWN);
+                    PressedButtons.Down = false;
+                }
 
-            if (ws.ButtonState.Left && !PressedButtons.Left)
-            {
-                InputSimulator.SimulateKeyDown(VirtualKeyCode.LEFT);
-                PressedButtons.Left = true;
-            }
-            else if (!ws.ButtonState.Left && PressedButtons.Left)
-            {
-                InputSimulator.SimulateKeyUp(VirtualKeyCode.LEFT);
-                PressedButtons.Left = false;
-            }
+                if (ws.ButtonState.Left && !PressedButtons.Left)
+                {
+                    InputSimulator.SimulateKeyDown(VirtualKeyCode.LEFT);
+                    PressedButtons.Left = true;
+                }
+                else if (!ws.ButtonState.Left && PressedButtons.Left)
+                {
+                    InputSimulator.SimulateKeyUp(VirtualKeyCode.LEFT);
+                    PressedButtons.Left = false;
+                }
 
-            if (ws.ButtonState.Right && !PressedButtons.Right)
-            {
-                InputSimulator.SimulateKeyDown(VirtualKeyCode.RIGHT);
-                PressedButtons.Right = true;
-            }
-            else if (!ws.ButtonState.Right && PressedButtons.Right)
-            {
-                InputSimulator.SimulateKeyUp(VirtualKeyCode.RIGHT);
-                PressedButtons.Right = false;
-            }
+                if (ws.ButtonState.Right && !PressedButtons.Right)
+                {
+                    InputSimulator.SimulateKeyDown(VirtualKeyCode.RIGHT);
+                    PressedButtons.Right = true;
+                }
+                else if (!ws.ButtonState.Right && PressedButtons.Right)
+                {
+                    InputSimulator.SimulateKeyUp(VirtualKeyCode.RIGHT);
+                    PressedButtons.Right = false;
+                }
 
-            if (ws.ButtonState.Home && !PressedButtons.Home)
-            {
-                InputSimulator.SimulateKeyDown(VirtualKeyCode.LWIN);
-                PressedButtons.Home = true;
-            }
-            else if (!ws.ButtonState.Home && PressedButtons.Home)
-            {
-                InputSimulator.SimulateKeyUp(VirtualKeyCode.LWIN);
-                PressedButtons.Home = false;
-            }
+                if (ws.ButtonState.Home && !PressedButtons.Home)
+                {
+                    InputSimulator.SimulateKeyDown(VirtualKeyCode.LWIN);
+                    PressedButtons.Home = true;
+                }
+                else if (!ws.ButtonState.Home && PressedButtons.Home)
+                {
+                    InputSimulator.SimulateKeyUp(VirtualKeyCode.LWIN);
+                    PressedButtons.Home = false;
+                }
 
-            if (ws.ButtonState.Plus && !PressedButtons.Plus)
-            {
-                InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.MENU, VirtualKeyCode.TAB);
-                PressedButtons.Plus = true;
-            }
-            else if (PressedButtons.Plus && !ws.ButtonState.Plus)
-            {
-                PressedButtons.Plus = false;
-            }
-            if (ws.ButtonState.Minus && !PressedButtons.Minus)
-            {
-                InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.MENU, new[] { VirtualKeyCode.SHIFT, VirtualKeyCode.TAB });
-                PressedButtons.Minus = true;
-            }
-            else if (PressedButtons.Minus && !ws.ButtonState.Minus)
-            {
-                PressedButtons.Minus = false;
-            }
+                if (ws.ButtonState.Plus && !PressedButtons.Plus)
+                {
+                    InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.MENU, VirtualKeyCode.TAB);
+                    PressedButtons.Plus = true;
+                }
+                else if (PressedButtons.Plus && !ws.ButtonState.Plus)
+                {
+                    PressedButtons.Plus = false;
+                }
+                if (ws.ButtonState.Minus && !PressedButtons.Minus)
+                {
+                    InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.MENU, new[] { VirtualKeyCode.SHIFT, VirtualKeyCode.TAB });
+                    PressedButtons.Minus = true;
+                }
+                else if (PressedButtons.Minus && !ws.ButtonState.Minus)
+                {
+                    PressedButtons.Minus = false;
+                }
 
-            if (ws.ButtonState.One)
-            {
-                ShowMouse = ShowMouse ? false : true;
+                if (ws.ButtonState.One)
+                {
+                    ShowMouse = ShowMouse ? false : true;
+                }
+
             }
 
             // Prepare the frame to recieve new inputs.
