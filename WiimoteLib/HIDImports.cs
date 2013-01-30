@@ -18,7 +18,7 @@ namespace WiimoteLib
 	/// <summary>
 	/// Win32 import information for use with the Wiimote library
 	/// </summary>
-	class HIDImports
+	internal class HIDImports
 	{
 		//
 		// Flags controlling what is included in the device information set built

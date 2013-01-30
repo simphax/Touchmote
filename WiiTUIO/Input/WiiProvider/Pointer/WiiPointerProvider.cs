@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Threading;
 using WiimoteLib;
 using System.Runtime.InteropServices;
-using System.Drawing;
 using WindowsInput;
 using WiiTUIO.Properties;
 using System.Windows.Controls;
@@ -34,7 +33,7 @@ namespace WiiTUIO.Provider
 
         private int TouchHoldThreshold = 10;
 
-        private Point FirstTouch = new Point(0,0);
+        private Point FirstTouch = new Point();
 
         private bool TouchHold = true;
 
