@@ -304,6 +304,7 @@ namespace WiiTUIO.Provider
             try
             {
                 this.pDevice.Connect();
+                
                 this.pDevice.SetReportType(InputReport.IRAccel, true);
                 this.pDevice.SetRumble(true);
 
@@ -361,12 +362,20 @@ namespace WiiTUIO.Provider
             // Check we have a valid device.
             if (this.pDevice == null)
                 return;
-
-            // If an extension is attached at runtime we want to enable it.
-            if (e.Inserted)
-                this.pDevice.SetReportType(InputReport.IRExtensionAccel, true);
-            else
-                this.pDevice.SetReportType(InputReport.IRAccel, true);
+            /* This crashes the program when starting on boot, so I just removed it
+            try
+            {
+                // If an extension is attached at runtime we want to enable it.
+                if (e.Inserted)
+                    this.pDevice.SetReportType(InputReport.IRExtensionAccel, true);
+                else
+                    this.pDevice.SetReportType(InputReport.IRAccel, true);
+            }
+            catch
+            {
+                Exception exc = new Exception();
+                this.initialiseWiimoteConnection(out exc);
+            }*/
         }
 
 

@@ -1873,27 +1873,31 @@ namespace WiimoteLib
 		/// </summary>
 		private void WriteReport(byte[] buff)
 		{
-            // make sure we call only one read at the same time
-            mWriteMutex.WaitOne();
-            
-			Debug.WriteLine("WriteReport: " + Enum.Parse(typeof(OutputReport), buff[0].ToString()));
 
-			if(mAltWriteMethod)
-				HIDImports.HidD_SetOutputReport(this.mHandle.DangerousGetHandle(), buff, (uint)buff.Length);
-			else if(mStream != null)
-				mStream.Write(buff, 0, REPORT_LENGTH);
-
-			if(buff[0] == (byte)OutputReport.WriteMemory)
-			{
-                if (!mWriteDone.WaitOne(WIIMOTE_TIMEOUT, false))
+                Debug.WriteLine("WriteReport: " + Enum.Parse(typeof(OutputReport), buff[0].ToString()));
+                // make sure we call only one read at the same time
+                if (!mWriteMutex.WaitOne(WIIMOTE_TIMEOUT, false))
                 {
-                    //TEST
-                    mWriteMutex.ReleaseMutex();
-                    Debug.WriteLine("Wait failed");
-                    throw new WiimoteException("Error writing data to Wiimote...is it connected?");
+                    try { mWriteMutex.Close(); mWriteMutex.Dispose(); mWriteMutex = new Mutex(); } //just a completely stupid solution to the problem when you can not connect after connecting/disconnecting the bluetooth device
+                    catch { } 
+                    Debug.WriteLine("Aborting WriteReport. We dont like to wait around. We dont care if its completely stupid or unreliable.");
                 }
-			}
-            mWriteMutex.ReleaseMutex();
+                if (mAltWriteMethod)
+                    HIDImports.HidD_SetOutputReport(this.mHandle.DangerousGetHandle(), buff, (uint)buff.Length);
+                else if (mStream != null)
+                    mStream.Write(buff, 0, REPORT_LENGTH);
+
+                if (buff[0] == (byte)OutputReport.WriteMemory)
+                {
+                    if (!mWriteDone.WaitOne(WIIMOTE_TIMEOUT, false))
+                    {
+                        //TEST
+                        mWriteMutex.ReleaseMutex();
+                        Debug.WriteLine("Wait failed");
+                        throw new WiimoteException("Error writing data to Wiimote...is it connected?");
+                    }
+                }
+            
 		}
 
 		/// <summary>

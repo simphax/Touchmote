@@ -340,14 +340,14 @@ namespace WiiTUIO.Provider
             // If something went wrong - notify the user..
             catch (Exception pError)
             {
-                /*
+                
                 // Ensure we are ok.
                 try
                 {
                     this.teardownWiimoteConnection();
                 }
                 finally { }
-                */
+                
                 // Say we screwed up.
                 pErrorReport = pError;
                 //throw new Exception("Error establishing connection: " + , pError);
