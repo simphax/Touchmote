@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE bodyText [ <!ENTITY nbsp "&#160;"> ]>
+
+<topic xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <!-- The page title -->
+    <title>Copyright</title>
+    <!-- The body text for the topic -->
+    <bodyText>
+Copyright 2008 Brian Peek<br/>
+<a href="http://www.brianpeek.com/">http://www.brianpeek.com/</a><br/>
+<a href="http://blogs.msdn.com/coding4fun/archive/2007/03/14/1879033.aspx">http://blogs.msdn.com/coding4fun/archive/2007/03/14/1879033.aspx</a><br/>
+<p/>
+Licensed under the terms of the <a href="license.html">Microsoft Permissive License (Ms-Pl)</a>.<br/>
+	</bodyText>
+</topic>

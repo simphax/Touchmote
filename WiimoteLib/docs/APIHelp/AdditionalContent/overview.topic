@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE bodyText [ <!ENTITY nbsp "&#160;"> ]>
+
+<topic xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <!-- The page title -->
+    <title>Overview</title>
+    <!-- The body text for the topic -->
+	<bodyText>
+WiimoteLib allows you to connect a Wiimote to your PC and communicate with it using .NET.  This project started life as an article for Microsoft's <a href="http://www.coding4fun.net/">Coding4Fun</a> website.  Basic usage and some internal details are all documented there for now.  You can find this article <a href="http://blogs.msdn.com/coding4fun/archive/2007/03/14/1879033.aspx">here</a>.
+	</bodyText>
+</topic>

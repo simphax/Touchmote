@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Threading;
-using System.Windows;
 using WiimoteLib;
 using System.Runtime.InteropServices;
 using System.Drawing;
@@ -35,7 +34,7 @@ namespace WiiTUIO.Provider
 
         private int TouchHoldThreshold = 10;
 
-        private WiimoteLib.Point FirstTouch = new WiimoteLib.Point();
+        private Point FirstTouch = new Point(0,0);
 
         private bool TouchHold = true;
 
@@ -58,68 +57,8 @@ namespace WiiTUIO.Provider
 
         WiimoteButtonsStruct PressedButtons;
 
-        private WiimoteLib.Point lastpoint;
+        private Point lastpoint;
 
-        #region CalibrationRectangle
-        /// <summary>
-        /// The CalibrationRectangle class defines a set of 4 2D coordinates that define a rectangle in absolute space.
-        /// These are used as inputs that define transform the WiiProvider applies to any inputs from the Wiimote device.
-        /// </summary>
-        [Serializable]
-        public class CalibrationRectangle
-        {
-            /// <summary>The top left corner of a rectangle in absolute coordinates.</summary>
-            public Vector TopLeft;
-            /// <summary>The top right corner of a rectangle in absolute coordinates.</summary>
-            public Vector TopRight;
-            /// <summary>The bottom left corner of a rectangle in absolute coordinates.</summary>
-            public Vector BottomLeft;
-            /// <summary>The bottom right corner of a rectangle in absolute coordinates.</summary>
-            public Vector BottomRight;
-
-            /// <summary>
-            /// Construct a new CalibrationRectangle with dimension information.
-            /// </summary>
-            /// <param name="vTopLeft">The top left corner of a rectangle in absolute coordinates.</param>
-            /// <param name="vTopRight">The top right corner of a rectangle in absolute coordinates.</param>
-            /// <param name="vBottomLeft">The bottom left corner of a rectangle in absolute coordinates.</param>
-            /// <param name="vBottomRight">The bottom right corner of a rectangle in absolute coordinates.</param>
-            public CalibrationRectangle(Vector vTopLeft, Vector vTopRight, Vector vBottomLeft, Vector vBottomRight)
-            {
-                this.TopLeft = vTopLeft;
-                this.TopRight = vTopRight;
-                this.BottomLeft = vBottomLeft;
-                this.BottomRight = vBottomRight;
-            }
-
-            /// <summary>
-            /// Construct a new CalibrationRectangle with dimension information.
-            /// </summary>
-            /// <param name="x0">The x-coordinate of the top left corner of a rectangle in absolute coordinates.</param>
-            /// <param name="y0">The y-coordinate of the top left corner of a rectangle in absolute coordinates.</param>
-            /// <param name="x1">The x-coordinate of the top right corner of a rectangle in absolute coordinates.</param>
-            /// <param name="y1">The y-coordinate of the top right corner of a rectangle in absolute coordinates.</param>
-            /// <param name="x2">The x-coordinate of the bottom left corner of a rectangle in absolute coordinates.</param>
-            /// <param name="y2">The y-coordinate of the bottom left corner of a rectangle in absolute coordinates.</param>
-            /// <param name="x3">The x-coordinate of the bottom right corner of a rectangle in absolute coordinates.</param>
-            /// <param name="y3">The y-coordinate of the bottom right corner of a rectangle in absolute coordinates.</param>
-            public CalibrationRectangle(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3)
-            {
-                this.TopLeft = new Vector(x0, y0);
-                this.TopRight = new Vector(x1, y1);
-                this.BottomLeft = new Vector(x2, y2);
-                this.BottomRight = new Vector(x3, y3);
-            }
-
-            /// <summary>
-            /// Construct a new CalibrationRectangle with default 0-1 coordinates.
-            /// </summary>
-            public CalibrationRectangle()
-                : this(0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0)
-            {
-            }
-        }
-        #endregion
 
         #region Properties and Constructor
         /// <summary>
@@ -150,7 +89,7 @@ namespace WiiTUIO.Provider
         /// <summary>
         /// The screen size that we use for normalising coordinates.
         /// </summary>
-        public Vector ScreenSize { get; protected set; }
+        public System.Windows.Vector ScreenSize { get; protected set; }
 
         /// <summary>
         /// A property to determine if this input provider is running (and thus generating events).
@@ -217,7 +156,7 @@ namespace WiiTUIO.Provider
             this.InputClassifier.OnUpdate += new SpatioTemporalClassifier.TrackerEventHandler(handleInputClassifier_OnUpdate);
             this.InputClassifier.OnEnd += new SpatioTemporalClassifier.TrackerEventHandler(handleInputClassifier_OnEnd);
 
-            lastpoint = new WiimoteLib.Point();
+            lastpoint = new Point();
             lastpoint.X = 0;
             lastpoint.Y = 0;
 
@@ -462,7 +401,7 @@ namespace WiiTUIO.Provider
 
             bool pointerOutOfReach = false;
 
-            WiimoteLib.Point newpoint = ScreenPositionCalculator.GetPosition(e);
+            Point newpoint = ScreenPositionCalculator.GetPosition(e);
             if (newpoint.X < 0 || newpoint.Y < 0)
             {
                 newpoint = lastpoint;

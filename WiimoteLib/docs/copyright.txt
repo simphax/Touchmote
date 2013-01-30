@@ -1,0 +1,6 @@
+Copyright 2007-2008 Brian Peek
+http://www.brianpeek.com/
+http://blogs.msdn.com/coding4fun/archive/2007/03/14/1879033.aspx
+
+Licensed under the terms of the Microsoft Permissive License (Ms-Pl).
+See license.txt for details.
