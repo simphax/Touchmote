@@ -368,8 +368,8 @@ namespace WiiTUIO.Provider
                 this.pDevice.Connect();
                 this.pDevice.SetReportType(InputReport.IRAccel, true);
                 this.pDevice.SetRumble(true);
-
                 this.pDevice.SetLEDs(true, false, false, true);
+
             }
 
             // If something went wrong - notify the user..
@@ -387,8 +387,7 @@ namespace WiiTUIO.Provider
                 //throw new Exception("Error establishing connection: " + , pError);
                 return false;
             }
-
-            initrumble = 12;
+            new Timer(stopRumble, null, 100, 0); //Stop the rumble after 300ms
             pErrorReport = null;
             return true;
         }
@@ -411,6 +410,14 @@ namespace WiiTUIO.Provider
             this.pDevice = null;
         }
         #endregion
+
+        private void stopRumble(Object nothing)
+        {
+            if (this.pDevice != null)
+            {
+                this.pDevice.SetRumble(false);
+            }
+        }
 
         #region Wiimote Event Handlers
         /// <summary>
@@ -448,11 +455,6 @@ namespace WiiTUIO.Provider
             {
                 pDeviceMutex.ReleaseMutex();
                 return;
-            }
-
-            if (initrumble-- == 0)
-            {
-                this.pDevice.SetRumble(false);
             }
 
             // Store the state.
