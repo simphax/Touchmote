@@ -1897,7 +1897,7 @@ namespace WiimoteLib
                         throw new WiimoteException("Error writing data to Wiimote...is it connected?");
                     }
                 }
-            
+                mWriteMutex.ReleaseMutex();
 		}
 
 		/// <summary>
