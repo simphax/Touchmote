@@ -611,7 +611,7 @@ namespace WiiTUIO.Provider
 
                 if (ws.ButtonState.Plus && !PressedButtons.Plus)
                 {
-                    InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.MENU, VirtualKeyCode.TAB);
+                    InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.OEM_PLUS);
                     PressedButtons.Plus = true;
                 }
                 else if (PressedButtons.Plus && !ws.ButtonState.Plus)
@@ -620,7 +620,7 @@ namespace WiiTUIO.Provider
                 }
                 if (ws.ButtonState.Minus && !PressedButtons.Minus)
                 {
-                    InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.MENU, new[] { VirtualKeyCode.SHIFT, VirtualKeyCode.TAB });
+                    InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.OEM_MINUS);
                     PressedButtons.Minus = true;
                 }
                 else if (PressedButtons.Minus && !ws.ButtonState.Minus)
