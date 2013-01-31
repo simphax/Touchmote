@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shfbBuild product="Sandcastle Help File Builder GUI" version="1.7.0.0" projectFile="C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\WiimoteLib.shfb" started="1/19/2009 6:21:03 AM">
+<buildStep step="Initializing">
+</buildStep>
+<buildStep step="FindingTools">
+Finding tools...
+Found Sandcastle in 'C:\Program Files (x86)\Sandcastle\'
+Found HTML 1.x help compiler in 'C:\Program Files (x86)\HTML Help Workshop\'
+</buildStep>
+<buildStep step="ValidatingAssemblies">
+Validating and copying documentation assembly information...
+    C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\bin\Debug\WiimoteLib.dll -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\WiimoteLib.dll
+    C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\bin\Debug\WiimoteLib.XML -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\WiimoteLib.XML
+</buildStep>
+<buildStep step="GenerateSharedContent">
+Generating shared content files (en-US, English (United States))...
+    Last step completed in 00:00:00.0575
+</buildStep>
+<buildStep step="CopyDependencies">
+Copying documentation assembly dependencies...
+No dependencies to copy
+    Last step completed in 00:00:00.0100
+</buildStep>
+<buildStep step="GenerateApiFilter">
+Generating API filter for MRefBuilder...
+    Last step completed in 00:00:00.0075
+</buildStep>
+<buildStep step="GenerateReflectionInfo">
+Generating reflection information...
+[C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\GenerateRefInfo.bat]
+MrefBuilder (v2.4.10520.1)
+Copyright c Microsoft 2006
+Info: Loaded 1 assemblies for reflection and 0 dependency assemblies.
+Info: Wrote information on 1 namespaces, 35 types, and 229 members
+        1 file(s) copied.
+XslTransform (v2.4.10520.1)
+Copyright c Microsoft 2005-2006
+Info: Applying XSL transformation 'C:\Program Files (x86)\Sandcastle\ProductionTransforms\MergeDuplicates.xsl'.
+    Last step completed in 00:00:00.9650
+</buildStep>
+<buildStep step="GenerateNamespaceSummaries">
+Generating namespace summary information...
+    Last step completed in 00:00:00.0125
+</buildStep>
+<buildStep step="ApplyVisibilityProperties">
+Applying visibility properties to reflection information file
+    0 attribute nodes removed
+    0 explicit interface implementations removed
+    13 local and base class EII elements removed
+    Last step completed in 00:00:00.0200
+</buildStep>
+<buildStep step="TransformReflectionInfo">
+Transforming reflection output...
+[C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\TransformManifest.bat]
+XslTransform (v2.4.10520.1)
+Copyright c Microsoft 2005-2006
+Info: Applying XSL transformation 'C:\Program Files (x86)\Sandcastle\ProductionTransforms\ApplyVSDocModel.xsl'.
+Info: Applying XSL transformation 'C:\Program Files (x86)\Sandcastle\ProductionTransforms\AddGuidFilenames.xsl'.
+XslTransform (v2.4.10520.1)
+Copyright c Microsoft 2005-2006
+Info: Applying XSL transformation 'C:\Program Files (x86)\Sandcastle\ProductionTransforms\ReflectionToManifest.xsl'.
+    Last step completed in 00:00:01.3000
+</buildStep>
+<buildStep step="ModifyHelpTopicFilenames">
+Modifying help topic filenames in reflection information file
+    No changes required
+    Last step completed in 00:00:00.0025
+</buildStep>
+<buildStep step="CopyStandardContent">
+Copying standard help content...
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\adm.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\adm.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\adm_arch.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\adm_arch.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\adm_dev.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\adm_dev.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\adm_dev_arch.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\adm_dev_arch.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\alert_caution.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\alert_caution.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\alert_note.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\alert_note.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\alert_security.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\alert_security.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\arch.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\arch.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\big_adm.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\big_adm.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\big_arch.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\big_arch.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\big_dev.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\big_dev.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\big_kw.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\big_kw.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\box.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\box.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\Caution.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\Caution.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\CFW.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\CFW.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\collall.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\collall.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\collapse.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\collapse.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\collapse_all.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\collapse_all.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\copycode.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\copycode.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\copycodeHighlight.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\copycodeHighlight.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\dev.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\dev.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\dev_arch.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\dev_arch.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\dropdown.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\dropdown.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\dropdownHover.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\dropdownHover.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\drpdown.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\drpdown.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\drpdown_orange.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\drpdown_orange.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\drpdown_orange_up.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\drpdown_orange_up.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\drpup.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\drpup.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\exp.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\exp.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\expall.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\expall.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\expand_all.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\expand_all.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\filter1a.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\filter1a.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\filter1c.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\filter1c.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\footer.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\footer.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\gradient.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\gradient.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\greencheck.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\greencheck.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\greychck.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\greychck.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\header_prev_next.jpg -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\header_prev_next.jpg
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\header_sql_tutorial_blank.jpg -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\header_sql_tutorial_blank.jpg
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\header_sql_tutorial_logo.GIF -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\header_sql_tutorial_logo.GIF
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\kw.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\kw.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\kw_adm.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\kw_adm.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\kw_adm_arch.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\kw_adm_arch.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\kw_adm_dev.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\kw_adm_dev.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\kw_adm_dev_arch.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\kw_adm_dev_arch.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\kw_arch.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\kw_arch.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\kw_dev.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\kw_dev.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\kw_dev_arch.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\kw_dev_arch.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\LastChild.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\LastChild.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\load.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\load.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\load_hover.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\load_hover.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\note.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\note.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pencil.GIF -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pencil.GIF
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privclass.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privclass.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privdelegate.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privdelegate.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privenum.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privenum.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privenumeration.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privenumeration.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privevent.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privevent.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privextension.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privextension.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privfield.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privfield.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privinterface.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privinterface.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privmethod.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privmethod.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privproperty.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privproperty.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\privstructure.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\privstructure.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protclass.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protclass.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protdelegate.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protdelegate.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protenum.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protenum.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protenumeration.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protenumeration.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protevent.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protevent.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protextension.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protextension.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protfield.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protfield.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protinterface.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protinterface.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protmethod.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protmethod.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protoperator.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protoperator.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protproperty.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protproperty.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\protstructure.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\protstructure.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubclass.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubclass.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubdelegate.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubdelegate.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubenum.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubenum.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubenumeration.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubenumeration.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubevent.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubevent.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubextension.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubextension.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubfield.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubfield.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubinterface.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubinterface.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubmethod.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubmethod.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\puboperator.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\puboperator.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubproperty.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubproperty.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\pubstructure.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\pubstructure.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\requirements1a.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\requirements1a.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\requirements1c.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\requirements1c.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\save.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\save.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\save_hover.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\save_hover.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\security.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\security.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\seealso1a.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\seealso1a.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\seealso1c.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\seealso1c.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\static.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\static.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\icons\xna.gif -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\icons\xna.gif
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\CheckboxMenu.js -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\scripts\CheckboxMenu.js
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\CommonUtilities.js -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\scripts\CommonUtilities.js
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\Dropdown.js -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\scripts\Dropdown.js
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\EventUtilities.js -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\scripts\EventUtilities.js
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\script_feedBack.js -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\scripts\script_feedBack.js
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\script_manifold.js -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\scripts\script_manifold.js
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\SplitScreen.js -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\scripts\SplitScreen.js
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\styles\Presentation.css -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\styles\Presentation.css
+C:\Program Files (x86)\Sandcastle\Presentation\vs2005\styles\Whidbey\presentation.css -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\styles\Whidbey\presentation.css
+    Last step completed in 00:00:00.8975
+</buildStep>
+<buildStep step="CopyAdditionalContent">
+Copying additional content files...
+C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\AdditionalContent\changes.topic -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\changes.topic
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Templates\vs2005.xsl -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\vs2005.xsl
+Applying XSL transformation 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\vs2005.xsl' to 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\changes.topic'.
+C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\AdditionalContent\copyright.topic -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\copyright.topic
+Applying XSL transformation 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\vs2005.xsl' to 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\copyright.topic'.
+C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\AdditionalContent\license.topic -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\license.topic
+Applying XSL transformation 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\vs2005.xsl' to 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\license.topic'.
+C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\AdditionalContent\overview.topic -&gt; C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\overview.topic
+Applying XSL transformation 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\vs2005.xsl' to 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\overview.topic'.
+
+Loading site map 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\WiimoteLib.sitemap'
+    Last step completed in 00:00:00.1950
+</buildStep>
+<buildStep step="MergeTablesOfContent">
+Merging conceptual and additional tables of content...
+    Last step completed in 00:00:00.0150
+</buildStep>
+<buildStep step="CreateBuildAssemblerConfigs">
+Creating Sandcastle configuration files...
+    sandcastle.config
+    conceptual.config
+    Last step completed in 00:00:00.0250
+</buildStep>
+<buildStep step="MergeCustomConfigs">
+Merging custom build component configurations
+C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\sandcastle.config
+    No additional help attributes defined.  The 'HTML Help 2 Attributes' component was not added.
+    Last step completed in 00:00:00.0500
+</buildStep>
+<buildStep step="BuildReferenceTopics">
+Building reference help topics...
+[C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\BuildReferenceTopics.bat]
+BuildAssembler (v2.4.10520.1)
+Copyright c Microsoft 2006
+Info: CopyFromFileComponent: Instantiating component.
+Info: CopyFromFileComponent: Loading data file 'C:\Program Files (x86)\Sandcastle\Presentation\vs2005\Transforms\skeleton.xml'.
+Info: CopyFromIndexComponent: Instantiating component.
+Info: CopyFromIndexComponent: Searching for files that match '*.xml'.
+Info: CopyFromIndexComponent: Searching for files that match 'reflection.xml'.
+Info: CopyFromIndexComponent: Indexed 170453 elements in 107 files.
+Info: CopyFromIndexComponent: Loaded 0 copy components.
+Info: CopyFromIndexComponent: Instantiating component.
+Info: CopyFromIndexComponent: Loaded 0 copy components.
+Info: ForEachComponent: Instantiating component.
+Info: ForEachComponent: Loading subcomponents.
+Info: CopyFromIndexComponent: Instantiating component.
+Info: CopyFromIndexComponent: Loaded 0 copy components.
+Info: ForEachComponent: Loaded 1 subcomponents.
+Info: ForEachComponent: Instantiating component.
+Info: ForEachComponent: Loading subcomponents.
+Info: CopyFromIndexComponent: Instantiating component.
+Info: CopyFromIndexComponent: Loaded 0 copy components.
+Info: ForEachComponent: Loaded 1 subcomponents.
+Info: ForEachComponent: Instantiating component.
+Info: ForEachComponent: Loading subcomponents.
+Info: CopyFromIndexComponent: Instantiating component.
+Info: CopyFromIndexComponent: Loaded 0 copy components.
+Info: ForEachComponent: Loaded 1 subcomponents.
+Info: IfThenComponent: Instantiating component.
+Info: SyntaxComponent: Instantiating component.
+Info: SyntaxComponent: Loaded 3 syntax generators.
+Info: CopyFromIndexComponent: Instantiating component.
+Info: CopyFromIndexComponent: Searching for files that match 'C:\Windows\Microsoft.NET\Framework\v2.0.50727\en\*.xml'.
+Info: CopyFromIndexComponent: Searching for files that match 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\WiimoteLib.XML'.
+Info: CopyFromIndexComponent: Indexed 80772 elements in 50 files.
+Info: CopyFromIndexComponent: Loaded 0 copy components.
+Info: ForEachComponent: Instantiating component.
+Info: ForEachComponent: Loading subcomponents.
+Info: IfThenComponent: Instantiating component.
+Info: CopyFromIndexComponent: Instantiating component.
+Info: CopyFromIndexComponent: Loaded 0 copy components.
+Info: CopyFromIndexComponent: Instantiating component.
+Info: CopyFromIndexComponent: Loaded 0 copy components.
+Info: ForEachComponent: Loaded 2 subcomponents.
+Info: CopyFromIndexComponent: Instantiating component.
+Info: CopyFromIndexComponent: Loaded 0 copy components.
+Info: ShowMissingComponent: Instantiating component.
+Info: ShowMissingComponent: 
+    [Sandcastle Help File Builder Components, version 1.7.0.0]
+    Show Missing Documentation Component. Copyright c 2006-2008, Eric Woodruff, All Rights Reserved
+    http://www.codeplex.com/SHFB
+Info: VersionInfoComponent: Instantiating component.
+Info: VersionInfoComponent: 
+    [Sandcastle Help File Builder Components, version 1.7.0.0]
+    Version Information Component. Copyright c 2006-2008, Eric Woodruff, All Rights Reserved
+    http://www.codeplex.com/SHFB
+Info: CodeBlockComponent: Instantiating component.
+Info: CodeBlockComponent: 
+    [Sandcastle Help File Builder Components, version 1.7.0.0]
+    Code Block Component. Copyright c 2006-2008, Eric Woodruff, All Rights Reserved.
+    Portions copyright (c) 2003, Jonathan de Halleux, All rights reserved.
+    http://www.codeplex.com/SHFB
+Info: TransformComponent: Instantiating component.
+Info: PostTransformComponent: Instantiating component.
+Info: PostTransformComponent: 
+    [Sandcastle Help File Builder Components, version 1.7.0.0]
+    Post-Transform Component. Copyright c 2006-2008, Eric Woodruff, All Rights Reserved
+    http://www.codeplex.com/SHFB
+Info: SharedContentComponent: Instantiating component.
+Info: SharedContentComponent: Searching for files that match 'C:\Program Files (x86)\Sandcastle\Presentation\vs2005\content\shared_content.xml'.
+Info: SharedContentComponent: Loading shared content file 'C:\Program Files (x86)\Sandcastle\Presentation\vs2005\content\shared_content.xml'.
+Info: SharedContentComponent: Found 1 files in C:\Program Files (x86)\Sandcastle\Presentation\vs2005\content\shared_content.xml.
+Info: SharedContentComponent: Searching for files that match 'C:\Program Files (x86)\Sandcastle\Presentation\vs2005\content\reference_content.xml'.
+Info: SharedContentComponent: Loading shared content file 'C:\Program Files (x86)\Sandcastle\Presentation\vs2005\content\reference_content.xml'.
+Info: SharedContentComponent: Found 1 files in C:\Program Files (x86)\Sandcastle\Presentation\vs2005\content\reference_content.xml.
+Info: SharedContentComponent: Searching for files that match 'C:\Program Files (x86)\Sandcastle\Presentation\shared\content\syntax_content.xml'.
+Info: SharedContentComponent: Loading shared content file 'C:\Program Files (x86)\Sandcastle\Presentation\shared\content\syntax_content.xml'.
+Info: SharedContentComponent: Found 1 files in C:\Program Files (x86)\Sandcastle\Presentation\shared\content\syntax_content.xml.
+Info: SharedContentComponent: Searching for files that match 'C:\Program Files (x86)\Sandcastle\Presentation\vs2005\content\feedback_content.xml'.
+Info: SharedContentComponent: Loading shared content file 'C:\Program Files (x86)\Sandcastle\Presentation\vs2005\content\feedBack_content.xml'.
+Info: SharedContentComponent: Found 1 files in C:\Program Files (x86)\Sandcastle\Presentation\vs2005\content\feedback_content.xml.
+Info: SharedContentComponent: Searching for files that match 'SharedBuilderContent.xml'.
+Info: SharedContentComponent: Loading shared content file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\SharedBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'roottopictitle' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\SharedBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'rootlink' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\SharedBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'runningheadertext' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\SharedBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'locationinformation' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\SharedBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'assemblynameandmodule' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\SharedBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'copycode' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\SharedBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'locale' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\SharedBuilderContent.xml'.
+Info: SharedContentComponent: Found 1 files in SharedBuilderContent.xml.
+Info: SharedContentComponent: Searching for files that match 'PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Loading shared content file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'header' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'footer' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'fb_alias' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'fb_product' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'fb_body' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'fb_send' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'fb_headerfeedback' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'feedback_alias' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'feedback_product' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Overriding shared content item 'feedback_body' with value in file 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\PresentationStyleBuilderContent.xml'.
+Info: SharedContentComponent: Found 1 files in PresentationStyleBuilderContent.xml.
+Info: SharedContentComponent: Loaded 581 shared content items.
+Info: ResolveReferenceLinksComponent2: Instantiating component.
+Info: ResolveReferenceLinksComponent2: Creating MSDN URL resolver.
+Info: ResolveReferenceLinksComponent2: Searching directory 'C:\Program Files (x86)\Sandcastle\Data\Reflection' for targets files of the form '*.xml'.
+Info: ResolveReferenceLinksComponent2: Searching directory 'C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working' for targets files of the form 'reflection.xml'.
+Info: ResolveReferenceLinksComponent2: Loaded 170453 reference targets.
+Info: SaveComponent: Instantiating component.
+Info: BuildAssembler: Building topic N:WiimoteLib
+Info: BuildAssembler: Building topic T:WiimoteLib.AccelCalibrationInfo
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.AccelCalibrationInfo
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.AccelCalibrationInfo
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.AccelCalibrationInfo
+Info: BuildAssembler: Building topic F:WiimoteLib.AccelCalibrationInfo.X0
+Info: BuildAssembler: Building topic F:WiimoteLib.AccelCalibrationInfo.XG
+Info: BuildAssembler: Building topic F:WiimoteLib.AccelCalibrationInfo.Y0
+Info: BuildAssembler: Building topic F:WiimoteLib.AccelCalibrationInfo.YG
+Info: BuildAssembler: Building topic F:WiimoteLib.AccelCalibrationInfo.Z0
+Info: BuildAssembler: Building topic F:WiimoteLib.AccelCalibrationInfo.ZG
+Info: BuildAssembler: Building topic T:WiimoteLib.AccelState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.AccelState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.AccelState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.AccelState
+Info: BuildAssembler: Building topic F:WiimoteLib.AccelState.RawValues
+Info: BuildAssembler: Building topic F:WiimoteLib.AccelState.Values
+Info: BuildAssembler: Building topic T:WiimoteLib.BalanceBoardCalibrationInfo
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.BalanceBoardCalibrationInfo
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.BalanceBoardCalibrationInfo
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.BalanceBoardCalibrationInfo
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardCalibrationInfo.Kg0
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardCalibrationInfo.Kg17
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardCalibrationInfo.Kg34
+Info: BuildAssembler: Building topic T:WiimoteLib.BalanceBoardSensors
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.BalanceBoardSensors
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.BalanceBoardSensors
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.BalanceBoardSensors
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardSensors.BottomLeft
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardSensors.BottomRight
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardSensors.TopLeft
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardSensors.TopRight
+Info: BuildAssembler: Building topic T:WiimoteLib.BalanceBoardSensorsF
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.BalanceBoardSensorsF
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.BalanceBoardSensorsF
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.BalanceBoardSensorsF
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardSensorsF.BottomLeft
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardSensorsF.BottomRight
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardSensorsF.TopLeft
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardSensorsF.TopRight
+Info: BuildAssembler: Building topic T:WiimoteLib.BalanceBoardState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.BalanceBoardState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.BalanceBoardState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.BalanceBoardState
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardState.CalibrationInfo
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardState.CenterOfGravity
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardState.SensorValuesKg
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardState.SensorValuesLb
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardState.SensorValuesRaw
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardState.WeightKg
+Info: BuildAssembler: Building topic F:WiimoteLib.BalanceBoardState.WeightLb
+Info: BuildAssembler: Building topic T:WiimoteLib.ButtonState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.ButtonState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.ButtonState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.ButtonState
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.A
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.B
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.Down
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.Home
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.Left
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.Minus
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.One
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.Plus
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.Right
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.Two
+Info: BuildAssembler: Building topic F:WiimoteLib.ButtonState.Up
+Info: BuildAssembler: Building topic T:WiimoteLib.ClassicControllerButtonState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.ClassicControllerButtonState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.ClassicControllerButtonState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.ClassicControllerButtonState
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.A
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.B
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.Down
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.Home
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.Left
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.Minus
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.Plus
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.Right
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.TriggerL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.TriggerR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.Up
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.X
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.Y
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.ZL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerButtonState.ZR
+Info: BuildAssembler: Building topic T:WiimoteLib.ClassicControllerCalibrationInfo
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.ClassicControllerCalibrationInfo
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.ClassicControllerCalibrationInfo
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.ClassicControllerCalibrationInfo
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MaxTriggerL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MaxTriggerR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MaxXL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MaxXR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MaxYL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MaxYR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MidXL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MidXR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MidYL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MidYR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MinTriggerL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MinTriggerR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MinXL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MinXR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MinYL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerCalibrationInfo.MinYR
+Info: BuildAssembler: Building topic T:WiimoteLib.ClassicControllerState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.ClassicControllerState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.ClassicControllerState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.ClassicControllerState
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerState.ButtonState
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerState.CalibrationInfo
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerState.JoystickL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerState.JoystickR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerState.RawJoystickL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerState.RawJoystickR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerState.RawTriggerL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerState.RawTriggerR
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerState.TriggerL
+Info: BuildAssembler: Building topic F:WiimoteLib.ClassicControllerState.TriggerR
+Info: BuildAssembler: Building topic T:WiimoteLib.DrumsState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.DrumsState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.DrumsState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.DrumsState
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.Blue
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.BlueVelocity
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.Green
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.GreenVelocity
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.Joystick
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.Minus
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.Orange
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.OrangeVelocity
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.Pedal
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.PedalVelocity
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.Plus
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.RawJoystick
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.Red
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.RedVelocity
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.Yellow
+Info: BuildAssembler: Building topic F:WiimoteLib.DrumsState.YellowVelocity
+Info: BuildAssembler: Building topic T:WiimoteLib.ExtensionType
+Info: BuildAssembler: Building topic T:WiimoteLib.GuitarButtonState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.GuitarButtonState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.GuitarButtonState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.GuitarButtonState
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarButtonState.Minus
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarButtonState.Plus
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarButtonState.StrumDown
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarButtonState.StrumUp
+Info: BuildAssembler: Building topic T:WiimoteLib.GuitarFretButtonState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.GuitarFretButtonState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.GuitarFretButtonState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.GuitarFretButtonState
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarFretButtonState.Blue
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarFretButtonState.Green
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarFretButtonState.Orange
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarFretButtonState.Red
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarFretButtonState.Yellow
+Info: BuildAssembler: Building topic T:WiimoteLib.GuitarState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.GuitarState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.GuitarState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.GuitarState
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarState.ButtonState
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarState.FretButtonState
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarState.GuitarType
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarState.Joystick
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarState.RawJoystick
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarState.RawWhammyBar
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarState.TouchbarState
+Info: BuildAssembler: Building topic F:WiimoteLib.GuitarState.WhammyBar
+Info: BuildAssembler: Building topic T:WiimoteLib.GuitarType
+Info: BuildAssembler: Building topic T:WiimoteLib.InputReport
+Info: BuildAssembler: Building topic T:WiimoteLib.IRMode
+Info: BuildAssembler: Building topic T:WiimoteLib.IRSensitivity
+Info: BuildAssembler: Building topic T:WiimoteLib.IRSensor
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.IRSensor
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.IRSensor
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.IRSensor
+Info: BuildAssembler: Building topic F:WiimoteLib.IRSensor.Found
+Info: BuildAssembler: Building topic F:WiimoteLib.IRSensor.Position
+Info: BuildAssembler: Building topic F:WiimoteLib.IRSensor.RawPosition
+Info: BuildAssembler: Building topic F:WiimoteLib.IRSensor.Size
+Info: BuildAssembler: Building topic M:WiimoteLib.IRSensor.ToString
+Info: BuildAssembler: Building topic T:WiimoteLib.IRState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.IRState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.IRState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.IRState
+Info: BuildAssembler: Building topic F:WiimoteLib.IRState.IRSensors
+Info: BuildAssembler: Building topic F:WiimoteLib.IRState.Midpoint
+Info: BuildAssembler: Building topic F:WiimoteLib.IRState.Mode
+Info: BuildAssembler: Building topic F:WiimoteLib.IRState.RawMidpoint
+Info: BuildAssembler: Building topic T:WiimoteLib.LEDState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.LEDState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.LEDState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.LEDState
+Info: BuildAssembler: Building topic F:WiimoteLib.LEDState.LED1
+Info: BuildAssembler: Building topic F:WiimoteLib.LEDState.LED2
+Info: BuildAssembler: Building topic F:WiimoteLib.LEDState.LED3
+Info: BuildAssembler: Building topic F:WiimoteLib.LEDState.LED4
+Info: BuildAssembler: Building topic T:WiimoteLib.NunchukCalibrationInfo
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.NunchukCalibrationInfo
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.NunchukCalibrationInfo
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.NunchukCalibrationInfo
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukCalibrationInfo.AccelCalibration
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukCalibrationInfo.MaxX
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukCalibrationInfo.MaxY
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukCalibrationInfo.MidX
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukCalibrationInfo.MidY
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukCalibrationInfo.MinX
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukCalibrationInfo.MinY
+Info: BuildAssembler: Building topic T:WiimoteLib.NunchukState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.NunchukState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.NunchukState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.NunchukState
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukState.AccelState
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukState.C
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukState.CalibrationInfo
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukState.Joystick
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukState.RawJoystick
+Info: BuildAssembler: Building topic F:WiimoteLib.NunchukState.Z
+Info: BuildAssembler: Building topic T:WiimoteLib.Point
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.Point
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.Point
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.Point
+Info: BuildAssembler: Building topic M:WiimoteLib.Point.ToString
+Info: BuildAssembler: Building topic F:WiimoteLib.Point.X
+Info: BuildAssembler: Building topic F:WiimoteLib.Point.Y
+Info: BuildAssembler: Building topic T:WiimoteLib.Point3
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.Point3
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.Point3
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.Point3
+Info: BuildAssembler: Building topic M:WiimoteLib.Point3.ToString
+Info: BuildAssembler: Building topic F:WiimoteLib.Point3.X
+Info: BuildAssembler: Building topic F:WiimoteLib.Point3.Y
+Info: BuildAssembler: Building topic F:WiimoteLib.Point3.Z
+Info: BuildAssembler: Building topic T:WiimoteLib.Point3F
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.Point3F
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.Point3F
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.Point3F
+Info: BuildAssembler: Building topic M:WiimoteLib.Point3F.ToString
+Info: BuildAssembler: Building topic F:WiimoteLib.Point3F.X
+Info: BuildAssembler: Building topic F:WiimoteLib.Point3F.Y
+Info: BuildAssembler: Building topic F:WiimoteLib.Point3F.Z
+Info: BuildAssembler: Building topic T:WiimoteLib.PointF
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.PointF
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.PointF
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.PointF
+Info: BuildAssembler: Building topic M:WiimoteLib.PointF.ToString
+Info: BuildAssembler: Building topic F:WiimoteLib.PointF.X
+Info: BuildAssembler: Building topic F:WiimoteLib.PointF.Y
+Info: BuildAssembler: Building topic T:WiimoteLib.Wiimote
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.Wiimote
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.Wiimote
+Info: BuildAssembler: Building topic Properties.T:WiimoteLib.Wiimote
+Info: BuildAssembler: Building topic Events.T:WiimoteLib.Wiimote
+Info: BuildAssembler: Building topic Overload:WiimoteLib.Wiimote.Dispose
+Info: BuildAssembler: Building topic Overload:WiimoteLib.Wiimote.SetLEDs
+Info: BuildAssembler: Building topic Overload:WiimoteLib.Wiimote.SetReportType
+Info: BuildAssembler: Building topic Overload:WiimoteLib.Wiimote.WriteData
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.#ctor
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.Connect
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.Disconnect
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.Dispose
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.Dispose(System.Boolean)
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.GetStatus
+Info: BuildAssembler: Building topic P:WiimoteLib.Wiimote.HIDDevicePath
+Info: BuildAssembler: Building topic P:WiimoteLib.Wiimote.ID
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.ReadData(System.Int32,System.Int16)
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.SetLEDs(System.Boolean,System.Boolean,System.Boolean,System.Boolean)
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.SetLEDs(System.Int32)
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.SetReportType(WiimoteLib.InputReport,System.Boolean)
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.SetReportType(WiimoteLib.InputReport,WiimoteLib.IRSensitivity,System.Boolean)
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.SetRumble(System.Boolean)
+Info: BuildAssembler: Building topic E:WiimoteLib.Wiimote.WiimoteChanged
+Info: BuildAssembler: Building topic E:WiimoteLib.Wiimote.WiimoteExtensionChanged
+Info: BuildAssembler: Building topic P:WiimoteLib.Wiimote.WiimoteState
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.WriteData(System.Int32,System.Byte)
+Info: BuildAssembler: Building topic M:WiimoteLib.Wiimote.WriteData(System.Int32,System.Byte,System.Byte[])
+Info: BuildAssembler: Building topic T:WiimoteLib.WiimoteChangedEventArgs
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.WiimoteChangedEventArgs
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.WiimoteChangedEventArgs
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.WiimoteChangedEventArgs
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteChangedEventArgs.#ctor(WiimoteLib.WiimoteState)
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteChangedEventArgs.WiimoteState
+Info: BuildAssembler: Building topic T:WiimoteLib.WiimoteCollection
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.WiimoteCollection
+Info: ShowMissingComponent: Auto-documenting constructor M:WiimoteLib.WiimoteCollection.#ctor
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.WiimoteCollection
+Info: BuildAssembler: Building topic Properties.T:WiimoteLib.WiimoteCollection
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteCollection.#ctor
+Info: ShowMissingComponent: Auto-documenting constructor M:WiimoteLib.WiimoteCollection.#ctor
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteCollection.FindAllWiimotes
+Info: BuildAssembler: Building topic T:WiimoteLib.WiimoteException
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.WiimoteException
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.WiimoteException
+Info: BuildAssembler: Building topic Properties.T:WiimoteLib.WiimoteException
+Info: BuildAssembler: Building topic Overload:WiimoteLib.WiimoteException.#ctor
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteException.#ctor
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteException.#ctor(System.String)
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteException.#ctor(System.String,System.Exception)
+Info: BuildAssembler: Building topic T:WiimoteLib.WiimoteExtensionChangedEventArgs
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.WiimoteExtensionChangedEventArgs
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.WiimoteExtensionChangedEventArgs
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.WiimoteExtensionChangedEventArgs
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteExtensionChangedEventArgs.#ctor(WiimoteLib.ExtensionType,System.Boolean)
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteExtensionChangedEventArgs.ExtensionType
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteExtensionChangedEventArgs.Inserted
+Info: BuildAssembler: Building topic T:WiimoteLib.WiimoteNotFoundException
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.WiimoteNotFoundException
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.WiimoteNotFoundException
+Info: BuildAssembler: Building topic Properties.T:WiimoteLib.WiimoteNotFoundException
+Info: BuildAssembler: Building topic Overload:WiimoteLib.WiimoteNotFoundException.#ctor
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteNotFoundException.#ctor
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteNotFoundException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteNotFoundException.#ctor(System.String)
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteNotFoundException.#ctor(System.String,System.Exception)
+Info: BuildAssembler: Building topic T:WiimoteLib.WiimoteState
+Info: BuildAssembler: Building topic AllMembers.T:WiimoteLib.WiimoteState
+Info: BuildAssembler: Building topic Methods.T:WiimoteLib.WiimoteState
+Info: BuildAssembler: Building topic Fields.T:WiimoteLib.WiimoteState
+Info: BuildAssembler: Building topic M:WiimoteLib.WiimoteState.#ctor
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.AccelCalibrationInfo
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.AccelState
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.BalanceBoardState
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.Battery
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.BatteryRaw
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.ButtonState
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.ClassicControllerState
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.DrumsState
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.Extension
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.ExtensionType
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.GuitarState
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.IRState
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.LEDState
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.NunchukState
+Info: BuildAssembler: Building topic F:WiimoteLib.WiimoteState.Rumble
+Info: Processed 334 topics
+    Last step completed in 00:00:49.2793
+</buildStep>
+<buildStep step="GenerateIntermediateTableOfContent">
+Generating intermediate table of content file...
+[C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\GenerateIntermediateTOC.bat]
+XslTransform (v2.4.10520.1)
+Copyright c Microsoft 2005-2006
+Info: Applying XSL transformation 'C:\Program Files (x86)\Sandcastle\ProductionTransforms\CreateVSToc.xsl'.
+    Last step completed in 00:00:00.2300
+</buildStep>
+<buildStep step="ExtractingHtmlInfo">
+Extracting HTML info for Help 1.x and/or website...
+[C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\ExtractHtmlInfo.bat]
+Sandcastle Help File Builder HTML Extract, version 1.7.0.0
+Copyright c 2008, Eric Woodruff, All Rights Reserved
+E-Mail: Eric@EWoodruff.us
+
+Using LCID '1033', code page '65001', encoding charset 'UTF-8'.
+Processed 338 HTML files
+Sorting keywords and generating See Also indices
+Saving Help 1.x keyword index to C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\WiimoteLib.hhk
+Saving Help 1.x table of content to C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\WiimoteLib.hhc
+    Last step completed in 00:00:00.3900
+</buildStep>
+<buildStep step="GenerateHelpFormatTableOfContent">
+Generating HTML Help 1.x table of content file...
+    Last step completed in 00:00:00.0100
+</buildStep>
+<buildStep step="UpdateTableOfContent">
+Updating table of content with additional content items and determining default topic...
+    Last step completed in 00:00:00.0075
+</buildStep>
+<buildStep step="GenerateHelpFileIndex">
+Generating HTML Help 1.x index file...
+    Last step completed in 00:00:00.0025
+</buildStep>
+<buildStep step="GenerateHelpProject">
+Generating HTML Help 1.x project file...
+    Last step completed in 00:00:00.0075
+</buildStep>
+<buildStep step="CompilingHelpFile">
+Compiling HTML Help 1.x file...
+[C:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Build1xHelpFile.bat]
+Microsoft HTML Help Compiler 4.74.8702
+
+
+
+Compiling c:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\WiimoteLib.chm
+
+
+
+
+
+Compile time: 0 minutes, 2 seconds
+
+340	Topics
+
+4,320	Local links
+
+2,466	Internet links
+
+0	Graphics
+
+
+
+
+
+Created c:\Projects\Personal\Wiimote\WiimoteCS\WiimoteLib\docs\APIHelp\Help\Working\Output\WiimoteLib.chm, 566,237 bytes
+
+Compression decreased file by 3,931,859 bytes.
+
+    Last step completed in 00:00:03.2125
+</buildStep>
+<buildStep step="CleanIntermediates">
+Removing intermediate files...
+    Last step completed in 00:00:00.1125
+</buildStep>
+<buildStep step="Completed">
+
+Build completed successfully.  Total time: 00:00:56.8869
+
+</buildStep>
+</shfbBuild>
