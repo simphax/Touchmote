@@ -423,12 +423,13 @@ namespace WiiTUIO.Provider
             // Check we have a valid device.
             if (this.pDevice == null)
                 return;
-
+            /*
             // If an extension is attached at runtime we want to enable it.
             if (e.Inserted)
                 this.pDevice.SetReportType(InputReport.IRExtensionAccel, true);
             else
                 this.pDevice.SetReportType(InputReport.IRAccel, true);
+             * */
         }
 
 
