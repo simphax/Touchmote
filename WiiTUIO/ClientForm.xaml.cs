@@ -184,8 +184,16 @@ namespace WiiTUIO
                 this.bConnected = false;
 
                 tbConnected.Visibility = Visibility.Collapsed;
-                tbWaiting.Visibility = Visibility.Collapsed;
-                tbConnect.Visibility = Visibility.Visible;
+                if (tryingToConnect)
+                {
+                    tbWaiting.Visibility = Visibility.Visible;
+                    tbConnect.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    tbWaiting.Visibility = Visibility.Collapsed;
+                    tbConnect.Visibility = Visibility.Visible;
+                }
 
                 batteryLabel.Content = "0%";
 
@@ -491,7 +499,7 @@ namespace WiiTUIO
                 // Tear down.
                 try
                 {
-                    //this.disconnectProvider();
+                    this.pWiiProvider.stop();
                 }
                 catch { }
 
@@ -522,7 +530,7 @@ namespace WiiTUIO
                 // Tear down.
                 try
                 {
-                    //this.disconnectProvider();
+                    
                 }
                 catch { }
 
