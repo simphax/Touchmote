@@ -227,14 +227,13 @@ namespace WiiCPP {
 								{
 									if (btdi.fRemembered)
 									{
+										listener->pairingMessage("Removing old Wiimote",WiiPairListener::MessageType::SUCCESS);
 										// Make Windows forget pairing
 										if (ShowErrorCode(_T("BluetoothRemoveDevice"), BluetoothRemoveDevice(&btdi.Address)) != ERROR_SUCCESS)
 										{
-											error = TRUE;
 											listener->pairingMessage("Could not remove old device",WiiPairListener::MessageType::ERR);
-										} else {
-											listener->pairingMessage("Removing old Wiimote",WiiPairListener::MessageType::SUCCESS);
 										}
+										error = TRUE;
 									} else {
 										listener->pairingMessage("Found a new Wiimote",WiiPairListener::MessageType::SUCCESS);
 									}
