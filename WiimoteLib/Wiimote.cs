@@ -307,26 +307,30 @@ namespace WiimoteLib
 			// grab the byte buffer
 			byte[] buff = (byte[])ar.AsyncState;
 
-			try
-			{
-				// end the current read
-				mStream.EndRead(ar);
+            try
+            {
+                // end the current read
+                mStream.EndRead(ar);
 
-				// parse it
-				if(ParseInputReport(buff))
-				{
-					// post an event
-					if(WiimoteChanged != null)
-						WiimoteChanged(this, new WiimoteChangedEventArgs(mWiimoteState));
-				}
+                // parse it
+                if (ParseInputReport(buff))
+                {
+                    // post an event
+                    if (WiimoteChanged != null)
+                        WiimoteChanged(this, new WiimoteChangedEventArgs(mWiimoteState));
+                }
 
-				// start reading again
-				BeginAsyncRead();
-			}
-			catch(OperationCanceledException)
-			{
-				Debug.WriteLine("OperationCanceledException");
-			}
+                // start reading again
+                BeginAsyncRead();
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.WriteLine("OperationCanceledException");
+            }
+            catch (IOException)
+            {
+                Debug.WriteLine("IOException");
+            }
 		}
 
 		/// <summary>
