@@ -503,26 +503,26 @@ namespace WiiTUIO.Provider
 
         event Action<int> IProvider.OnConnect
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add {  }
+            remove {  }
         }
 
         event Action<int> IProvider.OnDisconnect
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add {  }
+            remove {  }
         }
 
         event Action<int> IProvider.OnBatteryUpdate
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add {  }
+            remove {  }
         }
 
         event EventHandler<FrameEventArgs> IProvider.OnNewFrame
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add {  }
+            remove {  }
         }
 
     }
