@@ -220,13 +220,13 @@ namespace WiiTUIO.Provider
         public void start()
         {
             // Ensure we cannot process any events.
-            //pDeviceMutex.WaitOne();
+            pDeviceMutex.WaitOne();
 
             // Create a new reference to a wiimote device.
             Exception pError = null;
             if (!this.initialiseWiimoteConnection(out pError))
             {
-                //pDeviceMutex.ReleaseMutex();
+                pDeviceMutex.ReleaseMutex();
                 throw new Exception("Could not establish connection to Wiimote: " + pError.Message, pError);
             }
 
@@ -253,7 +253,7 @@ namespace WiiTUIO.Provider
             OnConnect(1);
 
             // Release processing.
-            //pDeviceMutex.ReleaseMutex();
+            pDeviceMutex.ReleaseMutex();
         }
 
         /// <summary>
