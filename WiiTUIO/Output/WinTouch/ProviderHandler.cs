@@ -64,11 +64,20 @@ namespace WiiTUIO.WinTouch
 
         public void connect()
         {
+            // Access the HID device driver.
+            IEnumerable<HidDevice> devices = HidDevices.Enumerate(0xdddd, 0x0001);
+            this.pDevice = devices.FirstOrDefault();
+            if (this.pDevice == null)
+                throw new InvalidOperationException("Universal Software HID driver was not found. Please ensure that it is installed.");
+            this.pDevice.OpenDevice(HidDevice.DeviceMode.Overlapped, HidDevice.DeviceMode.NonOverlapped);
             OnConnect();
         }
 
         public void disconnect()
         {
+            if(this.pDevice != null)
+                this.pDevice.Dispose();
+            this.pDevice = null;
             OnDisconnect();
         }
 
@@ -118,13 +127,6 @@ namespace WiiTUIO.WinTouch
             this.lCurrentContacts = new Queue<HidContactInfo>();
             this.dLastContacts = new Dictionary<int, HidContactInfo>();
             this.pContactLock = new Mutex();
-
-            // Access the HID device driver.
-            IEnumerable<HidDevice> devices = HidDevices.Enumerate(0xdddd, 0x0001);
-            this.pDevice = devices.FirstOrDefault();
-            if (this.pDevice == null)
-                throw new InvalidOperationException("Universal Software HID driver was not found. Please ensure that it is installed.");
-            this.pDevice.OpenDevice(HidDevice.DeviceMode.Overlapped, HidDevice.DeviceMode.NonOverlapped);
         }
 
         /// <summary>

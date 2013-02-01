@@ -525,5 +525,10 @@ namespace WiiTUIO.Provider
             remove {  }
         }
 
+
+
+        public event Action<int> OnButtonDown;
+
+        public event Action<int> OnButtonUp;
     }
 }

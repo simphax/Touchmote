@@ -372,8 +372,8 @@ namespace WiiTUIO
         /// <returns></returns>
         private bool createProviderHandler()
         {
-            try
-            {
+            //try
+            //{
                 // Close any open connections.
                 disconnectProviderHandler();
 
@@ -381,8 +381,9 @@ namespace WiiTUIO
                 this.pProviderHandler = OutputFactory.createProviderHandler(Settings.Default.output);
                 this.pProviderHandler.OnConnect += pProviderHandler_OnConnect;
                 this.pProviderHandler.OnDisconnect += pProviderHandler_OnDisconnect;
+                
                 return true;
-            }
+            /*}
             catch (Exception pError)
             {
                 // Tear down.
@@ -397,7 +398,7 @@ namespace WiiTUIO
                 this.driverNotInstalled();
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
-            }
+            }*/
         }
 
         void pProviderHandler_OnDisconnect()
@@ -519,6 +520,8 @@ namespace WiiTUIO
             {
                 // Connect a Wiimote, hook events then start.
                 this.pWiiProvider = InputFactory.createInputProvider(Settings.Default.input);
+                this.pWiiProvider.OnButtonDown += pWiiProvider_OnButtonDown;
+                this.pWiiProvider.OnButtonUp += pWiiProvider_OnButtonUp;
                 this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
                 this.pWiiProvider.OnBatteryUpdate += new Action<int>(pWiiProvider_OnBatteryUpdate);
                 this.pWiiProvider.OnConnect += new Action<int>(pWiiProvider_OnConnect);
@@ -539,6 +542,16 @@ namespace WiiTUIO
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+        }
+
+        void pWiiProvider_OnButtonUp(int obj)
+        {
+            this.connectProviderHandler();
+        }
+
+        void pWiiProvider_OnButtonDown(int obj)
+        {
+            this.disconnectProviderHandler();
         }
 
         /// <summary>

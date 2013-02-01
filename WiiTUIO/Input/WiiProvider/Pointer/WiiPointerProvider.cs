@@ -41,7 +41,7 @@ namespace WiiTUIO.Provider
 
         private bool isFirstTouch = true;
 
-        struct WiimoteButtonsStruct
+        public struct WiimoteButtonsStruct
         {
             public bool Up;
             public bool Down;
@@ -630,9 +630,25 @@ namespace WiiTUIO.Provider
                     PressedButtons.Minus = false;
                 }
 
-                if (ws.ButtonState.One)
+
+                if (ws.ButtonState.One && !PressedButtons.One)
                 {
                     ShowMouse = ShowMouse ? false : true;
+                    PressedButtons.One = true;
+                }
+                else if (PressedButtons.One && !ws.ButtonState.One)
+                {
+                    PressedButtons.One = false;
+                }
+                if (ws.ButtonState.Two && !PressedButtons.Two)
+                {
+                    OnButtonDown(2);
+                    PressedButtons.Two = true;
+                }
+                else if (PressedButtons.Two && !ws.ButtonState.Two)
+                {
+                    OnButtonUp(2);
+                    PressedButtons.Two = false;
                 }
 
             }
@@ -665,5 +681,10 @@ namespace WiiTUIO.Provider
         {
             return this.settingsControl;
         }
+
+
+        public event Action<int> OnButtonDown;
+
+        public event Action<int> OnButtonUp;
     }
 }
