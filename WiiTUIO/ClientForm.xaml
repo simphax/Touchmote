@@ -131,11 +131,11 @@
                     <Image Height="74" Canvas.Left="105" Canvas.Top="46" Width="82" Source="Resources/checkmark-big.png"/>
                 </Canvas>
             </Canvas>
-            <Canvas Name="infoOverlay" Height="134" Width="286" Background="White" MouseLeftButtonDown="infoOverlay_MouseDown" Visibility="Hidden">
+            <Canvas Name="infoOverlay" Height="134" Width="286" Background="White" MouseLeftButtonDown="infoOverlay_MouseDown" Visibility="Collapsed">
                 <Canvas.Effect>
                     <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
                 </Canvas.Effect>
-                <Label Content="Touchmote v1.0b1" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
+                <Label Name="versionLabel" Content="Touchmote v1.0b2" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
                 <TextBlock Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="48" Height="54" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
                         Touchmote provides a way for a Wiimote to communicate with Windows as a touch device
                 </TextBlock>
