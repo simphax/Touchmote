@@ -81,6 +81,7 @@ namespace WiiTUIO
                     this.cbiPen.IsSelected = true;
                     break;
             }
+            /*
             switch (outputType)
             {
                 case OutputFactory.OutputType.TOUCH:
@@ -90,6 +91,7 @@ namespace WiiTUIO
                     this.cbiTUIO.IsSelected = true;
                     break;
             }
+             * */
 
             this.cbConnectOnStart.IsChecked = Settings.Default.connectOnStart;
             this.cbWindowsStart.IsChecked = this.winStartupRegisterKey.GetValue("Touchmote") != null;
@@ -106,11 +108,12 @@ namespace WiiTUIO
                 this.tbConnect.Visibility = Visibility.Hidden;
                 this.tbPair.Visibility = Visibility.Visible;
             }
-            
+            /*
             if (!ProviderHandler.HasDriver())
             {
                 this.driverNotInstalled();
             }
+             * */
 
         }
 
@@ -721,7 +724,7 @@ namespace WiiTUIO
                 this.providerSettingsOverlay.Visibility = Visibility.Visible;
             }
         }
-
+        /*
         private void OutputComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (OutputComboBox.SelectedItem != null)
@@ -741,7 +744,7 @@ namespace WiiTUIO
                 }
             }
         }
-
+        */
         private void btnOutputSettings_Click(object sender, RoutedEventArgs e)
         {
             if (this.pProviderHandler != null)
