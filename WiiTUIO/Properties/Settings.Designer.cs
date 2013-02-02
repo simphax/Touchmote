@@ -61,7 +61,7 @@ namespace WiiTUIO.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("touch")]
+        [global::System.Configuration.DefaultSettingValueAttribute("tuio")]
         public string output {
             get {
                 return ((string)(this["output"]));

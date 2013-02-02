@@ -227,8 +227,8 @@ namespace WiiTUIO.Provider
             Settings.Default.SettingChanging += SettingChanging;
 
             this.settingsControl = new WiiPointerProviderSettings();
-            
 
+            this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
         }
 
         private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
