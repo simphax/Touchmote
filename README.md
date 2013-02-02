@@ -46,6 +46,10 @@ WPFNotifyIcon:		http://www.hardcodet.net/projects/wpf-notifyicon<br />
 
 Release History
 ==============
+**v1.0 beta 3**<br />
+- Forgot to enable driver detection
+- Added error messaging
+
 **v1.0 beta 2**<br />
 - Press minus or plus to zoom in or out
 - Press 2 to reset connection to touch driver
