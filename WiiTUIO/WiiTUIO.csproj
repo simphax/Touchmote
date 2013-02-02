@@ -207,6 +207,7 @@
       <DependentUpon>CalibrationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Launcher.cs" />
+    <Compile Include="Output\DrawingProviderHandler.cs" />
     <Compile Include="Output\IProviderHandler.cs" />
     <Compile Include="Output\OutputFactory.cs" />
     <Compile Include="Output\Settings\TUIOSettings.xaml.cs">

@@ -12,7 +12,8 @@ namespace WiiTUIO.Output
         public enum OutputType
         {
             TOUCH,
-            TUIO
+            TUIO,
+            DRAW
         }
 
         public static string getType(OutputType type)
@@ -23,6 +24,8 @@ namespace WiiTUIO.Output
                     return "touch";
                 case OutputType.TUIO:
                     return "tuio";
+                case OutputType.DRAW:
+                    return "draw";
                 default:
                     return "touch";
             }
@@ -37,6 +40,10 @@ namespace WiiTUIO.Output
             else if (name == "tuio")
             {
                 return OutputType.TUIO;
+            }
+            else if (name == "draw")
+            {
+                return OutputType.DRAW;
             }
             return OutputType.TOUCH; //Default to touch
         }
@@ -54,6 +61,8 @@ namespace WiiTUIO.Output
                     return new ProviderHandler();
                 case OutputType.TUIO:
                     return new TUIOProviderHandler();
+                case OutputType.DRAW:
+                    return new DrawingProviderHandler();
                 default:
                     return null;
             }
