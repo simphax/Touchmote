@@ -511,7 +511,8 @@ namespace WiiTUIO
                 catch { }
 
                 // Report the error.
-                showMessage(pError.Message, MessageType.Error);
+                Console.WriteLine(pError.Message);
+                //showMessage(pError.Message, MessageType.Error);
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
