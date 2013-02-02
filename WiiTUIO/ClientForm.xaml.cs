@@ -106,6 +106,11 @@ namespace WiiTUIO
                 this.tbConnect.Visibility = Visibility.Hidden;
                 this.tbPair.Visibility = Visibility.Visible;
             }
+            
+            if (!ProviderHandler.HasDriver())
+            {
+                this.driverNotInstalled();
+            }
 
         }
 
@@ -261,6 +266,8 @@ namespace WiiTUIO
                 pMessage.FontSize = 16.0;
             }
 
+            this.showMessage(pMessage, eType);
+
             }), null);
         }
 
@@ -274,8 +281,8 @@ namespace WiiTUIO
             Dispatcher.BeginInvoke(new Action(delegate()
             {
             // Show (and possibly initialise) the error message overlay
-            brdOverlay.Height = this.ActualHeight - 8;
-            brdOverlay.Width = this.ActualWidth - 8;
+            //brdOverlay.Height = this.ActualHeight - 8;
+            //brdOverlay.Width = this.ActualWidth - 8;
             brdOverlay.Opacity = 0.0;
             brdOverlay.Visibility = System.Windows.Visibility.Visible;
             switch (eType)
@@ -372,8 +379,8 @@ namespace WiiTUIO
         /// <returns></returns>
         private bool createProviderHandler()
         {
-            //try
-            //{
+            try
+            {
                 // Close any open connections.
                 disconnectProviderHandler();
 
@@ -383,7 +390,7 @@ namespace WiiTUIO
                 this.pProviderHandler.OnDisconnect += pProviderHandler_OnDisconnect;
                 
                 return true;
-            /*}
+            }
             catch (Exception pError)
             {
                 // Tear down.
@@ -395,10 +402,9 @@ namespace WiiTUIO
 
                 // Report the error.
                 showMessage(pError.Message, MessageType.Error);
-                this.driverNotInstalled();
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
-            }*/
+            }
         }
 
         void pProviderHandler_OnDisconnect()

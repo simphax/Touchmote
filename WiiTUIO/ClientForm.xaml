@@ -143,9 +143,11 @@
                         Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for license and credits
                 </TextBlock>
             </Canvas>
-            <Border Name="brdOverlay" Height="134" Width="286" MouseDown="brdOverlay_MouseDown" Visibility="Hidden" Padding="5" >
-            </Border>
+            
         </Canvas>
-
+        <Canvas Margin="2,2,3,3">
+            <Border Name="brdOverlay" Height="165" Width="330" MouseDown="brdOverlay_MouseDown" Visibility="Hidden" Padding="5" >
+        </Border>
+        </Canvas>
     </Grid>
 </UserControl>
