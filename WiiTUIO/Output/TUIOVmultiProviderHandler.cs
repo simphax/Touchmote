@@ -10,6 +10,7 @@ using System.Configuration;
 using System.IO;
 using Microsoft.Win32;
 using System.Security.Principal;
+using HidLibrary;
 
 namespace WiiTUIO.Output
 {
@@ -21,9 +22,34 @@ namespace WiiTUIO.Output
 
         private TUIOProviderHandler TUIOHandler;
 
-        private string etd_ServiceName = "Tuio-To-vmulti-Device1";
+        private static string etd_ServiceName = "Tuio-To-vmulti-Device1";
         private string edt_dataFolder;
 
+
+        public static bool HasDriver()
+        {
+            IEnumerable<HidDevice> devices = HidDevices.Enumerate();
+            bool hasDriver = false;
+            foreach (HidDevice device in devices)
+            {
+                if (device.DevicePath.Substring(0,15) == "\\\\?\\hid#vmultia")
+                {
+                    hasDriver = true;
+                }
+            }
+            if (hasDriver)
+            {
+                ServiceController[] services = ServiceController.GetServices();
+                foreach (ServiceController service in services)
+                {
+                    if (service.ServiceName == etd_ServiceName)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         public TUIOVmultiProviderHandler()
         {

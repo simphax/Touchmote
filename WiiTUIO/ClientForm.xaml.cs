@@ -108,12 +108,11 @@ namespace WiiTUIO
                 this.tbConnect.Visibility = Visibility.Hidden;
                 this.tbPair.Visibility = Visibility.Visible;
             }
-            /*
-            if (!ProviderHandler.HasDriver())
+            
+            if (!TUIOVmultiProviderHandler.HasDriver())
             {
                 this.driverNotInstalled();
             }
-             * */
 
         }
 
@@ -933,7 +932,7 @@ namespace WiiTUIO
 
         private void linkInstallDriver_Click(object sender, RoutedEventArgs e)
         {
-            Launcher.Launch("Driver", "install driver.cmd","",new Action(delegate()
+            Launcher.Launch("", "elevate", "DriverInstall.exe -install", new Action(delegate()
             {
                 
             }));

@@ -74,7 +74,7 @@
                 </Canvas.Effect>
                 <Label Content="Driver Missing" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18" Foreground="#FFD13B3B"/>
                 <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="42" Height="40" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
-                        Install the UniSoftHID driver to be able use Touchmote as a multi touch device.
+                        Install the virtual driver to be able use Touchmote as a multi touch device.
                 </TextBlock>
                 <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="80" Height="25" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
                     <Hyperlink Click="linkInstallDriver_Click" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">Click here to install
