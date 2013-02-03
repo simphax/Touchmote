@@ -24,10 +24,36 @@ namespace DriverInstall
         private string etd_ServiceFilename = "Driver\\tuio_vmulti_service.exe";
         private string edt_dataFolder = "C:\\Users\\AppData\\TUIO-To-Vmulti\\Data\\";
 
+        private bool shutdown = false;
+
         public MainWindow()
         {
             InitializeComponent();
 
+            foreach (string arg in Environment.GetCommandLineArgs())
+            {
+                if (arg == "-silent")
+                {
+                    this.Visibility = Visibility.Hidden;
+                    this.shutdown = true;
+                }
+            }
+
+            foreach (string arg in Environment.GetCommandLineArgs())
+            {
+                if (arg == "-install")
+                {
+                    this.installAll();
+                }
+
+
+                if (arg == "-uninstall")
+                {
+                    this.uninstallAll();
+                }
+
+            }
+            
         }
 
         private void consoleLine(string text) {
@@ -37,18 +63,23 @@ namespace DriverInstall
 
         private void installAll()
         {
-
+            this.uninstallDriver();
             this.installDriver();
             this.store_settings();
+            this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
             this.install_service(etd_ServiceName, etd_ServiceFilename, "3333");
             this.give_service_permissions(etd_ServiceName);
+            if (shutdown)
+                Application.Current.Shutdown(1);
         }
 
         private void uninstallAll()
         {
-
+            this.uninstallDriver();
             this.uninstallDriver();
             this.uninstall_service(etd_ServiceName,etd_ServiceFilename);
+            if (shutdown)
+                Application.Current.Shutdown(1);
         }
 
         private void installDriver()
@@ -172,7 +203,6 @@ namespace DriverInstall
                 System.Diagnostics.Process proc = new System.Diagnostics.Process();
                 proc.StartInfo = procStartInfo;
                 proc.Start();
-                consoleLine(proc.StandardOutput.ReadToEnd());
             }
             catch (Exception objException)
             {
@@ -182,7 +212,6 @@ namespace DriverInstall
 
         private void store_settings()
         {
-            Console.WriteLine("Data folder = " + this.edt_dataFolder);
 
             System.IO.Directory.CreateDirectory(this.edt_dataFolder);
 
@@ -204,9 +233,6 @@ namespace DriverInstall
         private void install_service(string service_name, string file_name, string port)
         {
             consoleLine("Installing service : " + service_name + " : " + file_name + " , port : " + port);
-
-            this.uninstall_service(service_name,file_name);
-
             //status = sc.Status.ToString();
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = file_name;
