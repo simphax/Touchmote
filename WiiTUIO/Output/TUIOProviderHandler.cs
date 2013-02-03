@@ -81,7 +81,10 @@ namespace WiiTUIO.Output
             // Reconnect with the new API.
             pUDPWriter = new OSCTransmitter(WiiTUIO.Properties.Settings.Default.tuio_IP, WiiTUIO.Properties.Settings.Default.tuio_port);
             pUDPWriter.Connect();
-            OnConnect();
+            if (OnConnect != null)
+            {
+                OnConnect();
+            }
         }
 
         public void disconnect()
@@ -89,7 +92,10 @@ namespace WiiTUIO.Output
             if (pUDPWriter != null)
                 pUDPWriter.Close();
             pUDPWriter = null;
-            OnDisconnect();
+            if (OnDisconnect != null)
+            {
+                OnDisconnect();
+            }
         }
 
 

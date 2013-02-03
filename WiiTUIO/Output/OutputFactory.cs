@@ -13,6 +13,7 @@ namespace WiiTUIO.Output
         {
             TOUCH,
             TUIO,
+            TUIOTOUCH,
             DRAW
         }
 
@@ -24,6 +25,8 @@ namespace WiiTUIO.Output
                     return "touch";
                 case OutputType.TUIO:
                     return "tuio";
+                case OutputType.TUIOTOUCH:
+                    return "tuio-touch";
                 case OutputType.DRAW:
                     return "draw";
                 default:
@@ -40,6 +43,10 @@ namespace WiiTUIO.Output
             else if (name == "tuio")
             {
                 return OutputType.TUIO;
+            }
+            else if (name == "tuio-touch")
+            {
+                return OutputType.TUIOTOUCH;
             }
             else if (name == "draw")
             {
@@ -61,6 +68,8 @@ namespace WiiTUIO.Output
                     return new ProviderHandler();
                 case OutputType.TUIO:
                     return new TUIOProviderHandler();
+                case OutputType.TUIOTOUCH:
+                    return new TUIOVmultiProviderHandler();
                 case OutputType.DRAW:
                     return new DrawingProviderHandler();
                 default:
