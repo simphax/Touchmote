@@ -281,6 +281,8 @@ namespace WiiTUIO.Provider
         /// </summary>
         public void start()
         {
+
+            Launcher.Launch("Driver", "enablewiimote.cmd", "", null);
             // Ensure we cannot process any events.
             //pDeviceMutex.WaitOne();
 
@@ -338,6 +340,10 @@ namespace WiiTUIO.Provider
             pDeviceMutex.ReleaseMutex();
 
             MouseSimulator.ResetSystemCursor();
+
+
+            //Disable and enable Wiimote in device manager to disconnect it from the computer
+            Launcher.Launch("Driver", "disablewiimote.cmd", "", null);
 
             OnDisconnect(1);
         }

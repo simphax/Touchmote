@@ -933,7 +933,7 @@ namespace WiiTUIO
 
         private void linkInstallDriver_Click(object sender, RoutedEventArgs e)
         {
-            Launcher.LaunchAsAdministrator("install driver.cmd",new Action(delegate()
+            Launcher.Launch("Driver", "install driver.cmd","",new Action(delegate()
             {
                 
             }));

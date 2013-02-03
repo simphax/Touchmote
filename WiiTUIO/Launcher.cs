@@ -8,7 +8,9 @@ namespace WiiTUIO
     class Launcher
     {
 
-        public static void LaunchAsAdministrator(string file, Action callback)
+
+
+        public static void Launch(string relativePath, string file,string arguments, Action callback)
         {
             try
             {
@@ -19,17 +21,16 @@ namespace WiiTUIO
                 System.Diagnostics.ProcessStartInfo procStartInfo =
                     new System.Diagnostics.ProcessStartInfo();
 
-                procStartInfo.WorkingDirectory = System.AppDomain.CurrentDomain.BaseDirectory+"Driver\\";
+                procStartInfo.WorkingDirectory = System.AppDomain.CurrentDomain.BaseDirectory+relativePath+"\\";
                 
                 procStartInfo.FileName = procStartInfo.WorkingDirectory + file;
-                Console.WriteLine(procStartInfo.WorkingDirectory);
-                Console.WriteLine(procStartInfo.FileName);
+                procStartInfo.Arguments = arguments;
                 // The following commands are needed to redirect the standard output.
                 // This means that it will be redirected to the Process.StandardOutput StreamReader.
-                procStartInfo.RedirectStandardOutput = true;
+                procStartInfo.RedirectStandardOutput = false;
                 procStartInfo.UseShellExecute = false;
                 // Do not create the black window.
-                procStartInfo.CreateNoWindow = true;
+                procStartInfo.CreateNoWindow = false;
                 // Now we create a process, assign its ProcessStartInfo and start it
                 System.Diagnostics.Process proc = new System.Diagnostics.Process();
                 proc.StartInfo = procStartInfo;
@@ -39,7 +40,10 @@ namespace WiiTUIO
                 // Display the command output.
                 //Console.WriteLine(result);
                 proc.WaitForExit();
-                callback();
+                if (callback != null)
+                {
+                    callback();
+                }
             }
             catch (Exception objException)
             {
