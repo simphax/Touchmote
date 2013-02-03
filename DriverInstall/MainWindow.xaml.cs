@@ -22,6 +22,7 @@ namespace DriverInstall
     {
         private string etd_ServiceName = "Tuio-To-vmulti-Device1";
         private string etd_ServiceFilename = "Driver\\tuio_vmulti_service.exe";
+        private string edt_dataFolder = "C:\\Users\\AppData\\TUIO-To-Vmulti\\Data\\";
 
         public MainWindow()
         {
@@ -38,6 +39,7 @@ namespace DriverInstall
         {
 
             this.installDriver();
+            this.store_settings();
             this.install_service(etd_ServiceName, etd_ServiceFilename, "3333");
             this.give_service_permissions(etd_ServiceName);
         }
@@ -176,6 +178,27 @@ namespace DriverInstall
             {
                 consoleLine(objException.Message);
             }
+        }
+
+        private void store_settings()
+        {
+            Console.WriteLine("Data folder = " + this.edt_dataFolder);
+
+            System.IO.Directory.CreateDirectory(this.edt_dataFolder);
+
+            System.IO.File.WriteAllText(this.edt_dataFolder + "tuioport1.txt", "3333");
+            System.IO.File.WriteAllText(this.edt_dataFolder + "inverthorizontal1.txt", "false");
+            System.IO.File.WriteAllText(this.edt_dataFolder + "invertverticle1.txt", "false");
+            System.IO.File.WriteAllText(this.edt_dataFolder + "swapxy1.txt", "false");
+            System.IO.File.WriteAllText(this.edt_dataFolder + "xrange_min1.txt", "0");
+            System.IO.File.WriteAllText(this.edt_dataFolder + "xrange_max1.txt", "1");
+
+            System.IO.File.WriteAllText(this.edt_dataFolder + "yrange_min1.txt", "0");
+            System.IO.File.WriteAllText(this.edt_dataFolder + "yrange_max1.txt", "1");
+            System.IO.File.WriteAllText(this.edt_dataFolder + "x01.txt", "0");
+            System.IO.File.WriteAllText(this.edt_dataFolder + "y01.txt", "0");
+            System.IO.File.WriteAllText(this.edt_dataFolder + "service1.txt", "");
+
         }
 
         private void install_service(string service_name, string file_name, string port)

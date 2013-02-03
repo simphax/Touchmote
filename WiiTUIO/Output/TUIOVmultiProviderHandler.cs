@@ -31,7 +31,6 @@ namespace WiiTUIO.Output
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
             this.edt_dataFolder = (new FileInfo(config.FilePath)).DirectoryName + "\\";
             this.TUIOHandler = new TUIOProviderHandler();
-            do_apply_stuff();
         }
 
         public void connect()
@@ -61,32 +60,6 @@ namespace WiiTUIO.Output
         }
 
         #region Code from EcoTUIOdriver
-        private void do_apply_stuff()
-        {
-            Console.WriteLine("Data folder = " + this.edt_dataFolder);
-
-            System.IO.Directory.CreateDirectory(this.edt_dataFolder);
-
-            System.IO.File.WriteAllText(this.edt_dataFolder + "tuioport1.txt", Settings.Default.tuio_port.ToString());
-            System.IO.File.WriteAllText(this.edt_dataFolder + "inverthorizontal1.txt", "false");
-            System.IO.File.WriteAllText(this.edt_dataFolder + "invertverticle1.txt", "false");
-            System.IO.File.WriteAllText(this.edt_dataFolder + "swapxy1.txt", "false");
-            System.IO.File.WriteAllText(this.edt_dataFolder + "xrange_min1.txt", "0");
-            System.IO.File.WriteAllText(this.edt_dataFolder + "xrange_max1.txt", "1");
-
-            System.IO.File.WriteAllText(this.edt_dataFolder + "yrange_min1.txt", "0");
-            System.IO.File.WriteAllText(this.edt_dataFolder + "yrange_max1.txt", "1");
-            System.IO.File.WriteAllText(this.edt_dataFolder + "x01.txt", "0");
-            System.IO.File.WriteAllText(this.edt_dataFolder + "y01.txt", "0");
-            System.IO.File.WriteAllText(this.edt_dataFolder + "service1.txt", get_service_status(etd_SetviceName));
-
-            //Installs service if it's not already installed . 
-            //install_service(etd_SetviceName, etd_SetviceFilename, Settings.Default.tuio_port.ToString());
-
-        }
-
-
-
         public string start_service(string service_name)
         {
 
