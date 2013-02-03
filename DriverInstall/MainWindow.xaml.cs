@@ -64,6 +64,7 @@ namespace DriverInstall
         private void installAll()
         {
             this.uninstallDriver();
+            this.uninstallDriver();
             this.installDriver();
             this.store_settings();
             this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
