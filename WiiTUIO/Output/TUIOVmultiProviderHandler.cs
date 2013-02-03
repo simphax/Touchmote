@@ -8,6 +8,8 @@ using System.Threading;
 using WiiTUIO.Properties;
 using System.Configuration;
 using System.IO;
+using Microsoft.Win32;
+using System.Security.Principal;
 
 namespace WiiTUIO.Output
 {
@@ -83,42 +85,7 @@ namespace WiiTUIO.Output
 
         }
 
-        private void install_service(string service_name, string file_name, string port)
-        {
-            Console.WriteLine("Installing service : " + service_name + " : " + file_name + " , port : " + port);
-            //Process Process_Remove = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = file_name;
-            startInfo.Arguments = "remove " + "3";
-            startInfo.CreateNoWindow = true;
-            startInfo.UseShellExecute = true;
 
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-            using (Process exeProcess = Process.Start(startInfo))
-            {
-                exeProcess.WaitForExit();
-            }
-
-
-            //status = sc.Status.ToString();
-            ProcessStartInfo startInfo2 = new ProcessStartInfo();
-            startInfo2.FileName = file_name;
-            startInfo2.Arguments = "install " + port;
-            startInfo2.UseShellExecute = true;
-            startInfo2.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo2.CreateNoWindow = true;
-            using (Process exeProcess2 = Process.Start(startInfo2))
-            {
-                exeProcess2.WaitForExit();
-            }
-
-            if (System.IO.File.ReadAllText(this.edt_dataFolder + "service1.txt") == "The Service is Running" && service_name == etd_SetviceName)
-            {
-                start_service(service_name);
-            }
-
-        }
 
         public string start_service(string service_name)
         {

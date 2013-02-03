@@ -1,0 +1,12 @@
+﻿<Window x:Class="DriverInstall.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Label Content="Installing Touchmote Drivers" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="24" FontFamily="Segoe UI Light"/>
+        <ScrollViewer HorizontalAlignment="Left" Height="252" VerticalAlignment="Top" Width="497" Margin="10,57,0,0">
+            <TextBox Name="console" TextWrapping="Wrap" Text="TextBox"/>
+        </ScrollViewer>
+
+    </Grid>
+</Window>
