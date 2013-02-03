@@ -241,8 +241,8 @@ Global
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Debug|x64.ActiveCfg = Debug|x64
+		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Debug|x86.ActiveCfg = Debug|x86
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.MSRS Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.MSRS Debug|Any CPU.Build.0 = Debug|Any CPU
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.MSRS Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -259,8 +259,8 @@ Global
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|Any CPU.Build.0 = Release|Any CPU
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x64.ActiveCfg = Release|Any CPU
-		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x86.ActiveCfg = Release|Any CPU
+		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x64.ActiveCfg = Release|x64
+		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
