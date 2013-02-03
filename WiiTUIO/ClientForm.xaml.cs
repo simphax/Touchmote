@@ -154,6 +154,7 @@ namespace WiiTUIO
         private void appWillExit(object sender, ExitEventArgs e)
         {
             this.disconnectProvider();
+            this.disconnectProviderHandler();
         }
 
 
