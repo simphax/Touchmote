@@ -247,6 +247,7 @@ namespace WiiTUIO.Provider
         {
             // Enqueue a contact removed event.
             lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.End, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize, pSource, pTracker));
+            //Console.WriteLine("Sending touch END X:" + pTracker.Position.X + " Y:" + pTracker.Position.Y);
             //pSource.reset();
             mouseWait = false;
         }
@@ -260,6 +261,7 @@ namespace WiiTUIO.Provider
         {
             // Enqueue a contact removed event.
             lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.Move, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize, pSource, pTracker));
+            //Console.WriteLine("Sending touch UPDATE X:" + pTracker.Position.X + " Y:" + pTracker.Position.Y);
         }
 
         /// <summary>
@@ -271,7 +273,7 @@ namespace WiiTUIO.Provider
         {
             // Enqueue a contact removed event.
             lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.Start, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize, pSource, pTracker));
-
+            //Console.WriteLine("Sending touch START X:" + pTracker.Position.X + " Y:" + pTracker.Position.Y);
         }
         #endregion
 

@@ -746,7 +746,21 @@ namespace WiiTUIO.Provider
             int iMax = Math.Min(iSmoothIndex, tSmoothBuffer.Length);
             if (iMax == 0)
                 throw new Exception("No values in the smoothing buffer!");
+            /*
+            Vector curVector = tSmoothBuffer[iMax-1];
 
+            if(iMax >= 5) 
+            {
+
+                double deltaX = Math.Abs(curVector.X*4 - tSmoothBuffer[iMax-2].X - tSmoothBuffer[iMax-3].X - tSmoothBuffer[iMax-4].X - tSmoothBuffer[iMax-5].X);
+                Console.WriteLine("DeltaX: "+deltaX);
+                if(deltaX < 200)
+                {
+                    tSmoothBuffer[iMax - 1] = tSmoothBuffer[iMax - 2];
+                    return tSmoothBuffer[iMax-2];
+                }
+            }
+            */
             // Sum up the values in the array.
             for (int i = 0; i < iMax; ++i)
             {
