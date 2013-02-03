@@ -21,8 +21,7 @@ namespace WiiTUIO.Output
 
         private TUIOProviderHandler TUIOHandler;
 
-        private string etd_SetviceName = "Tuio-To-vmulti-Device1";
-        private string etd_SetviceFilename = "Driver\\Tuio-to-Vmulti-Service-1.exe";
+        private string etd_ServiceName = "Tuio-To-vmulti-Device1";
         private string edt_dataFolder;
 
 
@@ -36,7 +35,7 @@ namespace WiiTUIO.Output
         public void connect()
         {
             //start tuio-to-vmulti service
-            start_service(etd_SetviceName);
+            start_service(etd_ServiceName);
             this.TUIOHandler.connect();
             OnConnect();
         }
@@ -49,7 +48,7 @@ namespace WiiTUIO.Output
         public void disconnect()
         {
             //stop tuio-to-vmulti-service
-            stop_service(etd_SetviceName);
+            stop_service(etd_ServiceName);
             this.TUIOHandler.disconnect();
             OnDisconnect();
         }
