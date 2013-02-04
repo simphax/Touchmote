@@ -54,7 +54,7 @@ namespace WiiTUIO.Provider
             }
             else if (x >= Util.ScreenWidth)
             {
-                x = Util.ScreenWidth;
+                x = Util.ScreenWidth-1;
             }
             if (y <= 0)
             {
@@ -62,7 +62,7 @@ namespace WiiTUIO.Provider
             }
             else if (y >= Util.ScreenHeight)
             {
-                y = Util.ScreenHeight;
+                y = Util.ScreenHeight-1;
             }
 
             if (relativePosition.X == 0 && relativePosition.Y == 0)

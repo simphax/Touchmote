@@ -108,12 +108,13 @@ namespace WiiTUIO
                 this.tbConnect.Visibility = Visibility.Hidden;
                 this.tbPair.Visibility = Visibility.Visible;
             }
-            
+            /*
             if (!TUIOVmultiProviderHandler.HasDriver())
             {
                 this.driverNotInstalled();
             }
 
+             */
         }
 
         void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -943,7 +944,7 @@ namespace WiiTUIO
 
         private void waitForDriver()
         {
-            while (!ProviderHandler.HasDriver())
+            while (!TUIOVmultiProviderHandler.HasDriver())
             {
                 System.Threading.Thread.Sleep(3000);
             }

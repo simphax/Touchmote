@@ -12,6 +12,7 @@ namespace WiiTUIO.Output
         public enum OutputType
         {
             TOUCH,
+            TOUCHMTV,
             TUIO,
             TUIOTOUCH,
             DRAW
@@ -23,6 +24,8 @@ namespace WiiTUIO.Output
             {
                 case OutputType.TOUCH:
                     return "touch";
+                case OutputType.TOUCHMTV:
+                    return "touch-mtv";
                 case OutputType.TUIO:
                     return "tuio";
                 case OutputType.TUIOTOUCH:
@@ -39,6 +42,10 @@ namespace WiiTUIO.Output
             if (name == "touch")
             {
                 return OutputType.TOUCH;
+            }
+            if (name == "touchmtv")
+            {
+                return OutputType.TOUCHMTV;
             }
             else if (name == "tuio")
             {
@@ -65,7 +72,9 @@ namespace WiiTUIO.Output
             switch (type)
             {
                 case OutputType.TOUCH:
-                    return new ProviderHandler();
+                    return new TouchInjectProviderHandler();
+                case OutputType.TOUCHMTV:
+                    return new MTVProviderHandler();
                 case OutputType.TUIO:
                     return new TUIOProviderHandler();
                 case OutputType.TUIOTOUCH:

@@ -54,7 +54,12 @@ namespace WiiTUIO.Provider
         {
             get
             {
-                return new Rect(Position.X - (Size.X / 2), Position.Y - (Size.Y / 2), Size.X, Size.Y);
+                double left = Position.X - (Size.X / 2);
+                left = left < 0 ? 0 : left;
+                double right = Position.Y - (Size.Y / 2);
+                right = right > Util.ScreenWidth ? Util.ScreenWidth : right;
+
+                return new Rect(left, right, Size.X, Size.Y);
             }
         }
 
@@ -78,11 +83,8 @@ namespace WiiTUIO.Provider
         /// <param name="tNormalPosition">The maximum width/height so that we can generate a normalised position.</param>
         /// <param name="pClassifier">The classifer responsible for the history</param>
         /// <param name="pTracker">The tracker within the classifer responsible for the direct history.</param>
-        public WiiContact(ulong iID, ContactType eContactType, Point tPosition, Vector tScreenSize, SpatioTemporalClassifier pClassifier, SpatioTemporalTracker pTracker)
+        public WiiContact(ulong iID, ContactType eContactType, Point tPosition, Vector tScreenSize)
         {
-            this.Classifier = pClassifier;
-            this.Tracker = pTracker;
-
             this.ID = iID;
             this.Type = eContactType;
             this.Position = tPosition;

@@ -204,7 +204,7 @@ namespace WiiTUIO.Provider
         private void handleInputClassifier_OnEnd(SpatioTemporalClassifier pSource, SpatioTemporalTracker pTracker)
         {
             // Enqueue a contact removed event.
-            lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.End, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize, pSource, pTracker));
+            lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.End, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize));
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace WiiTUIO.Provider
         private void handleInputClassifier_OnUpdate(SpatioTemporalClassifier pSource, SpatioTemporalTracker pTracker)
         {
             // Enqueue a contact removed event.
-            lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.Move, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize, pSource, pTracker));
+            lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.Move, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize));
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace WiiTUIO.Provider
         private void handleInputClassifier_OnStart(SpatioTemporalClassifier pSource, SpatioTemporalTracker pTracker)
         {
             // Enqueue a contact removed event.
-            lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.Start, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize, pSource, pTracker));
+            lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.Start, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize));
         }
         #endregion
 

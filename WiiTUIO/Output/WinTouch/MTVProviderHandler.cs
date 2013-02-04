@@ -23,7 +23,7 @@ namespace WiiTUIO.WinTouch
     /// <summary>
     /// This class forwards WiiProvider events to the windows stack.
     /// </summary>
-    public class ProviderHandler : IProviderHandler
+    public class MTVProviderHandler : IProviderHandler
     {
 
         public static bool HasDriver() {
@@ -118,7 +118,7 @@ namespace WiiTUIO.WinTouch
         /// <summary>
         /// Construct a new provider handler class.
         /// </summary>
-        public ProviderHandler()
+        public MTVProviderHandler()
         {
             // The comparer.
             this.pComparer = new HidContactInfoEqualityComparer();

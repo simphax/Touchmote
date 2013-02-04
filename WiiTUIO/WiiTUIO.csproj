@@ -144,6 +144,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TCD.System.TouchInjection">
+      <HintPath>..\packages\TCD.System.TouchInjection.1.0.0\lib\net45\TCD.System.TouchInjection.dll</HintPath>
+    </Reference>
     <Reference Include="UIAutomationProvider">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -216,6 +219,7 @@
     <Compile Include="Output\Settings\TUIOSettings.xaml.cs">
       <DependentUpon>TUIOSettings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Output\TouchInjectProviderHandler.cs" />
     <Compile Include="Output\TUIOVmultiProviderHandler.cs" />
     <Compile Include="Output\TUIOProviderHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -249,12 +253,13 @@
       <DependentUpon>WiiProviderSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Output\WinTouch\HumanInterfaceDevice.cs" />
-    <Compile Include="Output\WinTouch\ProviderHandler.cs" />
+    <Compile Include="Output\WinTouch\MTVProviderHandler.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
