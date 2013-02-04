@@ -18,7 +18,7 @@ namespace WiiTUIO.Output
 
         public void connect()
         {
-            if (!TCD.System.TouchInjection.TouchInjector.InitializeTouchInjection((uint)maxTouchPoints, TouchFeedback.DEFAULT))
+            if (!TCD.System.TouchInjection.TouchInjector.InitializeTouchInjection((uint)maxTouchPoints, TouchFeedback.NONE))
             {
                 throw new Exception("Can not initialize touch injection");
             }
@@ -36,7 +36,7 @@ namespace WiiTUIO.Output
                 touch.PointerInfo.pointerType = PointerInputType.TOUCH;
                 touch.TouchFlags = TouchFlags.NONE;
                 //contact.Orientation = (uint)cur.getAngleDegrees();//this is only valid for TuioObjects
-                touch.Pressure = 32000;
+                touch.Pressure = 0;
                 touch.TouchMasks = TouchMask.CONTACTAREA | TouchMask.ORIENTATION | TouchMask.PRESSURE;
                 touch.PointerInfo.PtPixelLocation.X = (int)contact.Position.X;
                 touch.PointerInfo.PtPixelLocation.Y = (int)contact.Position.Y;

@@ -20,6 +20,7 @@ namespace WiiTUIO.Provider
     /// </summary>
     public class WiiPointerProvider : IProvider
     {
+        private SmoothingBuffer smoothingBuffer;
 
         private UserControl settingsControl = null;
 
@@ -29,17 +30,18 @@ namespace WiiTUIO.Provider
 
         private bool ShowMouse = true;
 
-        private int initrumble = 0;
+        private ulong touchID;
 
         private bool mouseWait = false;
 
-        private int TouchHoldThreshold = 10;
+        private int TouchHoldThreshold = 30;
 
         private WiimoteLib.Point FirstTouch = new WiimoteLib.Point();
 
         private bool TouchHold = true;
 
         private bool isFirstTouch = true;
+        private bool wasFirstTouch = false;
 
         public struct WiimoteButtonsStruct
         {
@@ -130,7 +132,7 @@ namespace WiiTUIO.Provider
         /// <summary>
         /// A queue for the frame of events.
         /// </summary>
-        private Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
+        //private Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
 
         /// <summary>
         /// A refrence to our wiimote device.
@@ -145,7 +147,7 @@ namespace WiiTUIO.Provider
         /// <summary>
         /// An input classifier which we will use to organise points.
         /// </summary>
-        public SpatioTemporalClassifier InputClassifier { get; protected set; }
+        //public SpatioTemporalClassifier InputClassifier { get; protected set; }
 
         /// <summary>
         /// The screen size that we use for normalising coordinates.
@@ -208,14 +210,6 @@ namespace WiiTUIO.Provider
         /// </summary>
         public WiiPointerProvider()
         {
-            // Create a new classifer.
-            this.InputClassifier = new SpatioTemporalClassifier();
-            this.InputClassifier.DefaultSmoothSize = 4;
-
-            // Bind events.
-            this.InputClassifier.OnStart += new SpatioTemporalClassifier.TrackerEventHandler(handleInputClassifier_OnStart);
-            this.InputClassifier.OnUpdate += new SpatioTemporalClassifier.TrackerEventHandler(handleInputClassifier_OnUpdate);
-            this.InputClassifier.OnEnd += new SpatioTemporalClassifier.TrackerEventHandler(handleInputClassifier_OnEnd);
 
             lastpoint = new WiimoteLib.Point();
             lastpoint.X = 0;
@@ -229,6 +223,8 @@ namespace WiiTUIO.Provider
             this.settingsControl = new WiiPointerProviderSettings();
 
             this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
+
+            this.smoothingBuffer = new SmoothingBuffer(5);
         }
 
         private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
@@ -236,7 +232,7 @@ namespace WiiTUIO.Provider
             
         }
         #endregion
-
+        /*
         #region SpatioTemporalClassifier Event Handling
         /// <summary>
         /// Enqueue a 'ContactType.End' event.
@@ -276,7 +272,7 @@ namespace WiiTUIO.Provider
             //Console.WriteLine("Sending touch START X:" + pTracker.Position.X + " Y:" + pTracker.Position.Y);
         }
         #endregion
-
+        */
         #region Start and Stop
         /// <summary>
         /// Instructs this input provider to begin generating events.
@@ -296,8 +292,6 @@ namespace WiiTUIO.Provider
                 throw new Exception("Could not establish connection to Wiimote: " + pError.Message, pError);
             }
 
-            // Clear the trackers.
-            this.InputClassifier.reset();
 
             // Set the running flag.
             this.bRunning = true;
@@ -335,8 +329,6 @@ namespace WiiTUIO.Provider
             
             this.teardownWiimoteConnection();
 
-            // Reset the classifier.
-            this.InputClassifier.reset();
 
             // Release processing.
             pDeviceMutex.ReleaseMutex();
@@ -447,6 +439,11 @@ namespace WiiTUIO.Provider
              * */
         }
 
+        private void dontWaitMouse(Object nothing)
+        {
+            this.mouseWait = false;
+        }
+
 
         /// <summary>
         /// This is called when the state of the wiimote changes and a new state report is available.
@@ -458,6 +455,7 @@ namespace WiiTUIO.Provider
             // Obtain mutual excluseion.
             pDeviceMutex.WaitOne();
 
+
             // If we not running then leave.
             if (!bRunning)
             {
@@ -465,26 +463,30 @@ namespace WiiTUIO.Provider
                 return;
             }
 
+            // Prepare the frame to recieve new inputs.
+            Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
+
+
             // Store the state.
             WiimoteState pState = e.WiimoteState;
 
             // Contain active sensor data.
-            List<SpatioTemporalInput> lInputs = new List<SpatioTemporalInput>();
+            //List<SpatioTemporalInput> lInputs = new List<SpatioTemporalInput>();
 
             bool pointerOutOfReach = false;
 
             WiimoteLib.Point newpoint = ScreenPositionCalculator.GetPosition(e);
+
+            this.smoothingBuffer.addValue(newpoint.X, newpoint.Y);
+            Vector smoothedValue = this.smoothingBuffer.getSmoothedValue();
+            newpoint.X = (int)smoothedValue.X;
+            newpoint.Y = (int)smoothedValue.Y;
+
             if (newpoint.X < 0 || newpoint.Y < 0)
             {
                 newpoint = lastpoint;
                 pointerOutOfReach = true;
             }
-            else
-            {
-                lastpoint = newpoint;
-            }
-
-            ScreenPositionCalculator.RelativePoint relpos = ScreenPositionCalculator.GetRelativePosition(e);
 
             WiimoteState ws = e.WiimoteState;
 
@@ -505,18 +507,18 @@ namespace WiiTUIO.Provider
             if (ws.ButtonState.A)
             {
 
+
                 if (isFirstTouch)
                 {
                     FirstTouch = newpoint;
-                    isFirstTouch = false;
                 }
-
-                if (TouchHold)
+                else if (TouchHold)
                 {
                     if (Math.Abs(FirstTouch.X - newpoint.X) < TouchHoldThreshold || Math.Abs(FirstTouch.Y - newpoint.Y) < TouchHoldThreshold)
                     {
                         newpoint = FirstTouch;
                         TouchHold = true;
+
                     }
                     else
                     {
@@ -524,24 +526,41 @@ namespace WiiTUIO.Provider
                     }
                 }
 
-                lInputs.Add(new SpatioTemporalInput((double)newpoint.X, (double)newpoint.Y));
+                if (isFirstTouch)
+                {
+                    isFirstTouch = false;
+                    wasFirstTouch = true;
+                    lFrame.Enqueue(new WiiContact(touchID, ContactType.Start, new System.Windows.Point(newpoint.X, newpoint.Y), ScreenSize));
+                }
+                else if (wasFirstTouch)
+                {
+                    wasFirstTouch = false;
+                    lFrame.Enqueue(new WiiContact(touchID, ContactType.Move, new System.Windows.Point(lastpoint.X, lastpoint.Y), ScreenSize));
+                }
+                else
+                {
+                    lFrame.Enqueue(new WiiContact(touchID, ContactType.Move, new System.Windows.Point(newpoint.X, newpoint.Y), ScreenSize));
+                }
+                //lInputs.Add(new SpatioTemporalInput((double)newpoint.X, (double)newpoint.Y));
 
                 mouseWait = true;
             }
             else
             {
+                if (!isFirstTouch)
+                {
+                    lFrame.Enqueue(new WiiContact(touchID, ContactType.End, new System.Windows.Point(lastpoint.X, lastpoint.Y), ScreenSize));
+                    touchID++;
+                    new Timer(dontWaitMouse, null, 200, 0); //Wait with enabling mouse again, because some things can not be touched when the mouse is hovering
+                }
 
                 TouchHold = true;
                 isFirstTouch = true;
 
-                if (ShowMouse && !pointerOutOfReach && Settings.Default.pointer_moveCursor)
+                if (ShowMouse && !pointerOutOfReach && Settings.Default.pointer_moveCursor && !mouseWait)
                 {
-                    if (!mouseWait)
-                    {
-                        MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
-                        MouseSimulator.WakeCursor();
-
-                    }
+                    MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
+                    MouseSimulator.WakeCursor();
                 }
 
                 if (ws.ButtonState.B && !PressedButtons.B)
@@ -661,18 +680,19 @@ namespace WiiTUIO.Provider
 
             }
 
-            // Prepare the frame to recieve new inputs.
-            if (this.lFrame != null)
-                this.lFrame = null;
-            this.lFrame = new Queue<WiiContact>(1);
-
+            if(pointerOutOfReach)           
+            {
+                lastpoint = newpoint;
+            }
             // Now run these inputs through the classifier to see if they are related to any previous ones.
             // Thanks Nintendo... fix ye'r buffer ordering!
-            this.InputClassifier.processFrame(lInputs);
+            //this.InputClassifier.processFrame(lInputs);
+
+            
 
             // Build that frame off to the input dispatcher.
-            FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), this.lFrame);
-            this.lFrame = null;
+            FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), lFrame);
+
 
             // Ship it out!
             this.OnNewFrame(this, pFrame);
