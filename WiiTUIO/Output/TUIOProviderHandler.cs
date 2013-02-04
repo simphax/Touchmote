@@ -14,6 +14,8 @@ namespace WiiTUIO.Output
 
         private static int iFrame = 0;
 
+        private float lastcontactX, lastcontactY;
+
         /// <summary>
         /// A reference to an OSC data transmitter.
         /// </summary>
@@ -44,13 +46,27 @@ namespace WiiTUIO.Output
                 pMessageAlive.Append("alive");
 
                 // Now we want to take the raw frame data and draw points based on its data.
-                foreach (WiiContact pContact in e.Contacts)
+                //foreach (WiiContact pContact in e.Contacts)
+                //{
+                if (e.Contacts.Count() > 0)
                 {
+                    WiiContact pContact = e.Contacts.First();
                     // Compile the set message.
                     OSCMessage pMessage = new OSCMessage("/tuio/2Dcur");
                     pMessage.Append("set");                 // set
                     pMessage.Append((int)pContact.ID);           // session
                     pMessage.Append((float)pContact.NormalPosition.X);   // x
+                    /*
+                    float deltaX = (lastcontactX-(float)pContact.NormalPosition.X)*10000;
+                    float deltaY = (lastcontactY-(float)pContact.NormalPosition.Y)*10000;
+                    if(deltaX>10 || deltaY>10)
+                    {
+                    Console.WriteLine("DeltaX: "+deltaX);
+                    Console.WriteLine("DeltaY: " +deltaY);
+                    }
+                    lastcontactX = (float)pContact.NormalPosition.X;
+                    lastcontactY = (float)pContact.NormalPosition.Y;
+                     * */
                     pMessage.Append((float)pContact.NormalPosition.Y);   // y
                     pMessage.Append(0f);                 // dx
                     pMessage.Append(0f);                 // dy
@@ -63,8 +79,8 @@ namespace WiiTUIO.Output
 
                     // Append the alive message for this contact to tbe bundle.
                     pMessageAlive.Append((int)pContact.ID);
+                    // }
                 }
-
                 // Save the alive message.
                 pBundle.Append(pMessageAlive);
 

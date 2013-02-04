@@ -210,7 +210,7 @@ namespace WiiTUIO.Provider
         {
             // Create a new classifer.
             this.InputClassifier = new SpatioTemporalClassifier();
-            this.InputClassifier.DefaultSmoothSize = 4;
+            this.InputClassifier.DefaultSmoothSize = 6;
 
             // Bind events.
             this.InputClassifier.OnStart += new SpatioTemporalClassifier.TrackerEventHandler(handleInputClassifier_OnStart);
@@ -473,21 +473,29 @@ namespace WiiTUIO.Provider
 
             bool pointerOutOfReach = false;
 
+            
+            WiimoteState ws = e.WiimoteState;
+
             WiimoteLib.Point newpoint = ScreenPositionCalculator.GetPosition(e);
             if (newpoint.X < 0 || newpoint.Y < 0)
             {
                 newpoint = lastpoint;
                 pointerOutOfReach = true;
             }
+            else if(ws.ButtonState.B)
+            {
+                newpoint.X = lastpoint.X + (new Random()).Next(10)-5;
+                newpoint.Y = lastpoint.Y + (new Random()).Next(10)-5;
+                lastpoint = newpoint;
+            }
             else
             {
                 lastpoint = newpoint;
             }
 
-            ScreenPositionCalculator.RelativePoint relpos = ScreenPositionCalculator.GetRelativePosition(e);
+            
 
-            WiimoteState ws = e.WiimoteState;
-
+            //ScreenPositionCalculator.RelativePoint relpos = ScreenPositionCalculator.GetRelativePosition(e);
 
             //Temporary solution to the "diamond cursor" problem.
             if (this.changeSystemCursor)
@@ -510,6 +518,7 @@ namespace WiiTUIO.Provider
                     FirstTouch = newpoint;
                     isFirstTouch = false;
                 }
+                
 
                 if (TouchHold)
                 {
@@ -548,7 +557,7 @@ namespace WiiTUIO.Provider
                 {
                     //if (TouchMode)
                     //{
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.RETURN);
+                    //InputSimulator.SimulateKeyDown(VirtualKeyCode.RETURN);
                     //}
                     //else
                     //{
@@ -558,7 +567,7 @@ namespace WiiTUIO.Provider
                 }
                 else if (PressedButtons.B && !ws.ButtonState.B)
                 {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.RETURN);
+                    //InputSimulator.SimulateKeyUp(VirtualKeyCode.RETURN);
                     //InputSimulator.SimulateKeyUp(VirtualKeyCode.RBUTTON);
                     PressedButtons.B = false;
                 }

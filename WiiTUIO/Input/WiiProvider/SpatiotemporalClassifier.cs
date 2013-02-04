@@ -1,4 +1,5 @@
 ﻿
+using ClassLibrary1.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -637,12 +638,19 @@ namespace WiiTUIO.Provider
         /// <summary>
         /// A reference to an array which contains our smoothing buffer data.
         /// </summary>
-        public Vector[] tSmoothBuffer;
+        //public Vector[] tSmoothBuffer;
+        public RingBuffer<Vector> tSmoothBuffer;
 
         /// <summary>
         /// A reference to the front of the buffer.
         /// </summary>
         public int iSmoothIndex = 0;
+
+        public int iSmoothSize = 0;
+
+        private Vector holdVec;
+
+        private bool holding;
 
         /// <summary>
         /// Create a new smoothing buffer with a default size.
@@ -655,8 +663,9 @@ namespace WiiTUIO.Provider
                 throw new ArgumentOutOfRangeException("Cannot have a smooth size that is <= 0.");
 
             // Create a new smoothing buffer.
-            this.tSmoothBuffer = new Vector[iSmoothSize];
+            this.tSmoothBuffer = new RingBuffer<Vector>(10);//new Vector[iSmoothSize];
             this.iSmoothIndex = 0;
+            this.iSmoothSize = iSmoothSize;
         }
 
         /// <summary>
@@ -665,9 +674,9 @@ namespace WiiTUIO.Provider
         /// <returns>An integer which describes the length of the smoothing buffer.</returns>
         public int getSmoothSize()
         {
-            return this.tSmoothBuffer.Length;
+            return this.tSmoothBuffer.Capacity;//.Length;
         }
-
+        /*
         /// <summary>
         /// This method will expand or contract the smoothing array with an option to preserve smoothing data
         /// as best as it can (naturally if we are contracting then we don't take the time to compute a similar distribution)
@@ -700,7 +709,7 @@ namespace WiiTUIO.Provider
             this.tSmoothBuffer = tNewBuffer;
             this.iSmoothIndex = iMax;
         }
-
+        */
         /// <summary>
         /// Clear the information in this smoothing buffer.
         /// </summary>
@@ -717,10 +726,12 @@ namespace WiiTUIO.Provider
         public void addValue(double x, double y)
         {
             // Insert the value then update the counter.
-            int iIndex = iSmoothIndex % tSmoothBuffer.Length;
-            tSmoothBuffer[iIndex].X = x;
-            tSmoothBuffer[iIndex].Y = y;
-            ++iSmoothIndex;
+            //int iIndex = iSmoothIndex % tSmoothBuffer.Length;
+            //tSmoothBuffer[iIndex].X = x;
+            //tSmoothBuffer[iIndex].Y = y;
+
+            //++iSmoothIndex;
+            addValue(new Vector(x, y));
         }
 
         /// <summary>
@@ -730,8 +741,9 @@ namespace WiiTUIO.Provider
         public void addValue(Vector vPoint)
         {
             // Insert the value then update the counter.
-            tSmoothBuffer[iSmoothIndex % tSmoothBuffer.Length] = vPoint;
-            ++iSmoothIndex;
+            //tSmoothBuffer[iSmoothIndex % tSmoothBuffer.Length] = vPoint;
+            //++iSmoothIndex;
+            tSmoothBuffer.Add(vPoint);//Cross fingers no one else tinkers with vPoint
         }
 
         /// <summary>
@@ -743,24 +755,41 @@ namespace WiiTUIO.Provider
         {
             // Get the number of values to iterate too.
             Vector tSmooth = new Vector(0, 0);
-            int iMax = Math.Min(iSmoothIndex, tSmoothBuffer.Length);
+            int iMax = Math.Min(tSmoothBuffer.Count, iSmoothSize);
             if (iMax == 0)
                 throw new Exception("No values in the smoothing buffer!");
-            /*
-            Vector curVector = tSmoothBuffer[iMax-1];
+            
+            
 
-            if(iMax >= 5) 
+            if(tSmoothBuffer.Count >= 4) 
             {
+                Vector curVector = tSmoothBuffer[0];
+                double delta = (curVector.X + curVector.Y) * 4;
 
-                double deltaX = Math.Abs(curVector.X*4 - tSmoothBuffer[iMax-2].X - tSmoothBuffer[iMax-3].X - tSmoothBuffer[iMax-4].X - tSmoothBuffer[iMax-5].X);
-                Console.WriteLine("DeltaX: "+deltaX);
-                if(deltaX < 200)
+                for (int i = 0; i < 4; i++)
                 {
-                    tSmoothBuffer[iMax - 1] = tSmoothBuffer[iMax - 2];
-                    return tSmoothBuffer[iMax-2];
+                    delta -= tSmoothBuffer[i].X + tSmoothBuffer[i].Y;
                 }
+                Console.WriteLine("Deltaa: " + delta);
+                if (delta < 100)
+                {
+                    tSmooth = new Vector(curVector.X + (curVector.X - tSmoothBuffer[1].X) * Math.Sign(delta), curVector.Y + (curVector.Y - tSmoothBuffer[1].Y) * Math.Sign(delta));
+                }
+                    //tSmoothBuffer[0] = tSmoothBuffer[1];
+                    /*if (!holding)
+                    {
+                        holdVec = new Vector(curVector.X, curVector.Y);
+                        holding = true;
+                    }
+                    return holdVec;
+                }
+                else
+                {
+                    holding = false;
+                }*/
             }
-            */
+            
+
             // Sum up the values in the array.
             for (int i = 0; i < iMax; ++i)
             {

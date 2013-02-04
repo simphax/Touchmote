@@ -39,7 +39,7 @@ namespace WiiTUIO.Provider
                 relativePosition.X = m_MidSensorPos.X + (args.WiimoteState.IRState.IRSensors[1].Position.X - m_SecondSensorPos.X);
                 relativePosition.Y = m_MidSensorPos.Y + (args.WiimoteState.IRState.IRSensors[1].Position.Y - m_SecondSensorPos.Y);
             }
-
+            
             //Remember for next run
             m_FirstSensorPos = args.WiimoteState.IRState.IRSensors[0].Position;
             m_SecondSensorPos = args.WiimoteState.IRState.IRSensors[1].Position;
