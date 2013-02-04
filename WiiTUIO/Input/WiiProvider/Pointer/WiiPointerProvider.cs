@@ -477,6 +477,8 @@ namespace WiiTUIO.Provider
             WiimoteState ws = e.WiimoteState;
 
             WiimoteLib.Point newpoint = ScreenPositionCalculator.GetPosition(e);
+
+
             if (newpoint.X < 0 || newpoint.Y < 0)
             {
                 newpoint = lastpoint;
@@ -484,15 +486,29 @@ namespace WiiTUIO.Provider
             }
             else if(ws.ButtonState.B)
             {
+                newpoint = lastpoint;
                 newpoint.X = lastpoint.X + (new Random()).Next(10)-5;
                 newpoint.Y = lastpoint.Y + (new Random()).Next(10)-5;
-                lastpoint = newpoint;
             }
             else
             {
+                /*
+                if (!isFirstTouch && !(lastpoint.X == (int)MouseSimulator.GetCursorPosition().X && lastpoint.Y == (int)MouseSimulator.GetCursorPosition().Y))
+                {
+                    Console.WriteLine("Lastpoint: X:"+lastpoint.X+" Y: "+lastpoint.Y);
+                    Console.WriteLine("Cursor position: X:" + MouseSimulator.GetCursorPosition().X + " Y: " + MouseSimulator.GetCursorPosition().Y);
+                    Console.WriteLine("Newpoint: X:" + newpoint.X + " Y: " + newpoint.Y);
+                    int deltaX = lastpoint.X - newpoint.X;
+                    newpoint.X = (int)MouseSimulator.GetCursorPosition().X + deltaX;
+                    int deltaY = lastpoint.Y - newpoint.Y;
+                    newpoint.Y = (int)MouseSimulator.GetCursorPosition().Y + deltaY;
+                    
+                }
+                */
                 lastpoint = newpoint;
             }
 
+            
             
 
             //ScreenPositionCalculator.RelativePoint relpos = ScreenPositionCalculator.GetRelativePosition(e);
@@ -532,7 +548,6 @@ namespace WiiTUIO.Provider
                         TouchHold = false;
                     }
                 }
-
                 lInputs.Add(new SpatioTemporalInput((double)newpoint.X, (double)newpoint.Y));
 
                 mouseWait = true;

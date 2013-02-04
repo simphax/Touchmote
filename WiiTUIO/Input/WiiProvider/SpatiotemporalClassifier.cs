@@ -761,19 +761,32 @@ namespace WiiTUIO.Provider
             
             
 
-            if(tSmoothBuffer.Count >= 4) 
+            if(tSmoothBuffer.Count >= 10) 
             {
                 Vector curVector = tSmoothBuffer[0];
-                double delta = (curVector.X + curVector.Y) * 4;
+                double delta = (curVector.X + curVector.Y) * 10;
 
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     delta -= tSmoothBuffer[i].X + tSmoothBuffer[i].Y;
                 }
+                delta = Math.Abs(delta);
                 Console.WriteLine("Deltaa: " + delta);
                 if (delta < 100)
                 {
-                    tSmooth = new Vector(curVector.X + (curVector.X - tSmoothBuffer[1].X) * Math.Sign(delta), curVector.Y + (curVector.Y - tSmoothBuffer[1].Y) * Math.Sign(delta));
+
+                    for (int i = 0; i < 10; ++i)
+                    {
+                        tSmooth.X += tSmoothBuffer[i].X;
+                        tSmooth.Y += tSmoothBuffer[i].Y;
+                    }
+                    // Divide to average.
+                    tSmooth.X /= 10;
+                    tSmooth.Y /= 10;
+
+                    // Return the value.
+                    return tSmooth;
+                    //tSmooth = new Vector(curVector.X + (curVector.X - tSmoothBuffer[1].X) * Math.Sign(delta), curVector.Y + (curVector.Y - tSmoothBuffer[1].Y) * Math.Sign(delta));
                 }
                     //tSmoothBuffer[0] = tSmoothBuffer[1];
                     /*if (!holding)

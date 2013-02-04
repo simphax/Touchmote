@@ -64,9 +64,8 @@ namespace WiiTUIO.Output
                     Console.WriteLine("DeltaX: "+deltaX);
                     Console.WriteLine("DeltaY: " +deltaY);
                     }
-                    lastcontactX = (float)pContact.NormalPosition.X;
-                    lastcontactY = (float)pContact.NormalPosition.Y;
                      * */
+                    
                     pMessage.Append((float)pContact.NormalPosition.Y);   // y
                     pMessage.Append(0f);                 // dx
                     pMessage.Append(0f);                 // dy
@@ -74,6 +73,8 @@ namespace WiiTUIO.Output
                     pMessage.Append((float)pContact.Size.X);   // height
                     pMessage.Append((float)pContact.Size.Y);   // width
 
+                    lastcontactX = (float)pContact.NormalPosition.X;
+                    lastcontactY = (float)pContact.NormalPosition.Y;
                     // Append it to the bundle.
                     pBundle.Append(pMessage);
 
