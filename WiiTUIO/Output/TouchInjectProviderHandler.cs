@@ -41,6 +41,7 @@ namespace WiiTUIO.Output
                 touch.PointerInfo.PtPixelLocation.X = (int)contact.Position.X;
                 touch.PointerInfo.PtPixelLocation.Y = (int)contact.Position.Y;
                 touch.PointerInfo.PointerId = (uint)contact.ID;
+                touch.PointerInfo.PerformanceCount = e.Timestamp;
                 touch.ContactArea.left = (int)contact.BoundingRectangle.Left;
                 touch.ContactArea.right = (int)contact.BoundingRectangle.Right;
                 touch.ContactArea.top = (int)contact.BoundingRectangle.Top;
@@ -51,7 +52,9 @@ namespace WiiTUIO.Output
                 else if (type == ContactType.Move)
                     touch.PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE | PointerFlags.INCONTACT;
                 else if (type == ContactType.End)
-                    touch.PointerInfo.PointerFlags = PointerFlags.UP;
+                    touch.PointerInfo.PointerFlags = PointerFlags.UP | PointerFlags.INRANGE;
+                else if (type == ContactType.Hover)
+                    touch.PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE;                
                 //add it to 'toFire'
                 toFire.Add(touch);
             }

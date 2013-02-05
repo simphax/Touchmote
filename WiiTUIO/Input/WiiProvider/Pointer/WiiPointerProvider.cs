@@ -36,7 +36,7 @@ namespace WiiTUIO.Provider
 
         private bool mouseWait = false;
 
-        private int TouchHoldThreshold = 8;
+        private int TouchHoldThreshold = 4;
         private int TouchHoldReleaseThreshold = 10;
 
         private WiimoteLib.Point FirstTouch = new WiimoteLib.Point();
@@ -534,21 +534,17 @@ namespace WiiTUIO.Provider
             }
             else
             {
+
                 if (!isFirstTouch)
                 {
                     sendTouch = true;
                     touchType = ContactType.End;
                     touchPoint = lastpoint;
-                    new Timer(dontWaitMouse, null, 10, 0); //Wait with enabling mouse again, because some things can not be touched when the mouse is hovering
+                    //new Timer(dontWaitMouse, null, 10, 0); //Wait with enabling mouse again, because some things can not be touched when the mouse is hovering
+                    mouseWait = false;
                 }
 
                 isFirstTouch = true;
-
-                if (ShowMouse && !pointerOutOfReach && Settings.Default.pointer_moveCursor && !mouseWait)
-                {
-                    MouseSimulator.SetCursorPosition(touchPoint.X, touchPoint.Y);
-                    MouseSimulator.WakeCursor();
-                }
 
                 if (ws.ButtonState.B && !PressedButtons.B)
                 {
@@ -688,6 +684,13 @@ namespace WiiTUIO.Provider
                 {
                     touchID++;
                 }
+            }
+            else if (ShowMouse && !pointerOutOfReach && Settings.Default.pointer_moveCursor && !mouseWait)
+            {
+                MouseSimulator.SetCursorPosition(touchPoint.X, touchPoint.Y);
+                MouseSimulator.WakeCursor();
+                sendTouch = true;
+                touchType = ContactType.Hover;
             }
 
             // Now run these inputs through the classifier to see if they are related to any previous ones.
