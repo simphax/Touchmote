@@ -13,7 +13,7 @@ Prerequisites
 ==============
 1x Wireless Wii Sensor Bar<br />
 1x Wii Remote<br />
-1x Bluetooth enabled computer with Windows 7 or 8
+1x Bluetooth enabled computer with Windows 8
 
 Bug reports
 ==============
@@ -25,6 +25,7 @@ Please use the GitHub Issue tracker to report bugs. Always include the following
 
 How to build
 ==============
+Install the drivers by downloading the installer from touchmote.net<br />
 Get the source and open Touchmote.sln with Microsoft Visual Studio. <br />
 Go to Build->Configuration manager...<br />
 Choose solution platform for either x86 or x64 depending on your system. Close it and Build.<br />
@@ -33,19 +34,27 @@ Tips
 ==============
 Increase the size of Windows 8 Metro Interface (A must for TVs)
 --------------
-Follow Microsoft's guide at http://support.microsoft.com/kb/2737167 to override the display size setting. For a 42 inch HDTV I find it good to set it at 10.5 inches. Do not change DPI settings, it will make Touchmote unusable.
+Follow Microsoft's guide at http://support.microsoft.com/kb/2737167 to override the display size setting. For a 40 inch HDTV I find it good to set it at 10 inches. Do not change DPI settings, it will make Touchmote unusable.
 
 Credits
 ==============
 WiiTUIO project:	http://code.google.com/p/wiituio/<br />
-MultiTouchVista:	http://multitouchvista.codeplex.com/<br />
+TouchInjector:	  http://touchinjector.codeplex.com/<br />
+EcoTUIOdriver:    https://github.com/ecologylab/EcoTUIODriver<br />
 WiimoteLib 1.7:		http://wiimotelib.codeplex.com/<br />
 HIDLibrary:				http://hidlibrary.codeplex.com/<br />
 WiiPair:					http://www.richlynch.com/code/wiipair<br />
+MultiTouchVista   http://multitouchvista.codeplex.com<br />
 WPFNotifyIcon:		http://www.hardcodet.net/projects/wpf-notifyicon<br />
 
 Release History
 ==============
+**v1.0 beta 4**<br />
+- Much better performance and stability on Windows 8
+- Driver is now optional
+- Only works on Windows 8, use beta3 for Windows 7/Vista
+- Completely disconnects the Wiimote so it doesn't drain battery when not used
+
 **v1.0 beta 3**<br />
 - Forgot to enable driver detection
 - Added error messaging
