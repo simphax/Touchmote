@@ -79,7 +79,7 @@ namespace DriverInstall
         {
             this.uninstallDriver();
             this.uninstallDriver();
-            this.uninstall_service(etd_ServiceName,etd_ServiceFilename);
+            //this.uninstall_service(etd_ServiceName,etd_ServiceFilename);
             if (shutdown)
                 Application.Current.Shutdown(1);
         }
