@@ -20,6 +20,8 @@ namespace WiiTUIO.Provider
     /// </summary>
     public class WiiPointerProvider : IProvider
     {
+        private SmoothingBuffer smoothingBuffer;
+
         private ulong touchID = 1;
 
         private UserControl settingsControl = null;
@@ -220,6 +222,8 @@ namespace WiiTUIO.Provider
             this.settingsControl = new WiiPointerProviderSettings();
 
             this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
+
+            this.smoothingBuffer = new SmoothingBuffer(4);
         }
 
         private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
@@ -461,18 +465,24 @@ namespace WiiTUIO.Provider
 
             bool pointerOutOfReach = false;
 
-            WiimoteLib.Point newpoint = ScreenPositionCalculator.GetPosition(e);
-            
+            WiimoteLib.Point newpoint = lastpoint;
 
-            if (newpoint.X < 0 || newpoint.Y < 0)
+            try
+            {
+                newpoint = ScreenPositionCalculator.GetPosition(e);
+            } 
+            catch(Exception exc) 
             {
                 newpoint = lastpoint;
                 pointerOutOfReach = true;
             }
 
+            smoothingBuffer.addValue(newpoint.X, newpoint.Y);
+            Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+            newpoint.X = (int)smoothedVec.X;
+            newpoint.Y = (int)smoothedVec.Y;
 
             WiimoteState ws = e.WiimoteState;
-
 
             //Temporary solution to the "diamond cursor" problem.
             if (this.changeSystemCursor)

@@ -67,8 +67,7 @@ namespace WiiTUIO.Provider
 
             if (relativePosition.X == 0 && relativePosition.Y == 0)
             {
-                x = -1;
-                y = -1;
+                throw new Exception("Pointer out of reach");
             }
 
             Point point = new Point();
