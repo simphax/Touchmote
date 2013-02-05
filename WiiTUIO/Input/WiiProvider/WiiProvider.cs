@@ -501,34 +501,10 @@ namespace WiiTUIO.Provider
         }
         #endregion
 
-        event Action<int> IProvider.OnConnect
-        {
-            add {  }
-            remove {  }
-        }
-
-        event Action<int> IProvider.OnDisconnect
-        {
-            add {  }
-            remove {  }
-        }
-
-        event Action<int> IProvider.OnBatteryUpdate
-        {
-            add {  }
-            remove {  }
-        }
-
-        event EventHandler<FrameEventArgs> IProvider.OnNewFrame
-        {
-            add {  }
-            remove {  }
-        }
-
-
 
         public event Action<int> OnButtonDown;
 
         public event Action<int> OnButtonUp;
+
     }
 }

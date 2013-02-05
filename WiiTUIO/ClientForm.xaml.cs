@@ -480,6 +480,8 @@ namespace WiiTUIO
                 this.tbConnect.Visibility = Visibility.Collapsed;
                 this.tbWaiting.Visibility = Visibility.Visible;
 
+                Launcher.Launch("Driver", "enablewiimote.cmd", "", null);
+
                 Thread thread = new Thread(new ThreadStart(tryConnectingProvider));
                 thread.Start();
             }
@@ -575,6 +577,8 @@ namespace WiiTUIO
             if (this.pWiiProvider != null)
                 this.pWiiProvider.stop();
             //this.pWiiProvider = null;
+            //Disable Wiimote in device manager to disconnect it from the computer (so it doesn't drain battery when not used)
+            Launcher.Launch("Driver", "disablewiimote.cmd", "", null);
         }
         #endregion
 

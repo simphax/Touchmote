@@ -278,13 +278,12 @@ namespace WiiTUIO.Provider
         #endregion
 
         #region Start and Stop
+
         /// <summary>
         /// Instructs this input provider to begin generating events.
         /// </summary>
         public void start()
         {
-
-            //Launcher.Launch("Driver", "enablewiimote.cmd", "", null);
             // Ensure we cannot process any events.
             //pDeviceMutex.WaitOne();
 
@@ -329,7 +328,7 @@ namespace WiiTUIO.Provider
         {
             // Ensure we cannot process any events.
             pDeviceMutex.WaitOne();
-
+            
             // Set the running flag.
             this.bRunning = false;
             
@@ -344,15 +343,12 @@ namespace WiiTUIO.Provider
             MouseSimulator.ResetSystemCursor();
 
 
-            //Disable and enable Wiimote in device manager to disconnect it from the computer
-            //Launcher.Launch("Driver", "disablewiimote.cmd", "", null);
-
             OnDisconnect(1);
         }
         #endregion
 
         #region Connection creation and teardown.
-        /// <summary>
+        /// <summary>  
         /// This method creates and sets up our connection to our class-gloal Wiimote device.
         /// This destroys any existing connection before creating a new one.
         /// </summary>
