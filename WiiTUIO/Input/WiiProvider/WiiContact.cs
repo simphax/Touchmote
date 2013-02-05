@@ -89,7 +89,7 @@ namespace WiiTUIO.Provider
             this.Type = eContactType;
             this.Position = tPosition;
             this.NormalPosition = new Point(tPosition.X / tScreenSize.X, tPosition.Y / tScreenSize.Y);
-            this.Size = new Vector(1, 1);
+            this.Size = new Vector(32, 32);
         }
     }
 }
