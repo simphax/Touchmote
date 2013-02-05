@@ -534,7 +534,7 @@ namespace WiiTUIO.Provider
                 {
                     if (!mouseWait)
                     {
-                        MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
+                        MouseSimulator.SetCursorPosition((newpoint.X + lastpoint.X) / 2, (newpoint.Y + lastpoint.Y) / 2);
                         MouseSimulator.WakeCursor();
 
                     }
