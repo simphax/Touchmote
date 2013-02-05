@@ -25,6 +25,7 @@ using System.Windows.Input;
 using WiiTUIO.Output;
 using Microsoft.Win32;
 using System.Diagnostics;
+using TCD.System.ApplicationExtensions;
 
 namespace WiiTUIO
 {
@@ -36,7 +37,7 @@ namespace WiiTUIO
 
         String appKey = "Touchmote";
 
-        RegistryKey winStartupRegisterKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+        //RegistryKey winStartupRegisterKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         private bool providerHandlerConnected = false;
 
@@ -68,19 +69,8 @@ namespace WiiTUIO
             
             // Load from the XAML.
             InitializeComponent();
-
-            InputFactory.InputType inputType = InputFactory.getType(Settings.Default.input);
-            OutputFactory.OutputType outputType = OutputFactory.getType(Settings.Default.output);
-
-            switch (inputType)
-            {
-                case InputFactory.InputType.POINTER:
-                    this.cbiPointer.IsSelected = true;
-                    break;
-                case InputFactory.InputType.PEN:
-                    this.cbiPen.IsSelected = true;
-                    break;
-            }
+            this.Initialize();
+            
             /*
             switch (outputType)
             {
@@ -93,9 +83,32 @@ namespace WiiTUIO
             }
              * */
 
+            /*
+            if (!TUIOVmultiProviderHandler.HasDriver())
+            {
+                this.driverNotInstalled();
+            }
+
+             */
+        }
+
+        public async void Initialize()
+        {
+            InputFactory.InputType inputType = InputFactory.getType(Settings.Default.input);
+            OutputFactory.OutputType outputType = OutputFactory.getType(Settings.Default.output);
+
+            switch (inputType)
+            {
+                case InputFactory.InputType.POINTER:
+                    this.cbiPointer.IsSelected = true;
+                    break;
+                case InputFactory.InputType.PEN:
+                    this.cbiPen.IsSelected = true;
+                    break;
+            }
             this.cbConnectOnStart.IsChecked = Settings.Default.connectOnStart;
-            this.cbWindowsStart.IsChecked = this.winStartupRegisterKey.GetValue("Touchmote") != null;
-            
+
+
             Application.Current.Exit += appWillExit;
 
             wiiPair = new WiiCPP.WiiPair();
@@ -108,13 +121,7 @@ namespace WiiTUIO
                 this.tbConnect.Visibility = Visibility.Hidden;
                 this.tbPair.Visibility = Visibility.Visible;
             }
-            /*
-            if (!TUIOVmultiProviderHandler.HasDriver())
-            {
-                this.driverNotInstalled();
-            }
-
-             */
+            this.cbWindowsStart.IsChecked = await ApplicationAutostart.IsAutostartAsync("Touchmote");
         }
 
         void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -892,16 +899,14 @@ namespace WiiTUIO
         {
             this.showConfig();
         }
-
-        private void cbWindowsStart_Checked(object sender, RoutedEventArgs e)
+        private async void cbWindowsStart_Checked(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-            this.winStartupRegisterKey.SetValue(appKey, System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            this.cbWindowsStart.IsChecked = await ApplicationAutostart.SetAutostartAsync(true, "Touchmote", "", "", true);
         }
 
-        private void cbWindowsStart_Unchecked(object sender, RoutedEventArgs e)
+        private async void cbWindowsStart_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.winStartupRegisterKey.DeleteValue(appKey, false);
+            this.cbWindowsStart.IsChecked = !(await ApplicationAutostart.SetAutostartAsync(false, "Touchmote", "", "", true));
         }
 
         private void cbConnectOnStart_Checked(object sender, RoutedEventArgs e)
