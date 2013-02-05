@@ -47,7 +47,15 @@ namespace WiiTUIO.Provider
 
             x = Convert.ToInt32((float)maxWidth * (1.0F - relativePosition.X) + minXPos);
             y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos);
-            
+
+            if (relativePosition.X == 0 && relativePosition.Y == 0)
+            {
+                Point err = new Point();
+                err.X = -1;
+                err.Y = -1;
+                return err;
+            }
+
             if (x <= 0)
             {
                 x = 0;
@@ -65,10 +73,7 @@ namespace WiiTUIO.Provider
                 y = Util.ScreenHeight-1;
             }
 
-            if (relativePosition.X == 0 && relativePosition.Y == 0)
-            {
-                throw new Exception("Pointer out of reach");
-            }
+            
 
             Point point = new Point();
             point.X = x;

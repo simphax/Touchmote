@@ -231,47 +231,7 @@ namespace WiiTUIO.Provider
             
         }
         #endregion
-        /*
-        #region SpatioTemporalClassifier Event Handling
-        /// <summary>
-        /// Enqueue a 'ContactType.End' event.
-        /// </summary>
-        /// <param name="pSource">The SpatioTemporalClassifier which was the source.</param>
-        /// <param name="pTracker">The reference to the SpatioTemporalTracker responsible for tracking this input.</param>
-        private void handleInputClassifier_OnEnd(SpatioTemporalClassifier pSource, SpatioTemporalTracker pTracker)
-        {
-            // Enqueue a contact removed event.
-            lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.End, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize));
-            //Console.WriteLine("Sending touch END X:" + pTracker.Position.X + " Y:" + pTracker.Position.Y);
-            //pSource.reset();
-            mouseWait = false;
-        }
 
-        /// <summary>
-        /// Enqueue a 'ContactType.Move' event.
-        /// </summary>
-        /// <param name="pSource">The SpatioTemporalClassifier which was the source.</param>
-        /// <param name="pTracker">The reference to the SpatioTemporalTracker responsible for tracking this input.</param>
-        private void handleInputClassifier_OnUpdate(SpatioTemporalClassifier pSource, SpatioTemporalTracker pTracker)
-        {
-            // Enqueue a contact removed event.
-            lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.Move, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize));
-            //Console.WriteLine("Sending touch UPDATE X:" + pTracker.Position.X + " Y:" + pTracker.Position.Y);
-        }
-
-        /// <summary>
-        /// Enqueue a 'ContactType.Start' event.
-        /// </summary>
-        /// <param name="pSource">The SpatioTemporalClassifier which was the source.</param>
-        /// <param name="pTracker">The reference to the SpatioTemporalTracker responsible for tracking this input.</param>
-        private void handleInputClassifier_OnStart(SpatioTemporalClassifier pSource, SpatioTemporalTracker pTracker)
-        {
-            // Enqueue a contact removed event.
-            lFrame.Enqueue(new WiiContact(pTracker.ID, ContactType.Start, new System.Windows.Point(pTracker.Position.X, pTracker.Position.Y), ScreenSize));
-            //Console.WriteLine("Sending touch START X:" + pTracker.Position.X + " Y:" + pTracker.Position.Y);
-        }
-        #endregion
-        */
         #region Start and Stop
 
         /// <summary>
@@ -438,12 +398,6 @@ namespace WiiTUIO.Provider
              * */
         }
 
-        private void dontWaitMouse(Object nothing)
-        {
-            mouseWait = false;
-        }
-
-
         /// <summary>
         /// This is called when the state of the wiimote changes and a new state report is available.
         /// </summary>
@@ -471,20 +425,15 @@ namespace WiiTUIO.Provider
 
             WiimoteLib.Point newpoint = lastpoint;
 
-            try
-            {
-                newpoint = ScreenPositionCalculator.GetPosition(e);
-            } 
-            catch(Exception exc) 
+            newpoint = ScreenPositionCalculator.GetPosition(e);
+
+            if(newpoint.X < 0 || newpoint.Y < 0) 
             {
                 newpoint = lastpoint;
                 pointerOutOfReach = true;
             }
 
-            smoothingBuffer.addValue(newpoint.X, newpoint.Y);
-            Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-            newpoint.X = (int)smoothedVec.X;
-            newpoint.Y = (int)smoothedVec.Y;
+            
 
             WiimoteState ws = e.WiimoteState;
 
@@ -526,10 +475,18 @@ namespace WiiTUIO.Provider
                 if (isFirstTouch)
                 {
                     isFirstTouch = false;
+                    smoothingBuffer.addValue(newpoint.X, newpoint.Y);
+                    Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+                    newpoint.X = (int)smoothedVec.X;
+                    newpoint.Y = (int)smoothedVec.Y;
                     lFrame.Enqueue(new WiiContact(touchID, ContactType.Start, new System.Windows.Point(newpoint.X, newpoint.Y), ScreenSize));
                 }
                 else
                 {
+                    smoothingBuffer.addValue(newpoint.X, newpoint.Y);
+                    Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+                    newpoint.X = (int)smoothedVec.X;
+                    newpoint.Y = (int)smoothedVec.Y;
                     lFrame.Enqueue(new WiiContact(touchID, ContactType.Move, new System.Windows.Point(newpoint.X, newpoint.Y), ScreenSize));
                 }
                 //lInputs.Add(new SpatioTemporalInput((double)newpoint.X, (double)newpoint.Y));
@@ -538,21 +495,25 @@ namespace WiiTUIO.Provider
             }
             else
             {
-                if (!isFirstTouch)
-                {
-                    lFrame.Enqueue(new WiiContact(touchID, ContactType.End, new System.Windows.Point(lastpoint.X, lastpoint.Y), ScreenSize));
-                    touchID++;
-                    new Timer(dontWaitMouse, null, 10, 0); //Wait with enabling mouse again, because some things can not be touched when the mouse is hovering
-                }
 
                 TouchHold = true;
-                isFirstTouch = true;
-
                 if (ShowMouse && !pointerOutOfReach && Settings.Default.pointer_moveCursor && !mouseWait)
                 {
+                    smoothingBuffer.addValue(newpoint.X, newpoint.Y);
+                    Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+                    newpoint.X = (int)smoothedVec.X;
+                    newpoint.Y = (int)smoothedVec.Y;
                     MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
                     MouseSimulator.WakeCursor();
                 }
+
+                if (!isFirstTouch)
+                {
+                    lFrame.Enqueue(new WiiContact(touchID, ContactType.End, new System.Windows.Point(lastpoint.X, lastpoint.Y), ScreenSize));
+                    //touchID++;
+                    mouseWait = false;
+                }
+                isFirstTouch = true;
 
                 if (ws.ButtonState.B && !PressedButtons.B)
                 {
