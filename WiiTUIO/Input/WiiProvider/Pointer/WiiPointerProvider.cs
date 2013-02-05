@@ -223,7 +223,7 @@ namespace WiiTUIO.Provider
 
             this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
 
-            this.smoothingBuffer = new SmoothingBuffer(4);
+            this.smoothingBuffer = new SmoothingBuffer(3);
         }
 
         private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
@@ -382,7 +382,7 @@ namespace WiiTUIO.Provider
                 //throw new Exception("Error establishing connection: " + , pError);
                 return false;
             }
-            new Timer(stopRumble, null, 100, 0); //Stop the rumble after 300ms
+            new Timer(stopRumble, null, 80, 0); //Stop the rumble after 80ms
             pErrorReport = null;
             return true;
         }
@@ -410,7 +410,11 @@ namespace WiiTUIO.Provider
         {
             if (this.pDevice != null)
             {
-                this.pDevice.SetRumble(false);
+                while (this.pDevice.WiimoteState.Rumble) //Sometimes the Wiimote does not disable the rumble on the first try
+                {
+                    this.pDevice.SetRumble(false);
+                    System.Threading.Thread.Sleep(20);
+                }
             }
         }
 
@@ -538,7 +542,7 @@ namespace WiiTUIO.Provider
                 {
                     lFrame.Enqueue(new WiiContact(touchID, ContactType.End, new System.Windows.Point(lastpoint.X, lastpoint.Y), ScreenSize));
                     touchID++;
-                    new Timer(dontWaitMouse, null, 50, 0); //Wait with enabling mouse again, because some things can not be touched when the mouse is hovering
+                    new Timer(dontWaitMouse, null, 10, 0); //Wait with enabling mouse again, because some things can not be touched when the mouse is hovering
                 }
 
                 TouchHold = true;
