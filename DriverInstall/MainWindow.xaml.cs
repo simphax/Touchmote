@@ -66,10 +66,11 @@ namespace DriverInstall
             this.uninstallDriver();
             this.uninstallDriver();
             this.installDriver();
-            this.store_settings();
-            this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
-            this.install_service(etd_ServiceName, etd_ServiceFilename, "3333");
-            this.give_service_permissions(etd_ServiceName);
+            this.removeAllButTouch();
+            //this.store_settings();
+            //this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
+            //this.install_service(etd_ServiceName, etd_ServiceFilename, "3333");
+            //this.give_service_permissions(etd_ServiceName);
             if (shutdown)
                 Application.Current.Shutdown(1);
         }
@@ -140,6 +141,37 @@ namespace DriverInstall
             }
         }
 
+        private void removeAllButTouch()
+        {
+            for (int i = 2; i <= 9; i++)
+            {
+                try
+                {
+                    //Devcon remove *multi*
+                    System.Diagnostics.ProcessStartInfo procStartInfo =
+                        new System.Diagnostics.ProcessStartInfo();
+
+                    procStartInfo.WorkingDirectory = System.AppDomain.CurrentDomain.BaseDirectory + "Driver\\";
+
+                    procStartInfo.FileName = procStartInfo.WorkingDirectory + "devcon";
+                    procStartInfo.Arguments = "remove *vmulti*COL0"+i+"*";
+
+                    procStartInfo.RedirectStandardOutput = true;
+                    procStartInfo.UseShellExecute = false;
+                    procStartInfo.CreateNoWindow = true;
+                    System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                    proc.StartInfo = procStartInfo;
+                    proc.Start();
+                    string result = proc.StandardOutput.ReadToEnd();
+                    consoleLine(result);
+                    proc.WaitForExit();
+                }
+                catch (Exception objException)
+                {
+                    consoleLine(objException.Message);
+                }
+            }
+        }
         //As described here
         //http://stackoverflow.com/questions/4436558/start-stop-a-windows-service-from-a-non-administrator-user-account
         private void give_service_permissions(string service_name)
