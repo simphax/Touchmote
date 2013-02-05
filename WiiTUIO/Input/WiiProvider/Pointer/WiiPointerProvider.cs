@@ -24,6 +24,8 @@ namespace WiiTUIO.Provider
 
         private ulong touchID = 1;
 
+        private int holdCount;
+
         private UserControl settingsControl = null;
 
         private string cursor = "Resources/touchcursor.cur";
@@ -34,7 +36,8 @@ namespace WiiTUIO.Provider
 
         private bool mouseWait = false;
 
-        private int TouchHoldThreshold = 10;
+        private int TouchHoldThreshold = 8;
+        private int TouchHoldReleaseThreshold = 10;
 
         private WiimoteLib.Point FirstTouch = new WiimoteLib.Point();
 
@@ -223,7 +226,7 @@ namespace WiiTUIO.Provider
 
             this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
 
-            this.smoothingBuffer = new SmoothingBuffer(3);
+            this.smoothingBuffer = new SmoothingBuffer(5);
         }
 
         private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
@@ -460,6 +463,11 @@ namespace WiiTUIO.Provider
                 pDeviceMutex.ReleaseMutex();
                 return;
             }
+
+            bool sendTouch = false;
+            ContactType touchType = ContactType.Move;
+
+
             Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
             // Store the state.
             WiimoteState pState = e.WiimoteState;
@@ -469,22 +477,14 @@ namespace WiiTUIO.Provider
 
             bool pointerOutOfReach = false;
 
-            WiimoteLib.Point newpoint = lastpoint;
+            WiimoteLib.Point touchPoint = ScreenPositionCalculator.GetPosition(e);
 
-            try
+            if (touchPoint.X < 0 || touchPoint.Y < 0)
             {
-                newpoint = ScreenPositionCalculator.GetPosition(e);
-            } 
-            catch(Exception exc) 
-            {
-                newpoint = lastpoint;
+                touchPoint = lastpoint;
                 pointerOutOfReach = true;
             }
 
-            smoothingBuffer.addValue(newpoint.X, newpoint.Y);
-            Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-            newpoint.X = (int)smoothedVec.X;
-            newpoint.Y = (int)smoothedVec.Y;
 
             WiimoteState ws = e.WiimoteState;
 
@@ -507,50 +507,46 @@ namespace WiiTUIO.Provider
 
                 if (isFirstTouch)
                 {
-                    FirstTouch = newpoint;
+                    touchType = ContactType.Start;
+                    isFirstTouch = false;
+                    TouchHold = true;
                 }
                 else if (TouchHold)
                 {
-                    if (Math.Abs(FirstTouch.X - newpoint.X) < TouchHoldThreshold || Math.Abs(FirstTouch.Y - newpoint.Y) < TouchHoldThreshold)
+                    if (Math.Abs(FirstTouch.X - touchPoint.X) < (TouchHoldThreshold + holdCount) || Math.Abs(FirstTouch.Y - touchPoint.Y) < (TouchHoldThreshold + holdCount))
                     {
-                        newpoint = FirstTouch;
+                        touchPoint = FirstTouch;
                         TouchHold = true;
-
+                        if (holdCount < TouchHoldReleaseThreshold) // The longer you hold the harder it is to release
+                        {
+                            holdCount++;
+                        }
                     }
                     else
                     {
                         TouchHold = false;
+                        holdCount = 0;
                     }
                 }
 
-                if (isFirstTouch)
-                {
-                    isFirstTouch = false;
-                    lFrame.Enqueue(new WiiContact(touchID, ContactType.Start, new System.Windows.Point(newpoint.X, newpoint.Y), ScreenSize));
-                }
-                else
-                {
-                    lFrame.Enqueue(new WiiContact(touchID, ContactType.Move, new System.Windows.Point(newpoint.X, newpoint.Y), ScreenSize));
-                }
-                //lInputs.Add(new SpatioTemporalInput((double)newpoint.X, (double)newpoint.Y));
-
+                sendTouch = true;
                 mouseWait = true;
             }
             else
             {
                 if (!isFirstTouch)
                 {
-                    lFrame.Enqueue(new WiiContact(touchID, ContactType.End, new System.Windows.Point(lastpoint.X, lastpoint.Y), ScreenSize));
-                    touchID++;
+                    sendTouch = true;
+                    touchType = ContactType.End;
+                    touchPoint = lastpoint;
                     new Timer(dontWaitMouse, null, 10, 0); //Wait with enabling mouse again, because some things can not be touched when the mouse is hovering
                 }
 
-                TouchHold = true;
                 isFirstTouch = true;
 
                 if (ShowMouse && !pointerOutOfReach && Settings.Default.pointer_moveCursor && !mouseWait)
                 {
-                    MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
+                    MouseSimulator.SetCursorPosition(touchPoint.X, touchPoint.Y);
                     MouseSimulator.WakeCursor();
                 }
 
@@ -670,7 +666,29 @@ namespace WiiTUIO.Provider
                 }
 
             }
-            lastpoint = newpoint;
+
+            
+
+            smoothingBuffer.addValue(touchPoint.X, touchPoint.Y);
+            Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+            touchPoint.X = (int)smoothedVec.X;
+            touchPoint.Y = (int)smoothedVec.Y;
+
+            if (touchType == ContactType.Start)
+            {
+                FirstTouch = touchPoint;
+            }
+
+            lastpoint = touchPoint;
+
+            if (sendTouch)
+            {
+                lFrame.Enqueue(new WiiContact(touchID, touchType, new System.Windows.Point(touchPoint.X, touchPoint.Y), ScreenSize));
+                if (touchType == ContactType.End)
+                {
+                    touchID++;
+                }
+            }
 
             // Now run these inputs through the classifier to see if they are related to any previous ones.
             // Thanks Nintendo... fix ye'r buffer ordering!
