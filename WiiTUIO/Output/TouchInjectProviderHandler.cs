@@ -41,6 +41,7 @@ namespace WiiTUIO.Output
                 touch.PointerInfo.PtPixelLocation.X = (int)contact.Position.X;
                 touch.PointerInfo.PtPixelLocation.Y = (int)contact.Position.Y;
                 touch.PointerInfo.PointerId = (uint)contact.ID;
+                touch.PointerInfo.PerformanceCount = e.Timestamp;
                 touch.ContactArea.left = (int)contact.BoundingRectangle.Left;
                 touch.ContactArea.right = (int)contact.BoundingRectangle.Right;
                 touch.ContactArea.top = (int)contact.BoundingRectangle.Top;
