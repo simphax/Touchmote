@@ -218,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\InputFactory.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\DuoTouch.cs" />
     <Compile Include="Input\WiiProvider\Settings\Calibrate.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>Calibrate.xaml</DependentUpon>

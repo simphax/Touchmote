@@ -20,6 +20,9 @@ namespace WiiTUIO.Provider
     /// </summary>
     public class WiiPointerProvider : IProvider
     {
+
+        private DuoTouch duoTouch;
+
         private SmoothingBuffer smoothingBuffer;
 
         private ulong touchID = 1;
@@ -224,6 +227,8 @@ namespace WiiTUIO.Provider
             this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
 
             this.smoothingBuffer = new SmoothingBuffer(3);
+
+            this.duoTouch = new DuoTouch(ScreenSize, 3);
         }
 
         private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
@@ -427,14 +432,18 @@ namespace WiiTUIO.Provider
 
             newpoint = ScreenPositionCalculator.GetPosition(e);
 
-            if(newpoint.X < 0 || newpoint.Y < 0) 
+            if (newpoint.X < 0 || newpoint.Y < 0)
             {
                 newpoint = lastpoint;
                 pointerOutOfReach = true;
+                duoTouch.disableHover();
+            }
+            else if (Settings.Default.pointer_moveCursor)
+            {
+                duoTouch.enableHover();
             }
 
             
-
             WiimoteState ws = e.WiimoteState;
 
             //Temporary solution to the "diamond cursor" problem.
@@ -475,19 +484,14 @@ namespace WiiTUIO.Provider
                 if (isFirstTouch)
                 {
                     isFirstTouch = false;
-                    smoothingBuffer.addValue(newpoint.X, newpoint.Y);
-                    Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-                    newpoint.X = (int)smoothedVec.X;
-                    newpoint.Y = (int)smoothedVec.Y;
-                    lFrame.Enqueue(new WiiContact(touchID, ContactType.Start, new System.Windows.Point(newpoint.X, newpoint.Y), ScreenSize));
+
+                    duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
+                    duoTouch.setContactMaster();
+
                 }
                 else
                 {
-                    smoothingBuffer.addValue(newpoint.X, newpoint.Y);
-                    Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-                    newpoint.X = (int)smoothedVec.X;
-                    newpoint.Y = (int)smoothedVec.Y;
-                    lFrame.Enqueue(new WiiContact(touchID, ContactType.Move, new System.Windows.Point(newpoint.X, newpoint.Y), ScreenSize));
+                    duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
                 }
                 //lInputs.Add(new SpatioTemporalInput((double)newpoint.X, (double)newpoint.Y));
 
@@ -497,20 +501,16 @@ namespace WiiTUIO.Provider
             {
 
                 TouchHold = true;
-                if (ShowMouse && !pointerOutOfReach && Settings.Default.pointer_moveCursor && !mouseWait)
+                if (ShowMouse && !mouseWait)
                 {
-                    smoothingBuffer.addValue(newpoint.X, newpoint.Y);
-                    Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-                    newpoint.X = (int)smoothedVec.X;
-                    newpoint.Y = (int)smoothedVec.Y;
-                    MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
-                    MouseSimulator.WakeCursor();
+                    duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
+                    
                 }
 
                 if (!isFirstTouch)
                 {
-                    lFrame.Enqueue(new WiiContact(touchID, ContactType.End, new System.Windows.Point(lastpoint.X, lastpoint.Y), ScreenSize));
-                    //touchID++;
+                    duoTouch.releaseContactMaster();
+                    duoTouch.releaseContactSlave();
                     mouseWait = false;
                 }
                 isFirstTouch = true;
@@ -638,6 +638,9 @@ namespace WiiTUIO.Provider
             //this.InputClassifier.processFrame(lInputs);
 
             // Build that frame off to the input dispatcher.
+
+            lFrame = duoTouch.getFrame();
+
             FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), lFrame);
 
             // Ship it out!

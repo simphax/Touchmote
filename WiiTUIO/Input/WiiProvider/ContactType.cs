@@ -21,5 +21,10 @@ namespace WiiTUIO.Provider
         /// Describes a change to an existing contact.
         /// </summary>
         Move,
+
+        /// <summary>
+        /// Describes a change to an existing contact.
+        /// </summary>
+        Hover,
     }
 }
