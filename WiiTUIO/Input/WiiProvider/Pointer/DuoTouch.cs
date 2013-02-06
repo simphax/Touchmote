@@ -22,11 +22,14 @@ namespace WiiTUIO.Provider
         private Point masterPosition;
         private Point slavePosition;
 
-        private bool masterHovering = false;
+        private Point midpoint;
 
-        private bool releaseMaster = false;
+        private bool usingMidpoint = false;
+
+        private bool masterHovering = true;
+        private bool slaveHovering = true;
+
         private bool masterReleased = true;
-        private bool releaseSlave = false;
         private bool slaveReleased = true;
 
         private bool hoverDisabled = false;
@@ -45,8 +48,11 @@ namespace WiiTUIO.Provider
 
         public void setSlavePosition(Point position)
         {
-            this.slavePosition.X = position.X;
-            this.slavePosition.Y = position.Y;
+            if (this.slaveReleased) //Slave will only move with master
+            {
+                this.slavePosition.X = position.X;
+                this.slavePosition.Y = position.Y;
+            }
         }
 
         public void setContactMaster()
@@ -61,18 +67,12 @@ namespace WiiTUIO.Provider
 
         public void releaseContactMaster()
         {
-            if (!this.masterReleased)
-            {
-                this.releaseMaster = true;
-            }
+            this.masterReleased = true;
         }
 
         public void releaseContactSlave()
         {
-            if (!this.slaveReleased)
-            {
-                this.releaseSlave = true;
-            }
+            this.slaveReleased = true;
         }
 
         public void disableHover()
@@ -87,23 +87,14 @@ namespace WiiTUIO.Provider
 
         public Queue<WiiContact> getFrame()
         {
-            Queue<WiiContact> newFrame = new Queue<WiiContact>(2);
+            Queue<WiiContact> newFrame = new Queue<WiiContact>(1);
 
             //master
             if(masterPosition != null)
             {
                 ContactType contactType;
-                Point position = new Point();
 
-                if (this.releaseMaster)
-                {
-                    contactType = ContactType.End;
-                    position = lastMasterContact.Position;
-                    this.masterHovering = true;
-                    this.masterReleased = true;
-                    this.releaseMaster = false;
-                }
-                else if (!this.masterReleased)
+                if (!this.masterReleased)
                 {
                     if (this.masterHovering)
                     {
@@ -116,33 +107,102 @@ namespace WiiTUIO.Provider
                     }
                     smoothingBuffer.addValue(new Vector(masterPosition.X, masterPosition.Y));
                     Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-                    position.X = smoothedVec.X;
-                    position.Y = smoothedVec.Y;
+                    this.masterPosition.X = smoothedVec.X;
+                    this.masterPosition.Y = smoothedVec.Y;
                 }
                 else //Released = hovering
                 {
-                    contactType = ContactType.Hover;
-
-                    if (!this.hoverDisabled)
+                    if (!this.masterHovering) //We end it first, since we are not really doing a correct hover sequence in the provider handler. Should be fixed?
                     {
+                        contactType = ContactType.End;
+                        this.masterPosition = lastMasterContact.Position;
+                        this.masterHovering = true;
+                    }
+                    else
+                    {
+                        contactType = ContactType.Hover;
                         smoothingBuffer.addValue(new Vector(masterPosition.X, masterPosition.Y));
                         Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-                        position.X = smoothedVec.X;
-                        position.Y = smoothedVec.Y;
+                        this.masterPosition.X = smoothedVec.X;
+                        this.masterPosition.Y = smoothedVec.Y;
                     }
 
-                    this.masterHovering = true;
                 }
 
                 if (!(contactType == ContactType.Hover && this.hoverDisabled))
                 {
-                    this.lastMasterContact = new WiiContact(this.masterID, contactType, position, this.screenSize);
+                    this.lastMasterContact = new WiiContact(this.masterID, contactType, this.masterPosition, this.screenSize);
                     newFrame.Enqueue(this.lastMasterContact);
                 }
             }
 
+            //slave
+            if (slavePosition != null)
+            {
+                ContactType contactType;
+
+                if (!this.slaveReleased)
+                {
+                    if (this.slaveHovering)
+                    {
+                        contactType = ContactType.Start;
+                        this.slaveHovering = false;
+                    }
+                    else
+                    {
+                        contactType = ContactType.Move;
+                    }
+
+                    if (!this.masterReleased)
+                    {
+                        if (!this.usingMidpoint)
+                        {
+                            this.midpoint = calculateMidpoint(this.masterPosition, this.slavePosition);
+                            this.usingMidpoint = true;
+                        }
+
+                        this.slavePosition = reflectThroughMidpoint(this.masterPosition, this.midpoint);
+
+                    }
+                    else
+                    {
+                        this.usingMidpoint = false;
+                    }
+
+                }
+                else
+                {
+                    if (!this.slaveHovering)
+                    {
+                        contactType = ContactType.End;
+                        this.slavePosition = lastSlaveContact.Position;
+                        this.slaveHovering = true;
+                    }
+                    else
+                    {
+                        contactType = ContactType.Hover;
+                    }
+                }
+
+                if (contactType != ContactType.Hover)
+                {
+                    this.lastSlaveContact = new WiiContact(this.slaveID, contactType, this.slavePosition, this.screenSize);
+                    newFrame.Enqueue(this.lastSlaveContact);
+                }
+
+            }
 
             return newFrame;
+        }
+
+        private Point calculateMidpoint(Point p1, Point p2)
+        {
+            return new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
+        }
+
+        private Point reflectThroughMidpoint(Point reflect, Point basePoint)
+        {
+            return new Point(basePoint.X - (reflect.X - basePoint.X), basePoint.Y - (reflect.Y - basePoint.Y));
         }
 
     }

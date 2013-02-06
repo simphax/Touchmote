@@ -461,60 +461,69 @@ namespace WiiTUIO.Provider
 
             if (ws.ButtonState.A)
             {
-
-
-                if (isFirstTouch)
-                {
-                    FirstTouch = newpoint;
-                }
-                else if (TouchHold)
-                {
-                    if (Math.Abs(FirstTouch.X - newpoint.X) < TouchHoldThreshold || Math.Abs(FirstTouch.Y - newpoint.Y) < TouchHoldThreshold)
+                    if (isFirstTouch)
                     {
-                        newpoint = FirstTouch;
-                        TouchHold = true;
+                        FirstTouch = newpoint;
+                    }
+                    else if (TouchHold)
+                    {
+                        if (Math.Abs(FirstTouch.X - newpoint.X) < TouchHoldThreshold || Math.Abs(FirstTouch.Y - newpoint.Y) < TouchHoldThreshold)
+                        {
+                            newpoint = FirstTouch;
+                            TouchHold = true;
+
+                        }
+                        else
+                        {
+                            TouchHold = false;
+                        }
+                    }
+
+                    if (isFirstTouch)
+                    {
+                        isFirstTouch = false;
+
+                        duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
+                        duoTouch.setContactMaster();
 
                     }
                     else
                     {
-                        TouchHold = false;
+                        duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
                     }
-                }
+                    //lInputs.Add(new SpatioTemporalInput((double)newpoint.X, (double)newpoint.Y));
 
-                if (isFirstTouch)
-                {
-                    isFirstTouch = false;
-
-                    duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-                    duoTouch.setContactMaster();
-
-                }
-                else
-                {
-                    duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-                }
-                //lInputs.Add(new SpatioTemporalInput((double)newpoint.X, (double)newpoint.Y));
-
-                mouseWait = true;
+                    mouseWait = true;
+            }
+            if (ws.ButtonState.B)
+            {
+                duoTouch.setSlavePosition(new System.Windows.Point(newpoint.X, newpoint.Y));
+                duoTouch.setContactSlave();
             }
             else
+            {
+                duoTouch.releaseContactSlave();
+            }
+            if(!ws.ButtonState.A)
             {
 
                 TouchHold = true;
                 if (ShowMouse && !mouseWait)
                 {
                     duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-                    
+
                 }
 
                 if (!isFirstTouch)
                 {
                     duoTouch.releaseContactMaster();
-                    duoTouch.releaseContactSlave();
                     mouseWait = false;
                 }
                 isFirstTouch = true;
+            }
 
+            if(!ws.ButtonState.A && !ws.ButtonState.B)
+            {
                 if (ws.ButtonState.B && !PressedButtons.B)
                 {
                     //if (TouchMode)
