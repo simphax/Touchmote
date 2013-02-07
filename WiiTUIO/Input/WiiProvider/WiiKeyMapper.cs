@@ -44,15 +44,8 @@ namespace WiiTUIO.Provider
         {
             PressedButtons = new ButtonState();
 
-            if (!File.Exists(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME))
-            {
-                this.createDefaultApplicationsJSON();
-            }
-
-            if (!File.Exists(KEYMAPS_PATH + DEFAULT_JSON_FILENAME))
-            {
-                this.createDefaultKeymapJSON();
-            }
+            this.createDefaultApplicationsJSON();
+            this.createDefaultKeymapJSON();
 
             StreamReader reader = File.OpenText(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME);
             JObject applicationsJson = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
@@ -93,7 +86,25 @@ namespace WiiTUIO.Provider
                     new JProperty("Default", DEFAULT_JSON_FILENAME)
             );
 
-            File.WriteAllText(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME, applicationList.ToString());
+            JObject union = applicationList;
+
+            if (File.Exists(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME))
+            {
+                StreamReader reader = File.OpenText(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME);
+                try
+                {
+                    JObject existingConfig = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                    reader.Close();
+
+                    MergeJSON(union, existingConfig);
+                }
+                catch (Exception e) 
+                {
+                    throw new Exception(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME + " is not valid JSON");
+                }
+            }
+
+            File.WriteAllText(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME, union.ToString());
         }
 
         private void createDefaultKeymapJSON()
@@ -121,7 +132,37 @@ namespace WiiTUIO.Provider
             buttonMinus.Add(new JValue("OEM_Minus"));
             buttons.Add(new JProperty("Minus", buttonMinus));
 
-            File.WriteAllText(KEYMAPS_PATH + DEFAULT_JSON_FILENAME, buttons.ToString());
+            JObject union = buttons;
+
+            if (File.Exists(KEYMAPS_PATH + DEFAULT_JSON_FILENAME))
+            {
+                StreamReader reader = File.OpenText(KEYMAPS_PATH + DEFAULT_JSON_FILENAME);
+                try
+                {
+                    JObject existingConfig = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                    reader.Close();
+
+                    MergeJSON(union, existingConfig);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(KEYMAPS_PATH + DEFAULT_JSON_FILENAME + " is not valid JSON");
+                }
+            }
+            File.WriteAllText(KEYMAPS_PATH + DEFAULT_JSON_FILENAME, union.ToString());
+        }
+
+        private static void MergeJSON(JObject receiver, JObject donor)
+        {
+            foreach (var property in donor)
+            {
+                JObject receiverValue = receiver[property.Key] as JObject;
+                JObject donorValue = property.Value as JObject;
+                if (receiverValue != null && donorValue != null)
+                    MergeJSON(receiverValue, donorValue);
+                else
+                    receiver[property.Key] = property.Value;
+            }
         }
 
         public void setKeyMap(WiiKeyMap keyMap)
