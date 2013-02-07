@@ -3,6 +3,10 @@
 Touch
 MouseToggle
 
+Mouse emulation
+------------
+MOUSELEFT
+MOUSERIGHT
 
 Keyboard emulation
 ------------

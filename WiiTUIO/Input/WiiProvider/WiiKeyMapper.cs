@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WiimoteLib;
 using WindowsInput;
+using WindowsInput.Native;
 
 namespace WiiTUIO.Provider
 {
@@ -353,6 +354,14 @@ namespace WiiTUIO.Provider
         }
     }
 
+    public enum MouseCode
+    {
+        MOUSELEFT,
+        MOUSERIGHT
+    }
+
+    
+
     public class WiiKeyMap
     {
         public JObject jsonObj;
@@ -360,9 +369,13 @@ namespace WiiTUIO.Provider
         public Action<WiiButtonEvent> OnButtonUp;
         public Action<WiiButtonEvent> OnButtonDown;
 
+        private InputSimulator inputSimulator;
+
         public WiiKeyMap(JObject jsonObj)
         {
             this.jsonObj = jsonObj;
+
+            this.inputSimulator = new InputSimulator();
         }
 
         public void executeButtonUp(WiimoteButton button)
@@ -375,8 +388,23 @@ namespace WiiTUIO.Provider
             {
                 if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper())) //Enum.Parse does the opposite...
                 {
-                    InputSimulator.SimulateKeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
+                    this.inputSimulator.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
                     handled = true;
+                }
+                else if (Enum.IsDefined(typeof(MouseCode), key.ToString().ToUpper()))
+                {
+                    MouseCode mouseCode = (MouseCode)Enum.Parse(typeof(MouseCode), key.ToString(), true);
+                    switch (mouseCode)
+                    {
+                        case MouseCode.MOUSELEFT:
+                            this.inputSimulator.Mouse.LeftButtonUp();
+                            handled = true;
+                            break;
+                        case MouseCode.MOUSERIGHT:
+                            this.inputSimulator.Mouse.RightButtonUp();
+                            handled = true;
+                            break;
+                    }
                 }
                 else if (key.Values().Count() > 0)
                 {
@@ -400,7 +428,7 @@ namespace WiiTUIO.Provider
 
                     if (modifiers.Count() > 0 && key.Count() > 0)
                     {
-                        InputSimulator.SimulateModifiedKeyStroke(modifiers, keys);
+                        this.inputSimulator.Keyboard.ModifiedKeyStroke(modifiers, keys);
                         handled = true;
                     }
                 }
@@ -419,8 +447,24 @@ namespace WiiTUIO.Provider
             {
                 if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper()))
                 {
-                    InputSimulator.SimulateKeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
+                    this.inputSimulator.Keyboard.KeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
                     handled = true;
+                }
+                else if (Enum.IsDefined(typeof(MouseCode), key.ToString().ToUpper()))
+                {
+                    MouseCode mouseCode = (MouseCode)Enum.Parse(typeof(MouseCode), key.ToString(), true);
+                    switch (mouseCode)
+                    {
+                        case MouseCode.MOUSELEFT:
+                            this.inputSimulator.Mouse.LeftButtonDown();
+                            handled = true;
+                            break;
+                        case MouseCode.MOUSERIGHT:
+                            this.inputSimulator.Mouse.RightButtonDown();
+                            handled = true;
+                            break;
+                    }
+
                 }
 
                 OnButtonDown(new WiiButtonEvent(key.ToString(), button, handled));
