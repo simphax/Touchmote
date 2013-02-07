@@ -225,6 +225,7 @@
     <Compile Include="Input\WiiProvider\Settings\CalibrationWindow.xaml.cs">
       <DependentUpon>CalibrationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Input\WiiProvider\WiiKeyMapper.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="Output\DrawingProviderHandler.cs" />
     <Compile Include="Output\IProviderHandler.cs" />

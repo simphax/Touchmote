@@ -42,22 +42,7 @@ namespace WiiTUIO.Provider
 
         private bool isFirstTouch = true;
 
-        public struct WiimoteButtonsStruct
-        {
-            public bool Up;
-            public bool Down;
-            public bool Left;
-            public bool Right;
-            public bool Home;
-            public bool Plus;
-            public bool Minus;
-            public bool One;
-            public bool Two;
-            public bool A;
-            public bool B;
-        }
-
-        WiimoteButtonsStruct PressedButtons;
+        private WiiKeyMapper keyMapper;
 
         private WiimoteLib.Point lastpoint;
 
@@ -214,9 +199,6 @@ namespace WiiTUIO.Provider
             lastpoint.X = 0;
             lastpoint.Y = 0;
 
-
-            PressedButtons = new WiimoteButtonsStruct();
-
             Settings.Default.SettingChanging += SettingChanging;
 
             this.settingsControl = new WiiPointerProviderSettings();
@@ -224,6 +206,8 @@ namespace WiiTUIO.Provider
             this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
 
             this.smoothingBuffer = new SmoothingBuffer(3);
+
+            this.keyMapper = new WiiKeyMapper();
         }
 
         private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
@@ -515,120 +499,9 @@ namespace WiiTUIO.Provider
                 }
                 isFirstTouch = true;
 
-                if (ws.ButtonState.B && !PressedButtons.B)
-                {
-                    //if (TouchMode)
-                    //{
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.RETURN);
-                    //}
-                    //else
-                    //{
-                    //InputSimulator.SimulateKeyDown(VirtualKeyCode.RBUTTON);
-                    //}
-                    PressedButtons.B = true;
-                }
-                else if (PressedButtons.B && !ws.ButtonState.B)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.RETURN);
-                    //InputSimulator.SimulateKeyUp(VirtualKeyCode.RBUTTON);
-                    PressedButtons.B = false;
-                }
+                keyMapper.processButtonState(ws.ButtonState);
 
-
-                if (ws.ButtonState.Up && !PressedButtons.Up)
-                {
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.UP);
-                    PressedButtons.Up = true;
-                }
-                else if (!ws.ButtonState.Up && PressedButtons.Up)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.UP);
-                    PressedButtons.Up = false;
-                }
-
-                if (ws.ButtonState.Down && !PressedButtons.Down)
-                {
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.DOWN);
-                    PressedButtons.Down = true;
-                }
-                else if (!ws.ButtonState.Down && PressedButtons.Down)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.DOWN);
-                    PressedButtons.Down = false;
-                }
-
-                if (ws.ButtonState.Left && !PressedButtons.Left)
-                {
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.LEFT);
-                    PressedButtons.Left = true;
-                }
-                else if (!ws.ButtonState.Left && PressedButtons.Left)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.LEFT);
-                    PressedButtons.Left = false;
-                }
-
-                if (ws.ButtonState.Right && !PressedButtons.Right)
-                {
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.RIGHT);
-                    PressedButtons.Right = true;
-                }
-                else if (!ws.ButtonState.Right && PressedButtons.Right)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.RIGHT);
-                    PressedButtons.Right = false;
-                }
-
-                if (ws.ButtonState.Home && !PressedButtons.Home)
-                {
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.LWIN);
-                    PressedButtons.Home = true;
-                }
-                else if (!ws.ButtonState.Home && PressedButtons.Home)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.LWIN);
-                    PressedButtons.Home = false;
-                }
-
-                if (ws.ButtonState.Plus && !PressedButtons.Plus)
-                {
-                    InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.OEM_PLUS);
-                    PressedButtons.Plus = true;
-                }
-                else if (PressedButtons.Plus && !ws.ButtonState.Plus)
-                {
-                    PressedButtons.Plus = false;
-                }
-                if (ws.ButtonState.Minus && !PressedButtons.Minus)
-                {
-                    InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.OEM_MINUS);
-                    PressedButtons.Minus = true;
-                }
-                else if (PressedButtons.Minus && !ws.ButtonState.Minus)
-                {
-                    PressedButtons.Minus = false;
-                }
-
-
-                if (ws.ButtonState.One && !PressedButtons.One)
-                {
-                    ShowMouse = ShowMouse ? false : true;
-                    PressedButtons.One = true;
-                }
-                else if (PressedButtons.One && !ws.ButtonState.One)
-                {
-                    PressedButtons.One = false;
-                }
-                if (ws.ButtonState.Two && !PressedButtons.Two)
-                {
-                    OnButtonDown(2);
-                    PressedButtons.Two = true;
-                }
-                else if (PressedButtons.Two && !ws.ButtonState.Two)
-                {
-                    OnButtonUp(2);
-                    PressedButtons.Two = false;
-                }
+                
 
             }
             lastpoint = newpoint;
