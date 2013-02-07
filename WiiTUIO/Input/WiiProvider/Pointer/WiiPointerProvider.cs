@@ -46,6 +46,8 @@ namespace WiiTUIO.Provider
 
         private WiimoteLib.Point lastpoint;
 
+        private bool touchDown = false;
+
         #region CalibrationRectangle
         /// <summary>
         /// The CalibrationRectangle class defines a set of 4 2D coordinates that define a rectangle in absolute space.
@@ -208,7 +210,27 @@ namespace WiiTUIO.Provider
             this.smoothingBuffer = new SmoothingBuffer(3);
 
             this.keyMapper = new WiiKeyMapper();
+
+            this.keyMapper.OnButtonDown += WiiButton_Down;
+            this.keyMapper.OnButtonUp += WiiButton_Up;
         }
+
+        private void WiiButton_Up(WiiButtonEvent evt)
+        {
+            if (evt.Action.ToLower() == "touch" && !evt.Handled)
+            {
+                touchDown = false;
+            }
+        }
+
+        private void WiiButton_Down(WiiButtonEvent evt)
+        {
+            if (evt.Action.ToLower() == "touch" && !evt.Handled)
+            {
+                touchDown = true;
+            }
+        }
+
 
         private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
         {
@@ -417,10 +439,6 @@ namespace WiiTUIO.Provider
                 pointerOutOfReach = true;
             }
 
-            
-
-            WiimoteState ws = e.WiimoteState;
-
             //Temporary solution to the "diamond cursor" problem.
             if (this.changeSystemCursor)
             {
@@ -434,7 +452,11 @@ namespace WiiTUIO.Provider
                 }
             }
 
-            if (ws.ButtonState.A)
+            WiimoteState ws = e.WiimoteState;
+
+            keyMapper.processButtonState(ws.ButtonState);
+
+            if (this.touchDown)
             {
 
 
@@ -499,7 +521,7 @@ namespace WiiTUIO.Provider
                 }
                 isFirstTouch = true;
 
-                keyMapper.processButtonState(ws.ButtonState);
+                
 
                 
 
