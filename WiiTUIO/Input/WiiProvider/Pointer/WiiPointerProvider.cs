@@ -217,6 +217,10 @@ namespace WiiTUIO.Provider
 
         private void WiiButton_Up(WiiButtonEvent evt)
         {
+            if (evt.Action.ToLower() == "mousetoggle" && !evt.Handled)
+            {
+                this.ShowMouse = this.ShowMouse ? false : true;
+            }
             if (evt.Action.ToLower() == "touch" && !evt.Handled)
             {
                 touchDown = false;

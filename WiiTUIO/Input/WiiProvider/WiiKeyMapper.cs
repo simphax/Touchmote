@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using WiimoteLib;
 using WindowsInput;
 
@@ -40,22 +41,58 @@ namespace WiiTUIO.Provider
         WiiKeyMap keyMap;
         ButtonState PressedButtons;
 
+        SystemProcessMonitor processMonitor;
+
+        JObject applicationsJson;
+        JObject defaultKeymapJson;
+
         public WiiKeyMapper()
         {
             PressedButtons = new ButtonState();
 
-            this.createDefaultApplicationsJSON();
-            this.createDefaultKeymapJSON();
+            System.IO.Directory.CreateDirectory(KEYMAPS_PATH);
+            this.applicationsJson = this.createDefaultApplicationsJSON();
+            this.defaultKeymapJson = this.createDefaultKeymapJSON();
 
-            StreamReader reader = File.OpenText(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME);
-            JObject applicationsJson = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-
-            this.keyMap = new WiiKeyMap(KEYMAPS_PATH + applicationsJson.GetValue("Default").ToString());
-
-
+            this.keyMap = new WiiKeyMap(this.defaultKeymapJson);
             this.keyMap.OnButtonDown += keyMap_onButtonDown;
             this.keyMap.OnButtonUp += keyMap_onButtonUp;
 
+            this.processMonitor = new SystemProcessMonitor();
+
+            this.processMonitor.ProcessChanged += processChanged;
+        }
+
+        private void processChanged(ProcessChangedEvent evt)
+        {
+            try
+            {
+                string appStringToMatch = evt.Process.MainModule.FileVersionInfo.FileDescription + evt.Process.MainModule.FileVersionInfo.OriginalFilename + evt.Process.MainModule.FileVersionInfo.FileName;
+
+                bool keymapFound = false;
+
+                IEnumerable<JObject> applicationConfigurations = this.applicationsJson.GetValue("Applications").Children<JObject>();
+                foreach (JObject configuration in applicationConfigurations)
+                {
+                    string appName = configuration.GetValue("Name").ToString();
+
+                    if (appStringToMatch.ToLower().Replace(" ", "").Contains(appName.ToLower().Replace(" ", "")))
+                    {
+                        this.loadKeyMap(KEYMAPS_PATH + configuration.GetValue("Keymap").ToString());
+                        keymapFound = true;
+                    }
+                    
+                }
+                if (!keymapFound)
+                {
+                    this.keyMap.jsonObj = this.defaultKeymapJson;
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not change keymap config for " + evt.Process);
+            }
         }
 
         private void keyMap_onButtonUp(WiiButtonEvent evt)
@@ -69,15 +106,9 @@ namespace WiiTUIO.Provider
         }
 
 
-        private void createDefaultApplicationsJSON()
+        private JObject createDefaultApplicationsJSON()
         {
             JArray applications = new JArray();
-            JObject paint = new JObject(
-                new JProperty("Name","Paint"),
-                new JProperty("Keymap","paint.json")
-            );
-            applications.Add(paint);
-
 
             JObject applicationList =
                 new JObject(
@@ -103,11 +134,12 @@ namespace WiiTUIO.Provider
                     throw new Exception(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME + " is not valid JSON");
                 }
             }
-
+            
             File.WriteAllText(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME, union.ToString());
+            return union;
         }
 
-        private void createDefaultKeymapJSON()
+        private JObject createDefaultKeymapJSON()
         {
             JObject buttons = new JObject();
 
@@ -132,6 +164,8 @@ namespace WiiTUIO.Provider
             buttonMinus.Add(new JValue("OEM_Minus"));
             buttons.Add(new JProperty("Minus", buttonMinus));
 
+            buttons.Add(new JProperty("One", "MouseToggle"));
+
             JObject union = buttons;
 
             if (File.Exists(KEYMAPS_PATH + DEFAULT_JSON_FILENAME))
@@ -150,6 +184,7 @@ namespace WiiTUIO.Provider
                 }
             }
             File.WriteAllText(KEYMAPS_PATH + DEFAULT_JSON_FILENAME, union.ToString());
+            return union;
         }
 
         private static void MergeJSON(JObject receiver, JObject donor)
@@ -165,9 +200,32 @@ namespace WiiTUIO.Provider
             }
         }
 
-        public void setKeyMap(WiiKeyMap keyMap)
+        public void loadKeyMap(string path)
         {
-            this.keyMap = keyMap;
+
+            JObject union = this.defaultKeymapJson;
+
+            if (File.Exists(path))
+            {
+                StreamReader reader = File.OpenText(path);
+                try
+                {
+                    JObject newKeymap = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                    reader.Close();
+
+                    MergeJSON(union, newKeymap);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(path + " is not valid JSON");
+                }
+            }
+
+            this.keyMap.jsonObj = union;
+
+            this.processButtonState(new ButtonState()); //Sets all buttons to "not pressed"
+
+            Console.WriteLine("Loaded new keymap on " + path);
         }
 
         public void processButtonState(ButtonState buttonState)
@@ -289,7 +347,7 @@ namespace WiiTUIO.Provider
             }
             else if (PressedButtons.Two && !buttonState.Two)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.One);
+                this.keyMap.executeButtonUp(WiimoteButton.Two);
                 PressedButtons.Two = false;
             }
         }
@@ -297,75 +355,76 @@ namespace WiiTUIO.Provider
 
     public class WiiKeyMap
     {
-        private JObject jsonobj;
+        public JObject jsonObj;
 
         public Action<WiiButtonEvent> OnButtonUp;
         public Action<WiiButtonEvent> OnButtonDown;
 
-        public WiiKeyMap(string path)
+        public WiiKeyMap(JObject jsonObj)
         {
-            StreamReader reader = File.OpenText(path);
-            this.jsonobj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+            this.jsonObj = jsonObj;
         }
 
         public void executeButtonUp(WiimoteButton button)
         {
             bool handled = false;
 
-            JToken key = this.jsonobj.GetValue(button.ToString()); //ToString converts WiimoteButton.A to "A" for instance
+            JToken key = this.jsonObj.GetValue(button.ToString()); //ToString converts WiimoteButton.A to "A" for instance
 
-            if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper())) //Enum.Parse does the opposite...
+            if (key != null)
             {
-                InputSimulator.SimulateKeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
-                handled = true;
-            }
-            else if (key.Values().Count() > 0)
-            {
-                IEnumerable<JToken> array = key.Values<JToken>();
-
-                List<VirtualKeyCode> modifiers = new List<VirtualKeyCode>();
-
-                for (int i = 0; i < array.Count() - 1; i++)
+                if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper())) //Enum.Parse does the opposite...
                 {
-                    if (Enum.IsDefined(typeof(VirtualKeyCode), array.ElementAt(i).ToString().ToUpper()))
-                    {
-                        modifiers.Add((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.ElementAt(i).ToString(), true));
-                    }
-                }
-                List<VirtualKeyCode> keys = new List<VirtualKeyCode>();
-                if (Enum.IsDefined(typeof(VirtualKeyCode), array.Last().ToString().ToUpper()))
-                {
-                    keys.Add((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.Last().ToString(), true));
-                }
-
-
-                if (modifiers.Count() > 0 && key.Count() > 0)
-                {
-                    InputSimulator.SimulateModifiedKeyStroke(modifiers, keys);
+                    InputSimulator.SimulateKeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
                     handled = true;
                 }
-            }
-            else
-            {
-                Console.WriteLine("Could not fire key " + key.ToString());
+                else if (key.Values().Count() > 0)
+                {
+                    IEnumerable<JToken> array = key.Values<JToken>();
+
+                    List<VirtualKeyCode> modifiers = new List<VirtualKeyCode>();
+
+                    for (int i = 0; i < array.Count() - 1; i++)
+                    {
+                        if (Enum.IsDefined(typeof(VirtualKeyCode), array.ElementAt(i).ToString().ToUpper()))
+                        {
+                            modifiers.Add((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.ElementAt(i).ToString(), true));
+                        }
+                    }
+                    List<VirtualKeyCode> keys = new List<VirtualKeyCode>();
+                    if (Enum.IsDefined(typeof(VirtualKeyCode), array.Last().ToString().ToUpper()))
+                    {
+                        keys.Add((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.Last().ToString(), true));
+                    }
+
+
+                    if (modifiers.Count() > 0 && key.Count() > 0)
+                    {
+                        InputSimulator.SimulateModifiedKeyStroke(modifiers, keys);
+                        handled = true;
+                    }
+                }
+
+                OnButtonUp(new WiiButtonEvent(key.ToString(), button, handled));
             }
 
-            OnButtonUp(new WiiButtonEvent(key.ToString(), button, handled));
         }
 
         public void executeButtonDown(WiimoteButton button)
         {
             bool handled = false;
 
-            JToken key = this.jsonobj.GetValue(button.ToString());
-            if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper()))
+            JToken key = this.jsonObj.GetValue(button.ToString());
+            if (key != null)
             {
-                InputSimulator.SimulateKeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
-                handled = true;
+                if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper()))
+                {
+                    InputSimulator.SimulateKeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
+                    handled = true;
+                }
+
+                OnButtonDown(new WiiButtonEvent(key.ToString(), button, handled));
             }
-
-
-            OnButtonDown(new WiiButtonEvent(key.ToString(), button, handled));
         }
     }
 

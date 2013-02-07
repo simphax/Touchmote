@@ -1,0 +1,9 @@
+{
+  "Applications": [
+    {
+      "Name": "Super Crate Box",
+      "Keymap": "supercratebox.json"
+    }
+  ],
+  "Default": "default.json"
+}

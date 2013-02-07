@@ -1,0 +1,10 @@
+{
+  "One": "VK_X",
+  "Two": "VK_Z",
+  "Up": "Left",
+  "Down": "Right",
+  "Left": "Down",
+  "Right": "Up",
+  "Plus": "Return",
+  "Minus": "Escape"
+}

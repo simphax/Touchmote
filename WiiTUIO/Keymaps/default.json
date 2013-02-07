@@ -1,0 +1,18 @@
+{
+  "A": "Touch",
+  "B": "Return",
+  "Home": "LWin",
+  "Left": "Left",
+  "Right": "Right",
+  "Up": "Up",
+  "Down": "Down",
+  "Plus": [
+    "LControl",
+    "OEM_Plus"
+  ],
+  "Minus": [
+    "LControl",
+    "OEM_Minus"
+  ],
+  "One": "MouseToggle"
+}
