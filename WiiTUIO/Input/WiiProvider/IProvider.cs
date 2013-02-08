@@ -13,8 +13,6 @@ namespace WiiTUIO.Provider
         event Action<int> OnConnect;
         event Action<int> OnDisconnect;
         event Action<int> OnBatteryUpdate;
-        event Action<int> OnButtonDown;
-        event Action<int> OnButtonUp;
         event EventHandler<FrameEventArgs> OnNewFrame;
 
         void start();

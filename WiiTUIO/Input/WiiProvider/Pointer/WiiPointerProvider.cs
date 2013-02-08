@@ -25,15 +25,13 @@ namespace WiiTUIO.Provider
 
         private SmoothingBuffer smoothingBuffer;
 
-        private ulong touchID = 1;
-
         private UserControl settingsControl = null;
 
         private string cursor = "Resources/touchcursor.cur";
 
         private bool changeSystemCursor = false;
 
-        private bool ShowMouse = true;
+        private bool MouseMode = false;
 
         private bool mouseWait = false;
 
@@ -45,24 +43,13 @@ namespace WiiTUIO.Provider
 
         private bool isFirstTouch = true;
 
-        public struct WiimoteButtonsStruct
-        {
-            public bool Up;
-            public bool Down;
-            public bool Left;
-            public bool Right;
-            public bool Home;
-            public bool Plus;
-            public bool Minus;
-            public bool One;
-            public bool Two;
-            public bool A;
-            public bool B;
-        }
-
-        WiimoteButtonsStruct PressedButtons;
+        private WiiKeyMapper keyMapper;
 
         private WiimoteLib.Point lastpoint;
+
+        private bool touchDownMaster = false;
+
+        private bool touchDownSlave = false;
 
         #region CalibrationRectangle
         /// <summary>
@@ -217,9 +204,6 @@ namespace WiiTUIO.Provider
             lastpoint.X = 0;
             lastpoint.Y = 0;
 
-
-            PressedButtons = new WiimoteButtonsStruct();
-
             Settings.Default.SettingChanging += SettingChanging;
 
             this.settingsControl = new WiiPointerProviderSettings();
@@ -229,7 +213,41 @@ namespace WiiTUIO.Provider
             this.smoothingBuffer = new SmoothingBuffer(3);
 
             this.duoTouch = new DuoTouch(ScreenSize, 3);
+
+            this.keyMapper = new WiiKeyMapper();
+
+            this.keyMapper.OnButtonDown += WiiButton_Down;
+            this.keyMapper.OnButtonUp += WiiButton_Up;
         }
+
+        private void WiiButton_Up(WiiButtonEvent evt)
+        {
+            if (evt.Action.ToLower() == "mousetoggle" && !evt.Handled)
+            {
+                this.MouseMode = this.MouseMode ? false : true;
+            }
+            if (evt.Action.ToLower() == "touchmaster" && !evt.Handled)
+            {
+                touchDownMaster = false;
+            }
+            if (evt.Action.ToLower() == "touchslave" && !evt.Handled)
+            {
+                touchDownSlave = false;
+            }
+        }
+
+        private void WiiButton_Down(WiiButtonEvent evt)
+        {
+            if (evt.Action.ToLower() == "touchmaster" && !evt.Handled)
+            {
+                touchDownMaster = true;
+            }
+            if (evt.Action.ToLower() == "touchslave" && !evt.Handled)
+            {
+                touchDownSlave = true;
+            }
+        }
+
 
         private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
         {
@@ -259,6 +277,7 @@ namespace WiiTUIO.Provider
             // Set the running flag.
             this.bRunning = true;
 
+            /*
             this.changeSystemCursor = Settings.Default.pointer_changeSystemCursor;
 
             if (this.changeSystemCursor)
@@ -272,6 +291,7 @@ namespace WiiTUIO.Provider
                     Console.WriteLine(e.ToString());
                 }
             }
+            */
 
             OnConnect(1);
 
@@ -296,7 +316,7 @@ namespace WiiTUIO.Provider
             // Release processing.
             pDeviceMutex.ReleaseMutex();
 
-            MouseSimulator.ResetSystemCursor();
+            //MouseSimulator.ResetSystemCursor();
 
 
             OnDisconnect(1);
@@ -443,10 +463,8 @@ namespace WiiTUIO.Provider
                 duoTouch.enableHover();
             }
 
-            
-            WiimoteState ws = e.WiimoteState;
-
             //Temporary solution to the "diamond cursor" problem.
+            /*
             if (this.changeSystemCursor)
             {
                 try
@@ -458,9 +476,15 @@ namespace WiiTUIO.Provider
                     Console.WriteLine(error.ToString());
                 }
             }
+            */
+            WiimoteState ws = e.WiimoteState;
 
-            if (ws.ButtonState.A)
+            keyMapper.processButtonState(ws.ButtonState);
+
+            if (!MouseMode)
             {
+                if (this.touchDownMaster)
+                {
                     if (isFirstTouch)
                     {
                         FirstTouch = newpoint;
@@ -491,169 +515,43 @@ namespace WiiTUIO.Provider
                     {
                         duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
                     }
-                    //lInputs.Add(new SpatioTemporalInput((double)newpoint.X, (double)newpoint.Y));
 
-                    mouseWait = true;
-            }
-            if (ws.ButtonState.B)
-            {
-                duoTouch.setSlavePosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-                duoTouch.setContactSlave();
-            }
-            else
-            {
-                duoTouch.releaseContactSlave();
-            }
-            if(!ws.ButtonState.A)
-            {
-
-                TouchHold = true;
-                if (ShowMouse && !mouseWait)
+                }
+                else
                 {
+                    
                     duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-
+                    if (!isFirstTouch)
+                    {
+                        duoTouch.releaseContactMaster();
+                    }
+                    TouchHold = true;
+                    isFirstTouch = true;
                 }
 
-                if (!isFirstTouch)
+                if (this.touchDownSlave)
                 {
-                    duoTouch.releaseContactMaster();
-                    mouseWait = false;
+                    duoTouch.setSlavePosition(new System.Windows.Point(newpoint.X, newpoint.Y));
+                    duoTouch.setContactSlave();
                 }
-                isFirstTouch = true;
-            }
+                else
+                {
+                    duoTouch.releaseContactSlave();
+                }
 
-            if(!ws.ButtonState.A && !ws.ButtonState.B)
+                lastpoint = newpoint;
+
+                lFrame = duoTouch.getFrame();
+
+                FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), lFrame);
+
+                this.OnNewFrame(this, pFrame);
+
+            }
+            else //Mouse mode
             {
-                if (ws.ButtonState.B && !PressedButtons.B)
-                {
-                    //if (TouchMode)
-                    //{
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.RETURN);
-                    //}
-                    //else
-                    //{
-                    //InputSimulator.SimulateKeyDown(VirtualKeyCode.RBUTTON);
-                    //}
-                    PressedButtons.B = true;
-                }
-                else if (PressedButtons.B && !ws.ButtonState.B)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.RETURN);
-                    //InputSimulator.SimulateKeyUp(VirtualKeyCode.RBUTTON);
-                    PressedButtons.B = false;
-                }
-
-
-                if (ws.ButtonState.Up && !PressedButtons.Up)
-                {
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.UP);
-                    PressedButtons.Up = true;
-                }
-                else if (!ws.ButtonState.Up && PressedButtons.Up)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.UP);
-                    PressedButtons.Up = false;
-                }
-
-                if (ws.ButtonState.Down && !PressedButtons.Down)
-                {
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.DOWN);
-                    PressedButtons.Down = true;
-                }
-                else if (!ws.ButtonState.Down && PressedButtons.Down)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.DOWN);
-                    PressedButtons.Down = false;
-                }
-
-                if (ws.ButtonState.Left && !PressedButtons.Left)
-                {
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.LEFT);
-                    PressedButtons.Left = true;
-                }
-                else if (!ws.ButtonState.Left && PressedButtons.Left)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.LEFT);
-                    PressedButtons.Left = false;
-                }
-
-                if (ws.ButtonState.Right && !PressedButtons.Right)
-                {
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.RIGHT);
-                    PressedButtons.Right = true;
-                }
-                else if (!ws.ButtonState.Right && PressedButtons.Right)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.RIGHT);
-                    PressedButtons.Right = false;
-                }
-
-                if (ws.ButtonState.Home && !PressedButtons.Home)
-                {
-                    InputSimulator.SimulateKeyDown(VirtualKeyCode.LWIN);
-                    PressedButtons.Home = true;
-                }
-                else if (!ws.ButtonState.Home && PressedButtons.Home)
-                {
-                    InputSimulator.SimulateKeyUp(VirtualKeyCode.LWIN);
-                    PressedButtons.Home = false;
-                }
-
-                if (ws.ButtonState.Plus && !PressedButtons.Plus)
-                {
-                    InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.OEM_PLUS);
-                    PressedButtons.Plus = true;
-                }
-                else if (PressedButtons.Plus && !ws.ButtonState.Plus)
-                {
-                    PressedButtons.Plus = false;
-                }
-                if (ws.ButtonState.Minus && !PressedButtons.Minus)
-                {
-                    InputSimulator.SimulateModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.OEM_MINUS);
-                    PressedButtons.Minus = true;
-                }
-                else if (PressedButtons.Minus && !ws.ButtonState.Minus)
-                {
-                    PressedButtons.Minus = false;
-                }
-
-
-                if (ws.ButtonState.One && !PressedButtons.One)
-                {
-                    ShowMouse = ShowMouse ? false : true;
-                    PressedButtons.One = true;
-                }
-                else if (PressedButtons.One && !ws.ButtonState.One)
-                {
-                    PressedButtons.One = false;
-                }
-                if (ws.ButtonState.Two && !PressedButtons.Two)
-                {
-                    OnButtonDown(2);
-                    PressedButtons.Two = true;
-                }
-                else if (PressedButtons.Two && !ws.ButtonState.Two)
-                {
-                    OnButtonUp(2);
-                    PressedButtons.Two = false;
-                }
-
+                MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
             }
-            lastpoint = newpoint;
-
-            // Now run these inputs through the classifier to see if they are related to any previous ones.
-            // Thanks Nintendo... fix ye'r buffer ordering!
-            //this.InputClassifier.processFrame(lInputs);
-
-            // Build that frame off to the input dispatcher.
-
-            lFrame = duoTouch.getFrame();
-
-            FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), lFrame);
-
-            // Ship it out!
-            this.OnNewFrame(this, pFrame);
 
             this.BatteryState = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
 
@@ -667,10 +565,5 @@ namespace WiiTUIO.Provider
         {
             return this.settingsControl;
         }
-
-
-        public event Action<int> OnButtonDown;
-
-        public event Action<int> OnButtonUp;
     }
 }
