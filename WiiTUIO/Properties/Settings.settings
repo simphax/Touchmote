@@ -2,12 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WiiTUIO.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="pointer_changeSystemCursor" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="pointer_moveCursor" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="input" Type="System.String" Scope="User">
       <Value Profile="(Default)">pointer</Value>
     </Setting>
@@ -28,6 +22,9 @@
     </Setting>
     <Setting Name="pairedOnce" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="pointer_moveCursor" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>
