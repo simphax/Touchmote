@@ -223,6 +223,16 @@ namespace WiiTUIO.Provider
             this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
 
             this.inputSimulator = new InputSimulator();
+
+            this.showPointer = Settings.Default.pointer_moveCursor;
+            if (this.showPointer)
+            {
+                this.duoTouch.enableHover();
+            }
+            else
+            {
+                this.duoTouch.disableHover();
+            }
         }
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
@@ -482,11 +492,6 @@ namespace WiiTUIO.Provider
             {
                 newpoint = lastpoint;
                 pointerOutOfReach = true;
-                duoTouch.disableHover();
-            }
-            else if (Settings.Default.pointer_moveCursor)
-            {
-                duoTouch.enableHover();
             }
 
             //Temporary solution to the "diamond cursor" problem.
