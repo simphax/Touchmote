@@ -152,17 +152,16 @@ namespace WiiTUIO.Provider
             buttons.Add(new JProperty("Up", "Up"));
             buttons.Add(new JProperty("Down", "Down"));
 
-            JArray buttonPlus = new JArray();
-            buttonPlus.Add(new JValue("LControl"));
-            buttonPlus.Add(new JValue("OEM_Plus"));
-            buttons.Add(new JProperty("Plus", buttonPlus));
+            buttons.Add(new JProperty("Plus", "Volume_Up"));
 
-            JArray buttonMinus = new JArray();
-            buttonMinus.Add(new JValue("LControl"));
-            buttonMinus.Add(new JValue("OEM_Minus"));
-            buttons.Add(new JProperty("Minus", buttonMinus));
+            buttons.Add(new JProperty("Minus", "Volume_Down"));
 
             buttons.Add(new JProperty("One", "MouseToggle"));
+
+            JArray buttonTwo = new JArray();
+            buttonTwo.Add(new JValue("LWin"));
+            buttonTwo.Add(new JValue("Tab"));
+            buttons.Add(new JProperty("Two", buttonTwo));
 
             JObject union = buttons;
 
@@ -429,7 +428,7 @@ namespace WiiTUIO.Provider
 
                     List<VirtualKeyCode> modifiers = new List<VirtualKeyCode>();
 
-                    for (int i = 0; i < array.Count() - 1; i++)
+                    for (int i = 0; i < array.Count()-1; i++)
                     {
                         if (Enum.IsDefined(typeof(VirtualKeyCode), array.ElementAt(i).ToString().ToUpper()))
                         {
@@ -441,7 +440,6 @@ namespace WiiTUIO.Provider
                     {
                         actionKey = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.Last().ToString(), true);
                     }
-
 
                     if (modifiers.Count() > 0 && actionKey != 0)
                     {

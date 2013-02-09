@@ -5,6 +5,8 @@ MOUSE
 
 Special buttons
 ------------
+TOUCHMASTER
+TOUCHSLAVE
 POINTERTOGGLE
 
 Mouse emulation

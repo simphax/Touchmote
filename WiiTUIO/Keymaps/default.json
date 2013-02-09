@@ -7,13 +7,11 @@
   "Right": "Right",
   "Up": "Up",
   "Down": "Down",
-  "Plus": [
-    "LControl",
-    "OEM_Plus"
-  ],
-  "Minus": [
-    "LControl",
-    "OEM_Minus"
-  ],
-  "One": "PointerToggle"
+  "Plus": "Volume_Up",
+  "Minus": "Volume_Down",
+  "One": "PointerToggle",
+  "Two": [
+    "LWin",
+    "Tab"
+  ]
 }
