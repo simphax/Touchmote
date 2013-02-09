@@ -30,6 +30,12 @@ namespace WiiTUIO.Output
             List<PointerTouchInfo> toFire = new List<PointerTouchInfo>();
             foreach (WiiContact contact in e.Contacts)
             {
+                /*
+                if (contact.Type != ContactType.Hover)
+                {
+                    Console.WriteLine("Recieved contact " + contact.ID + " type "+contact.Type.ToString() + " position "  + contact.Position.ToString());
+                }
+                */
                 ContactType type = contact.Type;
                 //make a new pointertouchinfo with all neccessary information
                 PointerTouchInfo touch = new PointerTouchInfo();
@@ -52,6 +58,8 @@ namespace WiiTUIO.Output
                 else if (type == ContactType.Move)
                     touch.PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE | PointerFlags.INCONTACT;
                 else if (type == ContactType.End)
+                    touch.PointerInfo.PointerFlags = PointerFlags.UP;
+                else if (type == ContactType.EndToHover)
                     touch.PointerInfo.PointerFlags = PointerFlags.UP | PointerFlags.INRANGE;
                 else if (type == ContactType.Hover)
                     touch.PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE;

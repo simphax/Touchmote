@@ -112,9 +112,9 @@ namespace WiiTUIO.Provider
                 }
                 else //Released = hovering
                 {
-                    if (!this.masterHovering) //We end it first, since we are not really doing a correct hover sequence in the provider handler. Should be fixed?
+                    if (!this.masterHovering) //End the touch first
                     {
-                        contactType = ContactType.End;
+                        contactType = ContactType.EndToHover;
                         this.masterPosition = lastMasterContact.Position;
                         this.masterHovering = true;
                     }

@@ -485,6 +485,7 @@ namespace WiiTUIO.Provider
             {
                 if (this.touchDownMaster)
                 {
+                    /*
                     if (isFirstTouch)
                     {
                         FirstTouch = newpoint;
@@ -502,32 +503,16 @@ namespace WiiTUIO.Provider
                             TouchHold = false;
                         }
                     }
-
-                    if (isFirstTouch)
-                    {
-                        isFirstTouch = false;
-
-                        duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-                        duoTouch.setContactMaster();
-
-                    }
-                    else
-                    {
-                        duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-                    }
-
+                    */
+                    duoTouch.setContactMaster();
                 }
                 else
                 {
-                    
-                    duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-                    if (!isFirstTouch)
-                    {
-                        duoTouch.releaseContactMaster();
-                    }
+                    duoTouch.releaseContactMaster();
                     TouchHold = true;
-                    isFirstTouch = true;
                 }
+
+                duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
 
                 if (this.touchDownSlave)
                 {

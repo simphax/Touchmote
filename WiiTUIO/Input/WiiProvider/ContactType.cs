@@ -12,6 +12,9 @@ namespace WiiTUIO.Provider
         /// </summary>
         Start,
 
+
+        EndToHover,
+
         /// <summary>
         /// Describes the end of an existing contact.
         /// </summary>
@@ -22,9 +25,6 @@ namespace WiiTUIO.Provider
         /// </summary>
         Move,
 
-        /// <summary>
-        /// Describes a change to an existing contact.
-        /// </summary>
         Hover,
     }
 }
