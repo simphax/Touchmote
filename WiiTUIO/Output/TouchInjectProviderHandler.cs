@@ -42,7 +42,7 @@ namespace WiiTUIO.Output
                 touch.PointerInfo.pointerType = PointerInputType.TOUCH;
                 touch.TouchFlags = TouchFlags.NONE;
                 //contact.Orientation = (uint)cur.getAngleDegrees();//this is only valid for TuioObjects
-                touch.Pressure = 32000;
+                touch.Pressure = 0;
                 touch.TouchMasks = TouchMask.CONTACTAREA | TouchMask.ORIENTATION | TouchMask.PRESSURE;
                 touch.PointerInfo.PtPixelLocation.X = (int)contact.Position.X;
                 touch.PointerInfo.PtPixelLocation.Y = (int)contact.Position.Y;
@@ -63,6 +63,8 @@ namespace WiiTUIO.Output
                     touch.PointerInfo.PointerFlags = PointerFlags.UP | PointerFlags.INRANGE;
                 else if (type == ContactType.Hover)
                     touch.PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE;
+                else if (type == ContactType.EndFromHover)
+                    touch.PointerInfo.PointerFlags = PointerFlags.UPDATE;
                 //add it to 'toFire'
                 toFire.Add(touch);
             }

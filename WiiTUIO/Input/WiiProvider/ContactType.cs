@@ -20,11 +20,13 @@ namespace WiiTUIO.Provider
         /// </summary>
         End,
 
+        EndFromHover,
+
         /// <summary>
         /// Describes a change to an existing contact.
         /// </summary>
         Move,
 
-        Hover,
+        Hover
     }
 }

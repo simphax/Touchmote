@@ -29,6 +29,8 @@ namespace WiiTUIO.Provider
         private bool masterHovering = true;
         private bool slaveHovering = true;
 
+        private bool slaveEnded = false;
+
         private bool masterReleased = true;
         private bool slaveReleased = true;
 
@@ -163,32 +165,57 @@ namespace WiiTUIO.Provider
 
                         this.slavePosition = reflectThroughMidpoint(this.masterPosition, this.midpoint);
 
+                        if (this.slavePosition.X < 0)
+                        {
+                            this.slavePosition.X = 0;
+                        }
+                        if (this.slavePosition.Y < 0)
+                        {
+                            this.slavePosition.Y = 0;
+                        }
+
+                        if (this.slavePosition.X > this.screenSize.X)
+                        {
+                            this.slavePosition.X = this.screenSize.X-1;
+                        }
+                        if (this.slavePosition.Y > this.screenSize.Y)
+                        {
+                            this.slavePosition.Y = this.screenSize.Y-1;
+                        }
                     }
                     else
                     {
                         this.usingMidpoint = false;
                     }
 
+                    this.slaveEnded = false;
+
                 }
                 else
                 {
                     if (!this.slaveHovering)
                     {
-                        contactType = ContactType.End;
+                        contactType = ContactType.EndToHover;
                         this.slavePosition = lastSlaveContact.Position;
                         this.slaveHovering = true;
                     }
                     else
                     {
-                        contactType = ContactType.Hover;
+                        contactType = ContactType.EndFromHover;
                     }
                 }
 
-                if (contactType != ContactType.Hover)
+                if(!this.slaveEnded)
                 {
                     this.lastSlaveContact = new WiiContact(this.slaveID, contactType, this.slavePosition, this.screenSize);
                     newFrame.Enqueue(this.lastSlaveContact);
+
+                    if (contactType == ContactType.EndFromHover)
+                    {
+                        this.slaveEnded = true;
+                    }
                 }
+
 
             }
 
