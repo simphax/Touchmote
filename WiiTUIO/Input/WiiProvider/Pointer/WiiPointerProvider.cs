@@ -507,7 +507,7 @@ namespace WiiTUIO.Provider
 
             keyMapper.processButtonState(ws.ButtonState);
 
-            if (!mouseMode)
+            if (!mouseMode && !pointerOutOfReach)
             {
                 if (this.touchDownMaster)
                 {
