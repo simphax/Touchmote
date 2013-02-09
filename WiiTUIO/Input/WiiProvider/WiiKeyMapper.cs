@@ -393,6 +393,8 @@ namespace WiiTUIO.Provider
             this.inputSimulator = new InputSimulator();
         }
 
+        private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave";
+
         public void executeButtonUp(WiimoteButton button)
         {
             bool handled = false;
@@ -434,18 +436,22 @@ namespace WiiTUIO.Provider
                             modifiers.Add((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.ElementAt(i).ToString(), true));
                         }
                     }
-                    List<VirtualKeyCode> keys = new List<VirtualKeyCode>();
+                    VirtualKeyCode actionKey = 0;
                     if (Enum.IsDefined(typeof(VirtualKeyCode), array.Last().ToString().ToUpper()))
                     {
-                        keys.Add((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.Last().ToString(), true));
+                        actionKey = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.Last().ToString(), true);
                     }
 
 
-                    if (modifiers.Count() > 0 && key.Count() > 0)
+                    if (modifiers.Count() > 0 && actionKey != 0)
                     {
-                        this.inputSimulator.Keyboard.ModifiedKeyStroke(modifiers, keys);
+                        this.inputSimulator.Keyboard.ModifiedKeyStroke(modifiers, actionKey);
                         handled = true;
                     }
+                }
+                else if(!supportedSpecialCodes.ToLower().Contains(key.ToString().ToLower())) //If we can not find any valid key code, just treat it as a string to type :P (Good if the user writes X instead of VK_X)
+                {
+                    this.inputSimulator.Keyboard.TextEntry(key.ToString());
                 }
 
                 OnButtonUp(new WiiButtonEvent(key.ToString(), button, handled));
