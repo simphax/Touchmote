@@ -734,6 +734,18 @@ namespace WiiTUIO.Provider
             ++iSmoothIndex;
         }
 
+        public void replaceLast(Vector vPoint)
+        {
+            // Insert the value then update the counter.
+            int lastIndex = (iSmoothIndex - 1) % tSmoothBuffer.Length;
+            if(lastIndex<0)
+            {
+                lastIndex = tSmoothBuffer.Length-1;
+            }
+
+            tSmoothBuffer[lastIndex] = vPoint;
+        }
+
         /// <summary>
         /// Calculate and return the smoothed value.
         /// Note that this function is worst case O(n) where n is the size of the smoothing buffer.

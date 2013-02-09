@@ -485,25 +485,6 @@ namespace WiiTUIO.Provider
             {
                 if (this.touchDownMaster)
                 {
-                    /*
-                    if (isFirstTouch)
-                    {
-                        FirstTouch = newpoint;
-                    }
-                    else if (TouchHold)
-                    {
-                        if (Math.Abs(FirstTouch.X - newpoint.X) < TouchHoldThreshold || Math.Abs(FirstTouch.Y - newpoint.Y) < TouchHoldThreshold)
-                        {
-                            newpoint = FirstTouch;
-                            TouchHold = true;
-
-                        }
-                        else
-                        {
-                            TouchHold = false;
-                        }
-                    }
-                    */
                     duoTouch.setContactMaster();
                 }
                 else

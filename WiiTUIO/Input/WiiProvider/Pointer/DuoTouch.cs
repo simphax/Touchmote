@@ -36,6 +36,16 @@ namespace WiiTUIO.Provider
 
         private bool hoverDisabled = false;
 
+
+        private bool isFirstMasterContact = true;
+        private Point firstMasterContact;
+        private bool masterHoldPosition = true;
+        public double TouchHoldThreshold = 30.0;
+
+        public double EdgeHelperMargins = 30.0;
+        public double EdgeHelperRelease = 60.0;
+
+
         public DuoTouch(Vector screenSize, int smoothSize)
         {
             this.screenSize = screenSize;
@@ -107,10 +117,55 @@ namespace WiiTUIO.Provider
                     {
                         contactType = ContactType.Move;
                     }
+
+                    
+                    
+                    if (this.isFirstMasterContact)
+                    {
+                        this.firstMasterContact = this.masterPosition;
+                    }
+                    else 
+                    {
+                        if (this.masterHoldPosition)
+                        {
+                            if (Math.Abs(this.firstMasterContact.X - this.masterPosition.X) < TouchHoldThreshold && Math.Abs(this.firstMasterContact.Y - this.masterPosition.Y) < TouchHoldThreshold)
+                            {
+                                /*Console.WriteLine("DiffX: " + Math.Abs(this.firstMasterContact.X - this.masterPosition.X) + " DiffY: " + Math.Abs(this.firstMasterContact.Y - this.masterPosition.Y));*/
+                                this.masterPosition = this.firstMasterContact;
+                                this.masterHoldPosition = true;
+                            }
+                            else
+                            {
+                                this.masterHoldPosition = false;
+                            }
+                        }
+
+                        //Helps to perform "edge swipe" guestures
+                        if (this.firstMasterContact.X < EdgeHelperMargins && this.masterPosition.X < EdgeHelperRelease) //Left
+                        {
+                            this.masterPosition.Y = (this.firstMasterContact.Y + this.firstMasterContact.Y + this.masterPosition.Y) / 3;
+                        }
+                        if (this.firstMasterContact.X > (this.screenSize.X - EdgeHelperMargins) && this.masterPosition.X > (this.screenSize.X - EdgeHelperRelease)) //Right
+                        {
+                            this.masterPosition.Y = (this.firstMasterContact.Y + this.firstMasterContact.Y + this.masterPosition.Y) / 3;
+                        }
+                        if (this.firstMasterContact.Y < EdgeHelperMargins && this.masterPosition.Y < EdgeHelperRelease) //Top
+                        {
+                            this.masterPosition.X = (this.firstMasterContact.X + this.firstMasterContact.X + this.masterPosition.X) / 3;
+                        }
+                        if (this.firstMasterContact.Y > (this.screenSize.Y - EdgeHelperMargins) && this.masterPosition.Y > (this.screenSize.Y - EdgeHelperRelease)) //Bottom
+                        {
+                            this.masterPosition.X = (this.firstMasterContact.X + this.firstMasterContact.X + this.masterPosition.X) / 3;
+                        }
+                    }
+
                     smoothingBuffer.addValue(new Vector(masterPosition.X, masterPosition.Y));
                     Vector smoothedVec = smoothingBuffer.getSmoothedValue();
                     this.masterPosition.X = smoothedVec.X;
                     this.masterPosition.Y = smoothedVec.Y;
+
+                    this.isFirstMasterContact = false;
+                    
                 }
                 else //Released = hovering
                 {
@@ -129,6 +184,8 @@ namespace WiiTUIO.Provider
                         this.masterPosition.Y = smoothedVec.Y;
                     }
 
+                    this.isFirstMasterContact = true;
+                    this.masterHoldPosition = true;
                 }
 
                 if (!(contactType == ContactType.Hover && this.hoverDisabled))
@@ -231,6 +288,5 @@ namespace WiiTUIO.Provider
         {
             return new Point(basePoint.X - (reflect.X - basePoint.X), basePoint.Y - (reflect.Y - basePoint.Y));
         }
-
     }
 }
