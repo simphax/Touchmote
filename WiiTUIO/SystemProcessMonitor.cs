@@ -26,7 +26,18 @@ namespace WiiTUIO
 
         private uint lastProcessId = 0;
 
-        public SystemProcessMonitor()
+        private static SystemProcessMonitor instance;
+
+        public static SystemProcessMonitor getInstance()
+        {
+            if (instance == null)
+            {
+                instance = new SystemProcessMonitor();
+            }
+            return instance;
+        }
+
+        private SystemProcessMonitor()
         {
             
             this.running = true;

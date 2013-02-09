@@ -54,7 +54,7 @@ namespace WiiTUIO.Provider
 
             this.KeyMap = new WiiKeyMap(this.defaultKeymapJson);
 
-            this.processMonitor = new SystemProcessMonitor();
+            this.processMonitor = SystemProcessMonitor.getInstance();
 
             this.processMonitor.ProcessChanged += processChanged;
         }

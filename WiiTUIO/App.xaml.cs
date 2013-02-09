@@ -46,6 +46,7 @@ namespace WiiTUIO
             {
                 WiiTUIO.Properties.Settings.Default.Save();
                 TB.Dispose();
+                SystemProcessMonitor.getInstance().Dispose();
             }
         }
 
