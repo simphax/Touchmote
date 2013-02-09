@@ -7,7 +7,7 @@ Visit http://touchmote.net/ for a compiled installer.
 
 Touchmote is based on the WiiTUIO project which allows data from a Wii Remote to be translated as genuine Windows touch events.<br />
 Touch position is calculated using the Wii Sensor Bar.<br />
-The application is developed in primarily WPF .NET 4.5 C# and some C++.
+The application is developed in primarily C# .NET 4.5 and some C++.
 
 Prerequisites
 ==============
@@ -43,6 +43,12 @@ WPFNotifyIcon:		http://www.hardcodet.net/projects/wpf-notifyicon<br />
 
 Release History
 ==============
+**v1.0 beta 5**<br />
+- Multi touch! Use the B button to add a second touch point and zoom or rotate with the A button.
+- Added application specific keymaps. Edit or add new keymaps in the Keymaps folder.
+- Now using native Windows 8 touch cursor.
+- Added helpers to perform edge guestures and taps.
+
 **v1.0 beta 4**<br />
 - Much better performance and stability on Windows 8
 - Driver is now optional
