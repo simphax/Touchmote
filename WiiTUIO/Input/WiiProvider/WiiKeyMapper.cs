@@ -466,7 +466,19 @@ namespace WiiTUIO.Provider
             {
                 if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper()))
                 {
-                    this.inputSimulator.Keyboard.KeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
+                    VirtualKeyCode theKeyCode = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true);
+                    if (theKeyCode == VirtualKeyCode.VOLUME_UP || theKeyCode == VirtualKeyCode.VOLUME_DOWN)
+                    {
+                        this.inputSimulator.Keyboard.KeyDown(theKeyCode);
+                        this.inputSimulator.Keyboard.KeyUp(theKeyCode);
+                        this.inputSimulator.Keyboard.KeyDown(theKeyCode);
+                        this.inputSimulator.Keyboard.KeyUp(theKeyCode);
+                        this.inputSimulator.Keyboard.KeyDown(theKeyCode);
+                    }
+                    else
+                    {
+                        this.inputSimulator.Keyboard.KeyDown(theKeyCode);
+                    }
                     handled = true;
                 }
                 else if (Enum.IsDefined(typeof(MouseCode), key.ToString().ToUpper()))
