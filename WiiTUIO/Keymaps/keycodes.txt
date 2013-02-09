@@ -1,7 +1,11 @@
-﻿Touchmote specific
+﻿Pointer types
 ------------
-Touch
-MouseToggle
+TOUCH
+MOUSE
+
+Special buttons
+------------
+POINTERTOGGLE
 
 Mouse emulation
 ------------

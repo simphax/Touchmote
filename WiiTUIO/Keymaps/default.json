@@ -1,4 +1,5 @@
 {
+  "Pointer": "Touch",
   "A": "TouchMaster",
   "B": "TouchSlave",
   "Home": "LWin",
@@ -14,5 +15,5 @@
     "LControl",
     "OEM_Minus"
   ],
-  "One": "MouseToggle"
+  "One": "PointerToggle"
 }

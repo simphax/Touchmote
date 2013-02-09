@@ -21,6 +21,8 @@ namespace WiiTUIO.Provider
     public class WiiPointerProvider : IProvider
     {
 
+        private InputSimulator inputSimulator;
+
         private DuoTouch duoTouch;
 
         private SmoothingBuffer smoothingBuffer;
@@ -31,9 +33,7 @@ namespace WiiTUIO.Provider
 
         private bool changeSystemCursor = false;
 
-        private bool MouseMode = false;
-
-        private bool mouseWait = false;
+        private bool mouseMode = false;
 
         private int TouchHoldThreshold = 10;
 
@@ -50,6 +50,8 @@ namespace WiiTUIO.Provider
         private bool touchDownMaster = false;
 
         private bool touchDownSlave = false;
+
+        private bool showPointer = true;
 
         #region CalibrationRectangle
         /// <summary>
@@ -216,15 +218,39 @@ namespace WiiTUIO.Provider
 
             this.keyMapper = new WiiKeyMapper();
 
-            this.keyMapper.OnButtonDown += WiiButton_Down;
-            this.keyMapper.OnButtonUp += WiiButton_Up;
+            this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
+            this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
+            this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
+
+            this.inputSimulator = new InputSimulator();
+        }
+
+        private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
+        {
+            if (evt.NewPointer.ToLower() == "touch")
+            {
+                this.mouseMode = false;
+            }
+            else if (evt.NewPointer.ToLower() == "mouse")
+            {
+                this.mouseMode = true;
+                MouseSimulator.WakeCursor();
+            }
         }
 
         private void WiiButton_Up(WiiButtonEvent evt)
         {
-            if (evt.Action.ToLower() == "mousetoggle" && !evt.Handled)
+            if (evt.Action.ToLower() == "pointertoggle" && !evt.Handled)
             {
-                this.MouseMode = this.MouseMode ? false : true;
+                this.showPointer = this.showPointer ? false : true;
+                if (this.showPointer)
+                {
+                    this.duoTouch.enableHover();
+                }
+                else
+                {
+                    this.duoTouch.disableHover();
+                }
             }
             if (evt.Action.ToLower() == "touchmaster" && !evt.Handled)
             {
@@ -481,7 +507,7 @@ namespace WiiTUIO.Provider
 
             keyMapper.processButtonState(ws.ButtonState);
 
-            if (!MouseMode)
+            if (!mouseMode)
             {
                 if (this.touchDownMaster)
                 {
@@ -516,7 +542,11 @@ namespace WiiTUIO.Provider
             }
             else //Mouse mode
             {
-                MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
+                if (this.showPointer && !pointerOutOfReach)
+                {
+                    this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * newpoint.X) / this.ScreenSize.X, (65535 * newpoint.Y) / this.ScreenSize.Y);
+                    //MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
+                }
             }
 
             this.BatteryState = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);

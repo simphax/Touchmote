@@ -36,16 +36,13 @@ namespace WiiTUIO.Provider
         private string APPLICATIONS_JSON_FILENAME = "Applications.json";
         private string DEFAULT_JSON_FILENAME = "default.json";
 
-        public Action<WiiButtonEvent> OnButtonDown;
-        public Action<WiiButtonEvent> OnButtonUp;
+        public WiiKeyMap KeyMap;
+        public ButtonState PressedButtons;
 
-        WiiKeyMap keyMap;
-        ButtonState PressedButtons;
+        private SystemProcessMonitor processMonitor;
 
-        SystemProcessMonitor processMonitor;
-
-        JObject applicationsJson;
-        JObject defaultKeymapJson;
+        private JObject applicationsJson;
+        private JObject defaultKeymapJson;
 
         public WiiKeyMapper()
         {
@@ -55,9 +52,7 @@ namespace WiiTUIO.Provider
             this.applicationsJson = this.createDefaultApplicationsJSON();
             this.defaultKeymapJson = this.createDefaultKeymapJSON();
 
-            this.keyMap = new WiiKeyMap(this.defaultKeymapJson);
-            this.keyMap.OnButtonDown += keyMap_onButtonDown;
-            this.keyMap.OnButtonUp += keyMap_onButtonUp;
+            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson);
 
             this.processMonitor = new SystemProcessMonitor();
 
@@ -86,7 +81,7 @@ namespace WiiTUIO.Provider
                 }
                 if (!keymapFound)
                 {
-                    this.keyMap.jsonObj = this.defaultKeymapJson;
+                    this.KeyMap.JsonObj = this.defaultKeymapJson;
                 }
 
             }
@@ -98,12 +93,12 @@ namespace WiiTUIO.Provider
 
         private void keyMap_onButtonUp(WiiButtonEvent evt)
         {
-            this.OnButtonUp(evt);
+            
         }
 
         private void keyMap_onButtonDown(WiiButtonEvent evt)
         {
-            this.OnButtonDown(evt);
+            
         }
 
 
@@ -143,6 +138,8 @@ namespace WiiTUIO.Provider
         private JObject createDefaultKeymapJSON()
         {
             JObject buttons = new JObject();
+
+            buttons.Add(new JProperty("Pointer", "Touch"));
 
             buttons.Add(new JProperty("A", "TouchMaster"));
 
@@ -204,7 +201,7 @@ namespace WiiTUIO.Provider
         public void loadKeyMap(string path)
         {
 
-            JObject union = this.defaultKeymapJson;
+            JObject union = (JObject)this.defaultKeymapJson.DeepClone();
 
             if (File.Exists(path))
             {
@@ -222,7 +219,7 @@ namespace WiiTUIO.Provider
                 }
             }
 
-            this.keyMap.jsonObj = union;
+            this.KeyMap.JsonObj = union;
 
             this.processButtonState(new ButtonState()); //Sets all buttons to "not pressed"
 
@@ -233,122 +230,122 @@ namespace WiiTUIO.Provider
         {
             if (buttonState.A && !PressedButtons.A)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.A);
+                this.KeyMap.executeButtonDown(WiimoteButton.A);
                 PressedButtons.A = true;
             }
             else if (!buttonState.A && PressedButtons.A)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.A);
+                this.KeyMap.executeButtonUp(WiimoteButton.A);
                 PressedButtons.A = false;
             }
 
             if (buttonState.B && !PressedButtons.B)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.B);
+                this.KeyMap.executeButtonDown(WiimoteButton.B);
                 PressedButtons.B = true;
             }
             else if (!buttonState.B && PressedButtons.B)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.B);
+                this.KeyMap.executeButtonUp(WiimoteButton.B);
                 PressedButtons.B = false;
             }
 
             if (buttonState.Up && !PressedButtons.Up)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.Up);
+                this.KeyMap.executeButtonDown(WiimoteButton.Up);
                 PressedButtons.Up = true;
             }
             else if (!buttonState.Up && PressedButtons.Up)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.Up);
+                this.KeyMap.executeButtonUp(WiimoteButton.Up);
                 PressedButtons.Up = false;
             }
 
             if (buttonState.Down && !PressedButtons.Down)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.Down);
+                this.KeyMap.executeButtonDown(WiimoteButton.Down);
                 PressedButtons.Down = true;
             }
             else if (!buttonState.Down && PressedButtons.Down)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.Down);
+                this.KeyMap.executeButtonUp(WiimoteButton.Down);
                 PressedButtons.Down = false;
             }
 
             if (buttonState.Left && !PressedButtons.Left)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.Left);
+                this.KeyMap.executeButtonDown(WiimoteButton.Left);
                 PressedButtons.Left = true;
             }
             else if (!buttonState.Left && PressedButtons.Left)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.Left);
+                this.KeyMap.executeButtonUp(WiimoteButton.Left);
                 PressedButtons.Left = false;
             }
 
             if (buttonState.Right && !PressedButtons.Right)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.Right);
+                this.KeyMap.executeButtonDown(WiimoteButton.Right);
                 PressedButtons.Right = true;
             }
             else if (!buttonState.Right && PressedButtons.Right)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.Right);
+                this.KeyMap.executeButtonUp(WiimoteButton.Right);
                 PressedButtons.Right = false;
             }
 
             if (buttonState.Home && !PressedButtons.Home)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.Home);
+                this.KeyMap.executeButtonDown(WiimoteButton.Home);
                 PressedButtons.Home = true;
             }
             else if (!buttonState.Home && PressedButtons.Home)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.Home);
+                this.KeyMap.executeButtonUp(WiimoteButton.Home);
                 PressedButtons.Home = false;
             }
 
             if (buttonState.Plus && !PressedButtons.Plus)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.Plus);
+                this.KeyMap.executeButtonDown(WiimoteButton.Plus);
                 PressedButtons.Plus = true;
             }
             else if (PressedButtons.Plus && !buttonState.Plus)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.Plus);
+                this.KeyMap.executeButtonUp(WiimoteButton.Plus);
                 PressedButtons.Plus = false;
             }
 
             if (buttonState.Minus && !PressedButtons.Minus)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.Minus);
+                this.KeyMap.executeButtonDown(WiimoteButton.Minus);
                 PressedButtons.Minus = true;
             }
             else if (PressedButtons.Minus && !buttonState.Minus)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.Minus);
+                this.KeyMap.executeButtonUp(WiimoteButton.Minus);
                 PressedButtons.Minus = false;
             }
 
             if (buttonState.One && !PressedButtons.One)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.One);
+                this.KeyMap.executeButtonDown(WiimoteButton.One);
                 PressedButtons.One = true;
             }
             else if (PressedButtons.One && !buttonState.One)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.One);
+                this.KeyMap.executeButtonUp(WiimoteButton.One);
                 PressedButtons.One = false;
             }
 
             if (buttonState.Two && !PressedButtons.Two)
             {
-                this.keyMap.executeButtonDown(WiimoteButton.Two);
+                this.KeyMap.executeButtonDown(WiimoteButton.Two);
                 PressedButtons.Two = true;
             }
             else if (PressedButtons.Two && !buttonState.Two)
             {
-                this.keyMap.executeButtonUp(WiimoteButton.Two);
+                this.KeyMap.executeButtonUp(WiimoteButton.Two);
                 PressedButtons.Two = false;
             }
         }
@@ -364,10 +361,28 @@ namespace WiiTUIO.Provider
 
     public class WiiKeyMap
     {
-        public JObject jsonObj;
+        private JObject jsonObj;
+
+        public JObject JsonObj
+        {
+            get { return this.jsonObj; }
+            set
+            {
+                if (this.JsonObj != value)
+                {
+                    this.jsonObj = value;
+                    string newPointer = this.jsonObj.GetValue("Pointer").ToString();
+                    if (newPointer != null && this.OnConfigChanged != null)
+                    {
+                        this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(newPointer));
+                    }
+                }
+            }
+        }
 
         public Action<WiiButtonEvent> OnButtonUp;
         public Action<WiiButtonEvent> OnButtonDown;
+        public Action<WiiKeyMapConfigChangedEvent> OnConfigChanged;
 
         private InputSimulator inputSimulator;
 
@@ -485,5 +500,15 @@ namespace WiiTUIO.Provider
             this.Handled = handled;
         }
 
+    }
+
+    public class WiiKeyMapConfigChangedEvent
+    {
+        public string NewPointer;
+
+        public WiiKeyMapConfigChangedEvent(string newPointer)
+        {
+            this.NewPointer = newPointer;
+        }
     }
 }

@@ -135,6 +135,10 @@ namespace WiiTUIO.Provider
         [DllImport("User32.Dll")]
         static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
+        public static void FireMouseEvent()
+        {
+
+        }
 
         //Temporary solution to the "diamond cursor" trouble.
         public static void RefreshMainCursor()
