@@ -216,7 +216,7 @@ namespace WiiCPP {
 							System::String ^str = "Found:"+szName+"\n";
 							listener->pairingConsole(str);
 
-							if (!wcscmp(btdi.szName, L"Nintendo RVL-WBC-01") || !wcscmp(btdi.szName, L"Nintendo RVL-CNT-01"))
+							if (!wcscmp(btdi.szName, L"Nintendo RVL-CNT-01-TR") || !wcscmp(btdi.szName, L"Nintendo RVL-CNT-01"))
 							{
 								WCHAR pass[6];
 								DWORD pcServices = 16;
