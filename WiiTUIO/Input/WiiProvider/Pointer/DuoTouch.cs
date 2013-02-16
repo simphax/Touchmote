@@ -258,7 +258,7 @@ namespace WiiTUIO.Provider
                     }
 
                     this.slaveEnded = false;
-
+                    this.stepIDs = false;
                 }
                 else
                 {
