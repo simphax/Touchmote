@@ -13,6 +13,8 @@ namespace WiiTUIO.Provider
 
         private Vector screenSize;
 
+        private bool stepIDs = false;
+
         private ulong masterID = 1;
         private ulong slaveID = 2;
 
@@ -190,7 +192,17 @@ namespace WiiTUIO.Provider
 
                 if (!(contactType == ContactType.Hover && this.hoverDisabled))
                 {
-                    this.lastMasterContact = new WiiContact(this.masterID, contactType, this.masterPosition, this.screenSize);
+                    if (this.stepIDs && contactType == ContactType.EndToHover) //If we release slave touch before we release master touch we want to make sure Windows treats master as the main touch point again
+                    {
+                        this.lastMasterContact = new WiiContact(this.masterID, ContactType.End, this.masterPosition, this.screenSize);
+                        this.masterID += 2;
+                        this.slaveID += 2;
+                        this.stepIDs = false;
+                    }
+                    else
+                    {
+                        this.lastMasterContact = new WiiContact(this.masterID, contactType, this.masterPosition, this.screenSize);
+                    }
                     newFrame.Enqueue(this.lastMasterContact);
                 }
             }
@@ -262,7 +274,7 @@ namespace WiiTUIO.Provider
                     }
                 }
 
-                if(!this.slaveEnded)
+                if (!this.slaveEnded)
                 {
                     this.lastSlaveContact = new WiiContact(this.slaveID, contactType, this.slavePosition, this.screenSize);
                     newFrame.Enqueue(this.lastSlaveContact);
@@ -270,11 +282,18 @@ namespace WiiTUIO.Provider
                     if (contactType == ContactType.EndFromHover)
                     {
                         this.slaveEnded = true;
+                        if(!this.masterReleased) //If we release slave before master
+                        {
+                            this.stepIDs = true;
+                        }
                     }
                 }
 
-
             }
+
+
+            
+
 
             return newFrame;
         }
