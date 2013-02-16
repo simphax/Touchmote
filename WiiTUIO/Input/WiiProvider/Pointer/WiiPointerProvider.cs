@@ -417,7 +417,7 @@ namespace WiiTUIO.Provider
             if (this.pDevice == null)
                 return;
 
-            this.pDevice.SetLEDs(false, false, false, false);
+            //this.pDevice.SetLEDs(false, false, false, false);
             this.pDevice.SetRumble(false);
 
             // Close the connection and dispose of the device.
@@ -429,13 +429,14 @@ namespace WiiTUIO.Provider
 
         private void stopRumble(Object nothing)
         {
-            if (this.pDevice != null)
+            bool rumbleStatus = true;
+            while (rumbleStatus) //Sometimes the Wiimote does not disable the rumble on the first try
             {
-                while (this.pDevice.WiimoteState.Rumble) //Sometimes the Wiimote does not disable the rumble on the first try
-                {
+                try {
                     this.pDevice.SetRumble(false);
-                    System.Threading.Thread.Sleep(20);
-                }
+                    System.Threading.Thread.Sleep(30);
+                    rumbleStatus = this.pDevice.WiimoteState.Rumble;
+                } catch(Exception e) {}
             }
         }
 
