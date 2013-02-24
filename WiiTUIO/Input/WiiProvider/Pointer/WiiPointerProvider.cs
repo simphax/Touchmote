@@ -53,6 +53,8 @@ namespace WiiTUIO.Provider
 
         private bool showPointer = true;
 
+        ScreenPositionCalculator screenPositionCalculator;
+
         #region CalibrationRectangle
         /// <summary>
         /// The CalibrationRectangle class defines a set of 4 2D coordinates that define a rectangle in absolute space.
@@ -233,6 +235,8 @@ namespace WiiTUIO.Provider
             {
                 this.duoTouch.disableHover();
             }
+
+            screenPositionCalculator = new ScreenPositionCalculator(); 
         }
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
@@ -487,7 +491,7 @@ namespace WiiTUIO.Provider
 
             WiimoteLib.Point newpoint = lastpoint;
 
-            newpoint = ScreenPositionCalculator.GetPosition(e);
+            newpoint = screenPositionCalculator.GetPosition(e);
 
             if (newpoint.X < 0 || newpoint.Y < 0)
             {

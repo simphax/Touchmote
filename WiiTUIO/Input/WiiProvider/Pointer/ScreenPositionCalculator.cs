@@ -6,22 +6,49 @@ using WiimoteLib;
 
 namespace WiiTUIO.Provider
 {
-    public static class ScreenPositionCalculator
+    public class ScreenPositionCalculator
     {
 
-        private static PointF m_FirstSensorPos;
-        private static PointF m_SecondSensorPos;
-        private static PointF m_MidSensorPos;
+        private PointF m_FirstSensorPos;
+        private PointF m_SecondSensorPos;
+        private PointF m_MidSensorPos;
 
-        public static Point GetPosition(WiimoteChangedEventArgs args)
+        private int minXPos;
+        private int maxXPos;
+        private int maxWidth;
+
+        private int minYPos;
+        private int maxYPos;
+        private int maxHeight;
+        private int offsetY;
+
+        public ScreenPositionCalculator()
         {
-            int minXPos = -(Util.ScreenWidth / 3);
-            int maxXPos = Util.ScreenWidth + (Util.ScreenWidth / 3);
-            int maxWidth = maxXPos - minXPos;
+            minXPos = -(Util.ScreenWidth / 3);
+            maxXPos = Util.ScreenWidth + (Util.ScreenWidth / 3);
+            maxWidth = maxXPos - minXPos;
+            minYPos = -(Util.ScreenHeight / 2);
+            maxYPos = Util.ScreenHeight + (Util.ScreenHeight / 2);
+            maxHeight = maxYPos - minYPos;
+
+            if (Properties.Settings.Default.pointer_sensorBarPos == "top")
+            {
+                offsetY = -(Util.ScreenWidth / 4);
+            }
+            else if (Properties.Settings.Default.pointer_sensorBarPos == "bottom")
+            {
+                offsetY = (Util.ScreenWidth / 4);
+            }
+            else
+            {
+                offsetY = 0;
+            }
+
+        }
+
+        public Point GetPosition(WiimoteChangedEventArgs args)
+        {
             int x;
-            int minYPos = -(Util.ScreenHeight / 2);
-            int maxYPos = Util.ScreenHeight + (Util.ScreenHeight / 2);
-            int maxHeight = maxYPos - minYPos;
             int y;
 
             IRState irState = args.WiimoteState.IRState;
@@ -56,17 +83,6 @@ namespace WiiTUIO.Provider
                 return err;
             }
 
-            int offsetY = 0;
-
-            if (Properties.Settings.Default.pointer_sensorBarPos == "top")
-            {
-                offsetY = -(Util.ScreenWidth / 4);
-            }
-            else if (Properties.Settings.Default.pointer_sensorBarPos == "bottom")
-            {
-                offsetY = (Util.ScreenWidth / 4);
-            }
-
             x = Convert.ToInt32((float)maxWidth * (1.0F - relativePosition.X) + minXPos);
             y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;
 
@@ -93,68 +109,5 @@ namespace WiiTUIO.Provider
             return point;
         }
 
-        public struct RelativePoint
-        {
-            public float X;
-            public float Y;
-        }
-
-        public static RelativePoint GetRelativePosition(WiimoteChangedEventArgs args)
-        {
-            int minXPos = 0;
-            int maxXPos = Util.ScreenWidth;
-            int maxWidth = maxXPos - minXPos;
-            float x;
-            int minYPos = 0;
-            int maxYPos = Util.ScreenHeight;
-            int maxHeight = maxYPos - minYPos;
-            float y;
-
-            PointF relativePosition = new PointF();
-            if (args.WiimoteState.IRState.IRSensors[0].Found && args.WiimoteState.IRState.IRSensors[1].Found)
-            {
-                relativePosition = args.WiimoteState.IRState.Midpoint;
-            }
-            else if (args.WiimoteState.IRState.IRSensors[0].Found)
-            {
-                relativePosition.X = m_MidSensorPos.X + (args.WiimoteState.IRState.IRSensors[0].Position.X - m_FirstSensorPos.X);
-                relativePosition.Y = m_MidSensorPos.Y + (args.WiimoteState.IRState.IRSensors[0].Position.Y - m_FirstSensorPos.Y);
-            }
-            else if (args.WiimoteState.IRState.IRSensors[1].Found)
-            {
-                relativePosition.X = m_MidSensorPos.X + (args.WiimoteState.IRState.IRSensors[1].Position.X - m_SecondSensorPos.X);
-                relativePosition.Y = m_MidSensorPos.Y + (args.WiimoteState.IRState.IRSensors[1].Position.Y - m_SecondSensorPos.Y);
-            }
-
-            //Remember for next run
-            m_FirstSensorPos = args.WiimoteState.IRState.IRSensors[0].Position;
-            m_SecondSensorPos = args.WiimoteState.IRState.IRSensors[1].Position;
-            m_MidSensorPos = relativePosition;
-
-            x = 1.0F - relativePosition.X - 0.5F;//Convert.ToInt32((float)maxWidth * (1.0F - relativePosition.X)) + minXPos;
-            y = relativePosition.Y - 0.5F;//Convert.ToInt32((float)maxHeight * relativePosition.Y) + minYPos;
-            /*
-            if (x < 0)
-            {
-                x = 0;
-            }
-            else if (x > Util.ScreenWidth)
-            {
-                x = Util.ScreenWidth;
-            }
-            if (y < 0)
-            {
-                y = 0;
-            }
-            else if (y > Util.ScreenHeight)
-            {
-                y = Util.ScreenHeight;
-            }
-            */
-            RelativePoint point = new RelativePoint();
-            point.X = x;
-            point.Y = y;
-            return point;
-        }
     }
 }
