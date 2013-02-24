@@ -24,6 +24,7 @@ namespace WiiCPP {
 
 		int numberPaired;
 		bool permanent;
+		System::String ^deviceName;
 	};
 
 	public interface class WiiPairListener
@@ -290,6 +291,7 @@ namespace WiiCPP {
 								{
 									nPaired++;
 								}
+								report->deviceName = gcnew System::String(btdi.szName);
 							} // if (!wcscmp(btdi.szName, L"Nintendo RVL-WBC-01") || !wcscmp(btdi.szName, L"Nintendo RVL-CNT-01"))
 						}
 						while (BluetoothFindNextDevice(hFind, &btdi));

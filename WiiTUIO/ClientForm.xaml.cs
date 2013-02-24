@@ -766,6 +766,7 @@ namespace WiiTUIO
             Dispatcher.BeginInvoke(new Action(delegate()
             {
             this.pairingTitle.Content = "Pairing Wiimote";
+            this.pairWiimoteTRFail.Visibility = Visibility.Hidden;
             this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
             }), null);
             Thread thread = new Thread(new ThreadStart(wiiPair.start));
@@ -778,14 +779,30 @@ namespace WiiTUIO
 
         public void onPairingSuccess(WiiCPP.WiiPairSuccessReport report)
         {
-            Console.WriteLine("Success report: number=" + report.numberPaired + " permanent=" + report.permanent);
+            Console.WriteLine("Success report: number=" + report.numberPaired + " permanent=" + report.permanent + " name=" + report.deviceName);
 
             Settings.Default.pairedOnce = true;
-            Dispatcher.BeginInvoke(new Action(delegate()
+            if (report.deviceName == @"Nintendo RVL-CNT-01-TR")
             {
-                this.pairWiimoteOverlayPairing.Visibility = Visibility.Hidden;
-                this.pairWiimoteOverlayDone.Visibility = Visibility.Visible;
-            }), null);
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    this.pairingTitle.Content = "Pairing Successful";
+                    this.pairWiimoteText.Text = @"";
+                    this.pairWiimoteTRFail.Visibility = Visibility.Visible;
+                    this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
+
+
+                    this.pairProgress.IsIndeterminate = false;
+                }), null);
+            }
+            else
+            {
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    this.pairWiimoteOverlayPairing.Visibility = Visibility.Hidden;
+                    this.pairWiimoteOverlayDone.Visibility = Visibility.Visible;
+                }), null);
+            }
         }
 
 
@@ -980,6 +997,11 @@ namespace WiiTUIO
         private void enableMainControls()
         {
             this.canvasMain.IsEnabled = true;
+        }
+
+        private void pairWiimoteTRFail_instructions_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
     }

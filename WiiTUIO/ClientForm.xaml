@@ -95,7 +95,7 @@
                 <Button Click="btnRestart_Click" Content="Restart now" Canvas.Left="93" Canvas.Top="88" Width="108" Height="32" BorderBrush="#FFC9C9C9" Background="#FFF1F1F1"/>
 
             </Canvas>
-            <Canvas Name="pairWiimoteOverlay" Visibility="Hidden" Height="134" Width="286" Background="White">
+            <Canvas Name="pairWiimoteOverlay" Visibility="Collapsed" Height="134" Width="286" Background="White">
                 <Canvas.Effect>
                     <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
                 </Canvas.Effect>
@@ -113,6 +113,7 @@
                         </ProgressBar.RenderTransform>
                     </ProgressBar>
                     <TextBlock Name="pairWiimoteText" Canvas.Left="10" TextWrapping="Wrap" Text="Trying to pair..." Canvas.Top="79" Height="26" Width="270" FontFamily="Segoe UI Semilight" FontSize="16" TextAlignment="Center"/>
+                    
                     <TextBlock Name="pairWiimotePressSync" Visibility="Hidden" Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="106" Height="26" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
                         Press the SYNC<Image Height="12" Width="12" Source="Resources/sync.png" Cursor="Hand" Stretch="None"/> button now
                     </TextBlock>
@@ -120,6 +121,14 @@
                         <Hyperlink Click="pairWiimoteTryAgain_Click" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">Try again
                         </Hyperlink>
                     </TextBlock>
+
+                    <TextBlock Name="pairWiimoteTRFail" Visibility="Hidden" Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="61" Height="53" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
+                        Your Wiimote is not compatible with the Microsoft Bluetooth Stack, you will need to get an older Wiimote or 
+                        <Hyperlink Click="oLinkToBrowser" NavigateUri="http://touchmote.net/wiimotetr">
+                            try the instructions on this page
+                        </Hyperlink>
+                    </TextBlock>
+
                 </Canvas>
                 <Canvas Name="pairWiimoteOverlayDone" MouseLeftButtonDown="imgClosePair_MouseUp" Height="134" Width="286" Visibility="Hidden">
                     <Label Content="Pairing Successful!" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
