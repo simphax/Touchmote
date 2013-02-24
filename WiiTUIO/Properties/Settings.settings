@@ -26,5 +26,8 @@
     <Setting Name="pointer_moveCursor" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="pointer_sensorBarPos" Type="System.String" Scope="User">
+      <Value Profile="(Default)">top</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -118,5 +118,17 @@ namespace WiiTUIO.Properties {
                 this["pointer_moveCursor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("top")]
+        public string pointer_sensorBarPos {
+            get {
+                return ((string)(this["pointer_sensorBarPos"]));
+            }
+            set {
+                this["pointer_sensorBarPos"] = value;
+            }
+        }
     }
 }

@@ -19,8 +19,8 @@ namespace WiiTUIO.Provider
             int maxXPos = Util.ScreenWidth + (Util.ScreenWidth / 3);
             int maxWidth = maxXPos - minXPos;
             int x;
-            int minYPos = -(Util.ScreenHeight / 3);
-            int maxYPos = Util.ScreenHeight + (Util.ScreenHeight / 3);
+            int minYPos = -(Util.ScreenHeight / 2);
+            int maxYPos = Util.ScreenHeight + (Util.ScreenHeight / 2);
             int maxHeight = maxYPos - minYPos;
             int y;
 
@@ -45,8 +45,19 @@ namespace WiiTUIO.Provider
             m_SecondSensorPos = args.WiimoteState.IRState.IRSensors[1].Position;
             m_MidSensorPos = relativePosition;
 
+            int offsetY = 0;
+
+            if (Properties.Settings.Default.pointer_sensorBarPos == "top")
+            {
+                offsetY = -(Util.ScreenWidth / 4);
+            }
+            else if (Properties.Settings.Default.pointer_sensorBarPos == "bottom")
+            {
+                offsetY = (Util.ScreenWidth / 4);
+            }
+
             x = Convert.ToInt32((float)maxWidth * (1.0F - relativePosition.X) + minXPos);
-            y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos);
+            y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;
 
             if (relativePosition.X == 0 && relativePosition.Y == 0)
             {
@@ -72,8 +83,6 @@ namespace WiiTUIO.Provider
             {
                 y = Util.ScreenHeight-1;
             }
-
-            
 
             Point point = new Point();
             point.X = x;
