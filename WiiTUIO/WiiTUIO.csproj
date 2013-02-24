@@ -161,6 +161,10 @@
     <Reference Include="UIAutomationProvider">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="WiimoteLib, Version=1.7.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\WiimoteLib.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -346,10 +350,6 @@
     <ProjectReference Include="..\WiiCPP\WiiCPP.vcxproj">
       <Project>{78eb9de8-b6fc-47f3-970f-0b4fcb0f38a8}</Project>
       <Name>WiiCPP</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WiimoteLib\WiimoteLib.csproj">
-      <Project>{37a555df-7012-4b99-8a47-1c922a361e52}</Project>
-      <Name>WiimoteLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
