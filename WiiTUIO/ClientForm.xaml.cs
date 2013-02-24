@@ -34,11 +34,6 @@ namespace WiiTUIO
     /// </summary>
     public partial class ClientForm : UserControl, WiiCPP.WiiPairListener
     {
-
-        String appKey = "Touchmote";
-
-        //RegistryKey winStartupRegisterKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
         private bool providerHandlerConnected = false;
 
         private bool tryingToConnect = false;
@@ -108,7 +103,6 @@ namespace WiiTUIO
             }
             this.cbConnectOnStart.IsChecked = Settings.Default.connectOnStart;
 
-
             Application.Current.Exit += appWillExit;
 
             wiiPair = new WiiCPP.WiiPair();
@@ -120,6 +114,11 @@ namespace WiiTUIO
             {
                 this.tbConnect.Visibility = Visibility.Hidden;
                 this.tbPair.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                this.tbConnect.Visibility = Visibility.Visible;
+                this.tbPair.Visibility = Visibility.Hidden;
             }
             this.cbWindowsStart.IsChecked = await ApplicationAutostart.IsAutostartAsync("Touchmote");
         }
@@ -205,10 +204,17 @@ namespace WiiTUIO
                     tbWaiting.Visibility = Visibility.Visible;
                     tbConnect.Visibility = Visibility.Collapsed;
                 }
+                else if(!Settings.Default.pairedOnce)
+                {
+                    tbWaiting.Visibility = Visibility.Collapsed;
+                    tbConnect.Visibility = Visibility.Collapsed;
+                    tbPair.Visibility = Visibility.Visible;
+                }
                 else
                 {
                     tbWaiting.Visibility = Visibility.Collapsed;
                     tbConnect.Visibility = Visibility.Visible;
+                    tbPair.Visibility = Visibility.Collapsed;
                 }
 
                 batteryLabel.Content = "0%";
@@ -998,12 +1004,6 @@ namespace WiiTUIO
         {
             this.canvasMain.IsEnabled = true;
         }
-
-        private void pairWiimoteTRFail_instructions_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
     }
 
     
