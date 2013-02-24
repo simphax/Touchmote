@@ -4,7 +4,13 @@
         Height="160" Width="280">
     <Grid>
         <!--CheckBox Name="cbSystemCursor" Content="Change System Cursor" HorizontalAlignment="Left" Margin="62,61,0,0" VerticalAlignment="Top" Unchecked="systemCursor_Unchecked" Checked="systemCursor_Checked" FontFamily="Segoe UI Semilight"/-->
-        <CheckBox Name="cbMoveCursor" Content="Move Cursor When Pointing" HorizontalAlignment="Left" Margin="62,61,0,0" VerticalAlignment="Top" Unchecked="moveCursor_Unchecked" Checked="moveCursor_Checked" FontFamily="Segoe UI Semilight"/>
+        <!--CheckBox Name="cbMoveCursor" Content="Move Cursor When Pointing" HorizontalAlignment="Left" Margin="62,61,0,0" VerticalAlignment="Top" Unchecked="moveCursor_Unchecked" Checked="moveCursor_Checked" FontFamily="Segoe UI Semilight"/-->
+        <Label Content="Sensor Bar position" Margin="0,56,132,70" FontFamily="Segoe UI Semilight" HorizontalAlignment="Right" />
+        <ComboBox Name="SBPositionComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="113" SelectionChanged="SBPositionComboBox_SelectionChanged" FontFamily="Segoe UI Semilight" Margin="153,58,0,0">
+            <ComboBoxItem Name="cbiCenter">Center</ComboBoxItem>
+            <ComboBoxItem Name="cbiTop">Top</ComboBoxItem>
+            <ComboBoxItem Name="cbiBottom">Bottom</ComboBoxItem>
+        </ComboBox>
         <Label Content="Pointer Settings" HorizontalAlignment="Left" Height="45" Margin="10,10,0,0" VerticalAlignment="Top" Width="180" FontSize="20" Foreground="Black" FontFamily="Segoe UI Light"/>
 
     </Grid>

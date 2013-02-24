@@ -24,7 +24,35 @@ namespace WiiTUIO.Provider
             InitializeComponent();
 
             //this.cbSystemCursor.IsChecked = Settings.Default.pointer_changeSystemCursor;
-            this.cbMoveCursor.IsChecked = Settings.Default.pointer_moveCursor;
+            //this.cbMoveCursor.IsChecked = Settings.Default.pointer_moveCursor;
+            if (Settings.Default.pointer_sensorBarPos == "top")
+            {
+                this.cbiTop.IsSelected = true;
+            }
+            else if (Settings.Default.pointer_sensorBarPos == "bottom")
+            {
+                this.cbiBottom.IsSelected = true;
+            }
+            else
+            {
+                this.cbiCenter.IsSelected = true;
+            }
+        }
+
+        private void SBPositionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.cbiTop.IsSelected)
+            {
+                Settings.Default.pointer_sensorBarPos = "top";
+            }
+            else if (this.cbiBottom.IsSelected)
+            {
+                Settings.Default.pointer_sensorBarPos = "bottom";
+            }
+            else
+            {
+                Settings.Default.pointer_sensorBarPos = "center";
+            }
         }
         /*
         private void systemCursor_Checked(object sender, RoutedEventArgs e)
@@ -37,6 +65,7 @@ namespace WiiTUIO.Provider
             Settings.Default.pointer_changeSystemCursor = false;
         }
         */
+        /*
         private void moveCursor_Checked(object sender, RoutedEventArgs e)
         {
             Settings.Default.pointer_moveCursor = true;
@@ -46,6 +75,7 @@ namespace WiiTUIO.Provider
         {
             Settings.Default.pointer_moveCursor = false;
         }
+         * */
 
     }
 }
