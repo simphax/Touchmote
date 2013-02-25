@@ -20,7 +20,7 @@ namespace WiiTUIO.Provider
         private int minYPos;
         private int maxYPos;
         private int maxHeight;
-        private int offsetY;
+        private int SBPositionOffset;
 
         public ScreenPositionCalculator()
         {
@@ -30,20 +30,7 @@ namespace WiiTUIO.Provider
             minYPos = -(Util.ScreenHeight / 2);
             maxYPos = Util.ScreenHeight + (Util.ScreenHeight / 2);
             maxHeight = maxYPos - minYPos;
-
-            if (Properties.Settings.Default.pointer_sensorBarPos == "top")
-            {
-                offsetY = -(Util.ScreenWidth / 4);
-            }
-            else if (Properties.Settings.Default.pointer_sensorBarPos == "bottom")
-            {
-                offsetY = (Util.ScreenWidth / 4);
-            }
-            else
-            {
-                offsetY = 0;
-            }
-
+            SBPositionOffset = (Util.ScreenWidth / 4);
         }
 
         public Point GetPosition(WiimoteChangedEventArgs args)
@@ -57,21 +44,18 @@ namespace WiiTUIO.Provider
 
             bool foundMidpoint = false;
 
-            foreach (IRSensor sensor in irState.IRSensors)
+            for(int i=0;i<irState.IRSensors.Count() && !foundMidpoint;i++)//IRSensor sensor in irState.IRSensors)
             {
-                foreach (IRSensor sensor2 in irState.IRSensors)
+                IRSensor sensor = irState.IRSensors[i];
+                for(int j=0;j<irState.IRSensors.Count() && !foundMidpoint;j++)
                 {
-                    if (sensor.Found && sensor2.Found && sensor.Size > 0 && sensor2.Size > 0)
+                    IRSensor sensor2 = irState.IRSensors[j];
+                    if (i != j && sensor.Found && sensor2.Found && sensor.Size > 0 && sensor2.Size > 0)
                     {
                         relativePosition.X = (sensor.Position.X + sensor2.Position.X) / 2.0f;
                         relativePosition.Y = (sensor.Position.Y + sensor2.Position.Y) / 2.0f;
                         foundMidpoint = true;
-                        break;
                     }
-                }
-                if (foundMidpoint)
-                {
-                    break;
                 }
             }
 
@@ -81,6 +65,17 @@ namespace WiiTUIO.Provider
                 err.X = -1;
                 err.Y = -1;
                 return err;
+            }
+
+            int offsetY = 0;
+
+            if (Properties.Settings.Default.pointer_sensorBarPos == "top")
+            {
+                offsetY = -SBPositionOffset;
+            }
+            else if (Properties.Settings.Default.pointer_sensorBarPos == "bottom")
+            {
+                offsetY = SBPositionOffset;
             }
 
             x = Convert.ToInt32((float)maxWidth * (1.0F - relativePosition.X) + minXPos);
