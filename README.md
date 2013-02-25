@@ -43,6 +43,11 @@ WPFNotifyIcon:		http://www.hardcodet.net/projects/wpf-notifyicon<br />
 
 Release History
 ==============
+**v1.0 beta 6**<br />
+- Added support for new Wiimotes (RVL-CNT-01-TR)
+- Added option to specify Sensor Bar position
+- Bugfix, using two touch points would sometimes disable edge gestures
+
 **v1.0 beta 5**<br />
 - Multi touch! Use the B button to add a second touch point and zoom or rotate with the A button.
 - Added application specific keymaps. Edit or add new keymaps in the Keymaps folder.
