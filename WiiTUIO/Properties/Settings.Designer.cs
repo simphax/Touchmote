@@ -121,7 +121,7 @@ namespace WiiTUIO.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("top")]
+        [global::System.Configuration.DefaultSettingValueAttribute("center")]
         public string pointer_sensorBarPos {
             get {
                 return ((string)(this["pointer_sensorBarPos"]));
