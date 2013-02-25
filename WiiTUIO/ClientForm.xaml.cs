@@ -121,6 +121,16 @@ namespace WiiTUIO
                 this.tbPair.Visibility = Visibility.Hidden;
             }
             this.cbWindowsStart.IsChecked = await ApplicationAutostart.IsAutostartAsync("Touchmote");
+
+
+            // Create the providers.
+            this.createProvider();
+            this.createProviderHandler();
+
+            if (Settings.Default.connectOnStart)
+            {
+                this.connectProvider();
+            }
         }
 
         void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -144,14 +154,7 @@ namespace WiiTUIO
         /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
         protected override void OnInitialized(EventArgs e)
         {
-            // Create the providers.
-            this.createProvider();
-            this.createProviderHandler();
-
-            if (Settings.Default.connectOnStart)
-            {
-                this.connectProvider();
-            }
+            
 
             // Call the base class.
             base.OnInitialized(e);
@@ -198,23 +201,23 @@ namespace WiiTUIO
             {
                 this.bConnected = false;
 
-                tbConnected.Visibility = Visibility.Collapsed;
+                tbConnected.Visibility = Visibility.Hidden;
                 if (tryingToConnect)
                 {
                     tbWaiting.Visibility = Visibility.Visible;
-                    tbConnect.Visibility = Visibility.Collapsed;
+                    tbConnect.Visibility = Visibility.Hidden;
                 }
                 else if(!Settings.Default.pairedOnce)
                 {
-                    tbWaiting.Visibility = Visibility.Collapsed;
-                    tbConnect.Visibility = Visibility.Collapsed;
+                    tbWaiting.Visibility = Visibility.Hidden;
+                    tbConnect.Visibility = Visibility.Hidden;
                     tbPair.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    tbWaiting.Visibility = Visibility.Collapsed;
+                    tbWaiting.Visibility = Visibility.Hidden;
                     tbConnect.Visibility = Visibility.Visible;
-                    tbPair.Visibility = Visibility.Collapsed;
+                    tbPair.Visibility = Visibility.Hidden;
                 }
 
                 batteryLabel.Content = "0%";
@@ -489,8 +492,8 @@ namespace WiiTUIO
         {
             if (!this.tryingToConnect)
             {
-
-                this.tbConnect.Visibility = Visibility.Collapsed;
+                this.tbPair.Visibility = Visibility.Hidden;
+                this.tbConnect.Visibility = Visibility.Hidden;
                 this.tbWaiting.Visibility = Visibility.Visible;
 
                 Launcher.Launch("Driver", "devcon", " enable \"BTHENUM*_VID*57e*_PID&0306*\"", null);
@@ -585,13 +588,13 @@ namespace WiiTUIO
 
         #region Form Stuff
 
-
+        /*
         ~ClientForm()
         {
             // Disconnect the providers.
             this.disconnectProvider();
         }
-
+        */
         private Hyperlink createHyperlink(string sText, string sUri)
         {
             Hyperlink link = new Hyperlink();

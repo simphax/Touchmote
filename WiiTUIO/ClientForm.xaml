@@ -13,7 +13,7 @@
 
             <Label Content="Touchmote" FontSize="24" FontFamily="Segoe UI Light" Canvas.Left="10" Canvas.Top="8"/>
             <ComboBox Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="71" Canvas.Top="60" FontFamily="Segoe UI Semilight">
-                <ComboBoxItem Name="cbiPointer">Wii Sensor Bar</ComboBoxItem>
+                <ComboBoxItem Name="cbiPointer" IsSelected="True">Wii Sensor Bar</ComboBoxItem>
                 <ComboBoxItem Name="cbiPen" Visibility="Collapsed">IR Pen</ComboBoxItem>
             </ComboBox>
             <TextBlock Canvas.Left="267" Canvas.Top="64" FontFamily="Segoe UI Semilight">                                
