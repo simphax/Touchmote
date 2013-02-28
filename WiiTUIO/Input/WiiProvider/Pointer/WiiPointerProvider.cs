@@ -35,14 +35,6 @@ namespace WiiTUIO.Provider
 
         private bool mouseMode = false;
 
-        private int TouchHoldThreshold = 10;
-
-        private WiimoteLib.Point FirstTouch = new WiimoteLib.Point();
-
-        private bool TouchHold = true;
-
-        private bool isFirstTouch = true;
-
         private WiiKeyMapper keyMapper;
 
         private WiimoteLib.Point lastpoint;
@@ -226,8 +218,9 @@ namespace WiiTUIO.Provider
 
             this.inputSimulator = new InputSimulator();
 
+            this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
             this.showPointer = Settings.Default.pointer_moveCursor;
-            if (this.showPointer)
+            if (this.showPointer && !this.mouseMode)
             {
                 this.duoTouch.enableHover();
             }
@@ -244,10 +237,15 @@ namespace WiiTUIO.Provider
             if (evt.NewPointer.ToLower() == "touch")
             {
                 this.mouseMode = false;
+                if (this.showPointer)
+                {
+                    this.duoTouch.enableHover();
+                }
             }
             else if (evt.NewPointer.ToLower() == "mouse")
             {
                 this.mouseMode = true;
+                this.duoTouch.disableHover();
                 MouseSimulator.WakeCursor();
             }
         }
@@ -517,8 +515,9 @@ namespace WiiTUIO.Provider
 
             keyMapper.processButtonState(ws.ButtonState);
 
-            if (!mouseMode && !pointerOutOfReach)
+            if (!pointerOutOfReach)
             {
+
                 if (this.touchDownMaster)
                 {
                     duoTouch.setContactMaster();
@@ -526,7 +525,6 @@ namespace WiiTUIO.Provider
                 else
                 {
                     duoTouch.releaseContactMaster();
-                    TouchHold = true;
                 }
 
                 duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
@@ -549,16 +547,13 @@ namespace WiiTUIO.Provider
 
                 this.OnNewFrame(this, pFrame);
 
-            }
-            else //Mouse mode
-            {
-                if (this.showPointer && !pointerOutOfReach)
+                if(mouseMode && !this.touchDownMaster && !this.touchDownSlave && this.showPointer) //Mouse mode
                 {
                     this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * newpoint.X) / this.ScreenSize.X, (65535 * newpoint.Y) / this.ScreenSize.Y);
+                    MouseSimulator.WakeCursor();
                     //MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
                 }
             }
-
             this.BatteryState = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
 
             // Release mutual exclusion.

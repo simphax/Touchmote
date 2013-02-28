@@ -370,10 +370,10 @@ namespace WiiTUIO.Provider
                 if (this.JsonObj != value)
                 {
                     this.jsonObj = value;
-                    string newPointer = this.jsonObj.GetValue("Pointer").ToString();
-                    if (newPointer != null && this.OnConfigChanged != null)
+                    this.Pointer = this.jsonObj.GetValue("Pointer").ToString();
+                    if (this.Pointer != null && this.OnConfigChanged != null)
                     {
-                        this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(newPointer));
+                        this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(this.Pointer));
                     }
                 }
             }
@@ -383,11 +383,15 @@ namespace WiiTUIO.Provider
         public Action<WiiButtonEvent> OnButtonDown;
         public Action<WiiKeyMapConfigChangedEvent> OnConfigChanged;
 
+        public string Pointer;
+
         private InputSimulator inputSimulator;
 
         public WiiKeyMap(JObject jsonObj)
         {
             this.jsonObj = jsonObj;
+
+            this.Pointer = this.jsonObj.GetValue("Pointer").ToString();
 
             this.inputSimulator = new InputSimulator();
         }
