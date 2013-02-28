@@ -13,7 +13,7 @@
 
             <Label Content="Touchmote" FontSize="24" FontFamily="Segoe UI Light" Canvas.Left="10" Canvas.Top="8"/>
             <ComboBox Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="71" Canvas.Top="60" FontFamily="Segoe UI Semilight">
-                <ComboBoxItem Name="cbiPointer" IsSelected="True">Wii Sensor Bar</ComboBoxItem>
+                <ComboBoxItem Name="cbiPointer" IsSelected="True">IR Sensor Bar</ComboBoxItem>
                 <ComboBoxItem Name="cbiPen" Visibility="Collapsed">IR Pen</ComboBoxItem>
             </ComboBox>
             <TextBlock Canvas.Left="267" Canvas.Top="64" FontFamily="Segoe UI Semilight">                                
@@ -44,7 +44,7 @@
                         <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="Resources/close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Connected
             </TextBlock>
             <Label Name="batteryLabel" Content="0%" Canvas.Left="177" Canvas.Top="93" FontSize="36" HorizontalContentAlignment="Right" FontFamily="Segoe UI Light" Width="143"/>
-            <Label Content="Mode" Canvas.Left="15" Canvas.Top="60" FontFamily="Segoe UI Semilight"/>
+            <Label Content="Mode" Canvas.Left="15" Canvas.Top="59" FontFamily="Segoe UI Semilight"/>
             <Image MouseLeftButtonUp="InfoImg_MouseUp" Height="16" Canvas.Left="282" Canvas.Top="10" Width="16" Source="Resources/info-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
             <Image MouseLeftButtonUp="ConfigImg_MouseUp" Height="16" Canvas.Left="305" Canvas.Top="10" Width="16" Source="Resources/config-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
 
