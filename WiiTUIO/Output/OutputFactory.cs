@@ -43,7 +43,7 @@ namespace WiiTUIO.Output
             {
                 return OutputType.TOUCH;
             }
-            if (name == "touchmtv")
+            if (name == "touch-mtv")
             {
                 return OutputType.TOUCHMTV;
             }

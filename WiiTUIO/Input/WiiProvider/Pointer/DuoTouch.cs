@@ -173,7 +173,14 @@ namespace WiiTUIO.Provider
                 {
                     if (!this.masterHovering) //End the touch first
                     {
-                        contactType = ContactType.EndToHover;
+                        if (this.hoverDisabled)
+                        {
+                            contactType = ContactType.End;
+                        }
+                        else
+                        {
+                            contactType = ContactType.EndToHover;
+                        }
                         this.masterPosition = lastMasterContact.Position;
                         this.masterHovering = true;
                     }
