@@ -187,6 +187,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Properties\Settings.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\WiimoteControl.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\WiiPointerProvider.cs" />
     <Compile Include="SystemProcessMonitor.cs" />
     <Page Include="Input\WiiProvider\Settings\Calibrate.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -257,7 +259,7 @@
     <Compile Include="Input\WiiProvider\Pointer\MouseSimulator.cs" />
     <Compile Include="Input\WiiProvider\Pointer\ScreenPositionCalculator.cs" />
     <Compile Include="Input\WiiProvider\Pointer\Util.cs" />
-    <Compile Include="Input\WiiProvider\Pointer\WiiPointerProvider.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\MultiWiiPointerProvider.cs" />
     <Compile Include="Input\WiiProvider\ContactType.cs" />
     <Compile Include="Input\WiiProvider\FrameEventArgs.cs" />
     <Compile Include="Input\WiiProvider\Settings\WiiPointerProviderSettings.xaml.cs">
