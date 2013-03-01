@@ -208,7 +208,7 @@ namespace WiiTUIO.Provider
 
             this.duoTouch = new DuoTouch(ScreenSize, 3, 1);
 
-            this.keyMapper = new WiiKeyMapper();
+            this.keyMapper = new WiiKeyMapper(1);
 
             this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
             this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;

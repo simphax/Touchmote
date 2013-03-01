@@ -1,8 +1,12 @@
 {
   "Applications": [
     {
-      "Name": "Super Crate Box",
+      "Name": "supercratebox.exe",
       "Keymap": "supercratebox.json"
+    },
+    {
+      "Name": "Super Smash Land",
+      "Keymap": "supersmashland.json"
     }
   ],
   "Default": "default.json"

@@ -56,9 +56,9 @@ namespace WiiTUIO.Provider
 
             this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
 
-            ulong startID = (ulong)(id - 1) * 100 + 1; //(ulong)(((ulong)(id - 1)) * (ulong)(Int32.MaxValue / 2)); //This'll make sure the touch point IDs won't be the same.
-            this.duoTouch = new DuoTouch(this.ScreenSize, 3, startID);
-            this.keyMapper = new WiiKeyMapper();
+            ulong touchStartID = (ulong)(id - 1) * 100 + 1; //(ulong)(((ulong)(id - 1)) * (ulong)(Int32.MaxValue / 2)); //This'll make sure the touch point IDs won't be the same.
+            this.duoTouch = new DuoTouch(this.ScreenSize, 3, touchStartID);
+            this.keyMapper = new WiiKeyMapper(id);
 
             this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
             this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;

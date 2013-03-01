@@ -1,0 +1,39 @@
+{
+  "All": {
+    "Plus": "Return",
+    "Minus": "Clear",
+    "Home": "Escape"
+  },
+  "1": {
+    "One": "VK_X",
+    "Two": "VK_Z",
+    "Up": "Left",
+    "Down": "Right",
+    "Left": "Down",
+    "Right": "Up",
+  },
+  "2": {
+    "One": "VK_R",
+    "Two": "VK_E",
+    "Up": "VK_A",
+    "Down": "VK_D",
+    "Left": "VK_S",
+    "Right": "VK_W",
+  },
+  "3": {
+    "One": "VK_U",
+    "Two": "VK_Y",
+    "Up": "VK_F",
+    "Down": "VK_H",
+    "Left": "VK_G",
+    "Right": "VK_H",
+  },
+  "4": {
+    "One": "VK_P",
+    "Two": "VK_O",
+    "Up": "VK_J",
+    "Down": "VK_L",
+    "Left": "VK_K",
+    "Right": "VK_I",
+  }
+}

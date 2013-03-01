@@ -289,6 +289,7 @@
     <None Include="Keymaps\supercratebox.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Keymaps\supersmashland.json" />
     <None Include="packages.config" />
     <AppDesigner Include="Properties\" />
     <None Include="WiiTUIO_TemporaryKey.pfx" />
