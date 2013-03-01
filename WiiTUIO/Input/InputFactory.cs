@@ -11,6 +11,7 @@ namespace WiiTUIO.Input
 
         public enum InputType
         {
+            MULTIPOINTER,
             POINTER,
             PEN
         }
@@ -19,6 +20,8 @@ namespace WiiTUIO.Input
         {
             switch (type)
             {
+                case InputType.MULTIPOINTER:
+                    return "multipointer";
                 case InputType.POINTER:
                     return "pointer";
                 case InputType.PEN:
@@ -33,6 +36,10 @@ namespace WiiTUIO.Input
             if (name == "pointer")
             {
                 return InputType.POINTER;
+            } 
+            else if (name == "multipointer")
+            {
+                return InputType.MULTIPOINTER;
             }
             else if (name == "pen")
             {
@@ -50,6 +57,8 @@ namespace WiiTUIO.Input
         {
             switch (type)
             {
+                case InputType.MULTIPOINTER:
+                    return new MultiWiiPointerProvider();
                 case InputType.POINTER:
                     return new WiiPointerProvider();
                 case InputType.PEN:

@@ -208,7 +208,7 @@ namespace WiiTUIO.Provider
 
             this.smoothingBuffer = new SmoothingBuffer(3);
 
-            this.duoTouch = new DuoTouch(ScreenSize, 3);
+            this.duoTouch = new DuoTouch(ScreenSize, 3, 1);
 
             this.keyMapper = new WiiKeyMapper();
 

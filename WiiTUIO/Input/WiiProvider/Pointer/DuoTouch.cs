@@ -48,8 +48,10 @@ namespace WiiTUIO.Provider
         public double EdgeHelperRelease = 60.0;
 
 
-        public DuoTouch(Vector screenSize, int smoothSize)
+        public DuoTouch(Vector screenSize, int smoothSize, ulong startId)
         {
+            this.masterID = startId;
+            this.slaveID = startId+1;
             this.screenSize = screenSize;
             this.smoothingBuffer = new SmoothingBuffer(smoothSize);
         }
