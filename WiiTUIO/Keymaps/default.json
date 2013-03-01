@@ -1,17 +1,19 @@
 {
-  "Pointer": "Touch",
-  "A": "TouchMaster",
-  "B": "TouchSlave",
-  "Home": "LWin",
-  "Left": "Left",
-  "Right": "Right",
-  "Up": "Up",
-  "Down": "Down",
-  "Plus": "Volume_Up",
-  "Minus": "Volume_Down",
-  "One": "PointerToggle",
-  "Two": [
-    "LWin",
-    "Tab"
-  ]
+  "All": {
+    "Pointer": "Touch",
+    "A": "TouchMaster",
+    "B": "TouchSlave",
+    "Home": "LWin",
+    "Left": "Left",
+    "Right": "Right",
+    "Up": "Up",
+    "Down": "Down",
+    "Plus": "Volume_Up",
+    "Minus": "Volume_Down",
+    "One": "PointerToggle",
+    "Two": [
+      "LWin",
+      "Tab"
+    ]
+  }
 }

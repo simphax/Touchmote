@@ -44,13 +44,32 @@ namespace WiiTUIO.Provider
         private JObject applicationsJson;
         private JObject defaultKeymapJson;
 
-        public WiiKeyMapper()
+        private int wiimoteID;
+
+        public WiiKeyMapper(int wiimoteID)
         {
+            this.wiimoteID = wiimoteID;
+
             PressedButtons = new ButtonState();
 
             System.IO.Directory.CreateDirectory(KEYMAPS_PATH);
             this.applicationsJson = this.createDefaultApplicationsJSON();
             this.defaultKeymapJson = this.createDefaultKeymapJSON();
+
+            JObject specificKeymap = new JObject();
+            JObject commonKeymap = new JObject();
+
+            if (this.defaultKeymapJson.GetValue(this.wiimoteID.ToString()) != null)
+            {
+                specificKeymap = (JObject)this.defaultKeymapJson.GetValue(this.wiimoteID.ToString());
+            }
+            if (this.defaultKeymapJson.GetValue("All") != null)
+            {
+                commonKeymap = (JObject)this.defaultKeymapJson.GetValue("All");
+            }
+
+            MergeJSON(commonKeymap, specificKeymap);
+            this.defaultKeymapJson = commonKeymap;
 
             this.KeyMap = new WiiKeyMap(this.defaultKeymapJson);
 
@@ -156,14 +175,17 @@ namespace WiiTUIO.Provider
 
             buttons.Add(new JProperty("Minus", "Volume_Down"));
 
-            buttons.Add(new JProperty("One", "MouseToggle"));
+            buttons.Add(new JProperty("One", "PointerToggle"));
 
             JArray buttonTwo = new JArray();
             buttonTwo.Add(new JValue("LWin"));
             buttonTwo.Add(new JValue("Tab"));
             buttons.Add(new JProperty("Two", buttonTwo));
 
-            JObject union = buttons;
+            JObject allButtons = new JObject();
+            allButtons.Add(new JProperty("All", buttons));
+
+            JObject union = allButtons;
 
             if (File.Exists(KEYMAPS_PATH + DEFAULT_JSON_FILENAME))
             {
@@ -210,7 +232,21 @@ namespace WiiTUIO.Provider
                     JObject newKeymap = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
                     reader.Close();
 
-                    MergeJSON(union, newKeymap);
+                    JObject specificKeymap = new JObject();
+                    JObject commonKeymap = new JObject();
+
+                    if (newKeymap.GetValue(this.wiimoteID.ToString()) != null)
+                    {
+                        specificKeymap = (JObject)newKeymap.GetValue(this.wiimoteID.ToString());
+                    }
+                    if (newKeymap.GetValue("All") != null)
+                    {
+                        commonKeymap = (JObject)newKeymap.GetValue("All");
+                    }
+
+                    MergeJSON(commonKeymap, specificKeymap);
+
+                    MergeJSON(union, commonKeymap);
                 }
                 catch (Exception e)
                 {
