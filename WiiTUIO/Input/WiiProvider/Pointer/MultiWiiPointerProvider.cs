@@ -343,6 +343,34 @@ namespace WiiTUIO.Provider
                             FrameEventArgs lastFrameEvent = control.FrameQueue.Dequeue();
                             while (control.FrameQueue.Count > 0)
                             {
+
+                                //Fast forward events which are only consisting of Move or Hover events
+                                bool importantContact = false;
+                                foreach (WiiContact contact in lastFrameEvent.Contacts)
+                                {
+                                    if (contact.Type != ContactType.Hover && contact.Type != ContactType.Move)
+                                    {
+                                        importantContact = true;
+                                        break;
+                                    }
+                                }
+
+                                //If the next event contains an End event this one is important too, because End events need to be at the same position as the last one.
+                                FrameEventArgs nextFrameEvent = control.FrameQueue.Peek();
+                                foreach (WiiContact contact in nextFrameEvent.Contacts)
+                                {
+                                    if (contact.Type == ContactType.End || contact.Type == ContactType.EndFromHover || contact.Type == ContactType.EndToHover)
+                                    {
+                                        importantContact = true;
+                                        break;
+                                    }
+                                }
+
+                                if (importantContact)
+                                {
+                                    break;
+                                }
+
                                 lastFrameEvent = control.FrameQueue.Dequeue();
                             }
 
