@@ -200,8 +200,6 @@ namespace WiiTUIO.Provider
             lastpoint.X = 0;
             lastpoint.Y = 0;
 
-            Settings.Default.SettingChanging += SettingChanging;
-
             this.settingsControl = new WiiPointerProviderSettings();
 
             this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
@@ -286,11 +284,6 @@ namespace WiiTUIO.Provider
             }
         }
 
-
-        private void SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
-        {
-            
-        }
         #endregion
 
         #region Start and Stop
