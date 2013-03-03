@@ -155,8 +155,6 @@ namespace WiiTUIO
         /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
         protected override void OnInitialized(EventArgs e)
         {
-            
-
             // Call the base class.
             base.OnInitialized(e);
         }
@@ -172,7 +170,7 @@ namespace WiiTUIO
         /// This is called when the wii remote is connected
         /// </summary>
         /// <param name="obj"></param>
-        private void pWiiProvider_OnConnect(int obj)
+        private void pWiiProvider_OnConnect(int ID, int totalWiimotes)
         {
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
@@ -180,8 +178,8 @@ namespace WiiTUIO
                 this.bConnected = true;
 
                 // Update the button to say we are connected.
-                tbConnected.Visibility = Visibility.Collapsed;
-                tbWaiting.Visibility = Visibility.Collapsed;
+                tbConnected.Visibility = Visibility.Hidden;
+                tbWaiting.Visibility = Visibility.Hidden;
                 tbConnected.Visibility = Visibility.Visible;
 
                 connectProviderHandler();
@@ -195,7 +193,7 @@ namespace WiiTUIO
         /// This is called when the wii remote is disconnected
         /// </summary>
         /// <param name="obj"></param>
-        private void pWiiProvider_OnDisconnect(int obj)
+        private void pWiiProvider_OnDisconnect(int ID, int totalWiimotes)
         {
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
@@ -499,11 +497,15 @@ namespace WiiTUIO
 
                 Launcher.Launch("Driver", "devcon", " enable \"BTHENUM*_VID*57e*_PID&0306*\"", null);
 
+                this.startProvider();
+
+                /*
                 Thread thread = new Thread(new ThreadStart(tryConnectingProvider));
                 thread.Start();
+                 * */
             }
         }
-
+        /*
         private void tryConnectingProvider()
         {
             this.tryingToConnect = true;
@@ -513,7 +515,7 @@ namespace WiiTUIO
             }
             this.tryingToConnect = false;
         }
-
+        */
         /// <summary>
         /// Try to create the WiiProvider (this involves connecting to the Wiimote).
         /// </summary>
@@ -522,6 +524,7 @@ namespace WiiTUIO
             try
             {
                 this.pWiiProvider.start();
+                this.tryingToConnect = true;
                 return true;
             }
             catch (Exception pError)
@@ -530,12 +533,13 @@ namespace WiiTUIO
                 try
                 {
                     this.pWiiProvider.stop();
+                    this.tryingToConnect = false;
                 }
                 catch { }
 
                 // Report the error.
                 Console.WriteLine(pError.Message);
-                //showMessage(pError.Message, MessageType.Error);
+                showMessage(pError.Message, MessageType.Error);
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
@@ -552,8 +556,8 @@ namespace WiiTUIO
                 this.pWiiProvider = InputFactory.createInputProvider(Settings.Default.input);
                 this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
                 this.pWiiProvider.OnBatteryUpdate += new Action<int>(pWiiProvider_OnBatteryUpdate);
-                this.pWiiProvider.OnConnect += new Action<int>(pWiiProvider_OnConnect);
-                this.pWiiProvider.OnDisconnect += new Action<int>(pWiiProvider_OnDisconnect);
+                this.pWiiProvider.OnConnect += new Action<int,int>(pWiiProvider_OnConnect);
+                this.pWiiProvider.OnDisconnect += new Action<int,int>(pWiiProvider_OnDisconnect);
                 return true;
             }
             catch (Exception pError)
@@ -580,7 +584,10 @@ namespace WiiTUIO
             this.tryingToConnect = false;
             // Disconnect the Wiimote.
             if (this.pWiiProvider != null)
+            {
                 this.pWiiProvider.stop();
+            }
+
             //this.pWiiProvider = null;
             //Disable Wiimote in device manager to disconnect it from the computer (so it doesn't drain battery when not used)
             Launcher.Launch("Driver", "devcon", " disable \"BTHENUM*_VID*57e*_PID&0306*\"", null);

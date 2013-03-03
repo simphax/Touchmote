@@ -16,7 +16,7 @@ namespace WiiTUIO.Properties
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string _input = "pointer";
+        private string _input = "multipointer";
         public string input
         {
             get { return _input; }
@@ -49,7 +49,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private bool _pairedOnce = false;
+        private bool _pairedOnce = true;
         public bool pairedOnce
         {
             get { return _pairedOnce; }
