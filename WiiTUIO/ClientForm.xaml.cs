@@ -26,6 +26,7 @@ using WiiTUIO.Output;
 using Microsoft.Win32;
 using System.Diagnostics;
 using TCD.System.ApplicationExtensions;
+using Newtonsoft.Json;
 
 namespace WiiTUIO
 {

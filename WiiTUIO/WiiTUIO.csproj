@@ -188,6 +188,7 @@
     </ApplicationDefinition>
     <Compile Include="Input\WiiProvider\Pointer\WiimoteControl.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiiPointerProvider.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="SystemProcessMonitor.cs" />
     <Page Include="Input\WiiProvider\Settings\Calibrate.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -254,11 +255,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
     <Compile Include="Input\WiiProvider\IProvider.cs" />
     <Compile Include="Input\WiiProvider\Pointer\MouseSimulator.cs" />
     <Compile Include="Input\WiiProvider\Pointer\ScreenPositionCalculator.cs" />
@@ -295,11 +291,6 @@
     </None>
     <None Include="Keymaps\supersmashland.json" />
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
     <AppDesigner Include="Properties\" />
     <None Include="WiiTUIO_TemporaryKey.pfx" />
   </ItemGroup>
