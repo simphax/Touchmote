@@ -14,7 +14,9 @@ namespace WiiTUIO.Provider
     class WiimoteControl
     {
         public bool Handled;
-        public Queue<FrameEventArgs> FrameQueue; 
+        public Queue<FrameEventArgs> FrameQueue;
+
+        public DateTime LastWiimoteEvent = DateTime.Now;
 
         /// <summary>
         /// Used to obtain mutual exlusion over Wiimote updates.
@@ -39,7 +41,7 @@ namespace WiiTUIO.Provider
 
         private WiimoteLib.Point lastpoint;
 
-        private int id;
+        public int ID;
 
         /// <summary>
         /// The screen size that we use for normalising coordinates.
@@ -48,7 +50,7 @@ namespace WiiTUIO.Provider
 
         public WiimoteControl(int id)
         {
-            this.id = id;
+            this.ID = id;
 
             lastpoint = new WiimoteLib.Point();
             lastpoint.X = 0;
@@ -128,6 +130,8 @@ namespace WiiTUIO.Provider
         {
             // Obtain mutual excluseion.
             pDeviceMutex.WaitOne();
+
+            LastWiimoteEvent = DateTime.Now;
 
             Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
             // Store the state.

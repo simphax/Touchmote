@@ -161,8 +161,8 @@ namespace WiiTUIO.Provider
         public event Action<int> OnBatteryUpdate;
 
 
-        public event Action<int> OnConnect;
-        public event Action<int> OnDisconnect;
+        public event Action<int,int> OnConnect;
+        public event Action<int,int> OnDisconnect;
 
         /// <summary>
         /// The internal battery state.
@@ -324,7 +324,7 @@ namespace WiiTUIO.Provider
             }
             */
 
-            OnConnect(1);
+            OnConnect(1,1);
 
             // Release processing.
             //pDeviceMutex.ReleaseMutex();
@@ -350,7 +350,7 @@ namespace WiiTUIO.Provider
             //MouseSimulator.ResetSystemCursor();
 
 
-            OnDisconnect(1);
+            OnDisconnect(1,0);
         }
         #endregion
 

@@ -45,8 +45,8 @@ namespace WiiTUIO.Provider
             this.pCalibrationWindow.Visibility = Visibility.Hidden;
 
             this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
-            this.pWiiProvider.OnConnect += new Action<int>(pWiiProvider_OnConnect);
-            this.pWiiProvider.OnDisconnect += new Action<int>(pWiiProvider_OnDisconnect);
+            this.pWiiProvider.OnConnect += new Action<int,int>(pWiiProvider_OnConnect);
+            this.pWiiProvider.OnDisconnect += new Action<int,int>(pWiiProvider_OnDisconnect);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace WiiTUIO.Provider
         /// This is called when the wii remote is connected
         /// </summary>
         /// <param name="obj"></param>
-        private void pWiiProvider_OnConnect(int obj)
+        private void pWiiProvider_OnConnect(int id, int totalWiimotes)
         {
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
@@ -129,7 +129,7 @@ namespace WiiTUIO.Provider
         /// This is called when the wii remote is disconnected
         /// </summary>
         /// <param name="obj"></param>
-        private void pWiiProvider_OnDisconnect(int obj)
+        private void pWiiProvider_OnDisconnect(int id, int totalWiimotes)
         {
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
