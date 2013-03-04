@@ -49,7 +49,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private bool _pairedOnce = true;
+        private bool _pairedOnce = false;
         public bool pairedOnce
         {
             get { return _pairedOnce; }
