@@ -21,6 +21,9 @@ namespace WiiTUIO.Provider
     public class MultiWiiPointerProvider : IProvider
     {
         private double WIIMOTE_DISCONNECT_THRESHOLD = 2000; //If we haven't recieved input from a wiimote in 2 seconds we consider it disconnected.
+        private ulong OLD_FRAME_THRESHOLD = 200;
+
+        private Mutex pDeviceMutex = new Mutex();
 
         private Thread wiimoteConnectorThread;
 
@@ -200,7 +203,10 @@ namespace WiiTUIO.Provider
             // Set the running flag.
             this.bRunning = false;
 
-            this.wiimoteConnectorThread.Abort();
+            if (this.wiimoteConnectorThread != null)
+            {
+                this.wiimoteConnectorThread.Abort();
+            }
             
             this.teardownWiimoteConnections();
 
@@ -222,6 +228,7 @@ namespace WiiTUIO.Provider
             // If we have an existing device, teardown the connection.
             //this.teardownWiimoteConnection();
 
+            pDeviceMutex.WaitOne();
             pErrorReport = null;
 
             this.pWC.Clear();
@@ -251,13 +258,13 @@ namespace WiiTUIO.Provider
                         OnConnect(this.nextWiimoteIndex, this.pWiimoteMap.Count);
 
                         this.nextWiimoteIndex = this.pWiimoteMap.Count + 1;
+                        
                     }
-                    else if (DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEvent).TotalMilliseconds > WIIMOTE_DISCONNECT_THRESHOLD)
+                    else if (DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_THRESHOLD)
                     {
                         teardownWiimoteConnection(pDevice);
                     }
                 }
-
                 // If something went wrong - notify the user..
                 catch (Exception pError)
                 {
@@ -273,12 +280,14 @@ namespace WiiTUIO.Provider
                     //throw new Exception("Error establishing connection: " + , pError);
                     
                 }
+                
             }
             if(pErrorReport != null)
             {
+                pDeviceMutex.ReleaseMutex();
                 return false;
             }
-
+            pDeviceMutex.ReleaseMutex();
             return true;
         }
 
@@ -300,6 +309,7 @@ namespace WiiTUIO.Provider
         {
             if (pDevice != null)
             {
+                pDeviceMutex.WaitOne();
                 int wiimoteid;
                 if (pWiimoteMap.Keys.Contains(pDevice.HIDDevicePath))
                 {
@@ -317,6 +327,7 @@ namespace WiiTUIO.Provider
                 // Close the connection and dispose of the device.
                 pDevice.Disconnect();
                 pDevice.Dispose();
+                pDeviceMutex.ReleaseMutex();
 
                 OnDisconnect(wiimoteid, this.pWiimoteMap.Count);
             }
@@ -373,6 +384,7 @@ namespace WiiTUIO.Provider
         {
             if (bRunning)
             {
+                pDeviceMutex.WaitOne();
                 if (pWiimoteMap.Keys.Contains(((Wiimote)sender).HIDDevicePath))
                 {
                     WiimoteControl senderControl = pWiimoteMap[((Wiimote)sender).HIDDevicePath];
@@ -381,14 +393,57 @@ namespace WiiTUIO.Provider
 
                     senderControl.Handled = true;
 
-                    /*
                     if (senderControl.FrameQueue.Count > 0)
                     {
-                        FrameEventArgs frame = senderControl.FrameQueue.Dequeue();
-                        this.OnNewFrame(this, frame);
-                    }
-                    */
+                        FrameEventArgs senderFrame = senderControl.FrameQueue.Dequeue();
 
+                        Queue<WiiContact> allContacts = new Queue<WiiContact>(senderFrame.Contacts);
+                        
+                        foreach (WiimoteControl control in pWiimoteMap.Values) //Include the contacts for all Wiimotes, only send hover and move events for their contacts, using the last sent contact.
+                        {
+                            if (control != senderControl)
+                            {
+                                FrameEventArgs lastFrame = control.LastFrameEvent;
+                                if (lastFrame != null)
+                                {
+                                    ulong timeDelta = ((ulong)Stopwatch.GetTimestamp() / 10000) - (lastFrame.Timestamp / 10000);
+                                    if (timeDelta < OLD_FRAME_THRESHOLD) //Happens when the pointer is out of reach
+                                    {
+                                        IEnumerable<WiiContact> contacts = lastFrame.Contacts;
+                                        foreach (WiiContact contact in contacts)
+                                        {
+                                            if (contact.Type == ContactType.EndToHover)
+                                            {
+                                                //Console.WriteLine("Convert entohover" + contact.ID);
+                                                WiiContact newContact = new WiiContact(contact.ID, ContactType.Hover, contact.Position, new Vector(Util.ScreenWidth, Util.ScreenHeight));
+                                                allContacts.Enqueue(newContact);
+                                            }
+                                            else if (contact.Type == ContactType.Start)
+                                            {
+                                                //Console.WriteLine("Convert start" + contact.ID);
+                                                WiiContact newContact = new WiiContact(contact.ID, ContactType.Move, contact.Position, new Vector(Util.ScreenWidth, Util.ScreenHeight));
+                                                allContacts.Enqueue(newContact);
+                                            }
+                                            else if (contact.Type == ContactType.End || contact.Type == ContactType.EndFromHover)
+                                            {
+                                            }
+                                            else //contact type was hover or move
+                                            {
+                                                //Console.WriteLine("Add hover or move" + contact.ID);
+                                                allContacts.Enqueue(contact);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        //Console.WriteLine("Sending " + allContacts.Count + " contacts");
+                        FrameEventArgs newFrame = new FrameEventArgs(senderFrame.Timestamp, allContacts);
+
+                        this.OnNewFrame(this, newFrame);
+                    }
+                    
+                    /*
                     bool handledAll = false;
                     Queue<WiiContact> allContacts = new Queue<WiiContact>(2);
                     ulong timestamp = 0;
@@ -401,7 +456,7 @@ namespace WiiTUIO.Provider
                             break;
                         }
                     }
-
+                
                     if (handledAll)
                     {
                         foreach (WiimoteControl control in pWiimoteMap.Values)
@@ -458,7 +513,9 @@ namespace WiiTUIO.Provider
                             this.OnNewFrame(this, newFrame);
                         }
                     }
+                 * */
                 }
+                pDeviceMutex.ReleaseMutex();
             }
         }
         #endregion

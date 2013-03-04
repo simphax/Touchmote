@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TCD.System.TouchInjection;
 using WiiTUIO.Provider;
@@ -16,6 +17,8 @@ namespace WiiTUIO.Output
 
         private int maxTouchPoints = 256;
 
+        private Mutex touchscreenMutex = new Mutex();
+
         public void connect()
         {
             if (!TCD.System.TouchInjection.TouchInjector.InitializeTouchInjection((uint)maxTouchPoints, TouchFeedback.INDIRECT))
@@ -27,7 +30,9 @@ namespace WiiTUIO.Output
 
         public void processEventFrame(Provider.FrameEventArgs e)
         {
+            touchscreenMutex.WaitOne();
             List<PointerTouchInfo> toFire = new List<PointerTouchInfo>();
+            //Console.WriteLine("Recieved " + e.Contacts.Count() + " contacts");
             foreach (WiiContact contact in e.Contacts)
             {
                 /*
@@ -43,7 +48,7 @@ namespace WiiTUIO.Output
                 touch.TouchFlags = TouchFlags.NONE;
                 //contact.Orientation = (uint)cur.getAngleDegrees();//this is only valid for TuioObjects
                 touch.Pressure = 0;
-                touch.TouchMasks = TouchMask.CONTACTAREA | TouchMask.ORIENTATION | TouchMask.PRESSURE;
+                touch.TouchMasks = TouchMask.CONTACTAREA;// | TouchMask.ORIENTATION | TouchMask.PRESSURE;
                 touch.PointerInfo.PtPixelLocation.X = (int)contact.Position.X;
                 touch.PointerInfo.PtPixelLocation.Y = (int)contact.Position.Y;
                 touch.PointerInfo.PointerId = (uint)contact.ID;
@@ -73,9 +78,10 @@ namespace WiiTUIO.Output
             {
                 if (!TCD.System.TouchInjection.TouchInjector.InjectTouchInput(toFire.Count, toFire.ToArray()))
                 {
-                    Console.WriteLine("Could not send touch input");
+                    Console.WriteLine("Could not send touch input, count " + toFire.Count);
                 }
             }
+            touchscreenMutex.ReleaseMutex();
         }
 
         public void disconnect()

@@ -14,9 +14,10 @@ namespace WiiTUIO.Provider
     class WiimoteControl
     {
         public bool Handled;
-        public Queue<FrameEventArgs> FrameQueue;
 
-        public DateTime LastWiimoteEvent = DateTime.Now;
+        public FrameEventArgs LastFrameEvent;
+        public Queue<FrameEventArgs> FrameQueue = new Queue<FrameEventArgs>(1);
+        public DateTime LastWiimoteEventTime = DateTime.Now;
 
         /// <summary>
         /// Used to obtain mutual exlusion over Wiimote updates.
@@ -68,8 +69,6 @@ namespace WiiTUIO.Provider
 
             this.inputSimulator = new InputSimulator();
             this.screenPositionCalculator = new ScreenPositionCalculator();
-
-            this.FrameQueue = new Queue<FrameEventArgs>();
         }
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
@@ -131,7 +130,7 @@ namespace WiiTUIO.Provider
             // Obtain mutual excluseion.
             pDeviceMutex.WaitOne();
 
-            LastWiimoteEvent = DateTime.Now;
+            LastWiimoteEventTime = DateTime.Now;
 
             Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
             // Store the state.
@@ -198,6 +197,7 @@ namespace WiiTUIO.Provider
                 FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), lFrame);
 
                 this.FrameQueue.Enqueue(pFrame);
+                this.LastFrameEvent = pFrame;
 
                 if (mouseMode && !this.touchDownMaster && !this.touchDownSlave && this.showPointer) //Mouse mode
                 {
