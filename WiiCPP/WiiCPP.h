@@ -23,8 +23,8 @@ namespace WiiCPP {
 	public:
 
 		int numberPaired;
-		bool permanent;
-		System::String ^deviceName;
+		bool removeMode;
+		array<String^>^ deviceNames;
 	};
 
 	public interface class WiiPairListener
@@ -109,7 +109,7 @@ namespace WiiCPP {
 			killme = true;
 		}
 
-		void start()
+		void start(bool removeMode)
 		{
 			killme = false;
 			WiiPairSuccessReport ^report = gcnew WiiPairSuccessReport();
@@ -118,6 +118,10 @@ namespace WiiCPP {
 			int nPaired = 0;
 
 			listener->onPairingStarted();
+
+			report->removeMode = removeMode;
+
+			report->deviceNames = gcnew array<String^>(10);
 
 			///////////////////////////////////////////////////////////////////////
 			// Enumerate BT radios
@@ -154,13 +158,16 @@ namespace WiiCPP {
 			// Keep looping until we pair with a Wii device
 			///////////////////////////////////////////////////////////////////////
 
-			while (nPaired == 0)
+			while (!killme)
 			{
+				 //If this run is just to remove all previous connections, just loop once.
 				
+				/*
 				if(killme) {
 					listener->onPairingCancelled();
 					return;
 				}
+				*/
 
 				int radio;
 
@@ -191,7 +198,14 @@ namespace WiiCPP {
 					srch.hRadio = hRadios[radio];
 
 					listener->pairingConsole("Scanning...\n");
-					listener->pairingMessage("Scanning...",WiiPairListener::MessageType::INFO);
+					if(removeMode)
+					{
+						listener->pairingMessage("Removing old connections...",WiiPairListener::MessageType::INFO);
+					}
+					else
+					{
+						listener->pairingMessage("Scanning...",WiiPairListener::MessageType::INFO);
+					}
 
 					hFind = BluetoothFindFirstDevice(&srch, &btdi);
 
@@ -200,6 +214,10 @@ namespace WiiCPP {
 						if (GetLastError() == ERROR_NO_MORE_ITEMS)
 						{
 							listener->pairingConsole("No bluetooth devices found.\n");
+							if(removeMode)
+							{
+								killme = true;
+							}
 						}
 						else
 						{
@@ -226,14 +244,15 @@ namespace WiiCPP {
 
 								if (!error)
 								{
-									if (btdi.fRemembered)
+									if (btdi.fRemembered && removeMode)
 									{
 										listener->pairingMessage("Removing old Wiimote",WiiPairListener::MessageType::SUCCESS);
 										// Make Windows forget pairing
 										if (ShowErrorCode(_T("BluetoothRemoveDevice"), BluetoothRemoveDevice(&btdi.Address)) != ERROR_SUCCESS)
 										{
-											listener->pairingMessage("Could not remove old device",WiiPairListener::MessageType::ERR);
+											listener->pairingMessage("Could not remove device",WiiPairListener::MessageType::ERR);
 										}
+									} else if(btdi.fRemembered || removeMode) {
 										error = TRUE;
 									} else {
 										listener->pairingMessage("Found a new Wiimote",WiiPairListener::MessageType::SUCCESS);
@@ -248,7 +267,7 @@ namespace WiiCPP {
 								pass[4] = radioInfo.address.rgBytes[4];
 								pass[5] = radioInfo.address.rgBytes[5];
 
-								if (!error)
+								if (!error && !removeMode)
 								{
 									//BluetoothRegisterForAuthenticationEx(&btdi,NULL,(PFN_AUTHENTICATION_CALLBACK_EX)OnAuthenticate,NULL);
 									// Pair with Wii device
@@ -264,7 +283,7 @@ namespace WiiCPP {
 									}
 								}
 
-								if (!error)
+								if (!error && !removeMode)
 								{
 									// If this is not done, the Wii device will not remember the pairing
 									if (ShowErrorCode(_T("BluetoothEnumerateInstalledServices"), BluetoothEnumerateInstalledServices(hRadios[radio], &btdi, &pcServices, guids)) != ERROR_SUCCESS) {
@@ -272,11 +291,10 @@ namespace WiiCPP {
 										listener->pairingMessage("Could not permanently pair the Wiimote",WiiPairListener::MessageType::ERR);
 									} else {
 										listener->pairingMessage("Connection is permanent",WiiPairListener::MessageType::SUCCESS);
-										report->permanent = true;
 									}
 								}
 
-								if (!error)
+								if (!error && !removeMode)
 								{
 									// Activate service
 									if (ShowErrorCode(_T("BluetoothSetServiceState"), BluetoothSetServiceState (hRadios[radio], &btdi, &HumanInterfaceDeviceServiceClass_UUID, BLUETOOTH_SERVICE_ENABLE )) != ERROR_SUCCESS) {
@@ -287,18 +305,31 @@ namespace WiiCPP {
 									}
 								}
 
-								if (!error)
+								if (!error && !removeMode)
 								{
+									report->deviceNames[nPaired] = (gcnew System::String(btdi.szName));
 									nPaired++;
+									report->numberPaired = nPaired;
+									listener->onPairingSuccess(report);
+									
 								}
-								report->deviceName = gcnew System::String(btdi.szName);
+								else if(!error && removeMode)
+								{
+									report->deviceNames[nPaired] = (gcnew System::String(btdi.szName));
+									nPaired++;
+									report->numberPaired = nPaired;
+								}
+								else if(removeMode)
+								{
+									killme = true;
+								}
 							} // if (!wcscmp(btdi.szName, L"Nintendo RVL-WBC-01") || !wcscmp(btdi.szName, L"Nintendo RVL-CNT-01"))
 						}
 						while (BluetoothFindNextDevice(hFind, &btdi));
 					} // if (hFind == NULL)
 				} // for (radio = 0; radio < nRadios; radio++)
 
-				Sleep(1000);
+				//Sleep(1000);
 			}
 
 			///////////////////////////////////////////////////////////////////////
@@ -318,9 +349,14 @@ namespace WiiCPP {
 			System::String^ str =  nPaired + " Wii devices paired\n";
 			listener->pairingConsole(str);
 
-			report->numberPaired = nPaired;
-
-			listener->onPairingSuccess(report);
+			if(nPaired == 0 && !removeMode)
+			{
+				listener->onPairingCancelled();
+			}
+			else
+			{
+				listener->onPairingSuccess(report);
+			}
 
 			return;
 		}

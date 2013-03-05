@@ -773,55 +773,105 @@ namespace WiiTUIO
             }
         }
 
+        private bool wiiPairRunning = false;
+
         private void PairWiimotes_Click(object sender, RoutedEventArgs e)
         {
             this.disableMainControls();
             this.pairWiimoteOverlay.Visibility = Visibility.Visible;
             this.pairWiimoteOverlayPairing.Visibility = Visibility.Visible;
-            this.pairWiimoteOverlayDone.Visibility = Visibility.Hidden;
             this.runWiiPair();
         }
 
         private void runWiiPair() {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-            this.pairingTitle.Content = "Pairing Wiimote";
+            this.pairingTitle.Content = "Pairing Wiimotes";
             this.pairWiimoteTRFail.Visibility = Visibility.Hidden;
             this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
+            this.imgClosePairCheck.Visibility = Visibility.Hidden;
+            this.imgClosePairClose.Visibility = Visibility.Visible;
+            this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
+            this.pairProgress.Visibility = Visibility.Visible;
             }), null);
-            Thread thread = new Thread(new ThreadStart(wiiPair.start));
+            Thread thread = new Thread(new ThreadStart(wiiPairThreadWorker));
             thread.Start();
         }
 
+        private void wiiPairThreadWorker()
+        {
+            this.wiiPairRunning = true;
+            wiiPair.start(true);//First remove all connected devices.
+        }
+
         private void stopWiiPair() {
+            this.wiiPairRunning = false;
             wiiPair.stop();
         }
 
         public void onPairingSuccess(WiiCPP.WiiPairSuccessReport report)
         {
-            Console.WriteLine("Success report: number=" + report.numberPaired + " permanent=" + report.permanent + " name=" + report.deviceName);
+            Console.WriteLine("Success report: number=" + report.numberPaired + " removeMode=" + report.removeMode + " devicelist=" + report.deviceNames);
 
-            Settings.Default.pairedOnce = true;
-            if (report.deviceName == @"Nintendo RVL-CNT-01-TR")
+            if (report.removeMode)
             {
-                Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    this.pairingTitle.Content = "Pairing Successful";
-                    this.pairWiimoteText.Text = @"";
-                    this.pairWiimoteTRFail.Visibility = Visibility.Visible;
-                    this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
-
-
-                    this.pairProgress.IsIndeterminate = false;
-                }), null);
+                this.wiiPairRunning = true;
+                wiiPair.start(false); //Run the actual pairing after removing all previous connected devices.
             }
-            else
+            else if (report.numberPaired > 0)
             {
+                Settings.Default.pairedOnce = true;
+
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    this.pairWiimoteOverlayPairing.Visibility = Visibility.Hidden;
-                    this.pairWiimoteOverlayDone.Visibility = Visibility.Visible;
+                    if (report.numberPaired == 1)
+                    {
+                        this.pairingTitle.Content = "One Wiimote Paired";
+                    }
+                    else
+                    {
+                        this.pairingTitle.Content = report.numberPaired + " Wiimotes Paired";
+                    }
+                    this.imgClosePairCheck.Visibility = Visibility.Visible;
+                    this.imgClosePairClose.Visibility = Visibility.Hidden;
                 }), null);
+
+                if (!this.wiiPairRunning)
+                {
+                    if (report.deviceNames.Contains(@"Nintendo RVL-CNT-01-TR"))
+                    {
+                        Dispatcher.BeginInvoke(new Action(delegate()
+                        {
+                            //this.pairingTitle.Content = "Pairing Successful";
+                            this.pairWiimoteText.Text = @"";
+                            this.pairWiimotePressSync.Visibility = Visibility.Hidden;
+                            this.pairWiimoteTRFail.Visibility = Visibility.Visible;
+                            this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
+
+                            this.pairProgress.Visibility = Visibility.Hidden;
+
+                            this.pairProgress.IsIndeterminate = false;
+
+                        }), null);
+                    }
+                    else
+                    {
+                        Dispatcher.BeginInvoke(new Action(delegate()
+                        {
+                            //this.pairWiimoteOverlayPairing.Visibility = Visibility.Hidden;
+                            //this.pairWiimoteOverlayDone.Visibility = Visibility.Visible;
+                            this.pairWiimoteText.Text = @"";
+                            this.pairWiimotePressSync.Visibility = Visibility.Hidden;
+                            this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
+                            this.pairWiimoteCheckmarkImg.Visibility = Visibility.Visible;
+
+                            this.pairProgress.Visibility = Visibility.Hidden;
+
+                            this.pairProgress.IsIndeterminate = false;
+
+                        }), null);
+                    }
+                }
             }
         }
 
@@ -838,6 +888,9 @@ namespace WiiTUIO
             {
             this.pairingTitle.Content = "Pairing Cancelled";
             this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
+            this.imgClosePairCheck.Visibility = Visibility.Hidden;
+            this.imgClosePairClose.Visibility = Visibility.Visible;
+            this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
 
             this.pairProgress.IsIndeterminate = false;
             }), null);
@@ -865,6 +918,11 @@ namespace WiiTUIO
                 if (message == "Scanning...")
                 {
                     pairWiimotePressSync.Visibility = Visibility.Visible;
+
+                    if (this.imgClosePairCheck.Visibility == Visibility.Hidden && this.imgClosePairClose.Visibility == Visibility.Hidden)
+                    {
+                        this.imgClosePairClose.Visibility = Visibility.Visible;
+                    }
                 }
                 else
                 {
@@ -875,9 +933,27 @@ namespace WiiTUIO
 
         private void imgClosePair_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            this.stopWiiPair();
-            this.pairWiimoteOverlay.Visibility = Visibility.Hidden;
-            this.enableMainControls();
+            
+            if (this.wiiPairRunning)
+            {
+                if (this.imgClosePairClose.Visibility == Visibility.Visible)
+                {
+                    this.pairWiimoteText.Text = "Cancelling...";
+                }
+                else
+                {
+                    this.pairWiimoteText.Text = "Finishing...";
+                }
+                this.imgClosePairCheck.Visibility = Visibility.Hidden;
+                this.imgClosePairClose.Visibility = Visibility.Hidden;
+                this.pairWiimotePressSync.Visibility = Visibility.Hidden;
+                this.stopWiiPair();
+            }
+            else
+            {
+                this.pairWiimoteOverlay.Visibility = Visibility.Hidden;
+                this.enableMainControls();
+            }
         }
 
         private void Icon_MouseEnter(object sender, MouseEventArgs e)
