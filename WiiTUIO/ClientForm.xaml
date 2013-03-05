@@ -101,7 +101,8 @@
                 </Canvas.Effect>
                 <Canvas Name="pairWiimoteOverlayPairing" Height="134" Width="286">
                     <Label Name="pairingTitle" Content="Pairing Wiimote" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
-                    <Image MouseLeftButtonDown="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="250" Canvas.Top="12" Width="24" Source="Resources/close-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
+                    <Image Name="imgClosePairCheck" Visibility="Collapsed" MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="250" Canvas.Top="12" Width="24" Source="Resources/check-icon.png" Opacity="0.6" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
+                    <Image Name="imgClosePairClose" MouseLeftButtonDown="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="250" Canvas.Top="12" Width="24" Source="Resources/close-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
                     <ProgressBar Name="pairProgress" Height="4" Canvas.Left="0" Canvas.Top="47" Width="290" IsIndeterminate="True" RenderTransformOrigin="0.5,0.5" Foreground="#FF2096CD" BorderBrush="#FFF5F1F1" Background="#FFF7F7F7">
                         <ProgressBar.RenderTransform>
                             <TransformGroup>
@@ -122,18 +123,16 @@
                         </Hyperlink>
                     </TextBlock>
 
-                    <TextBlock Name="pairWiimoteTRFail" Visibility="Hidden" Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="61" Height="53" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
-                        Your Wiimote is not compatible with the Microsoft Bluetooth Stack, you will need to get an older Wiimote or 
+                    <TextBlock Name="pairWiimoteTRFail" Visibility="Hidden" Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="46" Height="63" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
+                        At least one of your Wiimotes is not compatible with the Microsoft Bluetooth Stack, use only Wiimotes manufactured before November 2011 or try the instructions on 
                         <Hyperlink Click="oLinkToBrowser" NavigateUri="http://touchmote.net/wiimotetr">
-                            try the instructions on this page
+                            this page
                         </Hyperlink>
                     </TextBlock>
 
-                </Canvas>
-                <Canvas Name="pairWiimoteOverlayDone" MouseLeftButtonDown="imgClosePair_MouseUp" Height="134" Width="286" Visibility="Hidden">
-                    <Label Content="Pairing Successful!" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
-                    <Image Name="imgClosePairCheck" MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="250" Canvas.Top="12" Width="24" Source="Resources/check-icon.png" Opacity="0.6" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
-                    <Image Height="74" Canvas.Left="105" Canvas.Top="46" Width="82" Source="Resources/checkmark-big.png"/>
+
+                    <Image Name="pairWiimoteCheckmarkImg" MouseLeftButtonDown="imgClosePair_MouseUp" Cursor="Hand" Height="74" Visibility="Collapsed" Canvas.Left="105" Canvas.Top="46" Width="82" Source="Resources/checkmark-big.png"/>
+
                 </Canvas>
             </Canvas>
             <Canvas Name="infoOverlay" Height="134" Width="286" Background="White" MouseLeftButtonDown="infoOverlay_MouseDown" Visibility="Collapsed">
