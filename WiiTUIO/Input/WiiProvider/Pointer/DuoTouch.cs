@@ -18,6 +18,8 @@ namespace WiiTUIO.Provider
         private ulong masterID = 1;
         private ulong slaveID = 2;
 
+        private ulong startID = 1;
+
         private WiiContact lastMasterContact;
         private WiiContact lastSlaveContact;
 
@@ -31,7 +33,7 @@ namespace WiiTUIO.Provider
         private bool masterHovering = true;
         private bool slaveHovering = true;
 
-        private bool slaveEnded = false;
+        private bool slaveEnded = true;
 
         private bool masterReleased = true;
         private bool slaveReleased = true;
@@ -52,6 +54,7 @@ namespace WiiTUIO.Provider
         {
             this.masterID = startId;
             this.slaveID = startId+1;
+            this.startID = startId;
             this.screenSize = screenSize;
             this.smoothingBuffer = new SmoothingBuffer(smoothSize);
         }
@@ -204,8 +207,8 @@ namespace WiiTUIO.Provider
                     if (this.stepIDs && contactType == ContactType.EndToHover) //If we release slave touch before we release master touch we want to make sure Windows treats master as the main touch point again
                     {
                         this.lastMasterContact = new WiiContact(this.masterID, ContactType.End, this.masterPosition, this.screenSize);
-                        this.masterID += 2;
-                        this.slaveID += 2;
+                        this.masterID = (this.masterID - this.startID + 2) % 4 + this.startID;
+                        this.slaveID = (this.slaveID - this.startID + 2) % 4 + this.startID;
                         this.stepIDs = false;
                     }
                     else

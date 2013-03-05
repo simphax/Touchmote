@@ -223,7 +223,7 @@ namespace WiiTUIO.Provider
                     else if (pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_THRESHOLD)
                     {
                         Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
-                        teardownWiimoteConnection(pDevice);
+                        teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
                     }
                 }
                 // If something went wrong - notify the user..
