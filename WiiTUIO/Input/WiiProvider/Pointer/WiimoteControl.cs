@@ -13,11 +13,13 @@ namespace WiiTUIO.Provider
 {
     class WiimoteControl
     {
-        public bool Handled;
-
         public FrameEventArgs LastFrameEvent;
         public Queue<FrameEventArgs> FrameQueue = new Queue<FrameEventArgs>(1);
         public DateTime LastWiimoteEventTime = DateTime.Now;
+
+        public Wiimote Wiimote;
+
+        public int ID;
 
         /// <summary>
         /// Used to obtain mutual exlusion over Wiimote updates.
@@ -42,15 +44,14 @@ namespace WiiTUIO.Provider
 
         private WiimoteLib.Point lastpoint;
 
-        public int ID;
-
         /// <summary>
         /// The screen size that we use for normalising coordinates.
         /// </summary>
         public Vector ScreenSize { get; protected set; }
 
-        public WiimoteControl(int id)
+        public WiimoteControl(int id, Wiimote wiimote)
         {
+            this.Wiimote = wiimote;
             this.ID = id;
 
             lastpoint = new WiimoteLib.Point();
