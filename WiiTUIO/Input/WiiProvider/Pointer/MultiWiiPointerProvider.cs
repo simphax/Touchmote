@@ -21,7 +21,7 @@ namespace WiiTUIO.Provider
     public class MultiWiiPointerProvider : IProvider
     {
         private double WIIMOTE_DISCONNECT_THRESHOLD = 2000; //If we haven't recieved input from a wiimote in 2 seconds we consider it disconnected.
-        private ulong OLD_FRAME_THRESHOLD = 200;
+        private ulong OLD_FRAME_THRESHOLD = 200; //Timeout for a previous frame from a Wiimote to be considered old, so we wont enable it when getting input from other wiimotes.
 
         private Mutex pDeviceMutex = new Mutex();
 
@@ -29,13 +29,12 @@ namespace WiiTUIO.Provider
 
         private Dictionary<string, WiimoteControl> pWiimoteMap = new Dictionary<string, WiimoteControl>();
 
-        private int nextWiimoteIndex = 1;
-
         private WiimoteCollection pWC;
 
         private UserControl settingsControl = null;
 
-        private bool changeSystemCursor = false;
+        private EventHandler<WiimoteChangedEventArgs> wiimoteChangedEventHandler;
+        private EventHandler<WiimoteExtensionChangedEventArgs> wiimoteExtensionChangedEventHandler;
 
         #region Properties and Constructor
         /// <summary>
@@ -44,26 +43,14 @@ namespace WiiTUIO.Provider
         private bool bRunning = false;
 
         /// <summary>
-        /// A queue for the frame of events.
-        /// </summary>
-        //private Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
-
-        /// <summary>
         /// An input classifier which we will use to organise points.
         /// </summary>
         public SpatioTemporalClassifier InputClassifier { get; protected set; }
-
-
 
         /// <summary>
         /// A property to determine if this input provider is running (and thus generating events).
         /// </summary>
         public bool IsRunning { get { return this.bRunning; } }
-
-        /// <summary>
-        /// Do we want to use the calibration transformation step when generating input.
-        /// </summary>
-        public bool TransformResults { get; set; }
 
         /// <summary>
         /// This defines an event which is raised when a new frame of touch events is prepared and ready to be dispatched by this provider.
@@ -75,7 +62,6 @@ namespace WiiTUIO.Provider
         /// An event which is fired when the battery state changes.
         /// </summary>
         public event Action<int> OnBatteryUpdate;
-
 
         public event Action<int,int> OnConnect;
         public event Action<int,int> OnDisconnect;
@@ -116,6 +102,10 @@ namespace WiiTUIO.Provider
 
             this.pWC = new WiimoteCollection();
 
+            this.wiimoteChangedEventHandler = new EventHandler<WiimoteChangedEventArgs>(handleWiimoteChanged);
+            this.wiimoteExtensionChangedEventHandler = new EventHandler<WiimoteExtensionChangedEventArgs>(handleWiimoteExtensionChanged);
+
+
             /*
             this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
             this.showPointer = Settings.Default.pointer_moveCursor;
@@ -139,47 +129,12 @@ namespace WiiTUIO.Provider
         /// </summary>
         public void start()
         {
-            // Ensure we cannot process any events.
-            //pDeviceMutex.WaitOne();
-
-            this.pWC.FindAllWiimotes();
-
             wiimoteConnectorThread = new Thread(new ThreadStart(wiimoteConnectorThreadWorker));
             wiimoteConnectorThread.Start();
-
-            // Create a new reference to a wiimote device.
-            /*
-            Exception pError = null;
-            
-            if (!this.initialiseWiimoteConnection(out pError))
-            {
-                //pDeviceMutex.ReleaseMutex();
-                throw new Exception("Could not establish connection to Wiimote: " + pError.Message, pError);
-            }
-            */
 
             // Set the running flag.
             this.bRunning = true;
 
-            /*
-            this.changeSystemCursor = Settings.Default.pointer_changeSystemCursor;
-
-            if (this.changeSystemCursor)
-            {
-                try
-                {
-                    MouseSimulator.SetSystemCursor(cursor);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.ToString());
-                }
-            }
-            */
-
-
-            // Release processing.
-            //pDeviceMutex.ReleaseMutex();
         }
 
         private void wiimoteConnectorThreadWorker()
@@ -203,16 +158,17 @@ namespace WiiTUIO.Provider
             // Set the running flag.
             this.bRunning = false;
 
-            if (this.wiimoteConnectorThread != null)
+            /*
+            try
             {
                 this.wiimoteConnectorThread.Abort();
             }
-            
+            catch { }
+            */
+
             this.teardownWiimoteConnections();
 
             this.pWC.Clear();
-
-            this.nextWiimoteIndex = 1;
 
         }
         #endregion
@@ -228,7 +184,6 @@ namespace WiiTUIO.Provider
             // If we have an existing device, teardown the connection.
             //this.teardownWiimoteConnection();
 
-            pDeviceMutex.WaitOne();
             pErrorReport = null;
 
             this.pWC.Clear();
@@ -240,38 +195,44 @@ namespace WiiTUIO.Provider
                 {
                     if (!pWiimoteMap.Keys.Contains(pDevice.HIDDevicePath))
                     {
+                        Console.WriteLine("Trying to connect " + pDevice.HIDDevicePath);
                         // Try to establish a connection, enable the IR reader and flag some LEDs.
                         pDevice.Connect();
                         pDevice.SetReportType(InputReport.IRAccel, true);
+
                         pDevice.SetRumble(true);
-                        new Timer(stopRumble, pDevice, 80, 0); //Stop the rumble after 80ms
-                        pDevice.SetLEDs((this.nextWiimoteIndex - 1) % 4 + 1);
 
-                        WiimoteControl control = new WiimoteControl(this.nextWiimoteIndex);
+                        Thread stopRumbleThread = new Thread(stopRumble);
+                        stopRumbleThread.Start(pDevice);
 
+                        int id = this.getFirstFreeId();
+                        pDevice.SetLEDs((id - 1) % 4 + 1);
+
+                        WiimoteControl control = new WiimoteControl(id,pDevice);
+
+                        pDeviceMutex.WaitOne(); //Don't mess with the list of wiimotes if it is enumerating in an update
                         pWiimoteMap[pDevice.HIDDevicePath] = control;
+                        pDeviceMutex.ReleaseMutex();
 
                         // Hook up device event handlers.
-                        pDevice.WiimoteChanged += new EventHandler<WiimoteChangedEventArgs>(handleWiimoteChanged);
-                        pDevice.WiimoteExtensionChanged += new EventHandler<WiimoteExtensionChangedEventArgs>(handleWiimoteExtensionChanged);
+                        pDevice.WiimoteChanged += this.wiimoteChangedEventHandler;
+                        pDevice.WiimoteExtensionChanged += this.wiimoteExtensionChangedEventHandler;
 
-                        OnConnect(this.nextWiimoteIndex, this.pWiimoteMap.Count);
-
-                        this.nextWiimoteIndex = this.pWiimoteMap.Count + 1;
-                        
+                        OnConnect(id, this.pWiimoteMap.Count);
                     }
-                    else if (DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_THRESHOLD)
+                    else if (pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_THRESHOLD)
                     {
+                        Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
                         teardownWiimoteConnection(pDevice);
                     }
                 }
                 // If something went wrong - notify the user..
                 catch (Exception pError)
                 {
-
                     // Ensure we are ok.
                     try
                     {
+                        Console.WriteLine("Teardown "+ pDevice.HIDDevicePath +" because of " + pError.Message);
                         this.teardownWiimoteConnection(pDevice);
                     }
                     finally { }
@@ -284,11 +245,26 @@ namespace WiiTUIO.Provider
             }
             if(pErrorReport != null)
             {
-                pDeviceMutex.ReleaseMutex();
                 return false;
             }
-            pDeviceMutex.ReleaseMutex();
+            
             return true;
+        }
+
+        private int getFirstFreeId()
+        {
+            HashSet<int> usedIDs = new HashSet<int>();
+            foreach (WiimoteControl control in pWiimoteMap.Values)
+            {
+                usedIDs.Add(control.ID);
+            }
+
+            int id = 1;
+            while (usedIDs.Contains(id))
+            {
+                id++;
+            }
+            return id;
         }
 
         /// <summary>
@@ -296,11 +272,12 @@ namespace WiiTUIO.Provider
         /// </summary>
         private void teardownWiimoteConnections()
         {
-            if (pWC != null)
+            if (pWiimoteMap.Count > 0)
             {
-                foreach (Wiimote pDevice in pWC)
+                IEnumerable<WiimoteControl> controls = new Queue<WiimoteControl>(pWiimoteMap.Values);
+                foreach (WiimoteControl control in controls)
                 {
-                    teardownWiimoteConnection(pDevice);
+                    teardownWiimoteConnection(control.Wiimote);
                 }
             }
         }
@@ -310,6 +287,8 @@ namespace WiiTUIO.Provider
             if (pDevice != null)
             {
                 pDeviceMutex.WaitOne();
+                pDevice.WiimoteChanged -= this.wiimoteChangedEventHandler;
+                pDevice.WiimoteExtensionChanged -= this.wiimoteExtensionChangedEventHandler;
                 int wiimoteid;
                 if (pWiimoteMap.Keys.Contains(pDevice.HIDDevicePath))
                 {
@@ -320,14 +299,13 @@ namespace WiiTUIO.Provider
                 {
                     wiimoteid = this.pWiimoteMap.Count + 1;
                 }
-                this.nextWiimoteIndex = this.pWiimoteMap.Count + 1;
+                pDeviceMutex.ReleaseMutex();
 
                 pDevice.SetRumble(false);
 
                 // Close the connection and dispose of the device.
                 pDevice.Disconnect();
                 pDevice.Dispose();
-                pDeviceMutex.ReleaseMutex();
 
                 OnDisconnect(wiimoteid, this.pWiimoteMap.Count);
             }
@@ -336,22 +314,25 @@ namespace WiiTUIO.Provider
 
         private void stopRumble(Object device)
         {
+            Console.WriteLine("Starting stopRumble thread");
+            Thread.Sleep(80);
             Wiimote pDevice = (Wiimote)device;
             bool rumbleStatus = true;
-            while (rumbleStatus) //Sometimes the Wiimote does not disable the rumble on the first try
+            int retries = 0;
+            while (rumbleStatus && retries < 100) //Sometimes the Wiimote does not disable the rumble on the first try
             {
                 try {
                     if (pDevice != null)
                     {
                         pDevice.SetRumble(false);
-                        System.Threading.Thread.Sleep(30);
+                        Thread.Sleep(30);
                         rumbleStatus = pDevice.WiimoteState.Rumble;
+                        Console.WriteLine("Rumble status for " + pDevice.HIDDevicePath + " is " + rumbleStatus);
                     }
-                    else
-                    {
-                        rumbleStatus = false;
-                    }
-                } catch {}
+                } catch {
+                    rumbleStatus = true;
+                }
+                retries++;
             }
         }
 
@@ -391,15 +372,13 @@ namespace WiiTUIO.Provider
 
                     senderControl.handleWiimoteChanged(sender, e);
 
-                    senderControl.Handled = true;
-
                     if (senderControl.FrameQueue.Count > 0)
                     {
                         FrameEventArgs senderFrame = senderControl.FrameQueue.Dequeue();
 
                         Queue<WiiContact> allContacts = new Queue<WiiContact>(senderFrame.Contacts);
-                        
-                        foreach (WiimoteControl control in pWiimoteMap.Values) //Include the contacts for all Wiimotes, only send hover and move events for their contacts, using the last sent contact.
+
+                        foreach (WiimoteControl control in pWiimoteMap.Values) //Asynchronusly include contacts for all connected Wiimotes, send only hover and move events.
                         {
                             if (control != senderControl)
                             {
@@ -414,13 +393,11 @@ namespace WiiTUIO.Provider
                                         {
                                             if (contact.Type == ContactType.EndToHover)
                                             {
-                                                //Console.WriteLine("Convert entohover" + contact.ID);
                                                 WiiContact newContact = new WiiContact(contact.ID, ContactType.Hover, contact.Position, new Vector(Util.ScreenWidth, Util.ScreenHeight));
                                                 allContacts.Enqueue(newContact);
                                             }
                                             else if (contact.Type == ContactType.Start)
                                             {
-                                                //Console.WriteLine("Convert start" + contact.ID);
                                                 WiiContact newContact = new WiiContact(contact.ID, ContactType.Move, contact.Position, new Vector(Util.ScreenWidth, Util.ScreenHeight));
                                                 allContacts.Enqueue(newContact);
                                             }
@@ -429,7 +406,6 @@ namespace WiiTUIO.Provider
                                             }
                                             else //contact type was hover or move
                                             {
-                                                //Console.WriteLine("Add hover or move" + contact.ID);
                                                 allContacts.Enqueue(contact);
                                             }
                                         }
@@ -442,7 +418,7 @@ namespace WiiTUIO.Provider
 
                         this.OnNewFrame(this, newFrame);
                     }
-                    
+
                     /*
                     bool handledAll = false;
                     Queue<WiiContact> allContacts = new Queue<WiiContact>(2);

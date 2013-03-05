@@ -198,30 +198,33 @@ namespace WiiTUIO
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-                this.bConnected = false;
-
-                tbConnected.Visibility = Visibility.Hidden;
-                if (tryingToConnect)
+                if (totalWiimotes == 0)
                 {
-                    tbWaiting.Visibility = Visibility.Visible;
-                    tbConnect.Visibility = Visibility.Hidden;
-                }
-                else if(!Settings.Default.pairedOnce)
-                {
-                    tbWaiting.Visibility = Visibility.Hidden;
-                    tbConnect.Visibility = Visibility.Hidden;
-                    tbPair.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    tbWaiting.Visibility = Visibility.Hidden;
-                    tbConnect.Visibility = Visibility.Visible;
-                    tbPair.Visibility = Visibility.Hidden;
-                }
+                    this.bConnected = false;
+                    
+                    tbConnected.Visibility = Visibility.Hidden;
+                    if (tryingToConnect)
+                    {
+                        tbWaiting.Visibility = Visibility.Visible;
+                        tbConnect.Visibility = Visibility.Hidden;
+                    }
+                    else if(!Settings.Default.pairedOnce)
+                    {
+                        tbWaiting.Visibility = Visibility.Hidden;
+                        tbConnect.Visibility = Visibility.Hidden;
+                        tbPair.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        tbWaiting.Visibility = Visibility.Hidden;
+                        tbConnect.Visibility = Visibility.Visible;
+                        tbPair.Visibility = Visibility.Hidden;
+                    }
 
-                batteryLabel.Content = "0%";
+                    batteryLabel.Content = "0%";
 
-                disconnectProviderHandler();
+                    disconnectProviderHandler();
+                }
 
             }), null);
         }
