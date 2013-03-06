@@ -1,0 +1,15 @@
+{
+  "1": {
+    "Pointer": "GamingMouse",
+    "A": "MouseRight",
+    "B": "MouseLeft",
+    "Left": "VK_A",
+    "Right": "VK_D",
+    "Up": "VK_W",
+    "Down": "VK_S",
+    "One": "VK_F",
+    "Two": "VK_R",
+    "Plus": "RETURN",
+    "Minus": "ESCAPE"
+  }
+}

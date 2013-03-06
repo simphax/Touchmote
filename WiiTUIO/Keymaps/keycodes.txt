@@ -2,6 +2,7 @@
 ------------
 TOUCH
 MOUSE
+GAMINGMOUSE
 
 Special buttons
 ------------

@@ -7,6 +7,10 @@
     {
       "Name": "Super Smash Land",
       "Keymap": "supersmashland.json"
+    },
+    {
+      "Name": "iw3",
+      "Keymap": "cod4.json"
     }
   ],
   "Default": "default.json"
