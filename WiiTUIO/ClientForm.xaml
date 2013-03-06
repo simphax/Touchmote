@@ -139,9 +139,9 @@
                 <Canvas.Effect>
                     <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
                 </Canvas.Effect>
-                <Label Name="versionLabel" Content="Touchmote v1.0b6" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
+                <Label Name="versionLabel" Content="Touchmote v1.0b7" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
                 <TextBlock Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="48" Height="54" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
-                        Touchmote provides a way for a Wiimote to communicate with Windows as a touch device
+                        Touchmote provides a way for one or several Wiimotes to communicate with Windows as a multi-touch device.
                 </TextBlock>
                 <TextBlock Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="92" Height="27" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">        
                         Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for license and credits
