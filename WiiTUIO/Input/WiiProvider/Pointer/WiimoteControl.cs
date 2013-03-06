@@ -42,6 +42,8 @@ namespace WiiTUIO.Provider
 
         private bool mouseMode = false;
 
+        private bool gamingMouse = false;
+
         private WiimoteLib.Point lastpoint;
 
         /// <summary>
@@ -68,6 +70,8 @@ namespace WiiTUIO.Provider
             this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
             this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
 
+            this.WiiKeyMap_ConfigChanged(new WiiKeyMapConfigChangedEvent(this.keyMapper.KeyMap.Pointer));
+
             this.inputSimulator = new InputSimulator();
             this.screenPositionCalculator = new ScreenPositionCalculator();
         }
@@ -85,6 +89,14 @@ namespace WiiTUIO.Provider
             else if (evt.NewPointer.ToLower() == "mouse")
             {
                 this.mouseMode = true;
+                this.gamingMouse = false;
+                this.duoTouch.disableHover();
+                MouseSimulator.WakeCursor();
+            }
+            else if (evt.NewPointer.ToLower() == "gamingmouse")
+            {
+                this.mouseMode = true;
+                this.gamingMouse = true;
                 this.duoTouch.disableHover();
                 MouseSimulator.WakeCursor();
             }
@@ -126,6 +138,9 @@ namespace WiiTUIO.Provider
             }
         }
 
+        double deltaXBuffer = 0.0;
+        double deltaYBuffer = 0.0;
+
         public void handleWiimoteChanged(object sender, WiimoteChangedEventArgs e)
         {
             // Obtain mutual excluseion.
@@ -149,20 +164,6 @@ namespace WiiTUIO.Provider
                 pointerOutOfReach = true;
             }
 
-            //Temporary solution to the "diamond cursor" problem.
-            /*
-            if (this.changeSystemCursor)
-            {
-                try
-                {
-                    MouseSimulator.RefreshMainCursor();
-                }
-                catch (Exception error)
-                {
-                    Console.WriteLine(error.ToString());
-                }
-            }
-            */
             WiimoteState ws = e.WiimoteState;
 
             keyMapper.processButtonState(ws.ButtonState);
@@ -202,9 +203,33 @@ namespace WiiTUIO.Provider
 
                 if (mouseMode && !this.touchDownMaster && !this.touchDownSlave && this.showPointer) //Mouse mode
                 {
-                    this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * newpoint.X) / this.ScreenSize.X, (65535 * newpoint.Y) / this.ScreenSize.Y);
+                    if (gamingMouse)
+                    {
+                        double deltaX = (newpoint.X - (this.ScreenSize.X / 2)) / this.ScreenSize.X;
+                        double deltaY = (newpoint.Y - (this.ScreenSize.Y / 2)) / this.ScreenSize.Y;
+                        deltaX = Math.Sign(deltaX)*deltaX * deltaX * 50;
+                        deltaY = Math.Sign(deltaY) * deltaY * deltaY * 50;
+                        deltaXBuffer += deltaX % 1;
+                        deltaYBuffer += deltaY % 1;//Math.Sign(deltaY) * deltaY * deltaY / 50000.0;
+                        int roundDeltaX = (int)deltaX;
+                        int roundDeltaY = (int)deltaY;
+                        if (deltaXBuffer > 1 || deltaXBuffer < -1)
+                        {
+                            roundDeltaX += Math.Sign(deltaXBuffer);
+                            deltaXBuffer -= Math.Sign(deltaXBuffer);
+                        }
+                        if (deltaYBuffer > 1 || deltaYBuffer < -1)
+                        {
+                            roundDeltaY += Math.Sign(deltaYBuffer);
+                            deltaYBuffer -= Math.Sign(deltaYBuffer);
+                        }
+                        this.inputSimulator.Mouse.MoveMouseBy(roundDeltaX, roundDeltaY);
+                    }
+                    else
+                    {
+                        this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * newpoint.X) / this.ScreenSize.X, (65535 * newpoint.Y) / this.ScreenSize.Y);
+                    }
                     MouseSimulator.WakeCursor();
-                    //MouseSimulator.SetCursorPosition(newpoint.X, newpoint.Y);
                 }
             }
             //this.BatteryState = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
