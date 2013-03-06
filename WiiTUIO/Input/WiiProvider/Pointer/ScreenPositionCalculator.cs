@@ -22,19 +22,31 @@ namespace WiiTUIO.Provider
         private int maxHeight;
         private int SBPositionOffset;
 
+        private System.Drawing.Rectangle screenBounds;
+
         public ScreenPositionCalculator()
         {
-            minXPos = -(Util.ScreenWidth / 3);
-            maxXPos = Util.ScreenWidth + (Util.ScreenWidth / 3);
+            this.recalculateScreenBounds();
+        }
+
+        private void recalculateScreenBounds()
+        {
+            this.screenBounds = Util.ScreenBounds;
+            minXPos = -(screenBounds.Width / 3);
+            maxXPos = screenBounds.Width + (screenBounds.Width / 3);
             maxWidth = maxXPos - minXPos;
-            minYPos = -(Util.ScreenHeight / 2);
-            maxYPos = Util.ScreenHeight + (Util.ScreenHeight / 2);
+            minYPos = -(screenBounds.Height / 2);
+            maxYPos = screenBounds.Height + (screenBounds.Height / 2);
             maxHeight = maxYPos - minYPos;
-            SBPositionOffset = (Util.ScreenWidth / 4);
+            SBPositionOffset = (screenBounds.Width / 4);
         }
 
         public Point GetPosition(WiimoteChangedEventArgs args)
         {
+            if (!Util.ScreenBounds.Equals(screenBounds))
+            {
+                recalculateScreenBounds();
+            }
             int x;
             int y;
 

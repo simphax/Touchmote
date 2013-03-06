@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace WiiTUIO.Provider
 {
@@ -11,7 +11,7 @@ namespace WiiTUIO.Provider
     {
         private SmoothingBuffer smoothingBuffer;
 
-        private Vector screenSize;
+        public System.Drawing.Rectangle screenBounds;
 
         private bool stepIDs = false;
 
@@ -23,10 +23,10 @@ namespace WiiTUIO.Provider
         private WiiContact lastMasterContact;
         private WiiContact lastSlaveContact;
 
-        private Point masterPosition;
-        private Point slavePosition;
+        private System.Windows.Point masterPosition;
+        private System.Windows.Point slavePosition;
 
-        private Point midpoint;
+        private System.Windows.Point midpoint;
 
         private bool usingMidpoint = false;
 
@@ -42,7 +42,7 @@ namespace WiiTUIO.Provider
 
 
         private bool isFirstMasterContact = true;
-        private Point firstMasterContact;
+        private System.Windows.Point firstMasterContact;
         private bool masterHoldPosition = true;
         public double TouchHoldThreshold = Properties.Settings.Default.touch_touchTapThreshold;
 
@@ -50,12 +50,12 @@ namespace WiiTUIO.Provider
         public double EdgeHelperRelease = Properties.Settings.Default.touch_edgeGestureHelperRelease;
 
 
-        public DuoTouch(Vector screenSize, int smoothSize, ulong startId)
+        public DuoTouch(System.Drawing.Rectangle screenBounds, int smoothSize, ulong startId)
         {
             this.masterID = startId;
             this.slaveID = startId+1;
             this.startID = startId;
-            this.screenSize = screenSize;
+            this.screenBounds = screenBounds;
             if (smoothSize < 1)
             {
                 smoothSize = 1;
@@ -156,7 +156,7 @@ namespace WiiTUIO.Provider
                         {
                             this.masterPosition.Y = (this.firstMasterContact.Y + this.firstMasterContact.Y + this.masterPosition.Y) / 3;
                         }
-                        if (this.firstMasterContact.X > (this.screenSize.X - EdgeHelperMargins) && this.masterPosition.X > (this.screenSize.X - EdgeHelperRelease)) //Right
+                        if (this.firstMasterContact.X > (this.screenBounds.Width - EdgeHelperMargins) && this.masterPosition.X > (this.screenBounds.Width - EdgeHelperRelease)) //Right
                         {
                             this.masterPosition.Y = (this.firstMasterContact.Y + this.firstMasterContact.Y + this.masterPosition.Y) / 3;
                         }
@@ -164,14 +164,14 @@ namespace WiiTUIO.Provider
                         {
                             this.masterPosition.X = (this.firstMasterContact.X + this.firstMasterContact.X + this.masterPosition.X) / 3;
                         }
-                        if (this.firstMasterContact.Y > (this.screenSize.Y - EdgeHelperMargins) && this.masterPosition.Y > (this.screenSize.Y - EdgeHelperRelease)) //Bottom
+                        if (this.firstMasterContact.Y > (this.screenBounds.Height - EdgeHelperMargins) && this.masterPosition.Y > (this.screenBounds.Height - EdgeHelperRelease)) //Bottom
                         {
                             this.masterPosition.X = (this.firstMasterContact.X + this.firstMasterContact.X + this.masterPosition.X) / 3;
                         }
                     }
 
-                    smoothingBuffer.addValue(new Vector(masterPosition.X, masterPosition.Y));
-                    Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+                    smoothingBuffer.addValue(new System.Windows.Vector(masterPosition.X, masterPosition.Y));
+                    System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
                     this.masterPosition.X = smoothedVec.X;
                     this.masterPosition.Y = smoothedVec.Y;
 
@@ -210,14 +210,14 @@ namespace WiiTUIO.Provider
                 {
                     if (this.stepIDs && contactType == ContactType.EndToHover) //If we release slave touch before we release master touch we want to make sure Windows treats master as the main touch point again
                     {
-                        this.lastMasterContact = new WiiContact(this.masterID, ContactType.End, this.masterPosition, this.screenSize);
+                        this.lastMasterContact = new WiiContact(this.masterID, ContactType.End, this.masterPosition, new Vector(this.screenBounds.Width,this.screenBounds.Height));
                         this.masterID = (this.masterID - this.startID + 2) % 4 + this.startID;
                         this.slaveID = (this.slaveID - this.startID + 2) % 4 + this.startID;
                         this.stepIDs = false;
                     }
                     else
                     {
-                        this.lastMasterContact = new WiiContact(this.masterID, contactType, this.masterPosition, this.screenSize);
+                        this.lastMasterContact = new WiiContact(this.masterID, contactType, this.masterPosition, new Vector(this.screenBounds.Width, this.screenBounds.Height));
                     }
                     newFrame.Enqueue(this.lastMasterContact);
                 }
@@ -259,13 +259,13 @@ namespace WiiTUIO.Provider
                             this.slavePosition.Y = 0;
                         }
 
-                        if (this.slavePosition.X > this.screenSize.X)
+                        if (this.slavePosition.X > this.screenBounds.Width)
                         {
-                            this.slavePosition.X = this.screenSize.X-1;
+                            this.slavePosition.X = this.screenBounds.Width - 1;
                         }
-                        if (this.slavePosition.Y > this.screenSize.Y)
+                        if (this.slavePosition.Y > this.screenBounds.Height)
                         {
-                            this.slavePosition.Y = this.screenSize.Y-1;
+                            this.slavePosition.Y = this.screenBounds.Height - 1;
                         }
                     }
                     else
@@ -292,7 +292,7 @@ namespace WiiTUIO.Provider
 
                 if (!this.slaveEnded)
                 {
-                    this.lastSlaveContact = new WiiContact(this.slaveID, contactType, this.slavePosition, this.screenSize);
+                    this.lastSlaveContact = new WiiContact(this.slaveID, contactType, this.slavePosition, new Vector(this.screenBounds.Width, this.screenBounds.Height));
                     newFrame.Enqueue(this.lastSlaveContact);
 
                     if (contactType == ContactType.EndFromHover)
@@ -306,10 +306,6 @@ namespace WiiTUIO.Provider
                 }
 
             }
-
-
-            
-
 
             return newFrame;
         }

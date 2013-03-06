@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -46,10 +47,7 @@ namespace WiiTUIO.Provider
 
         private WiimoteLib.Point lastpoint;
 
-        /// <summary>
-        /// The screen size that we use for normalising coordinates.
-        /// </summary>
-        public Vector ScreenSize { get; protected set; }
+        private Rectangle screenBounds;
 
         public WiimoteControl(int id, Wiimote wiimote)
         {
@@ -60,10 +58,10 @@ namespace WiiTUIO.Provider
             lastpoint.X = 0;
             lastpoint.Y = 0;
 
-            this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
+            this.screenBounds = Util.ScreenBounds;
 
             ulong touchStartID = (ulong)(id - 1) * 4 + 1; //This'll make sure the touch point IDs won't be the same. DuoTouch uses a span of 4 IDs.
-            this.duoTouch = new DuoTouch(this.ScreenSize, Properties.Settings.Default.pointer_smoothingSize, touchStartID);
+            this.duoTouch = new DuoTouch(this.screenBounds, Properties.Settings.Default.pointer_smoothingSize, touchStartID);
             this.keyMapper = new WiiKeyMapper(id);
 
             this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
@@ -146,6 +144,9 @@ namespace WiiTUIO.Provider
             // Obtain mutual excluseion.
             pDeviceMutex.WaitOne();
 
+            this.screenBounds = Util.ScreenBounds;
+            this.duoTouch.screenBounds = Util.ScreenBounds;
+
             LastWiimoteEventTime = DateTime.Now;
 
             Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
@@ -205,12 +206,12 @@ namespace WiiTUIO.Provider
                 {
                     if (gamingMouse)
                     {
-                        double deltaX = (newpoint.X - (this.ScreenSize.X / 2)) / this.ScreenSize.X;
-                        double deltaY = (newpoint.Y - (this.ScreenSize.Y / 2)) / this.ScreenSize.Y;
-                        deltaX = Math.Sign(deltaX)*deltaX * deltaX * 50;
-                        deltaY = Math.Sign(deltaY) * deltaY * deltaY * 50;
+                        double deltaX = (newpoint.X - ((double)this.screenBounds.Width / 2.0)) / (double)this.screenBounds.Width;
+                        double deltaY = (newpoint.Y - ((double)this.screenBounds.Height / 2.0)) / (double)this.screenBounds.Height;
+                        deltaX = Math.Sign(deltaX) * deltaX * deltaX * 50;
+                        deltaY = Math.Sign(deltaY) * deltaY * deltaY * 50 * ((double)this.screenBounds.Width / (double)this.screenBounds.Height);
                         deltaXBuffer += deltaX % 1;
-                        deltaYBuffer += deltaY % 1;//Math.Sign(deltaY) * deltaY * deltaY / 50000.0;
+                        deltaYBuffer += deltaY % 1;
                         int roundDeltaX = (int)deltaX;
                         int roundDeltaY = (int)deltaY;
                         if (deltaXBuffer > 1 || deltaXBuffer < -1)
@@ -227,7 +228,7 @@ namespace WiiTUIO.Provider
                     }
                     else
                     {
-                        this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * newpoint.X) / this.ScreenSize.X, (65535 * newpoint.Y) / this.ScreenSize.Y);
+                        this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * newpoint.X) / this.screenBounds.Width, (65535 * newpoint.Y) / this.screenBounds.Height);
                     }
                     MouseSimulator.WakeCursor();
                 }

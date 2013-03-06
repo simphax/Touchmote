@@ -1,27 +1,24 @@
 ﻿using System.Windows.Forms;
 using System;
+using System.Drawing;
 
 namespace WiiTUIO.Provider
 {
     public static class Util
     {
 
-        private static int savedScreenWidth = 0;
-
-        private static int savedScreenHeight = 0;
+        public static Rectangle ScreenBounds
+        {
+            get
+            {
+                return Screen.PrimaryScreen.Bounds;
+            }
+        }
 
         public static int ScreenWidth
         {
             get {
-                if (savedScreenWidth > 0)
-                {
-                    return savedScreenWidth;
-                }
-                else
-                {
-                    savedScreenWidth = Screen.PrimaryScreen.Bounds.Width;
-                    return savedScreenWidth;
-                }
+                return Screen.PrimaryScreen.Bounds.Width;
             }
         }
 
@@ -29,15 +26,7 @@ namespace WiiTUIO.Provider
         {
             get
             {
-                if (savedScreenHeight > 0)
-                {
-                    return savedScreenHeight;
-                }
-                else
-                {
-                    savedScreenHeight = Screen.PrimaryScreen.Bounds.Height;
-                    return savedScreenHeight;
-                }
+                return Screen.PrimaryScreen.Bounds.Height;
             }
         }
 
