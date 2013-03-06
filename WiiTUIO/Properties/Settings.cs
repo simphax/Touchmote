@@ -103,7 +103,51 @@ namespace WiiTUIO.Properties
                 OnPropertyChanged("pointer_sensorBarPos");
             }
         }
-        
+
+        private int _pointer_smoothingSize = 3;
+        public int pointer_smoothingSize
+        {
+            get { return _pointer_smoothingSize; }
+            set
+            {
+                _pointer_smoothingSize = value;
+                OnPropertyChanged("pointer_smoothingSize");
+            }
+        }
+
+        private int _touch_touchTapThreshold = 30;
+        public int touch_touchTapThreshold
+        {
+            get { return _touch_touchTapThreshold; }
+            set
+            {
+                _touch_touchTapThreshold = value;
+                OnPropertyChanged("pointer_smoothingSize");
+            }
+        }
+
+        private int _touch_edgeGestureHelperMargins = 30;
+        public int touch_edgeGestureHelperMargins
+        {
+            get { return _touch_edgeGestureHelperMargins; }
+            set
+            {
+                _touch_edgeGestureHelperMargins = value;
+                OnPropertyChanged("pointer_smoothingSize");
+            }
+        }
+
+        private int _touch_edgeGestureHelperRelease = 60;
+        public int touch_edgeGestureHelperRelease
+        {
+            get { return _touch_edgeGestureHelperRelease; }
+            set
+            {
+                _touch_edgeGestureHelperRelease = value;
+                OnPropertyChanged("pointer_smoothingSize");
+            }
+        }
+      
         private static string SETTINGS_FILENAME = "settings.json";
 
         private static Settings defaultInstance;

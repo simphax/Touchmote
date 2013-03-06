@@ -63,7 +63,7 @@ namespace WiiTUIO.Provider
             this.ScreenSize = new Vector(Util.ScreenWidth, Util.ScreenHeight);
 
             ulong touchStartID = (ulong)(id - 1) * 4 + 1; //This'll make sure the touch point IDs won't be the same. DuoTouch uses a span of 4 IDs.
-            this.duoTouch = new DuoTouch(this.ScreenSize, 3, touchStartID);
+            this.duoTouch = new DuoTouch(this.ScreenSize, Properties.Settings.Default.pointer_smoothingSize, touchStartID);
             this.keyMapper = new WiiKeyMapper(id);
 
             this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;

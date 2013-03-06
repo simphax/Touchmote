@@ -44,10 +44,10 @@ namespace WiiTUIO.Provider
         private bool isFirstMasterContact = true;
         private Point firstMasterContact;
         private bool masterHoldPosition = true;
-        public double TouchHoldThreshold = 30.0;
+        public double TouchHoldThreshold = Properties.Settings.Default.touch_touchTapThreshold;
 
-        public double EdgeHelperMargins = 30.0;
-        public double EdgeHelperRelease = 60.0;
+        public double EdgeHelperMargins = Properties.Settings.Default.touch_edgeGestureHelperMargins;
+        public double EdgeHelperRelease = Properties.Settings.Default.touch_edgeGestureHelperRelease;
 
 
         public DuoTouch(Vector screenSize, int smoothSize, ulong startId)
@@ -56,6 +56,10 @@ namespace WiiTUIO.Provider
             this.slaveID = startId+1;
             this.startID = startId;
             this.screenSize = screenSize;
+            if (smoothSize < 1)
+            {
+                smoothSize = 1;
+            }
             this.smoothingBuffer = new SmoothingBuffer(smoothSize);
         }
 
