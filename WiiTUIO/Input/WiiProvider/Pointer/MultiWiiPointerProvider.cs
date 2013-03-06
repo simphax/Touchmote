@@ -187,7 +187,15 @@ namespace WiiTUIO.Provider
             pErrorReport = null;
 
             this.pWC.Clear();
-            this.pWC.FindAllWiimotes();
+            try
+            {
+                this.pWC.FindAllWiimotes();
+            }
+            catch (Exception e)
+            {
+                pErrorReport = e;
+                return false;
+            }
 
             foreach (Wiimote pDevice in pWC)
             {
