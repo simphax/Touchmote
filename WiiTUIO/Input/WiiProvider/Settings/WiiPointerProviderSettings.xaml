@@ -11,7 +11,7 @@
             <ComboBoxItem Name="cbiTop">Top</ComboBoxItem>
             <ComboBoxItem Name="cbiBottom">Bottom</ComboBoxItem>
         </ComboBox>
-        <Label Content="Pointer Settings" HorizontalAlignment="Left" Height="45" Margin="10,10,0,0" VerticalAlignment="Top" Width="180" FontSize="20" Foreground="Black" FontFamily="Segoe UI Light"/>
+        <Label Content="Pointer settings"  Margin="10,10,10,109" FontFamily="Segoe UI Light" FontSize="18"/>
 
     </Grid>
 </UserControl>

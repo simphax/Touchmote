@@ -43,7 +43,7 @@
             <TextBlock Name="tbConnected" Visibility="Collapsed" Canvas.Left="15" Canvas.Top="97" FontSize="36" FontFamily="Segoe UI Light" Foreground="#FF8BCB30">                                
                         <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="Resources/close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Connected
             </TextBlock>
-            <Label Name="batteryLabel" Content="0%" Canvas.Left="177" Canvas.Top="93" FontSize="36" HorizontalContentAlignment="Right" FontFamily="Segoe UI Light" Width="143"/>
+            <Label Name="batteryLabel" Visibility="Collapsed" Content="0%" Canvas.Left="177" Canvas.Top="93" FontSize="36" HorizontalContentAlignment="Right" FontFamily="Segoe UI Light" Width="143"/>
             <Label Content="Mode" Canvas.Left="15" Canvas.Top="59" FontFamily="Segoe UI Semilight"/>
             <Image MouseLeftButtonUp="InfoImg_MouseUp" Height="16" Canvas.Left="282" Canvas.Top="10" Width="16" Source="Resources/info-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
             <Image MouseLeftButtonUp="ConfigImg_MouseUp" Height="16" Canvas.Left="305" Canvas.Top="10" Width="16" Source="Resources/config-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
@@ -143,8 +143,8 @@
                 <TextBlock Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="48" Height="54" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
                         Touchmote provides a way for one or several Wiimotes to communicate with Windows as a multi-touch device.
                 </TextBlock>
-                <TextBlock Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="92" Height="27" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">        
-                        Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for license and credits
+                <TextBlock Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="98" Height="27" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">        
+                        Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for more information.
                 </TextBlock>
             </Canvas>
             
