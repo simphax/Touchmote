@@ -186,70 +186,69 @@ namespace WiiTUIO.Provider
 
             pErrorReport = null;
 
-            this.pWC.Clear();
             try
             {
+                this.pWC.Clear();
                 this.pWC.FindAllWiimotes();
+                
+                foreach (Wiimote pDevice in pWC)
+                {
+                    try
+                    {
+                        if (!pWiimoteMap.Keys.Contains(pDevice.HIDDevicePath))
+                        {
+                            Console.WriteLine("Trying to connect " + pDevice.HIDDevicePath);
+                            // Try to establish a connection, enable the IR reader and flag some LEDs.
+                            pDevice.Connect();
+                            pDevice.SetReportType(InputReport.IRAccel, true);
+
+                            pDevice.SetRumble(true);
+
+                            Thread stopRumbleThread = new Thread(stopRumble);
+                            stopRumbleThread.Start(pDevice);
+
+                            int id = this.getFirstFreeId();
+                            pDevice.SetLEDs((id - 1) % 4 + 1);
+
+                            WiimoteControl control = new WiimoteControl(id,pDevice);
+
+                            pDeviceMutex.WaitOne(); //Don't mess with the list of wiimotes if it is enumerating in an update
+                            pWiimoteMap[pDevice.HIDDevicePath] = control;
+                            pDeviceMutex.ReleaseMutex();
+
+                            // Hook up device event handlers.
+                            pDevice.WiimoteChanged += this.wiimoteChangedEventHandler;
+                            pDevice.WiimoteExtensionChanged += this.wiimoteExtensionChangedEventHandler;
+
+                            OnConnect(id, this.pWiimoteMap.Count);
+                        }
+                        else if (pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_THRESHOLD)
+                        {
+                            Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
+                            teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
+                        }
+                    }
+                    // If something went wrong - notify the user..
+                    catch (Exception pError)
+                    {
+                        // Ensure we are ok.
+                        try
+                        {
+                            Console.WriteLine("Teardown "+ pDevice.HIDDevicePath +" because of " + pError.Message);
+                            this.teardownWiimoteConnection(pDevice);
+                        }
+                        finally { }
+                        // Say we screwed up.
+                        pErrorReport = pError;
+                        //throw new Exception("Error establishing connection: " + , pError);
+                    
+                    }
+                
+                }
             }
             catch (Exception e)
             {
                 pErrorReport = e;
-                return false;
-            }
-
-            foreach (Wiimote pDevice in pWC)
-            {
-                try
-                {
-                    if (!pWiimoteMap.Keys.Contains(pDevice.HIDDevicePath))
-                    {
-                        Console.WriteLine("Trying to connect " + pDevice.HIDDevicePath);
-                        // Try to establish a connection, enable the IR reader and flag some LEDs.
-                        pDevice.Connect();
-                        pDevice.SetReportType(InputReport.IRAccel, true);
-
-                        pDevice.SetRumble(true);
-
-                        Thread stopRumbleThread = new Thread(stopRumble);
-                        stopRumbleThread.Start(pDevice);
-
-                        int id = this.getFirstFreeId();
-                        pDevice.SetLEDs((id - 1) % 4 + 1);
-
-                        WiimoteControl control = new WiimoteControl(id,pDevice);
-
-                        pDeviceMutex.WaitOne(); //Don't mess with the list of wiimotes if it is enumerating in an update
-                        pWiimoteMap[pDevice.HIDDevicePath] = control;
-                        pDeviceMutex.ReleaseMutex();
-
-                        // Hook up device event handlers.
-                        pDevice.WiimoteChanged += this.wiimoteChangedEventHandler;
-                        pDevice.WiimoteExtensionChanged += this.wiimoteExtensionChangedEventHandler;
-
-                        OnConnect(id, this.pWiimoteMap.Count);
-                    }
-                    else if (pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_THRESHOLD)
-                    {
-                        Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
-                        teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
-                    }
-                }
-                // If something went wrong - notify the user..
-                catch (Exception pError)
-                {
-                    // Ensure we are ok.
-                    try
-                    {
-                        Console.WriteLine("Teardown "+ pDevice.HIDDevicePath +" because of " + pError.Message);
-                        this.teardownWiimoteConnection(pDevice);
-                    }
-                    finally { }
-                    // Say we screwed up.
-                    pErrorReport = pError;
-                    //throw new Exception("Error establishing connection: " + , pError);
-                    
-                }
-                
             }
             if(pErrorReport != null)
             {
