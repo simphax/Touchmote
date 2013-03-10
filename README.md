@@ -43,6 +43,14 @@ WPFNotifyIcon:		http://www.hardcodet.net/projects/wpf-notifyicon<br />
 
 Release History
 ==============
+**v1.0 beta 7**<br />
+- Added ability to connect several Wiimotes.
+- Enabled individual keymap settings for each Wiimote.
+- Added GameMouse pointer mode through keymap setting.
+- Moved settings file into the application folder.
+- Fixed 64 bit installer default install folder.
+- Fixed support for MultiTouchVista drivers (for Windows 7 or lower)
+
 **v1.0 beta 6**<br />
 - Added support for new Wiimotes (RVL-CNT-01-TR)
 - Added option to specify Sensor Bar position
