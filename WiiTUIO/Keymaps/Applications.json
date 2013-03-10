@@ -10,7 +10,7 @@
     },
     {
       "Name": "iw3",
-      "Keymap": "cod4.json"
+      "Keymap": "fps.json"
     }
   ],
   "Default": "default.json"

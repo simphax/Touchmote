@@ -571,8 +571,8 @@ namespace WiiTUIO
                     
                 }
                 catch { }
-
-                // Report the error.
+                Console.WriteLine(pError.Message);
+                // Report the error.cr
                 showMessage(pError.Message, MessageType.Error);
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -795,6 +795,7 @@ namespace WiiTUIO
             this.pairProgress.Visibility = Visibility.Visible;
             }), null);
             Thread thread = new Thread(new ThreadStart(wiiPairThreadWorker));
+            thread.Priority = ThreadPriority.BelowNormal;
             thread.Start();
         }
 
@@ -816,6 +817,11 @@ namespace WiiTUIO
             if (report.removeMode)
             {
                 this.wiiPairRunning = true;
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    this.imgClosePairCheck.Visibility = Visibility.Hidden;
+                    this.imgClosePairClose.Visibility = Visibility.Visible;
+                }), null);
                 wiiPair.start(false); //Run the actual pairing after removing all previous connected devices.
             }
             else if (report.numberPaired > 0)
@@ -872,6 +878,14 @@ namespace WiiTUIO
                         }), null);
                     }
                 }
+            }
+            else
+            {
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    this.imgClosePairCheck.Visibility = Visibility.Hidden;
+                    this.imgClosePairClose.Visibility = Visibility.Visible;
+                }), null);
             }
         }
 

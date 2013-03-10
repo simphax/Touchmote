@@ -129,12 +129,12 @@ namespace WiiTUIO.Provider
         /// </summary>
         public void start()
         {
-            wiimoteConnectorThread = new Thread(new ThreadStart(wiimoteConnectorThreadWorker));
-            wiimoteConnectorThread.Start();
-
             // Set the running flag.
             this.bRunning = true;
-
+            Console.WriteLine("Starting wiimoteConnectorThread");
+            wiimoteConnectorThread = new Thread(new ThreadStart(wiimoteConnectorThreadWorker));
+            wiimoteConnectorThread.Priority = ThreadPriority.BelowNormal;
+            wiimoteConnectorThread.Start();
         }
 
         private void wiimoteConnectorThreadWorker()
@@ -148,6 +148,7 @@ namespace WiiTUIO.Provider
                 }
                 Thread.Sleep(2000);
             }
+            Console.WriteLine("Exiting wiimoteConnectorThread");
         }
 
         /// <summary>
@@ -286,6 +287,10 @@ namespace WiiTUIO.Provider
                 {
                     teardownWiimoteConnection(control.Wiimote);
                 }
+            }
+            else
+            {
+                OnDisconnect(0, 0);
             }
         }
 

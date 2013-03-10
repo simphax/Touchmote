@@ -103,7 +103,7 @@
                     <Label Name="pairingTitle" Content="Pairing Wiimote" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
                     <Image Name="imgClosePairCheck" Visibility="Collapsed" MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="250" Canvas.Top="12" Width="24" Source="Resources/check-icon.png" Opacity="0.6" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
                     <Image Name="imgClosePairClose" MouseLeftButtonDown="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="250" Canvas.Top="12" Width="24" Source="Resources/close-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
-                    <ProgressBar Name="pairProgress" Height="4" Canvas.Left="0" Canvas.Top="47" Width="290" IsIndeterminate="True" RenderTransformOrigin="0.5,0.5" Foreground="#FF2096CD" BorderBrush="#FFF5F1F1" Background="#FFF7F7F7">
+                    <ProgressBar Name="pairProgress" Height="4" Canvas.Left="0" Canvas.Top="47" Width="286" IsIndeterminate="True" RenderTransformOrigin="0.5,0.5" Foreground="#FF2096CD" BorderBrush="#FFF5F1F1" Background="#FFF7F7F7">
                         <ProgressBar.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform ScaleY="-1"/>
