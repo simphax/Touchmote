@@ -43,6 +43,7 @@ namespace WiiTUIO
             this.running = true;
 
             Thread thread = new Thread(ThreadWorker);
+            thread.Priority = ThreadPriority.BelowNormal;
             thread.Start();
         }
 
