@@ -59,12 +59,12 @@ namespace WiiTUIO.Provider
             for(int i=0;i<irState.IRSensors.Count() && !foundMidpoint;i++)//IRSensor sensor in irState.IRSensors)
             {
                 IRSensor sensor = irState.IRSensors[i];
-                if (sensor.Found && sensor.Size > 0)
+                if (sensor.Found)
                 {
                     for (int j = i + 1; j < irState.IRSensors.Count() && !foundMidpoint; j++)
                     {
                         IRSensor sensor2 = irState.IRSensors[j];
-                        if (sensor2.Found && sensor2.Size > 0)
+                        if (sensor2.Found)
                         {
                             relativePosition.X = (sensor.Position.X + sensor2.Position.X) / 2.0f;
                             relativePosition.Y = (sensor.Position.Y + sensor2.Position.Y) / 2.0f;

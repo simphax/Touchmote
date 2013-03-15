@@ -256,13 +256,20 @@ namespace WiiTUIO.Provider
 
             this.KeyMap.JsonObj = union;
 
-            this.processButtonState(new ButtonState()); //Sets all buttons to "not pressed"
+            this.processWiimoteState(new WiimoteState()); //Sets all buttons to "not pressed"
 
             Console.WriteLine("Loaded new keymap on " + path);
         }
 
-        public void processButtonState(ButtonState buttonState)
+        public void processWiimoteState(WiimoteState wiimoteState)
         {
+            ButtonState buttonState = wiimoteState.ButtonState;
+
+            if(wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.Nunchuk)
+            {
+                this.KeyMap.updateNunchuck(wiimoteState.NunchukState);
+            }
+
             if (buttonState.A && !PressedButtons.A)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.A);
@@ -433,6 +440,13 @@ namespace WiiTUIO.Provider
         }
 
         private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave";
+
+        public void updateNunchuck(NunchukState nunchuk)
+        {
+            //this.inputSimulator.Mouse.MoveMouseBy((int)(nunchuk.Joystick.X*10),-(int)(nunchuk.Joystick.Y*10));
+            //Console.WriteLine("Nunchuk RAW : " + nunchuk.RawJoystick);
+            //Console.WriteLine("Nunchuk : " + nunchuk.Joystick);
+        }
 
         public void executeButtonUp(WiimoteButton button)
         {

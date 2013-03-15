@@ -506,7 +506,7 @@ namespace WiiTUIO.Provider
             */
             WiimoteState ws = e.WiimoteState;
 
-            keyMapper.processButtonState(ws.ButtonState);
+            keyMapper.processWiimoteState(ws);
 
             if (!pointerOutOfReach)
             {

@@ -144,94 +144,101 @@ namespace WiiTUIO.Provider
             // Obtain mutual excluseion.
             pDeviceMutex.WaitOne();
 
-            this.screenBounds = Util.ScreenBounds;
-            this.duoTouch.screenBounds = Util.ScreenBounds;
-
-            LastWiimoteEventTime = DateTime.Now;
-
-            Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
-            // Store the state.
-            WiimoteState pState = e.WiimoteState;
-
-            bool pointerOutOfReach = false;
-
-            WiimoteLib.Point newpoint = lastpoint;
-
-            newpoint = screenPositionCalculator.GetPosition(e);
-
-            if (newpoint.X < 0 || newpoint.Y < 0)
+            try
             {
-                newpoint = lastpoint;
-                pointerOutOfReach = true;
-            }
+                this.screenBounds = Util.ScreenBounds;
+                this.duoTouch.screenBounds = Util.ScreenBounds;
 
-            WiimoteState ws = e.WiimoteState;
+                LastWiimoteEventTime = DateTime.Now;
 
-            keyMapper.processButtonState(ws.ButtonState);
+                Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
+                // Store the state.
+                WiimoteState pState = e.WiimoteState;
 
-            if (!pointerOutOfReach)
-            {
+                bool pointerOutOfReach = false;
 
-                if (this.touchDownMaster)
+                WiimoteLib.Point newpoint = lastpoint;
+
+                newpoint = screenPositionCalculator.GetPosition(e);
+
+                if (newpoint.X < 0 || newpoint.Y < 0)
                 {
-                    duoTouch.setContactMaster();
-                }
-                else
-                {
-                    duoTouch.releaseContactMaster();
-                }
-
-                duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-
-                if (this.touchDownSlave)
-                {
-                    duoTouch.setSlavePosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-                    duoTouch.setContactSlave();
-                }
-                else
-                {
-                    duoTouch.releaseContactSlave();
+                    newpoint = lastpoint;
+                    pointerOutOfReach = true;
                 }
 
-                lastpoint = newpoint;
+                WiimoteState ws = e.WiimoteState;
 
-                lFrame = duoTouch.getFrame();
+                keyMapper.processWiimoteState(ws);
 
-                FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), lFrame);
-
-                this.FrameQueue.Enqueue(pFrame);
-                this.LastFrameEvent = pFrame;
-
-                if (mouseMode && !this.touchDownMaster && !this.touchDownSlave && this.showPointer) //Mouse mode
+                if (!pointerOutOfReach)
                 {
-                    if (gamingMouse)
+
+                    if (this.touchDownMaster)
                     {
-                        double deltaX = (newpoint.X - ((double)this.screenBounds.Width / 2.0)) / (double)this.screenBounds.Width;
-                        double deltaY = (newpoint.Y - ((double)this.screenBounds.Height / 2.0)) / (double)this.screenBounds.Height;
-                        deltaX = Math.Sign(deltaX) * deltaX * deltaX * 50;
-                        deltaY = Math.Sign(deltaY) * deltaY * deltaY * 50 * ((double)this.screenBounds.Width / (double)this.screenBounds.Height);
-                        deltaXBuffer += deltaX % 1;
-                        deltaYBuffer += deltaY % 1;
-                        int roundDeltaX = (int)deltaX;
-                        int roundDeltaY = (int)deltaY;
-                        if (deltaXBuffer > 1 || deltaXBuffer < -1)
-                        {
-                            roundDeltaX += Math.Sign(deltaXBuffer);
-                            deltaXBuffer -= Math.Sign(deltaXBuffer);
-                        }
-                        if (deltaYBuffer > 1 || deltaYBuffer < -1)
-                        {
-                            roundDeltaY += Math.Sign(deltaYBuffer);
-                            deltaYBuffer -= Math.Sign(deltaYBuffer);
-                        }
-                        this.inputSimulator.Mouse.MoveMouseBy(roundDeltaX, roundDeltaY);
+                        duoTouch.setContactMaster();
                     }
                     else
                     {
-                        this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * newpoint.X) / this.screenBounds.Width, (65535 * newpoint.Y) / this.screenBounds.Height);
+                        duoTouch.releaseContactMaster();
                     }
-                    MouseSimulator.WakeCursor();
+
+                    duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
+
+                    if (this.touchDownSlave)
+                    {
+                        duoTouch.setSlavePosition(new System.Windows.Point(newpoint.X, newpoint.Y));
+                        duoTouch.setContactSlave();
+                    }
+                    else
+                    {
+                        duoTouch.releaseContactSlave();
+                    }
+
+                    lastpoint = newpoint;
+
+                    lFrame = duoTouch.getFrame();
+
+                    FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), lFrame);
+
+                    this.FrameQueue.Enqueue(pFrame);
+                    this.LastFrameEvent = pFrame;
+
+                    if (mouseMode && !this.touchDownMaster && !this.touchDownSlave && this.showPointer) //Mouse mode
+                    {
+                        if (gamingMouse)
+                        {
+                            double deltaX = (newpoint.X - ((double)this.screenBounds.Width / 2.0)) / (double)this.screenBounds.Width;
+                            double deltaY = (newpoint.Y - ((double)this.screenBounds.Height / 2.0)) / (double)this.screenBounds.Height;
+                            deltaX = Math.Sign(deltaX) * deltaX * deltaX * 50;
+                            deltaY = Math.Sign(deltaY) * deltaY * deltaY * 50 * ((double)this.screenBounds.Width / (double)this.screenBounds.Height);
+                            deltaXBuffer += deltaX % 1;
+                            deltaYBuffer += deltaY % 1;
+                            int roundDeltaX = (int)deltaX;
+                            int roundDeltaY = (int)deltaY;
+                            if (deltaXBuffer > 1 || deltaXBuffer < -1)
+                            {
+                                roundDeltaX += Math.Sign(deltaXBuffer);
+                                deltaXBuffer -= Math.Sign(deltaXBuffer);
+                            }
+                            if (deltaYBuffer > 1 || deltaYBuffer < -1)
+                            {
+                                roundDeltaY += Math.Sign(deltaYBuffer);
+                                deltaYBuffer -= Math.Sign(deltaYBuffer);
+                            }
+                            this.inputSimulator.Mouse.MoveMouseBy(roundDeltaX, roundDeltaY);
+                        }
+                        else
+                        {
+                            this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * newpoint.X) / this.screenBounds.Width, (65535 * newpoint.Y) / this.screenBounds.Height);
+                        }
+                        MouseSimulator.WakeCursor();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error handling Wiimote in WiimoteControl: " + ex.Message);
             }
             //this.BatteryState = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
 
