@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using VMultiDllWrapper;
 using WiimoteLib;
 using WindowsInput;
 using WindowsInput.Native;
@@ -441,8 +442,40 @@ namespace WiiTUIO.Provider
 
         private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave";
 
+        private bool joystickConnected;
+
+        private VMulti vmultiDriver;
+
+        private bool checkJoystick()
+        {
+            if (joystickConnected)
+            {
+                return joystickConnected;
+            }
+            else
+            {
+                if (vmultiDriver == null)
+                {
+                    vmultiDriver = new VMulti();
+                }
+                else
+                {
+                    vmultiDriver.disconnect();
+                    joystickConnected = false;
+                }
+                return joystickConnected = vmultiDriver.connect();
+            }
+        }
+
         public void updateNunchuck(NunchukState nunchuk)
         {
+            if (checkJoystick())
+            {
+                JoystickButtonState buttonState = new JoystickButtonState();
+
+                JoystickReport report = new JoystickReport(buttonState,nunchuk.Joystick.X*2.0,nunchuk.Joystick.Y*2.0);
+                vmultiDriver.updateJoystick(report);
+            }
             //this.inputSimulator.Mouse.MoveMouseBy((int)(nunchuk.Joystick.X*10),-(int)(nunchuk.Joystick.Y*10));
             //Console.WriteLine("Nunchuk RAW : " + nunchuk.RawJoystick);
             //Console.WriteLine("Nunchuk : " + nunchuk.Joystick);
