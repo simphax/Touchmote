@@ -12,6 +12,7 @@ using System.Drawing;
 using WindowsInput;
 using WiiTUIO.Properties;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace WiiTUIO.Provider
 {
@@ -20,8 +21,12 @@ namespace WiiTUIO.Provider
     /// </summary>
     public class MultiWiiPointerProvider : IProvider
     {
-        private double WIIMOTE_DISCONNECT_THRESHOLD = 2000; //If we haven't recieved input from a wiimote in 2 seconds we consider it disconnected.
-        private ulong OLD_FRAME_THRESHOLD = 200; //Timeout for a previous frame from a Wiimote to be considered old, so we wont enable it when getting input from other wiimotes.
+        private int WIIMOTE_DISCONNECT_TIMEOUT = 2000; //If we haven't recieved input from a wiimote in 2 seconds we consider it disconnected.
+        private int WIIMOTE_SIGNIFICANT_DISCONNECT_TIMEOUT = Settings.Default.autoDisconnectTimeout; //If we haven't recieved significant input from a wiimote in 60 seconds we will put it to sleep
+        private ulong OLD_FRAME_TIMEOUT = 200; //Timeout for a previous frame from a Wiimote to be considered old, so we wont enable it when getting input from other wiimotes.
+        private int CONNECTION_THREAD_SLEEP = 2000;
+        private int POWER_SAVE_BLINK_DELAY = 10000;
+        private int blinkWait = 0;
 
         private Mutex pDeviceMutex = new Mutex();
 
@@ -146,7 +151,7 @@ namespace WiiTUIO.Provider
                 {
                     Console.WriteLine("Could not establish connection to a Wiimote: " + pError.Message, pError);
                 }
-                Thread.Sleep(2000);
+                Thread.Sleep(CONNECTION_THREAD_SLEEP);
             }
             Console.WriteLine("Exiting wiimoteConnectorThread");
         }
@@ -168,6 +173,10 @@ namespace WiiTUIO.Provider
             */
 
             this.teardownWiimoteConnections();
+            if (Settings.Default.completelyDisconnect)
+            {
+                this.completelyDisconnectAll();
+            }
 
             this.pWC.Clear();
 
@@ -223,10 +232,34 @@ namespace WiiTUIO.Provider
 
                             OnConnect(id, this.pWiimoteMap.Count);
                         }
-                        else if (pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_THRESHOLD)
+                        else if (!pWiimoteMap[pDevice.HIDDevicePath].InPowerSave 
+                            && pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null 
+                            && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_TIMEOUT)
                         {
                             Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
                             teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
+                        }
+                        else if (!pWiimoteMap[pDevice.HIDDevicePath].InPowerSave 
+                            && pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime != null 
+                            && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime).TotalMilliseconds > WIIMOTE_SIGNIFICANT_DISCONNECT_TIMEOUT)
+                        {
+                            Console.WriteLine("Put " + pDevice.HIDDevicePath + " to power saver mode because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime).TotalMilliseconds);
+                            //teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
+                            putToPowerSave(pWiimoteMap[pDevice.HIDDevicePath]);
+                        }
+                        else if (pWiimoteMap[pDevice.HIDDevicePath].InPowerSave)
+                        {
+                            if (CONNECTION_THREAD_SLEEP * blinkWait >= POWER_SAVE_BLINK_DELAY)
+                            {
+                                blinkWait = 0;
+                                pWiimoteMap[pDevice.HIDDevicePath].Wiimote.SetLEDs(true, true, true, true);
+                                Thread.Sleep(100);
+                                pWiimoteMap[pDevice.HIDDevicePath].Wiimote.SetLEDs(false, false, false, false);
+                            }
+                            else
+                            {
+                                blinkWait++;
+                            }
                         }
                     }
                     // If something went wrong - notify the user..
@@ -275,6 +308,41 @@ namespace WiiTUIO.Provider
             return id;
         }
 
+        private void putToPowerSave(WiimoteControl control)
+        {
+            if (Settings.Default.completelyDisconnect && this.pWiimoteMap.Count == 1) //If we want to completely disable the device
+            {
+                teardownWiimoteConnection(control.Wiimote);
+                completelyDisconnectAll();
+            }
+            else
+            {
+                control.InPowerSave = true;
+                control.Wiimote.SetReportType(InputReport.Buttons, false);
+                control.Wiimote.SetLEDs(false, false, false, false);
+                control.Wiimote.SetRumble(false);
+            }
+        }
+
+        private void wakeFromPowerSave(WiimoteControl control)
+        {
+            control.Wiimote.SetReportType(InputReport.IRExtensionAccel,true);
+            control.Wiimote.SetLEDs((control.ID - 1) % 4 + 1);
+            control.Wiimote.SetRumble(true);
+            Thread stopRumbleThread = new Thread(stopRumble);
+            stopRumbleThread.Start(control.Wiimote);
+
+            control.InPowerSave = false;
+        }
+
+        private void completelyDisconnectAll()
+        {
+            Launcher.Launch("Driver", "devcon", " disable \"BTHENUM*_VID*57e*_PID&0306*\"", new Action(delegate()
+            {
+                Launcher.Launch("Driver", "devcon", " enable \"BTHENUM*_VID*57e*_PID&0306*\"", null);
+            }));
+        }
+
         /// <summary>
         /// This method destroys our connection to our class-global Wiimote device.
         /// </summary>
@@ -313,7 +381,10 @@ namespace WiiTUIO.Provider
                 }
                 pDeviceMutex.ReleaseMutex();
 
+                pDevice.SetReportType(InputReport.Status, false);
+
                 pDevice.SetRumble(false);
+                pDevice.SetLEDs(true, true, true, true);
 
                 // Close the connection and dispose of the device.
                 pDevice.Disconnect();
@@ -396,7 +467,10 @@ namespace WiiTUIO.Provider
                     {
                         WiimoteControl senderControl = pWiimoteMap[((Wiimote)sender).HIDDevicePath];
 
-                        senderControl.handleWiimoteChanged(sender, e);
+                        if (senderControl.handleWiimoteChanged(sender, e) && senderControl.InPowerSave)
+                        {
+                            this.wakeFromPowerSave(senderControl);
+                        }
 
                         if (senderControl.FrameQueue.Count > 0)
                         {
@@ -412,7 +486,7 @@ namespace WiiTUIO.Provider
                                     if (lastFrame != null)
                                     {
                                         ulong timeDelta = ((ulong)Stopwatch.GetTimestamp() / 10000) - (lastFrame.Timestamp / 10000);
-                                        if (timeDelta < OLD_FRAME_THRESHOLD) //Happens when the pointer is out of reach
+                                        if (timeDelta < OLD_FRAME_TIMEOUT) //Happens when the pointer is out of reach
                                         {
                                             IEnumerable<WiiContact> contacts = lastFrame.Contacts;
                                             foreach (WiiContact contact in contacts)

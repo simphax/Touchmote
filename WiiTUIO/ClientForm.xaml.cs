@@ -592,8 +592,11 @@ namespace WiiTUIO
             }
 
             //this.pWiiProvider = null;
-            //Disable Wiimote in device manager to disconnect it from the computer (so it doesn't drain battery when not used)
-            Launcher.Launch("Driver", "devcon", " disable \"BTHENUM*_VID*57e*_PID&0306*\"", null);
+            if (Settings.Default.completelyDisconnect)
+            {
+                //Disable Wiimote in device manager to disconnect it from the computer (so it doesn't drain battery when not used)
+                Launcher.Launch("Driver", "devcon", " disable \"BTHENUM*_VID*57e*_PID&0306*\"", null);
+            }
         }
         #endregion
 

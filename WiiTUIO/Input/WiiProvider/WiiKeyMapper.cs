@@ -261,135 +261,161 @@ namespace WiiTUIO.Provider
             Console.WriteLine("Loaded new keymap on " + path);
         }
 
-        public void processWiimoteState(WiimoteState wiimoteState)
+        public bool processWiimoteState(WiimoteState wiimoteState) //Returns true if anything happened.
         {
             ButtonState buttonState = wiimoteState.ButtonState;
+            bool significant = false;
 
             if(wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.Nunchuk)
             {
                 this.KeyMap.updateNunchuck(wiimoteState.NunchukState);
+                significant = true;
             }
 
             if (buttonState.A && !PressedButtons.A)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.A);
                 PressedButtons.A = true;
+                significant = true;
             }
             else if (!buttonState.A && PressedButtons.A)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.A);
                 PressedButtons.A = false;
+                significant = true;
             }
 
             if (buttonState.B && !PressedButtons.B)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.B);
                 PressedButtons.B = true;
+                significant = true;
             }
             else if (!buttonState.B && PressedButtons.B)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.B);
                 PressedButtons.B = false;
+                significant = true;
             }
 
             if (buttonState.Up && !PressedButtons.Up)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.Up);
                 PressedButtons.Up = true;
+                significant = true;
             }
             else if (!buttonState.Up && PressedButtons.Up)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.Up);
                 PressedButtons.Up = false;
+                significant = true;
             }
 
             if (buttonState.Down && !PressedButtons.Down)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.Down);
                 PressedButtons.Down = true;
+                significant = true;
             }
             else if (!buttonState.Down && PressedButtons.Down)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.Down);
                 PressedButtons.Down = false;
+                significant = true;
             }
 
             if (buttonState.Left && !PressedButtons.Left)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.Left);
                 PressedButtons.Left = true;
+                significant = true;
             }
             else if (!buttonState.Left && PressedButtons.Left)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.Left);
                 PressedButtons.Left = false;
+                significant = true;
             }
 
             if (buttonState.Right && !PressedButtons.Right)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.Right);
                 PressedButtons.Right = true;
+                significant = true;
             }
             else if (!buttonState.Right && PressedButtons.Right)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.Right);
                 PressedButtons.Right = false;
+                significant = true;
             }
 
             if (buttonState.Home && !PressedButtons.Home)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.Home);
                 PressedButtons.Home = true;
+                significant = true;
             }
             else if (!buttonState.Home && PressedButtons.Home)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.Home);
                 PressedButtons.Home = false;
+                significant = true;
             }
 
             if (buttonState.Plus && !PressedButtons.Plus)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.Plus);
                 PressedButtons.Plus = true;
+                significant = true;
             }
             else if (PressedButtons.Plus && !buttonState.Plus)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.Plus);
                 PressedButtons.Plus = false;
+                significant = true;
             }
 
             if (buttonState.Minus && !PressedButtons.Minus)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.Minus);
                 PressedButtons.Minus = true;
+                significant = true;
             }
             else if (PressedButtons.Minus && !buttonState.Minus)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.Minus);
                 PressedButtons.Minus = false;
+                significant = true;
             }
 
             if (buttonState.One && !PressedButtons.One)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.One);
                 PressedButtons.One = true;
+                significant = true;
             }
             else if (PressedButtons.One && !buttonState.One)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.One);
                 PressedButtons.One = false;
+                significant = true;
             }
 
             if (buttonState.Two && !PressedButtons.Two)
             {
                 this.KeyMap.executeButtonDown(WiimoteButton.Two);
                 PressedButtons.Two = true;
+                significant = true;
             }
             else if (PressedButtons.Two && !buttonState.Two)
             {
                 this.KeyMap.executeButtonUp(WiimoteButton.Two);
                 PressedButtons.Two = false;
+                significant = true;
             }
+
+            return significant;
         }
     }
 

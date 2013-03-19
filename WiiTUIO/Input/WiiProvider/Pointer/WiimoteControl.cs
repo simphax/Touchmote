@@ -16,7 +16,9 @@ namespace WiiTUIO.Provider
     {
         public FrameEventArgs LastFrameEvent;
         public Queue<FrameEventArgs> FrameQueue = new Queue<FrameEventArgs>(1);
-        public DateTime LastWiimoteEventTime = DateTime.Now;
+        public DateTime LastWiimoteEventTime = DateTime.Now; //Last time recieved an update
+        public DateTime LastSignificantWiimoteEventTime = DateTime.Now; //Last time when updated the cursor or button config. Used for power saving features.
+        public bool InPowerSave = false;
 
         public Wiimote Wiimote;
 
@@ -48,6 +50,8 @@ namespace WiiTUIO.Provider
         private WiimoteLib.Point lastpoint;
 
         private Rectangle screenBounds;
+
+        private WiimoteState lastWiimoteState;
 
         public WiimoteControl(int id, Wiimote wiimote)
         {
@@ -139,17 +143,17 @@ namespace WiiTUIO.Provider
         double deltaXBuffer = 0.0;
         double deltaYBuffer = 0.0;
 
-        public void handleWiimoteChanged(object sender, WiimoteChangedEventArgs e)
+        public bool handleWiimoteChanged(object sender, WiimoteChangedEventArgs e)
         {
             // Obtain mutual excluseion.
             pDeviceMutex.WaitOne();
+
+            bool significant = false;
 
             try
             {
                 this.screenBounds = Util.ScreenBounds;
                 this.duoTouch.screenBounds = Util.ScreenBounds;
-
-                LastWiimoteEventTime = DateTime.Now;
 
                 Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
                 // Store the state.
@@ -168,12 +172,16 @@ namespace WiiTUIO.Provider
                 }
 
                 WiimoteState ws = e.WiimoteState;
+                if (keyMapper.processWiimoteState(ws))
+                {
+                    significant = true;
+                    this.lastWiimoteState = ws;
+                }
 
-                keyMapper.processWiimoteState(ws);
 
                 if (!pointerOutOfReach)
                 {
-
+                    significant = true;
                     if (this.touchDownMaster)
                     {
                         duoTouch.setContactMaster();
@@ -235,15 +243,23 @@ namespace WiiTUIO.Provider
                         MouseSimulator.WakeCursor();
                     }
                 }
+
+                LastWiimoteEventTime = DateTime.Now;
+                if (significant)
+                {
+                    this.LastSignificantWiimoteEventTime = DateTime.Now;
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error handling Wiimote in WiimoteControl: " + ex.Message);
+                return significant;
             }
             //this.BatteryState = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
 
             // Release mutual exclusion.
             pDeviceMutex.ReleaseMutex();
+            return significant;
         }
     }
 }

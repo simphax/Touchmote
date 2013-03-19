@@ -60,6 +60,28 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private bool _completelyDisconnect = true;
+        public bool completelyDisconnect
+        {
+            get { return _completelyDisconnect; }
+            set
+            {
+                _completelyDisconnect = value;
+                OnPropertyChanged("completelyDisconnect");
+            }
+        }
+
+        private int _autoDisconnectTimeout = 300000;
+        public int autoDisconnectTimeout
+        {
+            get { return _autoDisconnectTimeout; }
+            set
+            {
+                _autoDisconnectTimeout = value;
+                OnPropertyChanged("autoDisconnectTimeout");
+            }
+        }
+
         private string _tuio_IP = "127.0.0.1";
         public string tuio_IP
         {
@@ -122,7 +144,7 @@ namespace WiiTUIO.Properties
             set
             {
                 _touch_touchTapThreshold = value;
-                OnPropertyChanged("pointer_smoothingSize");
+                OnPropertyChanged("touch_touchTapThreshold");
             }
         }
 
@@ -133,7 +155,7 @@ namespace WiiTUIO.Properties
             set
             {
                 _touch_edgeGestureHelperMargins = value;
-                OnPropertyChanged("pointer_smoothingSize");
+                OnPropertyChanged("touch_edgeGestureHelperMargins");
             }
         }
 
@@ -144,7 +166,7 @@ namespace WiiTUIO.Properties
             set
             {
                 _touch_edgeGestureHelperRelease = value;
-                OnPropertyChanged("pointer_smoothingSize");
+                OnPropertyChanged("touch_edgeGestureHelperRelease");
             }
         }
       
