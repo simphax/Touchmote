@@ -154,7 +154,7 @@ namespace DriverInstall
                     procStartInfo.WorkingDirectory = System.AppDomain.CurrentDomain.BaseDirectory + "Driver\\";
 
                     procStartInfo.FileName = procStartInfo.WorkingDirectory + "devcon";
-                    procStartInfo.Arguments = "remove *vmulti*COL0"+i+"*";
+                    procStartInfo.Arguments = "disable *vmulti*COL0"+i+"*";
 
                     procStartInfo.RedirectStandardOutput = true;
                     procStartInfo.UseShellExecute = false;
