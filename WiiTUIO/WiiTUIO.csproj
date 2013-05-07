@@ -186,10 +186,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiimoteControl.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiiPointerProvider.cs" />
     <Compile Include="SystemProcessMonitor.cs" />
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Input\WiiProvider\Settings\Calibrate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -202,7 +209,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ClientForm.xaml">
+    <Page Include="MainTrayWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -210,8 +217,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ClientForm.xaml.cs">
-      <DependentUpon>ClientForm.xaml</DependentUpon>
+    <Compile Include="MainTrayWindow.xaml.cs">
+      <DependentUpon>MainTrayWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Input\WiiProvider\Settings\WiiPointerProviderSettings.xaml">
       <SubType>Designer</SubType>

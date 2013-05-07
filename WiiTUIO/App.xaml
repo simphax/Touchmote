@@ -12,7 +12,7 @@
                     </ContextMenu>
                 </tb:TaskbarIcon.ContextMenu>
                 <tb:TaskbarIcon.TrayPopup>
-                    <local:ClientForm />
+                    <local:MainTrayWindow />
                 </tb:TaskbarIcon.TrayPopup>
             </tb:TaskbarIcon>
         </ResourceDictionary>

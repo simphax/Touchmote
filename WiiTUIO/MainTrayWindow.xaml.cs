@@ -33,7 +33,7 @@ namespace WiiTUIO
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class ClientForm : UserControl, WiiCPP.WiiPairListener
+    public partial class MainTrayWindow : UserControl, WiiCPP.WiiPairListener
     {
         private bool providerHandlerConnected = false;
 
@@ -60,7 +60,7 @@ namespace WiiTUIO
         /// <summary>
         /// Construct a new Window.
         /// </summary>
-        public ClientForm()
+        public MainTrayWindow()
         {
             
             // Load from the XAML.
