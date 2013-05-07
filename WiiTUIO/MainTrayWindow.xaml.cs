@@ -15,7 +15,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
 
-using Hardcodet.Wpf.TaskbarNotification;
 using OSC.NET;
 using WiiTUIO.WinTouch;
 using WiiTUIO.Provider;

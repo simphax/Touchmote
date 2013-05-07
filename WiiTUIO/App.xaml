@@ -2,8 +2,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:tb="http://www.hardcodet.net/taskbar"
-    xmlns:local="clr-namespace:WiiTUIO">
+    xmlns:local="clr-namespace:WiiTUIO"
+    StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!--
         <ResourceDictionary>
             <tb:TaskbarIcon x:Key="tbNotifyIcon" IconSource="Resources/icon.ico" ToolTipText="Click to edit Touchmote settings" TrayBalloonTipClicked="TaskbarIcon_TrayBalloonTipClicked_1">
                 <tb:TaskbarIcon.ContextMenu>
@@ -16,5 +18,6 @@
                 </tb:TaskbarIcon.TrayPopup>
             </tb:TaskbarIcon>
         </ResourceDictionary>
+        -->
     </Application.Resources>
 </Application>

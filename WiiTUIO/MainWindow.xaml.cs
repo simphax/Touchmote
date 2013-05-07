@@ -15,7 +15,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
 
-using Hardcodet.Wpf.TaskbarNotification;
 using OSC.NET;
 using WiiTUIO.WinTouch;
 using WiiTUIO.Provider;
@@ -33,7 +32,7 @@ namespace WiiTUIO
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class MainWindow : UserControl, WiiCPP.WiiPairListener
+    public partial class MainWindow : Window, WiiCPP.WiiPairListener
     {
         private bool providerHandlerConnected = false;
 

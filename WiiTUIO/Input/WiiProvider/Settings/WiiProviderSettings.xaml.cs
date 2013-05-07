@@ -1,4 +1,4 @@
-﻿using Hardcodet.Wpf.TaskbarNotification;
+﻿//using Hardcodet.Wpf.TaskbarNotification;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -119,7 +119,7 @@ namespace WiiTUIO.Provider
                     {
                         ((WiiProvider)this.pWiiProvider).setCalibrationData(oData.Source, oData.Destination, oData.ScreenSize);
                         //btnCalibrate.Content = "Re-Calibrate";
-                        App.TB.ShowBalloonTip("Touchmote", "Calibration loaded", BalloonIcon.Info);
+                        //App.TB.ShowBalloonTip("Touchmote", "Calibration loaded", BalloonIcon.Info);
                     }
                 }
             }), null);

@@ -124,10 +124,6 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Win32.TaskScheduler">
       <HintPath>..\packages\TCD.System.ApplicationExtensions.1.1.0\lib\net45\Microsoft.Win32.TaskScheduler.dll</HintPath>
       <Private>True</Private>
