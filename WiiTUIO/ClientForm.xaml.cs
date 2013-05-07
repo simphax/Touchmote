@@ -66,6 +66,7 @@ namespace WiiTUIO
             // Load from the XAML.
             InitializeComponent();
             this.Initialize();
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
             
             /*
             switch (outputType)
@@ -798,7 +799,7 @@ namespace WiiTUIO
             this.pairProgress.Visibility = Visibility.Visible;
             }), null);
             Thread thread = new Thread(new ThreadStart(wiiPairThreadWorker));
-            thread.Priority = ThreadPriority.BelowNormal;
+            thread.Priority = ThreadPriority.Normal;
             thread.Start();
         }
 
