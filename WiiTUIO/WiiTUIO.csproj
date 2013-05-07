@@ -123,7 +123,13 @@
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>WiiTUIO.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MahApps.Metro">
+      <HintPath>..\packages\MahApps.Metro.0.10.1.1\lib\net45\MahApps.Metro.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Win32.TaskScheduler">
       <HintPath>..\packages\TCD.System.ApplicationExtensions.1.1.0\lib\net45\Microsoft.Win32.TaskScheduler.dll</HintPath>
       <Private>True</Private>
@@ -139,6 +145,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\packages\MahApps.Metro.0.10.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -228,6 +237,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\InputFactory.cs" />
@@ -300,6 +313,7 @@
     </None>
     <None Include="packages.config" />
     <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\Entypo.ttf" />
     <None Include="WiiTUIO_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -328,6 +342,7 @@
     <None Include="Keymaps\keycodes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Resource Include="Resources\Entypo-license.txt" />
     <Content Include="Resources\touchcursor.cur">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

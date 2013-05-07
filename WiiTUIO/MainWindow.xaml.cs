@@ -26,13 +26,14 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using TCD.System.ApplicationExtensions;
 using Newtonsoft.Json;
+using MahApps.Metro.Controls;
 
 namespace WiiTUIO
 {
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class MainWindow : Window, WiiCPP.WiiPairListener
+    public partial class MainWindow : MetroWindow, WiiCPP.WiiPairListener
     {
         private bool providerHandlerConnected = false;
 
