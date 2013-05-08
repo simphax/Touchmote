@@ -21,6 +21,8 @@ namespace WiiTUIO.Provider
     /// </summary>
     public class MultiWiiPointerProvider : IProvider
     {
+        private int WIIMOTE_POWER_SAVE_DISCONNECT_TIMEOUT = 6000;
+ 
         private int WIIMOTE_DISCONNECT_TIMEOUT = 2000; //If we haven't recieved input from a wiimote in 2 seconds we consider it disconnected.
         private int WIIMOTE_SIGNIFICANT_DISCONNECT_TIMEOUT = Settings.Default.autoDisconnectTimeout; //If we haven't recieved significant input from a wiimote in 60 seconds we will put it to sleep
         private ulong OLD_FRAME_TIMEOUT = 200; //Timeout for a previous frame from a Wiimote to be considered old, so we wont enable it when getting input from other wiimotes.
@@ -224,8 +226,17 @@ namespace WiiTUIO.Provider
                             //teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
                             putToPowerSave(pWiimoteMap[pDevice.HIDDevicePath]);
                         }
+                        else if (pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave
+                        && pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null
+                        && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_POWER_SAVE_DISCONNECT_TIMEOUT)
+                        {
+                            Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
+                            teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
+                        }
                         else if (pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave)
                         {
+                            pWiimoteMap[pDevice.HIDDevicePath].Wiimote.GetStatus();
+
                             if (CONNECTION_THREAD_SLEEP * blinkWait >= POWER_SAVE_BLINK_DELAY)
                             {
                                 blinkWait = 0;
@@ -435,6 +446,7 @@ namespace WiiTUIO.Provider
         /// <param name="e"></param>
         private void handleWiimoteChanged(object sender, WiimoteChangedEventArgs e)
         {
+            
             if (bRunning)
             {
                 pDeviceMutex.WaitOne();
@@ -444,6 +456,10 @@ namespace WiiTUIO.Provider
                     {
                         WiimoteControl senderControl = pWiimoteMap[((Wiimote)sender).HIDDevicePath];
 
+                        if (senderControl.Status.InPowerSave)
+                        {
+                            Console.WriteLine("New power save event");
+                        }
                         if (senderControl.handleWiimoteChanged(sender, e) && senderControl.Status.InPowerSave)
                         {
                             this.wakeFromPowerSave(senderControl);

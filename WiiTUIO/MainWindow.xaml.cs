@@ -35,6 +35,8 @@ namespace WiiTUIO
     /// </summary>
     public partial class MainWindow : MetroWindow, WiiCPP.WiiPairListener
     {
+        private Thread wiiPairThread;
+
         private bool providerHandlerConnected = false;
 
         private bool tryingToConnect = false;
@@ -169,6 +171,7 @@ namespace WiiTUIO
 
         private void appWillExit(object sender, ExitEventArgs e)
         {
+            this.stopWiiPair();
             this.disconnectProvider();
             this.disconnectProviderHandler();
         }
@@ -784,19 +787,26 @@ namespace WiiTUIO
         }
 
         private void runWiiPair() {
-            Dispatcher.BeginInvoke(new Action(delegate()
+            if (!this.wiiPairRunning)
             {
-            this.pairingTitle.Content = "Pairing Wiimotes";
-            this.pairWiimoteTRFail.Visibility = Visibility.Hidden;
-            this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
-            this.imgClosePairCheck.Visibility = Visibility.Hidden;
-            this.imgClosePairClose.Visibility = Visibility.Visible;
-            this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
-            this.pairProgress.Visibility = Visibility.Visible;
-            }), null);
-            Thread thread = new Thread(new ThreadStart(wiiPairThreadWorker));
-            thread.Priority = ThreadPriority.Normal;
-            thread.Start();
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    this.pairingTitle.Content = "Pairing Wiimotes";
+                    this.pairWiimoteTRFail.Visibility = Visibility.Hidden;
+                    this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
+                    this.imgClosePairCheck.Visibility = Visibility.Hidden;
+                    this.imgClosePairClose.Visibility = Visibility.Visible;
+                    this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
+                    this.pairProgress.Visibility = Visibility.Visible;
+                }), null);
+                if (this.wiiPairThread != null)
+                {
+                    this.wiiPairThread.Abort();
+                }
+                this.wiiPairThread = new Thread(new ThreadStart(wiiPairThreadWorker));
+                this.wiiPairThread.Priority = ThreadPriority.Normal;
+                this.wiiPairThread.Start();
+            }
         }
 
         private void wiiPairThreadWorker()
@@ -806,7 +816,6 @@ namespace WiiTUIO
         }
 
         private void stopWiiPair() {
-            this.wiiPairRunning = false;
             wiiPair.stop();
         }
 
@@ -814,19 +823,7 @@ namespace WiiTUIO
         {
             Console.WriteLine("Success report: number=" + report.numberPaired + " removeMode=" + report.removeMode + " devicelist=" + report.deviceNames);
 
-            if (report.removeMode)
-            {
-                this.wiiPairRunning = true;
-                
-                Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    this.imgClosePairCheck.Visibility = Visibility.Hidden;
-                    this.imgClosePairClose.Visibility = Visibility.Visible;
-                }), null);
-                
-                wiiPair.start(false); //Run the actual pairing after removing all previous connected devices.
-            }
-            else if (report.numberPaired > 0)
+            if (report.numberPaired > 0)
             {
                 Settings.Default.pairedOnce = true;
                 
@@ -901,21 +898,38 @@ namespace WiiTUIO
             this.runWiiPair();
         }
 
-        public void onPairingCancelled()
+        public void onPairingDone(WiiCPP.WiiPairSuccessReport report)
         {
-            Dispatcher.BeginInvoke(new Action(delegate()
+            
+            if (report.removeMode)
             {
-            this.pairingTitle.Content = "Pairing Cancelled";
-            //this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
-            this.imgClosePairCheck.Visibility = Visibility.Hidden;
-            this.imgClosePairClose.Visibility = Visibility.Visible;
-            //this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
-            this.canvasPairing.Visibility = Visibility.Collapsed;
-            this.tbPair2.Visibility = Visibility.Visible;
-            this.tbPairDone.Visibility = Visibility.Collapsed;
+                this.wiiPairRunning = true;
 
-            this.pairProgress.IsActive = false;
-            }), null);
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    this.imgClosePairCheck.Visibility = Visibility.Hidden;
+                    this.imgClosePairClose.Visibility = Visibility.Visible;
+                }), null);
+
+                wiiPair.start(false); //Run the actual pairing after removing all previous connected devices.
+            }
+            else
+            {
+                this.wiiPairRunning = false;
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    //this.pairingTitle.Content = "Pairing Cancelled";
+                    //this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
+                    this.imgClosePairCheck.Visibility = Visibility.Hidden;
+                    this.imgClosePairClose.Visibility = Visibility.Visible;
+                    //this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
+                    this.canvasPairing.Visibility = Visibility.Collapsed;
+                    this.tbPair2.Visibility = Visibility.Visible;
+                    this.tbPairDone.Visibility = Visibility.Collapsed;
+
+                    this.pairProgress.IsActive = false;
+                }), null);
+            }
         }
 
         public void onPairingStarted()

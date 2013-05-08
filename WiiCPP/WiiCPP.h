@@ -42,7 +42,7 @@ namespace WiiCPP {
 		void pairingConsole(System::String ^message);
 		void pairingMessage(System::String ^message, MessageType type);
 		void onPairingStarted();
-		void onPairingCancelled();
+		void onPairingDone(WiiPairSuccessReport ^report);
 		void onPairingSuccess(WiiPairSuccessReport ^report);
 	};
 
@@ -145,7 +145,7 @@ namespace WiiCPP {
 				{
 					ShowErrorCode(_T("Error enumerating radios"), GetLastError());
 					listener->pairingMessage("Could not find any bluetooth devices",WiiPairListener::MessageType::ERR);
-					listener->onPairingCancelled();
+					listener->onPairingDone(report);
 					return;
 				}
 				nRadios--;
@@ -223,7 +223,7 @@ namespace WiiCPP {
 						{
 							listener->pairingMessage("Could not find any bluetooth devices",WiiPairListener::MessageType::ERR);
 							ShowErrorCode(_T("Error enumerating devices"), GetLastError());
-							listener->onPairingCancelled();
+							listener->onPairingDone(report);
 							return;
 						}
 					}
@@ -290,7 +290,7 @@ namespace WiiCPP {
 										error = TRUE;
 										listener->pairingMessage("Could not permanently pair the Wiimote",WiiPairListener::MessageType::ERR);
 									} else {
-										listener->pairingMessage("Connection is permanent",WiiPairListener::MessageType::SUCCESS);
+										listener->pairingMessage("Paired",WiiPairListener::MessageType::SUCCESS);
 									}
 								}
 
@@ -305,19 +305,12 @@ namespace WiiCPP {
 									}
 								}
 
-								if (!error && !removeMode)
+								if (!error)
 								{
 									report->deviceNames[nPaired] = (gcnew System::String(btdi.szName));
 									nPaired++;
 									report->numberPaired = nPaired;
 									listener->onPairingSuccess(report);
-									
-								}
-								else if(!error && removeMode)
-								{
-									report->deviceNames[nPaired] = (gcnew System::String(btdi.szName));
-									nPaired++;
-									report->numberPaired = nPaired;
 								}
 								else if(removeMode)
 								{
@@ -349,14 +342,14 @@ namespace WiiCPP {
 			System::String^ str =  nPaired + " Wii devices paired\n";
 			listener->pairingConsole(str);
 
-			if(nPaired == 0 && !removeMode)
-			{
-				listener->onPairingCancelled();
-			}
-			else
-			{
-				listener->onPairingSuccess(report);
-			}
+			//if(nPaired == 0 && !removeMode)
+			//{
+				listener->onPairingDone(report);
+			//}
+			//else
+			//{
+			//	listener->onPairingSuccess(report);
+			//}
 
 			return;
 		}

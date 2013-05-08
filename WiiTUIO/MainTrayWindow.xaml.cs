@@ -899,7 +899,7 @@ namespace WiiTUIO
             this.runWiiPair();
         }
 
-        public void onPairingCancelled()
+        public void onPairingDone(WiiCPP.WiiPairSuccessReport report)
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
