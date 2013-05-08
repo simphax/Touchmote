@@ -252,6 +252,10 @@ namespace WiiCPP {
 										{
 											listener->pairingMessage("Could not remove device",WiiPairListener::MessageType::ERR);
 										}
+										else if(removeMode)
+										{
+											error = TRUE;
+										}
 									} else if(btdi.fRemembered || removeMode) {
 										error = TRUE;
 									} else {
@@ -312,13 +316,14 @@ namespace WiiCPP {
 									report->numberPaired = nPaired;
 									listener->onPairingSuccess(report);
 								}
-								else if(removeMode)
-								{
-									killme = true;
-								}
 							} // if (!wcscmp(btdi.szName, L"Nintendo RVL-WBC-01") || !wcscmp(btdi.szName, L"Nintendo RVL-CNT-01"))
 						}
 						while (BluetoothFindNextDevice(hFind, &btdi));
+						
+						if(removeMode)
+						{
+							killme = true;
+						}
 					} // if (hFind == NULL)
 				} // for (radio = 0; radio < nRadios; radio++)
 

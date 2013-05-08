@@ -540,9 +540,12 @@ namespace WiiTUIO
         {
             if (!this.tryingToConnect)
             {
-                this.tbPair.Visibility = Visibility.Hidden;
-                this.tbConnect.Visibility = Visibility.Hidden;
-                this.tbWaiting.Visibility = Visibility.Visible;
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    this.tbPair.Visibility = Visibility.Hidden;
+                    this.tbConnect.Visibility = Visibility.Hidden;
+                    this.tbWaiting.Visibility = Visibility.Visible;
+                }), null);
 
                 Launcher.Launch("Driver", "devcon", " enable \"BTHENUM*_VID*57e*_PID&0306*\"", null);
 
@@ -909,6 +912,8 @@ namespace WiiTUIO
                 {
                     this.imgClosePairCheck.Visibility = Visibility.Hidden;
                     this.imgClosePairClose.Visibility = Visibility.Visible;
+
+                    this.connectProvider();
                 }), null);
 
                 wiiPair.start(false); //Run the actual pairing after removing all previous connected devices.
@@ -934,6 +939,7 @@ namespace WiiTUIO
 
         public void onPairingStarted()
         {
+            this.disconnectProvider();
             Dispatcher.BeginInvoke(new Action(delegate()
             {
 

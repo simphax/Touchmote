@@ -38,7 +38,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private bool _connectOnStart = false;
+        private bool _connectOnStart = true;
         public bool connectOnStart
         {
             get { return _connectOnStart; }
@@ -60,7 +60,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private bool _completelyDisconnect = true;
+        private bool _completelyDisconnect = false;
         public bool completelyDisconnect
         {
             get { return _completelyDisconnect; }
