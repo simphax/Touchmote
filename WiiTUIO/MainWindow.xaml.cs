@@ -94,6 +94,9 @@ namespace WiiTUIO
             this.mainPanel.Visibility = Visibility.Visible;
             this.canvasSettings.Visibility = Visibility.Collapsed;
             this.canvasAbout.Visibility = Visibility.Collapsed;
+            this.canvasPairing.Visibility = Visibility.Collapsed;
+            this.tbPair2.Visibility = Visibility.Visible;
+            this.tbPairDone.Visibility = Visibility.Collapsed;
 
             InputFactory.InputType inputType = InputFactory.getType(Settings.Default.input);
             OutputFactory.OutputType outputType = OutputFactory.getType(Settings.Default.output);
@@ -183,9 +186,13 @@ namespace WiiTUIO
                 this.bConnected = true;
 
                 // Update the button to say we are connected.
-                tbConnected.Visibility = Visibility.Hidden;
-                tbWaiting.Visibility = Visibility.Hidden;
-                tbConnected.Visibility = Visibility.Visible;
+                //tbConnected.Visibility = Visibility.Hidden;
+                //tbWaiting.Visibility = Visibility.Hidden;
+                //tbConnected.Visibility = Visibility.Visible;
+
+                this.connectedCount.Content = totalWiimotes;
+
+                this.statusStack.Children.Add(new WiimoteStatusUC(ID));
 
                 connectProviderHandler();
 
@@ -263,12 +270,18 @@ namespace WiiTUIO
         /// This is called when the battery state changes.
         /// </summary>
         /// <param name="obj"></param>
-        private void pWiiProvider_OnBatteryUpdate(int obj)
+        private void pWiiProvider_OnStatusUpdate(WiimoteStatus status)
         {
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-                this.batteryLabel.Content = obj.ToString() + "%";
+                foreach(UIElement child in this.statusStack.Children) {
+                    WiimoteStatusUC uc = (WiimoteStatusUC)child;
+                    if (uc.ID == status.ID)
+                    {
+                        uc.updateStatus(status);
+                    }
+                }
             }), null);
         }
 
@@ -388,6 +401,13 @@ namespace WiiTUIO
         {
             //this.disableMainControls();
             //this.configOverlay.Visibility = Visibility.Visible;
+
+            if (this.pWiiProvider != null)
+            {
+                this.providerSettingsContent.Children.Clear();
+                this.providerSettingsContent.Children.Add(this.pWiiProvider.getSettingsControl());
+            }
+
             this.mainPanel.Visibility = Visibility.Collapsed;
             this.canvasAbout.Visibility = Visibility.Collapsed;
             this.canvasSettings.Visibility = Visibility.Visible;
@@ -581,7 +601,7 @@ namespace WiiTUIO
                 // Connect a Wiimote, hook events then start.
                 this.pWiiProvider = InputFactory.createInputProvider(Settings.Default.input);
                 this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
-                this.pWiiProvider.OnBatteryUpdate += new Action<int>(pWiiProvider_OnBatteryUpdate);
+                this.pWiiProvider.OnStatusUpdate += new Action<WiimoteStatus>(pWiiProvider_OnStatusUpdate);
                 this.pWiiProvider.OnConnect += new Action<int,int>(pWiiProvider_OnConnect);
                 this.pWiiProvider.OnDisconnect += new Action<int,int>(pWiiProvider_OnDisconnect);
                 return true;
@@ -758,19 +778,21 @@ namespace WiiTUIO
             //this.pairWiimoteOverlay.Visibility = Visibility.Visible;
             //this.pairWiimoteOverlayPairing.Visibility = Visibility.Visible;
             this.canvasPairing.Visibility = Visibility.Visible;
+            this.tbPair2.Visibility = Visibility.Collapsed;
+            this.tbPairDone.Visibility = Visibility.Visible;
             this.runWiiPair();
         }
 
         private void runWiiPair() {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-            //this.pairingTitle.Content = "Pairing Wiimotes";
-            //this.pairWiimoteTRFail.Visibility = Visibility.Hidden;
-            //this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
-            //this.imgClosePairCheck.Visibility = Visibility.Hidden;
-            //this.imgClosePairClose.Visibility = Visibility.Visible;
-            //this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
-            //this.pairProgress.Visibility = Visibility.Visible;
+            this.pairingTitle.Content = "Pairing Wiimotes";
+            this.pairWiimoteTRFail.Visibility = Visibility.Hidden;
+            this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
+            this.imgClosePairCheck.Visibility = Visibility.Hidden;
+            this.imgClosePairClose.Visibility = Visibility.Visible;
+            this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
+            this.pairProgress.Visibility = Visibility.Visible;
             }), null);
             Thread thread = new Thread(new ThreadStart(wiiPairThreadWorker));
             thread.Priority = ThreadPriority.Normal;
@@ -795,19 +817,19 @@ namespace WiiTUIO
             if (report.removeMode)
             {
                 this.wiiPairRunning = true;
-                /*
+                
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
                     this.imgClosePairCheck.Visibility = Visibility.Hidden;
                     this.imgClosePairClose.Visibility = Visibility.Visible;
                 }), null);
-                */
+                
                 wiiPair.start(false); //Run the actual pairing after removing all previous connected devices.
             }
             else if (report.numberPaired > 0)
             {
                 Settings.Default.pairedOnce = true;
-                /*
+                
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
                     if (report.numberPaired == 1)
@@ -821,7 +843,7 @@ namespace WiiTUIO
                     this.imgClosePairCheck.Visibility = Visibility.Visible;
                     this.imgClosePairClose.Visibility = Visibility.Hidden;
                 }), null);
-                */
+                
                 if (!this.wiiPairRunning)
                 {
                     if (report.deviceNames.Contains(@"Nintendo RVL-CNT-01-TR"))
@@ -831,11 +853,11 @@ namespace WiiTUIO
                             //this.pairingTitle.Content = "Pairing Successful";
                             this.pairWiimoteText.Text = @"";
                             this.pairWiimotePressSync.Visibility = Visibility.Hidden;
-                            this.pairWiimoteTRFail2.Visibility = Visibility.Visible;
-                            this.pairWiimoteTryAgain2.Visibility = Visibility.Visible;
+                            this.pairWiimoteTRFail.Visibility = Visibility.Visible;
+                            this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
 
-                            this.pairProgress2.Visibility = Visibility.Hidden;
-                            this.pairProgress2.IsActive = false;
+                            this.pairProgress.Visibility = Visibility.Hidden;
+                            this.pairProgress.IsActive = false;
                             //this.pairProgress.IsIndeterminate = false;
 
                         }), null);
@@ -853,8 +875,11 @@ namespace WiiTUIO
 
                             this.pairProgress.Visibility = Visibility.Hidden;
 
-                            this.pairProgress.IsIndeterminate = false;
+                            this.pairProgress.IsActive = false;
 
+                            this.canvasPairing.Visibility = Visibility.Collapsed;
+                            this.tbPair2.Visibility = Visibility.Visible;
+                            this.tbPairDone.Visibility = Visibility.Collapsed;
                         }), null);
                     }
                 }
@@ -881,12 +906,15 @@ namespace WiiTUIO
             Dispatcher.BeginInvoke(new Action(delegate()
             {
             this.pairingTitle.Content = "Pairing Cancelled";
-            this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
+            //this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
             this.imgClosePairCheck.Visibility = Visibility.Hidden;
             this.imgClosePairClose.Visibility = Visibility.Visible;
-            this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
+            //this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
+            this.canvasPairing.Visibility = Visibility.Collapsed;
+            this.tbPair2.Visibility = Visibility.Visible;
+            this.tbPairDone.Visibility = Visibility.Collapsed;
 
-            this.pairProgress.IsIndeterminate = false;
+            this.pairProgress.IsActive = false;
             }), null);
         }
 
@@ -895,7 +923,7 @@ namespace WiiTUIO
             Dispatcher.BeginInvoke(new Action(delegate()
             {
 
-            this.pairProgress.IsIndeterminate = true;
+                this.pairProgress.IsActive = true;
             }), null);
         }
 
@@ -1107,6 +1135,31 @@ namespace WiiTUIO
         private void btnAboutBack_Click(object sender, RoutedEventArgs e)
         {
             this.hideAbout();
+        }
+
+        private void PairWiimotesDone_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.wiiPairRunning)
+            {
+                if (this.imgClosePairClose.Visibility == Visibility.Visible)
+                {
+                    this.pairWiimoteText.Text = "Cancelling...";
+                }
+                else
+                {
+                    this.pairWiimoteText.Text = "Finishing...";
+                }
+                this.imgClosePairCheck.Visibility = Visibility.Hidden;
+                this.imgClosePairClose.Visibility = Visibility.Hidden;
+                
+                //this.pairWiimotePressSync.Visibility = Visibility.Hidden;
+                this.stopWiiPair();
+            }
+            else
+            {
+                //this.pairWiimoteOverlay.Visibility = Visibility.Hidden;
+                //this.enableMainControls();
+            }
         }
     }
 

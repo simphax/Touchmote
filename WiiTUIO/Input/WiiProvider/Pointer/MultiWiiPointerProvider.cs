@@ -66,35 +66,12 @@ namespace WiiTUIO.Provider
         /// <summary>
         /// An event which is fired when the battery state changes.
         /// </summary>
-        public event Action<int> OnBatteryUpdate;
+        public event Action<WiimoteStatus> OnStatusUpdate;
 
         public event Action<int,int> OnConnect;
         public event Action<int,int> OnDisconnect;
 
-        /// <summary>
-        /// The internal battery state.
-        /// </summary>
-        private int iBatteryState = 0;
-
-        /// <summary>
-        /// Get the current battery state.
-        /// </summary>
-        public int BatteryState
-        {
-            get
-            {
-                return iBatteryState;
-            }
-            protected set
-            {
-                if (value != iBatteryState)
-                {
-                    iBatteryState = value;
-                    if (OnBatteryUpdate != null)
-                        OnBatteryUpdate(iBatteryState);
-                }
-            }
-        }
+   
         #endregion
 
         /// <summary>
@@ -232,14 +209,14 @@ namespace WiiTUIO.Provider
 
                             OnConnect(id, this.pWiimoteMap.Count);
                         }
-                        else if (!pWiimoteMap[pDevice.HIDDevicePath].InPowerSave 
+                        else if (!pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave 
                             && pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null 
                             && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_TIMEOUT)
                         {
                             Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
                             teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
                         }
-                        else if (!pWiimoteMap[pDevice.HIDDevicePath].InPowerSave 
+                        else if (!pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave 
                             && pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime != null 
                             && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime).TotalMilliseconds > WIIMOTE_SIGNIFICANT_DISCONNECT_TIMEOUT)
                         {
@@ -247,7 +224,7 @@ namespace WiiTUIO.Provider
                             //teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
                             putToPowerSave(pWiimoteMap[pDevice.HIDDevicePath]);
                         }
-                        else if (pWiimoteMap[pDevice.HIDDevicePath].InPowerSave)
+                        else if (pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave)
                         {
                             if (CONNECTION_THREAD_SLEEP * blinkWait >= POWER_SAVE_BLINK_DELAY)
                             {
@@ -297,7 +274,7 @@ namespace WiiTUIO.Provider
             HashSet<int> usedIDs = new HashSet<int>();
             foreach (WiimoteControl control in pWiimoteMap.Values)
             {
-                usedIDs.Add(control.ID);
+                usedIDs.Add(control.Status.ID);
             }
 
             int id = 1;
@@ -317,7 +294,7 @@ namespace WiiTUIO.Provider
             }
             else
             {
-                control.InPowerSave = true;
+                control.Status.InPowerSave = true;
                 control.Wiimote.SetReportType(InputReport.Buttons, false);
                 control.Wiimote.SetLEDs(false, false, false, false);
                 control.Wiimote.SetRumble(false);
@@ -327,12 +304,12 @@ namespace WiiTUIO.Provider
         private void wakeFromPowerSave(WiimoteControl control)
         {
             control.Wiimote.SetReportType(InputReport.IRExtensionAccel,true);
-            control.Wiimote.SetLEDs((control.ID - 1) % 4 + 1);
+            control.Wiimote.SetLEDs((control.Status.ID - 1) % 4 + 1);
             control.Wiimote.SetRumble(true);
             Thread stopRumbleThread = new Thread(stopRumble);
             stopRumbleThread.Start(control.Wiimote);
 
-            control.InPowerSave = false;
+            control.Status.InPowerSave = false;
         }
 
         private void completelyDisconnectAll()
@@ -372,7 +349,7 @@ namespace WiiTUIO.Provider
                 int wiimoteid;
                 if (pWiimoteMap.Keys.Contains(pDevice.HIDDevicePath))
                 {
-                    wiimoteid = this.pWiimoteMap[pDevice.HIDDevicePath].ID;
+                    wiimoteid = this.pWiimoteMap[pDevice.HIDDevicePath].Status.ID;
                     this.pWiimoteMap.Remove(pDevice.HIDDevicePath);
                 }
                 else
@@ -467,9 +444,14 @@ namespace WiiTUIO.Provider
                     {
                         WiimoteControl senderControl = pWiimoteMap[((Wiimote)sender).HIDDevicePath];
 
-                        if (senderControl.handleWiimoteChanged(sender, e) && senderControl.InPowerSave)
+                        if (senderControl.handleWiimoteChanged(sender, e) && senderControl.Status.InPowerSave)
                         {
                             this.wakeFromPowerSave(senderControl);
+                        }
+
+                        if (this.OnStatusUpdate != null)
+                        {
+                            this.OnStatusUpdate(senderControl.Status);
                         }
 
                         if (senderControl.FrameQueue.Count > 0)

@@ -191,6 +191,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Input\WiiProvider\Pointer\WiimoteStatus.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -198,6 +199,9 @@
     <Compile Include="Input\WiiProvider\Pointer\WiimoteControl.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiiPointerProvider.cs" />
     <Compile Include="SystemProcessMonitor.cs" />
+    <Compile Include="WiimoteStatus.xaml.cs">
+      <DependentUpon>WiimoteStatus.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -240,6 +244,10 @@
     <Page Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WiimoteStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

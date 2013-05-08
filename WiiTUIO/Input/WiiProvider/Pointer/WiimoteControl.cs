@@ -18,11 +18,11 @@ namespace WiiTUIO.Provider
         public Queue<FrameEventArgs> FrameQueue = new Queue<FrameEventArgs>(1);
         public DateTime LastWiimoteEventTime = DateTime.Now; //Last time recieved an update
         public DateTime LastSignificantWiimoteEventTime = DateTime.Now; //Last time when updated the cursor or button config. Used for power saving features.
-        public bool InPowerSave = false;
+        //public bool InPowerSave = false;
 
         public Wiimote Wiimote;
 
-        public int ID;
+        public WiimoteStatus Status;
 
         /// <summary>
         /// Used to obtain mutual exlusion over Wiimote updates.
@@ -53,10 +53,13 @@ namespace WiiTUIO.Provider
 
         private WiimoteState lastWiimoteState;
 
+
+
         public WiimoteControl(int id, Wiimote wiimote)
         {
             this.Wiimote = wiimote;
-            this.ID = id;
+            this.Status = new WiimoteStatus();
+            this.Status.ID = id;
 
             lastpoint = new WiimoteLib.Point();
             lastpoint.X = 0;
@@ -159,6 +162,8 @@ namespace WiiTUIO.Provider
                 // Store the state.
                 WiimoteState pState = e.WiimoteState;
 
+                this.Status.Battery = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
+
                 bool pointerOutOfReach = false;
 
                 WiimoteLib.Point newpoint = lastpoint;
@@ -256,6 +261,7 @@ namespace WiiTUIO.Provider
                 return significant;
             }
             //this.BatteryState = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
+            
 
             // Release mutual exclusion.
             pDeviceMutex.ReleaseMutex();

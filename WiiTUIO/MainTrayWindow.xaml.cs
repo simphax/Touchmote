@@ -558,7 +558,7 @@ namespace WiiTUIO
                 // Connect a Wiimote, hook events then start.
                 this.pWiiProvider = InputFactory.createInputProvider(Settings.Default.input);
                 this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
-                this.pWiiProvider.OnBatteryUpdate += new Action<int>(pWiiProvider_OnBatteryUpdate);
+                //this.pWiiProvider.OnBatteryUpdate += new Action<int>(pWiiProvider_OnBatteryUpdate);
                 this.pWiiProvider.OnConnect += new Action<int,int>(pWiiProvider_OnConnect);
                 this.pWiiProvider.OnDisconnect += new Action<int,int>(pWiiProvider_OnDisconnect);
                 return true;

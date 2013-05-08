@@ -20,6 +20,7 @@ namespace WiiTUIO.Provider
     /// </summary>
     public class WiiPointerProvider : IProvider
     {
+        public event Action<WiimoteStatus> OnStatusUpdate;
 
         private InputSimulator inputSimulator;
 

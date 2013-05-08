@@ -12,7 +12,7 @@ namespace WiiTUIO.Provider
 
         event Action<int, int> OnConnect;//Wiimote ID, Total Wiimotes
         event Action<int, int> OnDisconnect;//Wiimote ID, Total Wiimotes
-        event Action<int> OnBatteryUpdate;
+        event Action<WiimoteStatus> OnStatusUpdate;
         event EventHandler<FrameEventArgs> OnNewFrame;
 
         void start();

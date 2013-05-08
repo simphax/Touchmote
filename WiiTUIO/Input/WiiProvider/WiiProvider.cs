@@ -195,6 +195,8 @@ namespace WiiTUIO.Provider
             return settingsControl;
         }
 
+        public event Action<WiimoteStatus> OnStatusUpdate;
+
         #region SpatioTemporalClassifier Event Handling
         /// <summary>
         /// Enqueue a 'ContactType.End' event.
