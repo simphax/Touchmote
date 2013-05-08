@@ -22,6 +22,9 @@ namespace WiiTUIO
     public partial class WiimoteStatusUC : UserControl
     {
         public int ID;
+        public int battery;
+        public bool powersave;
+        
 
         public WiimoteStatusUC(int id)
         {
@@ -33,27 +36,37 @@ namespace WiiTUIO
 
         public void updateStatus(WiimoteStatus status)
         {
-            this.lbId.Content = "" + status.ID;
-            this.setBattery(status.Battery);
-            if (status.InPowerSave)
+            //this.lbId.Content = "" + status.ID;
+            if (this.battery != status.Battery)
             {
-                this.lbStatus.Content = "power save";
+                this.battery = status.Battery;
+                this.setBattery(status.Battery);
             }
-            else
+            if (this.powersave != status.InPowerSave)
             {
-                this.lbStatus.Content = "connected";
+                this.powersave = status.InPowerSave;
+                if (status.InPowerSave)
+                {
+                    this.lbStatus.Foreground = Brushes.Aquamarine;
+                    this.lbStatus.Content = "power save";
+                }
+                else
+                {
+                    this.lbStatus.Foreground = Brushes.Green;
+                    this.lbStatus.Content = "connected";
+                }
             }
         }
 
         public void setBattery(int percentage) {
             Brush light = Brushes.White;
             Brush dark = Brushes.Gray;
-            this.battery1.Fill = dark;
-            this.battery2.Fill = dark;
-            this.battery3.Fill = dark;
-            this.battery4.Fill = dark;
-            this.battery5.Fill = dark;
-            this.battery6.Fill = dark;
+            this.battery1.Fill = percentage > 10 ? light : dark;
+            this.battery2.Fill = percentage > 20 ? light : dark;
+            this.battery3.Fill = percentage > 30 ? light : dark;
+            this.battery4.Fill = percentage > 40 ? light : dark;
+            this.battery5.Fill = percentage > 50 ? light : dark;
+            this.battery6.Fill = percentage > 70 ? light : dark;
         }
     }
 }

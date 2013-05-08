@@ -27,7 +27,7 @@ namespace WiiTUIO.Provider
         /// <summary>
         /// Used to obtain mutual exlusion over Wiimote updates.
         /// </summary>
-        private Mutex pDeviceMutex = new Mutex();
+        public Mutex WiimoteMutex = new Mutex();
 
         private InputSimulator inputSimulator;
 
@@ -149,7 +149,7 @@ namespace WiiTUIO.Provider
         public bool handleWiimoteChanged(object sender, WiimoteChangedEventArgs e)
         {
             // Obtain mutual excluseion.
-            pDeviceMutex.WaitOne();
+            WiimoteMutex.WaitOne();
 
             bool significant = false;
 
@@ -264,7 +264,7 @@ namespace WiiTUIO.Provider
             
 
             // Release mutual exclusion.
-            pDeviceMutex.ReleaseMutex();
+            WiimoteMutex.ReleaseMutex();
             return significant;
         }
     }

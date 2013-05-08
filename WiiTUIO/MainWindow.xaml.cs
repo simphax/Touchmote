@@ -43,6 +43,8 @@ namespace WiiTUIO
 
         private bool startupPair = false;
 
+        private Mutex statusStackMutex = new Mutex();
+
         /// <summary>
         /// A reference to the WiiProvider we want to use to get/forward input.
         /// </summary>
@@ -201,8 +203,9 @@ namespace WiiTUIO
                 //tbConnected.Visibility = Visibility.Visible;
 
                 this.connectedCount.Content = totalWiimotes;
-
+                statusStackMutex.WaitOne();
                 this.statusStack.Children.Add(new WiimoteStatusUC(ID));
+                statusStackMutex.ReleaseMutex();
 
                 connectProviderHandler();
 
@@ -220,6 +223,17 @@ namespace WiiTUIO
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
             {
+                statusStackMutex.WaitOne();
+                foreach (UIElement child in this.statusStack.Children)
+                {
+                    WiimoteStatusUC uc = (WiimoteStatusUC)child;
+                    if (uc.ID == ID)
+                    {
+                        this.statusStack.Children.Remove(child);
+                        break;
+                    }
+                }
+                statusStackMutex.ReleaseMutex();
                 if (totalWiimotes == 0)
                 {
                     this.bConnected = false;
@@ -285,6 +299,7 @@ namespace WiiTUIO
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
             {
+                statusStackMutex.WaitOne();
                 foreach(UIElement child in this.statusStack.Children) {
                     WiimoteStatusUC uc = (WiimoteStatusUC)child;
                     if (uc.ID == status.ID)
@@ -292,6 +307,7 @@ namespace WiiTUIO
                         uc.updateStatus(status);
                     }
                 }
+                statusStackMutex.ReleaseMutex();
             }), null);
         }
 

@@ -235,7 +235,16 @@ namespace WiiTUIO.Provider
                         }
                         else if (pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave)
                         {
-                            pWiimoteMap[pDevice.HIDDevicePath].Wiimote.GetStatus();
+                            pWiimoteMap[pDevice.HIDDevicePath].WiimoteMutex.WaitOne();
+                            try
+                            {
+                                pWiimoteMap[pDevice.HIDDevicePath].Wiimote.GetStatus();
+                            }
+                            catch { }
+                            finally
+                            {
+                                pWiimoteMap[pDevice.HIDDevicePath].WiimoteMutex.ReleaseMutex();
+                            }
 
                             if (CONNECTION_THREAD_SLEEP * blinkWait >= POWER_SAVE_BLINK_DELAY)
                             {
@@ -305,22 +314,39 @@ namespace WiiTUIO.Provider
             }
             else
             {
-                control.Status.InPowerSave = true;
-                control.Wiimote.SetReportType(InputReport.Buttons, false);
-                control.Wiimote.SetLEDs(false, false, false, false);
-                control.Wiimote.SetRumble(false);
+                control.WiimoteMutex.WaitOne();
+                try
+                {
+                    control.Wiimote.SetReportType(InputReport.Buttons, false);
+                    control.Status.InPowerSave = true;
+                    control.Wiimote.SetLEDs(false, false, false, false);
+                    control.Wiimote.SetRumble(false);
+                }
+                catch { }
+                finally
+                {
+                    control.WiimoteMutex.ReleaseMutex();
+                }
             }
         }
 
         private void wakeFromPowerSave(WiimoteControl control)
         {
-            control.Wiimote.SetReportType(InputReport.IRExtensionAccel,true);
-            control.Wiimote.SetLEDs((control.Status.ID - 1) % 4 + 1);
-            control.Wiimote.SetRumble(true);
-            Thread stopRumbleThread = new Thread(stopRumble);
-            stopRumbleThread.Start(control.Wiimote);
-
-            control.Status.InPowerSave = false;
+            control.WiimoteMutex.WaitOne();
+            try
+            {
+                control.Wiimote.SetReportType(InputReport.IRExtensionAccel, IRSensitivity.Maximum, true);
+                control.Status.InPowerSave = false;
+                control.Wiimote.SetLEDs((control.Status.ID - 1) % 4 + 1);
+                control.Wiimote.SetRumble(true);
+                Thread stopRumbleThread = new Thread(stopRumble);
+                stopRumbleThread.Start(control.Wiimote);
+            }
+            catch { }
+            finally
+            {
+                control.WiimoteMutex.ReleaseMutex();
+            }
         }
 
         private void completelyDisconnectAll()
@@ -456,10 +482,6 @@ namespace WiiTUIO.Provider
                     {
                         WiimoteControl senderControl = pWiimoteMap[((Wiimote)sender).HIDDevicePath];
 
-                        if (senderControl.Status.InPowerSave)
-                        {
-                            Console.WriteLine("New power save event");
-                        }
                         if (senderControl.handleWiimoteChanged(sender, e) && senderControl.Status.InPowerSave)
                         {
                             this.wakeFromPowerSave(senderControl);
