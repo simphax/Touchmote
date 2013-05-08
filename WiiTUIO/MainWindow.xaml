@@ -4,7 +4,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
   Title="Touchmote" ResizeMode="CanMinimize"
-  Height="221" Width="435">
+  Width="419" SizeToContent="Height">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,158 +13,287 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Green.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
                 <ResourceDictionary Source="/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
-            <Button Content="settings" />
-            <Button Content="about" />
+            <Button Name="btnAbout" Content="about" Click="btnAbout_Click" />
+            <Button Name="btnAppSettings" Click="btnAppSettings_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20">
+                        <Rectangle.Resources>
+                            <SolidColorBrush x:Key="BlackBrush" Color="White" />
+                        </Rectangle.Resources>
+                        <Rectangle.Fill>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_settings}" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="settings" Margin="5,0" Foreground="White" />
+                </StackPanel>
+            </Button>
         </Controls:WindowCommands>
     </Controls:MetroWindow.WindowCommands>
-    <Grid Margin="0" Background="Transparent">
-        <Canvas Background="White" Name="canvasMain">
-            <ComboBox Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="71" Canvas.Top="60" FontFamily="Segoe UI Semilight">
-                <ComboBoxItem Name="cbiPointer" IsSelected="True">IR Sensor Bar</ComboBoxItem>
-                <ComboBoxItem Name="cbiPen" Visibility="Collapsed">IR Pen</ComboBoxItem>
-            </ComboBox>
-            <TextBlock Canvas.Left="267" Canvas.Top="64" FontFamily="Segoe UI Semilight">                                
-                        <Hyperlink Click="btnSettings_Click">Configure
-                        </Hyperlink>
-            </TextBlock>
-            <Button Visibility="Collapsed" x:Name="btnOutputSettings" HorizontalAlignment="Right" Margin="0,10,0,0" Width="75" Content="Settings" Click="btnOutputSettings_Click"/>
-            <!--<Button Name="btnHide"  Click="btnHide_Click"  Width="60" HorizontalAlignment="Right" Margin="5, 0, 5, 0">Hide</Button>-->
-            <TextBlock Visibility="Hidden" Name="tbPair" Canvas.Left="15" Canvas.Top="97" FontSize="36" FontFamily="Segoe UI Light">                                
-                        <Hyperlink Click="PairWiimotes_Click" TextDecorations="" MouseEnter="imgPair_MouseEnter" MouseLeave="imgPair_MouseLeave">
-                            <Image Name="imgPair" Height="25" Width="24" Source="Resources/connect-icon.png" Opacity="0.4" Cursor="Hand" Stretch="None"/> Pair Wiimote
-                        </Hyperlink>
-            </TextBlock>
-            <TextBlock Name="tbConnect" Canvas.Left="15" Canvas.Top="97" FontSize="36" FontFamily="Segoe UI Light">                                
-                        <Hyperlink Click="btnConnect_Click" TextDecorations="" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">
-                            <Image Name="imgConnect" Height="25" Width="24" Source="Resources/connect-icon.png" Opacity="0.4" Cursor="Hand" Stretch="None"/> Connect
-                        </Hyperlink>
-            </TextBlock>
-            <Canvas Name="tbWaiting" Visibility="Hidden">
-                <TextBlock Canvas.Left="15" Canvas.Top="97" FontSize="36" FontFamily="Segoe UI Light" Foreground="#FFFDB800">                               
-                            <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="Resources/close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Waiting...
-                </TextBlock>
-                <TextBlock Canvas.Left="50" Canvas.Top="143" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="#FF898989">                                
-                                Press any button on the Wiimote, or try to <Hyperlink Click="PairWiimotes_Click">pair it again</Hyperlink>
-                </TextBlock>
+    <StackPanel>
+        <StackPanel Name="mainPanel">
+
+            <Canvas Height="64">
+                <Label Content="0" Canvas.Left="15" Canvas.Top="10" FontFamily="Segoe UI Light" FontSize="24"/>
+                <Label Content="Wiimotes connected" Canvas.Left="35" Canvas.Top="10" FontFamily="Segoe UI Light" FontSize="24"/>
             </Canvas>
-            <TextBlock Name="tbConnected" Visibility="Collapsed" Canvas.Left="15" Canvas.Top="97" FontSize="36" FontFamily="Segoe UI Light" Foreground="#FF8BCB30">                                
-                        <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="Resources/close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Connected
-            </TextBlock>
-            <Label Name="batteryLabel" Visibility="Collapsed" Content="0%" Canvas.Left="177" Canvas.Top="93" FontSize="36" HorizontalContentAlignment="Right" FontFamily="Segoe UI Light" Width="143"/>
-            <Label Content="Mode" Canvas.Left="15" Canvas.Top="59" FontFamily="Segoe UI Semilight"/>
-            <Image MouseLeftButtonUp="InfoImg_MouseUp" Height="16" Canvas.Left="282" Canvas.Top="10" Width="16" Source="Resources/info-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
-            <Image MouseLeftButtonUp="ConfigImg_MouseUp" Height="16" Canvas.Left="305" Canvas.Top="10" Width="16" Source="Resources/config-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Cursor="Hand" Stretch="None" />
+            <StackPanel Background="#FF232323">
 
-
-        </Canvas>
-        <Canvas Margin="24,17,25,18">
-            <Canvas Name="configOverlay" MouseLeftButtonDown="btnConfigDone_Click" Height="134" Width="286" Background="White" Visibility="Hidden">
-                <Canvas.Effect>
-                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
-                </Canvas.Effect>
-                <CheckBox Name="cbWindowsStart" Content="Start Touchmote with Windows" Canvas.Left="73" Canvas.Top="58" FontFamily="Segoe UI Semilight" Checked="cbWindowsStart_Checked" Unchecked="cbWindowsStart_Unchecked"/>
-                <CheckBox Name="cbConnectOnStart" Content="Connect on startup" Canvas.Left="73" Canvas.Top="89" FontFamily="Segoe UI Semilight" Checked="cbConnectOnStart_Checked" Unchecked="cbConnectOnStart_Unchecked" />
-                <!--Button Name="btnConfigDone" Content="Done" Canvas.Left="236" Canvas.Top="126" Width="44" Background="#FFECECEC" BorderBrush="Gainsboro" Height="25"/-->
-                <Label Content="Touchmote settings" Canvas.Left="10" Canvas.Top="10" FontFamily="Segoe UI Light" FontSize="18"/>
-            </Canvas>
-            <Canvas Name="providerSettingsOverlay" MouseLeftButtonDown="btnProviderSettingsDone_Click" Height="134" Width="286" Background="White" Visibility="Hidden">
-                <Canvas.Effect>
-                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
-                </Canvas.Effect>
-                <Canvas Name="providerSettingsContent" Height="134" Width="286" Canvas.Top="0">
-
+                <Rectangle Fill="#FF191919" Height="3"/>
+                <Canvas Height="63">
+                    <Label Content="2" Canvas.Left="15" Canvas.Top="15" FontFamily="Segoe UI Light" FontSize="15" Foreground="White"/>
+                    <Label Content="connected" Canvas.Left="105" Canvas.Top="15" FontFamily="Segoe UI Light" FontSize="15" Foreground="#FFA2FF00"/>
+                    <Label Content="battery:" Canvas.Left="281" Canvas.Top="15" FontFamily="Segoe UI Light" FontSize="15" Foreground="White"/>
+                    <Rectangle Fill="White" Height="20" Width="7" Canvas.Left="342" Canvas.Top="21"/>
+                    <Rectangle Fill="White" Height="20" Width="7" Canvas.Left="351" Canvas.Top="21"/>
+                    <Rectangle Fill="White" Height="20" Width="7" Canvas.Left="360" Canvas.Top="21"/>
+                    <Rectangle Fill="White" Height="20" Width="7" Canvas.Left="369" Canvas.Top="21"/>
+                    <Rectangle Fill="White" Height="20" Width="7" Canvas.Left="378" Canvas.Top="21"/>
+                    <Rectangle Fill="#FF4F4F4F" Height="20" Width="7" Canvas.Left="387" Canvas.Top="21"/>
+                    <Rectangle Width="419" Fill="#FF191919" Height="3" Canvas.Bottom="0"/>
                 </Canvas>
-            </Canvas>
-            <Canvas Name="driverMissingOverlay" Height="134" Width="286" Background="White" Visibility="Hidden">
-                <Canvas.Effect>
-                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
-                </Canvas.Effect>
-                <Label Content="Driver Missing" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18" Foreground="#FFD13B3B"/>
-                <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="42" Height="40" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
-                        Install the virtual driver to be able use Touchmote as a multi touch device.
+                <Canvas Height="63">
+                    <Label Content="2" Canvas.Left="15" Canvas.Top="15" FontFamily="Segoe UI Light" FontSize="15" Foreground="White"/>
+                    <Label Content="connected" Canvas.Left="105" Canvas.Top="15" FontFamily="Segoe UI Light" FontSize="15" Foreground="#FFA2FF00"/>
+                    <Label Content="battery:" Canvas.Left="281" Canvas.Top="15" FontFamily="Segoe UI Light" FontSize="15" Foreground="White"/>
+                    <Rectangle Fill="White" Height="20" Width="7" Canvas.Left="342" Canvas.Top="21"/>
+                    <Rectangle Fill="White" Height="20" Width="7" Canvas.Left="351" Canvas.Top="21"/>
+                    <Rectangle Fill="White" Height="20" Width="7" Canvas.Left="360" Canvas.Top="21"/>
+                    <Rectangle Fill="White" Height="20" Width="7" Canvas.Left="369" Canvas.Top="21"/>
+                    <Rectangle Fill="White" Height="20" Width="7" Canvas.Left="378" Canvas.Top="21"/>
+                    <Rectangle Fill="#FF4F4F4F" Height="20" Width="7" Canvas.Left="387" Canvas.Top="21"/>
+                    <Rectangle Width="419" Fill="#FF191919" Height="3" Canvas.Bottom="0"/>
+                </Canvas>
+                <Canvas Name="canvasPairing" Height="87" Background="#FF00A2FF">
+                    <Canvas.Triggers>
+                        <EventTrigger RoutedEvent="Window.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="canvasPairing" 
+                            Storyboard.TargetProperty="Height" From="0" To="87" 
+                            Duration="0:0:1" BeginTime="0:0:5" AutoReverse="False" 
+                            >
+                                        <DoubleAnimation.EasingFunction>
+                                            <BounceEase Bounces="2"
+                                        Bounciness="4" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Canvas.Triggers>
+                    <TextBlock Name="pairWiimoteText2" Canvas.Left="98" Canvas.Top="28" FontFamily="Segoe UI Light" FontSize="18" Foreground="White" Width="305" TextAlignment="Left">
+                        Pairing...
+                    </TextBlock>
+                    <TextBlock Name="pairWiimotePressSync2" Canvas.Left="34" TextWrapping="Wrap" Canvas.Top="50" Height="26" Width="270" FontFamily="Segoe UI Semilight" Foreground="White" FontSize="11" TextAlignment="Center">
+                            Press the SYNC<Image Height="12" Width="12" Source="Resources/sync.png" Cursor="Hand" Stretch="None"/> button now
+                    </TextBlock>
+                    <TextBlock Name="pairWiimoteTryAgain2" Canvas.Left="98" TextWrapping="Wrap" Canvas.Top="61" Height="26" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                            <Hyperlink Click="pairWiimoteTryAgain_Click" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave" Foreground="White">Try again
+                            </Hyperlink>
+                    </TextBlock>
+
+                    <TextBlock Name="pairWiimoteTRFail2" Foreground="White" Canvas.Left="108" TextWrapping="Wrap" Canvas.Top="7" Height="63" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
+                            At least one of your Wiimotes is not compatible with the Microsoft Bluetooth Stack, use only Wiimotes manufactured before November 2011 or try the instructions on 
+                            <Hyperlink Click="oLinkToBrowser" NavigateUri="http://touchmote.net/wiimotetr">
+                                this page
+                            </Hyperlink>
+                    </TextBlock>
+                    <Controls:ProgressRing Name="pairProgress2" IsActive="True" Foreground="White" Canvas.Left="10" Canvas.Top="10" />
+                    <Rectangle Width="419" Fill="#FF191919" Height="3" Canvas.Bottom="0"/>
+                </Canvas>
+                <!--Canvas Height="40">
+                    <Label Content="Waiting for connected Wiimotes..." Canvas.Left="15" Canvas.Top="5" FontFamily="Segoe UI Light" FontSize="15" Foreground="White"/>
+                </Canvas>
+
+                <Rectangle Fill="#FF191919" Height="3"/-->
+            </StackPanel>
+            <TextBlock Name="tbPair2" Background="#FF00A2FF" Padding="10" FontSize="24" FontFamily="Segoe UI Light" TextAlignment="Center">                                
+                <Hyperlink Click="PairWiimotes_Click" TextDecorations="" Foreground="White">
+                    Pair Wiimotes
+                </Hyperlink>
+            </TextBlock>
+            <TextBlock Name="tbPairDone" Background="#FF7BD82E" Padding="10" FontSize="24" FontFamily="Segoe UI Light" TextAlignment="Center">                                
+                <Hyperlink Click="PairWiimotes_Click" TextDecorations="" Foreground="White">
+                    Done
+                </Hyperlink>
+            </TextBlock>
+
+
+            <Canvas Height="100" Background="White" Name="canvasMain" Visibility="Collapsed">
+
+
+
+
+
+
+
+
+                
+                <TextBlock Canvas.Left="267" Canvas.Top="64" FontFamily="Segoe UI Semilight">                                
+                            <Hyperlink Click="btnSettings_Click">Configure
+                            </Hyperlink>
                 </TextBlock>
-                <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="80" Height="25" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
-                    <Hyperlink Click="linkInstallDriver_Click" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">Click here to install
-                        </Hyperlink>
+                <Button Visibility="Collapsed" x:Name="btnOutputSettings" HorizontalAlignment="Right" Margin="0,10,0,0" Width="75" Content="Settings" Click="btnOutputSettings_Click"/>
+                <!--<Button Name="btnHide"  Click="btnHide_Click"  Width="60" HorizontalAlignment="Right" Margin="5, 0, 5, 0">Hide</Button>-->
+                <TextBlock Visibility="Hidden" Name="tbPair" Canvas.Left="15" Canvas.Top="97" FontSize="36" FontFamily="Segoe UI Light">                                
+                            <Hyperlink Click="PairWiimotes_Click" TextDecorations="" MouseEnter="imgPair_MouseEnter" MouseLeave="imgPair_MouseLeave">
+                                <Image Name="imgPair" Height="25" Width="24" Source="Resources/connect-icon.png" Opacity="0.4" Cursor="Hand" Stretch="None"/> Pair Wiimote
+                            </Hyperlink>
                 </TextBlock>
-                <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="103" Height="25" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
-                        You will need to restart your computer afterwards.
+                <TextBlock Name="tbConnect" Canvas.Left="15" Canvas.Top="97" FontSize="36" FontFamily="Segoe UI Light">                                
+                            <Hyperlink Click="btnConnect_Click" TextDecorations="" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">
+                                <Image Name="imgConnect" Height="25" Width="24" Source="Resources/connect-icon.png" Opacity="0.4" Cursor="Hand" Stretch="None"/> Connect
+                            </Hyperlink>
                 </TextBlock>
-            </Canvas>
-            <Canvas Name="driverInstalledOverlay" Height="134" Width="286" Background="White" Visibility="Hidden">
-                <Canvas.Effect>
-                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
-                </Canvas.Effect>
-                <Label Content="Driver Installed" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18" Foreground="#FF90B83B"/>
-                <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="45" Height="40" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
-                        The driver has been installed. Please restart your computer to finish installation.
+                <Canvas Name="tbWaiting" Visibility="Hidden">
+                    <TextBlock Canvas.Left="15" Canvas.Top="97" FontSize="36" FontFamily="Segoe UI Light" Foreground="#FFFDB800">                               
+                                <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="Resources/close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Waiting...
+                    </TextBlock>
+                    <TextBlock Canvas.Left="50" Canvas.Top="143" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="#FF898989">                                
+                                    Press any button on the Wiimote, or try to <Hyperlink Click="PairWiimotes_Click">pair it again</Hyperlink>
+                    </TextBlock>
+                </Canvas>
+                <TextBlock Name="tbConnected" Visibility="Collapsed" Canvas.Left="15" Canvas.Top="97" FontSize="36" FontFamily="Segoe UI Light" Foreground="#FF8BCB30">                                
+                            <Image MouseLeftButtonUp="imgClose_MouseUp" Cursor="Hand" Height="25" Canvas.Left="15" Canvas.Top="153" Width="24" Source="Resources/close-icon.png" Opacity="0.4" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/> Connected
                 </TextBlock>
-                <Button Click="btnRestart_Click" Content="Restart now" Canvas.Left="93" Canvas.Top="88" Width="108" Height="32" BorderBrush="#FFC9C9C9" Background="#FFF1F1F1"/>
+                <Label Name="batteryLabel" Visibility="Collapsed" Content="0%" Canvas.Left="177" Canvas.Top="93" FontSize="36" HorizontalContentAlignment="Right" FontFamily="Segoe UI Light" Width="143"/>
+                <Label Content="Mode" Canvas.Left="15" Canvas.Top="59" FontFamily="Segoe UI Semilight"/>
+
 
             </Canvas>
-            <Canvas Name="pairWiimoteOverlay" Visibility="Collapsed" Height="134" Width="286" Background="White">
-                <Canvas.Effect>
-                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
-                </Canvas.Effect>
-                <Canvas Name="pairWiimoteOverlayPairing" Height="134" Width="286">
-                    <Label Name="pairingTitle" Content="Pairing Wiimote" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
-                    <Image Name="imgClosePairCheck" Visibility="Collapsed" MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="250" Canvas.Top="12" Width="24" Source="Resources/check-icon.png" Opacity="0.6" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
-                    <Image Name="imgClosePairClose" MouseLeftButtonDown="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="250" Canvas.Top="12" Width="24" Source="Resources/close-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
-                    <ProgressBar Name="pairProgress" Height="4" Canvas.Left="0" Canvas.Top="47" Width="286" IsIndeterminate="True" RenderTransformOrigin="0.5,0.5" Foreground="#FF2096CD" BorderBrush="#FFF5F1F1" Background="#FFF7F7F7">
-                        <ProgressBar.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform ScaleY="-1"/>
-                                <SkewTransform/>
-                                <RotateTransform/>
-                                <TranslateTransform/>
-                            </TransformGroup>
-                        </ProgressBar.RenderTransform>
-                    </ProgressBar>
-                    <TextBlock Name="pairWiimoteText" Canvas.Left="10" TextWrapping="Wrap" Text="Trying to pair..." Canvas.Top="79" Height="26" Width="270" FontFamily="Segoe UI Semilight" FontSize="16" TextAlignment="Center"/>
+            <Canvas Margin="24,17,25,18" Visibility="Collapsed">
+                <Canvas Name="configOverlay" MouseLeftButtonDown="btnConfigDone_Click" Height="134" Width="286" Background="White" Visibility="Hidden">
+                    <Canvas.Effect>
+                        <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                    </Canvas.Effect>
                     
-                    <TextBlock Name="pairWiimotePressSync" Visibility="Hidden" Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="106" Height="26" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
-                        Press the SYNC<Image Height="12" Width="12" Source="Resources/sync.png" Cursor="Hand" Stretch="None"/> button now
+                </Canvas>
+                <Canvas Name="providerSettingsOverlay" MouseLeftButtonDown="btnProviderSettingsDone_Click" Height="134" Width="286" Background="White" Visibility="Hidden">
+                    <Canvas.Effect>
+                        <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                    </Canvas.Effect>
+                    
+                </Canvas>
+                <Canvas Name="driverMissingOverlay" Height="134" Width="286" Background="White" Visibility="Hidden">
+                    <Canvas.Effect>
+                        <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                    </Canvas.Effect>
+                    <Label Content="Driver Missing" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18" Foreground="#FFD13B3B"/>
+                    <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="42" Height="40" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                            Install the virtual driver to be able use Touchmote as a multi touch device.
                     </TextBlock>
-                    <TextBlock Name="pairWiimoteTryAgain" Visibility="Hidden" Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="106" Height="26" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
-                        <Hyperlink Click="pairWiimoteTryAgain_Click" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">Try again
-                        </Hyperlink>
+                    <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="80" Height="25" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                        <Hyperlink Click="linkInstallDriver_Click" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">Click here to install
+                            </Hyperlink>
                     </TextBlock>
-
-                    <TextBlock Name="pairWiimoteTRFail" Visibility="Hidden" Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="46" Height="63" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
-                        At least one of your Wiimotes is not compatible with the Microsoft Bluetooth Stack, use only Wiimotes manufactured before November 2011 or try the instructions on 
-                        <Hyperlink Click="oLinkToBrowser" NavigateUri="http://touchmote.net/wiimotetr">
-                            this page
-                        </Hyperlink>
+                    <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="103" Height="25" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                            You will need to restart your computer afterwards.
                     </TextBlock>
-
-
-                    <Image Name="pairWiimoteCheckmarkImg" MouseLeftButtonDown="imgClosePair_MouseUp" Cursor="Hand" Height="74" Visibility="Collapsed" Canvas.Left="105" Canvas.Top="46" Width="82" Source="Resources/checkmark-big.png"/>
+                </Canvas>
+                <Canvas Name="driverInstalledOverlay" Height="134" Width="286" Background="White" Visibility="Hidden">
+                    <Canvas.Effect>
+                        <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                    </Canvas.Effect>
+                    <Label Content="Driver Installed" Canvas.Left="9" Canvas.Top="7" FontFamily="Segoe UI Light" FontSize="18" Foreground="#FF90B83B"/>
+                    <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="45" Height="40" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                            The driver has been installed. Please restart your computer to finish installation.
+                    </TextBlock>
+                    <Button Click="btnRestart_Click" Content="Restart now" Canvas.Left="93" Canvas.Top="88" Width="108" Height="32" BorderBrush="#FFC9C9C9" Background="#FFF1F1F1"/>
 
                 </Canvas>
+                <Canvas Name="pairWiimoteOverlay" Visibility="Collapsed" Height="134" Width="286" Background="White">
+                    <Canvas.Effect>
+                        <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
+                    </Canvas.Effect>
+                    <Canvas Name="pairWiimoteOverlayPairing" Height="134" Width="286">
+                        <Label Name="pairingTitle" Content="Pairing Wiimote" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
+                        <Image Name="imgClosePairCheck" Visibility="Collapsed" MouseLeftButtonUp="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="250" Canvas.Top="12" Width="24" Source="Resources/check-icon.png" Opacity="0.6" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
+                        <Image Name="imgClosePairClose" MouseLeftButtonDown="imgClosePair_MouseUp" Cursor="Hand" Height="25" Canvas.Left="250" Canvas.Top="12" Width="24" Source="Resources/close-icon.png" Opacity="0.2" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"/>
+                        <ProgressBar Name="pairProgress" Height="4" Canvas.Left="0" Canvas.Top="47" Width="286" IsIndeterminate="True" RenderTransformOrigin="0.5,0.5" Foreground="#FF2096CD" BorderBrush="#FFF5F1F1" Background="#FFF7F7F7">
+                            <ProgressBar.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleY="-1"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </ProgressBar.RenderTransform>
+                        </ProgressBar>
+                        <TextBlock Name="pairWiimoteText" Canvas.Left="10" TextWrapping="Wrap" Text="Trying to pair..." Canvas.Top="79" Height="26" Width="270" FontFamily="Segoe UI Semilight" FontSize="16" TextAlignment="Center"/>
+
+                        <TextBlock Name="pairWiimotePressSync" Visibility="Hidden" Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="106" Height="26" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
+                            Press the SYNC<Image Height="12" Width="12" Source="Resources/sync.png" Cursor="Hand" Stretch="None"/> button now
+                        </TextBlock>
+                        <TextBlock Name="pairWiimoteTryAgain" Visibility="Hidden" Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="106" Height="26" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                            <Hyperlink Click="pairWiimoteTryAgain_Click" MouseEnter="imgConnect_MouseEnter" MouseLeave="imgConnect_MouseLeave">Try again
+                            </Hyperlink>
+                        </TextBlock>
+
+                        <TextBlock Name="pairWiimoteTRFail" Visibility="Hidden" Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="46" Height="63" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
+                            At least one of your Wiimotes is not compatible with the Microsoft Bluetooth Stack, use only Wiimotes manufactured before November 2011 or try the instructions on 
+                            <Hyperlink Click="oLinkToBrowser" NavigateUri="http://touchmote.net/wiimotetr">
+                                this page
+                            </Hyperlink>
+                        </TextBlock>
+
+
+                        <Image Name="pairWiimoteCheckmarkImg" MouseLeftButtonDown="imgClosePair_MouseUp" Cursor="Hand" Height="74" Visibility="Collapsed" Canvas.Left="105" Canvas.Top="46" Width="82" Source="Resources/checkmark-big.png"/>
+
+                    </Canvas>
+                </Canvas>
+                <Canvas Name="infoOverlay" Height="134" Width="286" Background="White" MouseLeftButtonDown="infoOverlay_MouseDown" Visibility="Collapsed">
+                    
+                </Canvas>
+
             </Canvas>
-            <Canvas Name="infoOverlay" Height="134" Width="286" Background="White" MouseLeftButtonDown="infoOverlay_MouseDown" Visibility="Collapsed">
-                <Canvas.Effect>
-                    <DropShadowEffect Opacity="0.2" BlurRadius="4" ShadowDepth="1"/>
-                </Canvas.Effect>
-                <Label Name="versionLabel" Content="Touchmote v1.0b7" Canvas.Left="9" Canvas.Top="6" FontFamily="Segoe UI Light" FontSize="18"/>
-                <TextBlock Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="48" Height="54" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
-                        Touchmote provides a way for one or several Wiimotes to communicate with Windows as a multi-touch device.
-                </TextBlock>
-                <TextBlock Canvas.Left="8" TextWrapping="Wrap" Canvas.Top="98" Height="27" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">        
-                        Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for more information.
-                </TextBlock>
+            <Canvas Margin="2,2,3,3" Visibility="Collapsed">
+                <Border Name="brdOverlay" Height="165" Width="330" MouseDown="brdOverlay_MouseDown" Visibility="Hidden" Padding="5" >
+                </Border>
             </Canvas>
+        </StackPanel>
+        <Canvas x:Name="canvasSettings" Height="300">
+            <Button Name="btnAppSettingsBack" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Canvas.Left="10" Canvas.Top="10" Click="btnAppSettingsBack_Click">
+                <Rectangle Width="14" Height="14" Fill="Black" Opacity="0.6">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Visual="{StaticResource appbar_arrow_left}" Stretch="Fill" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+
+            </Button>
             
+            <CheckBox x:Name="cbWindowsStart" Content="Start Touchmote with Windows" Canvas.Left="73" Canvas.Top="84" FontFamily="Segoe UI Semilight" Checked="cbWindowsStart_Checked" Unchecked="cbWindowsStart_Unchecked"/>
+            <CheckBox x:Name="cbConnectOnStart" Content="Connect on startup" Canvas.Left="73" Canvas.Top="115" FontFamily="Segoe UI Semilight" Checked="cbConnectOnStart_Checked" Unchecked="cbConnectOnStart_Unchecked" />
+            <!--Button Name="btnConfigDone" Content="Done" Canvas.Left="236" Canvas.Top="126" Width="44" Background="#FFECECEC" BorderBrush="Gainsboro" Height="25"/-->
+            <Label Content="Touchmote settings" Canvas.Left="73" Canvas.Top="36" FontFamily="Segoe UI Light" FontSize="18"/>
+            <ComboBox x:Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="70" Canvas.Top="156" FontFamily="Segoe UI Semilight">
+                <ComboBoxItem x:Name="cbiPointer" IsSelected="True" Content="IR Sensor Bar"/>
+                <ComboBoxItem x:Name="cbiPen" Visibility="Collapsed" Content="IR Pen"/>
+            </ComboBox>
+            <Canvas x:Name="providerSettingsContent" Height="144" Width="413" Canvas.Top="156"/>
         </Canvas>
-        <Canvas Margin="2,2,3,3">
-            <Border Name="brdOverlay" Height="165" Width="330" MouseDown="brdOverlay_MouseDown" Visibility="Hidden" Padding="5" >
-        </Border>
+        <Canvas Name="canvasAbout" Height="300">
+            <Button Name="btnAboutBack" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Canvas.Left="10" Canvas.Top="10" Click="btnAboutBack_Click">
+                <Rectangle Width="14" Height="14" Fill="Black" Opacity="0.6">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Visual="{StaticResource appbar_arrow_left}" Stretch="Fill" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Label Name="versionLabel" Content="Touchmote v1.0b8" Canvas.Left="133" Canvas.Top="14" FontFamily="Segoe UI Light" FontSize="18"/>
+            <TextBlock Canvas.Left="66" TextWrapping="Wrap" Canvas.Top="58" Height="54" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                            Touchmote provides a way for one or several Wiimotes to communicate with Windows as a multi-touch device.
+            </TextBlock>
+            <TextBlock Canvas.Left="66" TextWrapping="Wrap" Canvas.Top="112" Height="27" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">        
+                            Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for more information.
+            </TextBlock>
         </Canvas>
-    </Grid>
+    </StackPanel>
 </Controls:MetroWindow>

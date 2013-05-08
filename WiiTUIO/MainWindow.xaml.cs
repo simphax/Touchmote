@@ -91,6 +91,10 @@ namespace WiiTUIO
 
         public async void Initialize()
         {
+            this.mainPanel.Visibility = Visibility.Visible;
+            this.canvasSettings.Visibility = Visibility.Collapsed;
+            this.canvasAbout.Visibility = Visibility.Collapsed;
+
             InputFactory.InputType inputType = InputFactory.getType(Settings.Default.input);
             OutputFactory.OutputType outputType = OutputFactory.getType(Settings.Default.output);
 
@@ -382,16 +386,34 @@ namespace WiiTUIO
 
         private void showConfig()
         {
-            this.disableMainControls();
-            this.configOverlay.Visibility = Visibility.Visible;
-
+            //this.disableMainControls();
+            //this.configOverlay.Visibility = Visibility.Visible;
+            this.mainPanel.Visibility = Visibility.Collapsed;
+            this.canvasAbout.Visibility = Visibility.Collapsed;
+            this.canvasSettings.Visibility = Visibility.Visible;
         }
 
         private void hideConfig()
         {
-            this.enableMainControls();
-            this.configOverlay.Visibility = Visibility.Hidden;
+            //this.enableMainControls();
+            //this.configOverlay.Visibility = Visibility.Hidden;
+            this.canvasSettings.Visibility = Visibility.Collapsed;
+            this.canvasAbout.Visibility = Visibility.Collapsed;
+            this.mainPanel.Visibility = Visibility.Visible;
+        }
 
+        private void showAbout()
+        {
+            this.mainPanel.Visibility = Visibility.Collapsed;
+            this.canvasAbout.Visibility = Visibility.Visible;
+            this.canvasSettings.Visibility = Visibility.Collapsed;
+        }
+
+        private void hideAbout()
+        {
+            this.canvasSettings.Visibility = Visibility.Collapsed;
+            this.canvasAbout.Visibility = Visibility.Collapsed;
+            this.mainPanel.Visibility = Visibility.Visible;
         }
 
         #region Create and Die
@@ -667,55 +689,6 @@ namespace WiiTUIO
             Application.Current.Shutdown(0);
         }
 
-
-        /// <summary>
-        /// Called when the 'About' button is clicked.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnAbout_Click(object sender, RoutedEventArgs e)
-        {
-            this.infoOverlay.Visibility = Visibility.Visible;
-
-            /*
-            TextBlock pMessage = new TextBlock();
-            pMessage.TextWrapping = TextWrapping.Wrap;
-            pMessage.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            pMessage.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            pMessage.FontSize = 11.0;
-            pMessage.FontWeight = FontWeights.Bold;
-
-            pMessage.Inlines.Add("Touchmote communicates with a Wii Remote to simulate touch events as a TUIO server or Windows 7/8 touch messages.\n\n");
-            pMessage.Inlines.Add("You will have to pair the Wii Remote manually before connecting with Touchmote.\n");
-            pMessage.Inlines.Add("Please visit ");
-            pMessage.Inlines.Add(createHyperlink("touchmote.net", "http://www.touchmote.net/"));
-            pMessage.Inlines.Add(" for more information\n\n");
-
-            pMessage.Inlines.Add("\n\nCredits:\n  ");
-            pMessage.Inlines.Add(createHyperlink("WiiTUIO project", "http://code.google.com/p/wiituio/"));
-            pMessage.Inlines.Add("\n  ");
-            pMessage.Inlines.Add(createHyperlink("Johnny Chung Lee", "http://johnnylee.net/projects/wii/"));
-            pMessage.Inlines.Add("\n  ");
-            pMessage.Inlines.Add(createHyperlink("Brian Peek", "http://www.brianpeek.com/"));
-            pMessage.Inlines.Add("\n  ");
-            pMessage.Inlines.Add(createHyperlink("Nesher", "http://www.codeplex.com/site/users/view/nesher"));
-            pMessage.Inlines.Add("\n  ");
-            pMessage.Inlines.Add(createHyperlink("TUIO Project", "http://www.tuio.org"));
-            pMessage.Inlines.Add("\n  ");
-            pMessage.Inlines.Add(createHyperlink("MultiTouchVista", "http://multitouchvista.codeplex.com/"));
-            pMessage.Inlines.Add("\n  ");
-            pMessage.Inlines.Add(createHyperlink("OSC.NET Library", "http://luvtechno.net/"));
-            pMessage.Inlines.Add("\n  ");
-            pMessage.Inlines.Add(createHyperlink("WiimoteLib 1.7", "http://wiimotelib.codeplex.com/"));
-            pMessage.Inlines.Add("\n  ");
-            pMessage.Inlines.Add(createHyperlink("HIDLibrary", "http://hidlibrary.codeplex.com/"));
-            pMessage.Inlines.Add("\n  ");
-            pMessage.Inlines.Add(createHyperlink("WPFNotifyIcon", "http://www.hardcodet.net/projects/wpf-notifyicon"));
-
-            showMessage(pMessage, MessageType.Info);
-             * */
-        }
-
         #endregion
 
         private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
@@ -781,22 +754,23 @@ namespace WiiTUIO
 
         private void PairWiimotes_Click(object sender, RoutedEventArgs e)
         {
-            this.disableMainControls();
-            this.pairWiimoteOverlay.Visibility = Visibility.Visible;
-            this.pairWiimoteOverlayPairing.Visibility = Visibility.Visible;
+            //this.disableMainControls();
+            //this.pairWiimoteOverlay.Visibility = Visibility.Visible;
+            //this.pairWiimoteOverlayPairing.Visibility = Visibility.Visible;
+            this.canvasPairing.Visibility = Visibility.Visible;
             this.runWiiPair();
         }
 
         private void runWiiPair() {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-            this.pairingTitle.Content = "Pairing Wiimotes";
-            this.pairWiimoteTRFail.Visibility = Visibility.Hidden;
-            this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
-            this.imgClosePairCheck.Visibility = Visibility.Hidden;
-            this.imgClosePairClose.Visibility = Visibility.Visible;
-            this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
-            this.pairProgress.Visibility = Visibility.Visible;
+            //this.pairingTitle.Content = "Pairing Wiimotes";
+            //this.pairWiimoteTRFail.Visibility = Visibility.Hidden;
+            //this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
+            //this.imgClosePairCheck.Visibility = Visibility.Hidden;
+            //this.imgClosePairClose.Visibility = Visibility.Visible;
+            //this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
+            //this.pairProgress.Visibility = Visibility.Visible;
             }), null);
             Thread thread = new Thread(new ThreadStart(wiiPairThreadWorker));
             thread.Priority = ThreadPriority.Normal;
@@ -821,17 +795,19 @@ namespace WiiTUIO
             if (report.removeMode)
             {
                 this.wiiPairRunning = true;
+                /*
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
                     this.imgClosePairCheck.Visibility = Visibility.Hidden;
                     this.imgClosePairClose.Visibility = Visibility.Visible;
                 }), null);
+                */
                 wiiPair.start(false); //Run the actual pairing after removing all previous connected devices.
             }
             else if (report.numberPaired > 0)
             {
                 Settings.Default.pairedOnce = true;
-
+                /*
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
                     if (report.numberPaired == 1)
@@ -845,7 +821,7 @@ namespace WiiTUIO
                     this.imgClosePairCheck.Visibility = Visibility.Visible;
                     this.imgClosePairClose.Visibility = Visibility.Hidden;
                 }), null);
-
+                */
                 if (!this.wiiPairRunning)
                 {
                     if (report.deviceNames.Contains(@"Nintendo RVL-CNT-01-TR"))
@@ -855,12 +831,12 @@ namespace WiiTUIO
                             //this.pairingTitle.Content = "Pairing Successful";
                             this.pairWiimoteText.Text = @"";
                             this.pairWiimotePressSync.Visibility = Visibility.Hidden;
-                            this.pairWiimoteTRFail.Visibility = Visibility.Visible;
-                            this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
+                            this.pairWiimoteTRFail2.Visibility = Visibility.Visible;
+                            this.pairWiimoteTryAgain2.Visibility = Visibility.Visible;
 
-                            this.pairProgress.Visibility = Visibility.Hidden;
-
-                            this.pairProgress.IsIndeterminate = false;
+                            this.pairProgress2.Visibility = Visibility.Hidden;
+                            this.pairProgress2.IsActive = false;
+                            //this.pairProgress.IsIndeterminate = false;
 
                         }), null);
                     }
@@ -1111,6 +1087,26 @@ namespace WiiTUIO
         private void enableMainControls()
         {
             this.canvasMain.IsEnabled = true;
+        }
+
+        private void btnAppSettings_Click(object sender, RoutedEventArgs e)
+        {
+            this.showConfig();
+        }
+
+        private void btnAbout_Click(object sender, RoutedEventArgs e)
+        {
+            this.showAbout();
+        }
+
+        private void btnAppSettingsBack_Click(object sender, RoutedEventArgs e)
+        {
+            this.hideConfig();
+        }
+
+        private void btnAboutBack_Click(object sender, RoutedEventArgs e)
+        {
+            this.hideAbout();
         }
     }
 
