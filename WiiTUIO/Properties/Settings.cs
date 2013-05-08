@@ -38,6 +38,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private bool _pairOnStart = false;
+        public bool pairOnStart
+        {
+            get { return _pairOnStart; }
+            set
+            {
+                _pairOnStart = value;
+                OnPropertyChanged("pairOnStart");
+            }
+        }
+
         private bool _connectOnStart = true;
         public bool connectOnStart
         {

@@ -41,6 +41,8 @@ namespace WiiTUIO
 
         private bool tryingToConnect = false;
 
+        private bool startupPair = false;
+
         /// <summary>
         /// A reference to the WiiProvider we want to use to get/forward input.
         /// </summary>
@@ -138,7 +140,12 @@ namespace WiiTUIO
             this.createProvider();
             this.createProviderHandler();
 
-            if (Settings.Default.connectOnStart)
+            if (Settings.Default.pairOnStart)
+            {
+                this.startupPair = true;
+                this.runWiiPair();
+            }
+            else if (Settings.Default.connectOnStart)
             {
                 this.connectProvider();
             }
@@ -783,9 +790,7 @@ namespace WiiTUIO
             //this.disableMainControls();
             //this.pairWiimoteOverlay.Visibility = Visibility.Visible;
             //this.pairWiimoteOverlayPairing.Visibility = Visibility.Visible;
-            this.canvasPairing.Visibility = Visibility.Visible;
-            this.tbPair2.Visibility = Visibility.Collapsed;
-            this.tbPairDone.Visibility = Visibility.Visible;
+
             this.runWiiPair();
         }
 
@@ -794,6 +799,10 @@ namespace WiiTUIO
             {
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
+                    this.canvasPairing.Visibility = Visibility.Visible;
+                    this.tbPair2.Visibility = Visibility.Collapsed;
+                    this.tbPairDone.Visibility = Visibility.Visible;
+
                     this.pairingTitle.Content = "Pairing Wiimotes";
                     this.pairWiimoteTRFail.Visibility = Visibility.Hidden;
                     this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
@@ -815,7 +824,7 @@ namespace WiiTUIO
         private void wiiPairThreadWorker()
         {
             this.wiiPairRunning = true;
-            wiiPair.start(true);//First remove all connected devices.
+            wiiPair.start(true,10);//First remove all connected devices.
         }
 
         private void stopWiiPair() {
@@ -915,8 +924,13 @@ namespace WiiTUIO
 
                     this.connectProvider();
                 }), null);
-
-                wiiPair.start(false); //Run the actual pairing after removing all previous connected devices.
+                int stopat = 10;
+                if (this.startupPair)
+                {
+                    stopat = 1;
+                    this.startupPair = false;
+                }
+                wiiPair.start(false,stopat); //Run the actual pairing after removing all previous connected devices.
             }
             else
             {

@@ -805,7 +805,7 @@ namespace WiiTUIO
         private void wiiPairThreadWorker()
         {
             this.wiiPairRunning = true;
-            wiiPair.start(true);//First remove all connected devices.
+            wiiPair.start(true,10);//First remove all connected devices.
         }
 
         private void stopWiiPair() {
@@ -825,7 +825,7 @@ namespace WiiTUIO
                     this.imgClosePairCheck.Visibility = Visibility.Hidden;
                     this.imgClosePairClose.Visibility = Visibility.Visible;
                 }), null);
-                wiiPair.start(false); //Run the actual pairing after removing all previous connected devices.
+                wiiPair.start(false,10); //Run the actual pairing after removing all previous connected devices.
             }
             else if (report.numberPaired > 0)
             {

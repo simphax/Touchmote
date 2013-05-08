@@ -109,7 +109,7 @@ namespace WiiCPP {
 			killme = true;
 		}
 
-		void start(bool removeMode)
+		void start(bool removeMode, int stopat)
 		{
 			killme = false;
 			WiiPairSuccessReport ^report = gcnew WiiPairSuccessReport();
@@ -315,6 +315,9 @@ namespace WiiCPP {
 									nPaired++;
 									report->numberPaired = nPaired;
 									listener->onPairingSuccess(report);
+									if(nPaired >= stopat) {
+										killme = true;
+									}
 								}
 							} // if (!wcscmp(btdi.szName, L"Nintendo RVL-WBC-01") || !wcscmp(btdi.szName, L"Nintendo RVL-CNT-01"))
 						}
