@@ -60,6 +60,28 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private bool _minimizeOnStart = false;
+        public bool minimizeOnStart
+        {
+            get { return _minimizeOnStart; }
+            set
+            {
+                _minimizeOnStart = value;
+                OnPropertyChanged("minimizeOnStart");
+            }
+        }
+
+        private bool _minimizeToTray = false;
+        public bool minimizeToTray
+        {
+            get { return _minimizeToTray; }
+            set
+            {
+                _minimizeToTray = value;
+                OnPropertyChanged("minimizeToTray");
+            }
+        }
+
         private bool _pairedOnce = false;
         public bool pairedOnce
         {

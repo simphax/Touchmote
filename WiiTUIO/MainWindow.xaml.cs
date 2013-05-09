@@ -35,6 +35,8 @@ namespace WiiTUIO
     /// </summary>
     public partial class MainWindow : MetroWindow, WiiCPP.WiiPairListener
     {
+        private bool minimizedOnce = false;
+
         private Thread wiiPairThread;
 
         private bool providerHandlerConnected = false;
@@ -73,7 +75,13 @@ namespace WiiTUIO
             InitializeComponent();
             this.Initialize();
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
-            
+
+            if (Settings.Default.minimizeToTray)
+            {
+                MinimizeToTray.Enable(this);
+            }
+
+
             /*
             switch (outputType)
             {
@@ -172,12 +180,17 @@ namespace WiiTUIO
         /// Raises the <see cref="E:System.Windows.FrameworkElement.Initialized"/> event.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
-        protected override void OnInitialized(EventArgs e)
+        protected override void OnActivated(EventArgs e)
         {
             // Call the base class.
-            base.OnInitialized(e);
+            base.OnActivated(e);
+            if (!this.minimizedOnce && Settings.Default.minimizeOnStart)
+            {
+                this.WindowState = System.Windows.WindowState.Minimized;
+                this.minimizedOnce = true;
+            }
         }
-
+        
         private void appWillExit(object sender, ExitEventArgs e)
         {
             this.stopWiiPair();

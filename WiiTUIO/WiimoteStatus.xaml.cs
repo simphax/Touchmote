@@ -47,12 +47,12 @@ namespace WiiTUIO
                 this.powersave = status.InPowerSave;
                 if (status.InPowerSave)
                 {
-                    this.lbStatus.Foreground = Brushes.Aquamarine;
-                    this.lbStatus.Content = "power save";
+                    this.lbStatus.Foreground = Brushes.White;
+                    this.lbStatus.Content = "sleepmode";
                 }
                 else
                 {
-                    this.lbStatus.Foreground = Brushes.Green;
+                    this.lbStatus.Foreground = new SolidColorBrush(Color.FromRgb(255,163,255));
                     this.lbStatus.Content = "connected";
                 }
             }
