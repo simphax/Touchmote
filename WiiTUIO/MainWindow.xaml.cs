@@ -70,13 +70,14 @@ namespace WiiTUIO
         /// </summary>
         public MainWindow()
         {
-            
+            //Set highest priority on main process.
+            Process currentProcess = Process.GetCurrentProcess();
+            currentProcess.PriorityClass = ProcessPriorityClass.High;
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+
             // Load from the XAML.
             InitializeComponent();
             this.Initialize();
-            //Process currentProcess = Process.GetCurrentProcess();
-            //currentProcess.PriorityClass = ProcessPriorityClass.RealTime;
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
             if (Settings.Default.minimizeToTray)
             {
@@ -205,6 +206,7 @@ namespace WiiTUIO
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
             {
+                this.connectedCount.Content = totalWiimotes;
                 statusStackMutex.WaitOne();
                 foreach (UIElement child in this.statusStack.Children)
                 {
