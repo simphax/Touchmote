@@ -92,7 +92,7 @@ namespace WiiTUIO
             this.mainPanel.Visibility = Visibility.Visible;
             this.canvasSettings.Visibility = Visibility.Collapsed;
             this.canvasAbout.Visibility = Visibility.Collapsed;
-            this.canvasPairing.Visibility = Visibility.Collapsed;
+            this.spPairing.Visibility = Visibility.Collapsed;
             this.tbPair2.Visibility = Visibility.Visible;
             this.tbPairDone.Visibility = Visibility.Collapsed;
             this.spErrorMsg.Visibility = Visibility.Collapsed;
@@ -181,7 +181,11 @@ namespace WiiTUIO
 
                 this.connectedCount.Content = totalWiimotes;
                 statusStackMutex.WaitOne();
-                this.statusStack.Children.Add(new WiimoteStatusUC(ID));
+                WiimoteStatusUC uc = new WiimoteStatusUC(ID);
+                FrameworkElement child = (FrameworkElement)uc.GetChildObjects().First();
+                child.Visibility = Visibility.Collapsed;
+                this.statusStack.Children.Add(uc);
+                this.animateExpand(child);
                 statusStackMutex.ReleaseMutex();
 
                 connectProviderHandler();
@@ -207,7 +211,8 @@ namespace WiiTUIO
                     WiimoteStatusUC uc = (WiimoteStatusUC)child;
                     if (uc.ID == ID)
                     {
-                        this.statusStack.Children.Remove(child);
+                        this.animateCollapse((FrameworkElement)uc.GetChildObjects().First(),true);
+                        //this.statusStack.Children.Remove(child);
                         break;
                     }
                 }
@@ -279,47 +284,58 @@ namespace WiiTUIO
             switch (eType)
             {
                 case MessageType.Error:
-                    this.spErrorMsg.Visibility = System.Windows.Visibility.Visible;
                     this.tbErrorMsg.Text = message;
+                    this.animateExpand(this.spErrorMsg);
                     break;
                 case MessageType.Info:
-                    this.spInfoMsg.Visibility = System.Windows.Visibility.Visible;
                     this.tbInfoMsg.Text = message;
+                    this.animateExpand(this.spInfoMsg);
                     break;
             }
             
+
             // Fade in and out.
             //messageFadeIn(fTimeout, false);
             
             }), null);
         }
-        /*
-        private void messageFadeIn(double fTimeout, bool bFadeOut)
+
+        private void animateExpand(FrameworkElement elem)
         {
-            // Now fade it in with an animation.
-            DoubleAnimation pAnimation = createDoubleAnimation(1.0, fTimeout, false);
+            if (elem.GetChildObjects().First() is FrameworkElement)
+            {
+                elem.Visibility = Visibility.Visible;
+                elem.Measure(new Size(1000,1000));
+                DoubleAnimation pAnimation = createDoubleAnimation(elem.DesiredSize.Height, 1000, false);
+                elem.Height = 0;
+                elem.Visibility = Visibility.Visible;
+                pAnimation.Completed += delegate(object sender, EventArgs pEvent)
+                {
+
+                };
+                pAnimation.Freeze();
+                elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.Compose);
+            }
+        }
+        private void animateCollapse(FrameworkElement elem, bool remove)
+        {
+            DoubleAnimation pAnimation = createDoubleAnimation(0, 1000, false);
             pAnimation.Completed += delegate(object sender, EventArgs pEvent)
             {
-                if (bFadeOut)
-                    this.messageFadeOut(fTimeout);
+                if (remove && elem.Parent is Panel)
+                {
+                    ((Panel)elem.Parent).Children.Remove(elem);
+                }
+                else
+                {
+                    elem.Visibility = Visibility.Collapsed;
+                }
             };
             pAnimation.Freeze();
-            brdOverlay.BeginAnimation(Canvas.OpacityProperty, pAnimation, HandoffBehavior.Compose);
+            elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.Compose);
 
         }
-        private void messageFadeOut(double fTimeout)
-        {
-            // Now fade it in with an animation.
-            DoubleAnimation pAnimation = createDoubleAnimation(0.0, fTimeout, false);
-            pAnimation.Completed += delegate(object sender, EventArgs pEvent)
-            {
-                // We are now faded out so make us invisible again.
-                brdOverlay.Visibility = Visibility.Hidden;
-            };
-            pAnimation.Freeze();
-            brdOverlay.BeginAnimation(Canvas.OpacityProperty, pAnimation, HandoffBehavior.Compose);
-        }
-        */
+
         #region Animation Helpers
         /**
          * @brief Helper method to create a double animation.
@@ -592,7 +608,7 @@ namespace WiiTUIO
             {
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    this.canvasPairing.Visibility = Visibility.Visible;
+                    this.animateExpand(this.spPairing);//.Visibility = Visibility.Visible;
                     this.tbPair2.Visibility = Visibility.Collapsed;
                     this.tbPairDone.Visibility = Visibility.Visible;
 
@@ -638,7 +654,7 @@ namespace WiiTUIO
             }
             else
             {
-                if (report.removeMode)
+                if (report.removeMode && report.status != WiiCPP.WiiPairReport.Status.CANCELLED)
                 {
                     this.wiiPairRunning = true;
 
@@ -660,7 +676,8 @@ namespace WiiTUIO
                     this.wiiPairRunning = false;
                     Dispatcher.BeginInvoke(new Action(delegate()
                     {
-                        this.canvasPairing.Visibility = Visibility.Collapsed;
+                        //this.canvasPairing.Visibility = Visibility.Collapsed;
+                        this.animateCollapse(this.spPairing,false);
                         this.tbPair2.Visibility = Visibility.Visible;
                         this.tbPairDone.Visibility = Visibility.Collapsed;
 
@@ -788,12 +805,14 @@ namespace WiiTUIO
 
         private void spInfoMsg_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            this.spInfoMsg.Visibility = Visibility.Collapsed;
+            //this.spInfoMsg.Visibility = Visibility.Collapsed;
+            this.animateCollapse(spInfoMsg,false);
         }
 
         private void spErrorMsg_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            this.spErrorMsg.Visibility = Visibility.Collapsed;
+            //this.spErrorMsg.Visibility = Visibility.Collapsed;
+            this.animateCollapse(spErrorMsg,false);
         }
 
     }

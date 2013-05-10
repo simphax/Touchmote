@@ -110,12 +110,18 @@ namespace WiiTUIO.Provider
         /// </summary>
         public void start()
         {
-            // Set the running flag.
             this.bRunning = true;
-            Console.WriteLine("Starting wiimoteConnectorThread");
-            wiimoteConnectorThread = new Thread(new ThreadStart(wiimoteConnectorThreadWorker));
-            wiimoteConnectorThread.Priority = ThreadPriority.BelowNormal;
-            wiimoteConnectorThread.Start();
+            if (this.wiimoteConnectorThread != null && this.wiimoteConnectorThread.IsAlive)
+            {
+            }
+            else
+            {
+                // Set the running flag.
+                Console.WriteLine("Starting wiimoteConnectorThread");
+                wiimoteConnectorThread = new Thread(new ThreadStart(wiimoteConnectorThreadWorker));
+                wiimoteConnectorThread.Priority = ThreadPriority.BelowNormal;
+                wiimoteConnectorThread.Start();
+            }
         }
 
         private void wiimoteConnectorThreadWorker()

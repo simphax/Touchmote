@@ -57,44 +57,32 @@
                 <StackPanel Name="statusStack">
                     
                 </StackPanel>
-                <Canvas Name="canvasPairing" Height="87" Background="#FF00A2FF">
-                    <Canvas.Triggers>
-                        <EventTrigger RoutedEvent="Window.Loaded">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetName="canvasPairing" 
-                            Storyboard.TargetProperty="Height" From="0" To="87" 
-                            Duration="0:0:1" BeginTime="0:0:5" AutoReverse="False" 
-                            >
-                                        <DoubleAnimation.EasingFunction>
-                                            <BounceEase Bounces="2"
-                                        Bounciness="4" />
-                                        </DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Canvas.Triggers>
-                    <TextBlock Name="pairWiimoteText" Canvas.Left="98" Canvas.Top="28" FontFamily="Segoe UI Light" FontSize="18" Foreground="White" Width="305" TextAlignment="Left">
+                <Border BorderBrush="#FF191919" BorderThickness="0,0,0,3">
+                    <StackPanel Name="spPairing">
+                        <Canvas Name="canvasPairing" Height="87" Background="#FF00A2FF">
+
+                            <TextBlock Name="pairWiimoteText" Canvas.Left="98" Canvas.Top="28" FontFamily="Segoe UI Light" FontSize="18" Foreground="White" Width="305" TextAlignment="Left">
                         Pairing...
-                    </TextBlock>
-                    <TextBlock Name="pairWiimotePressSync" Visibility="Hidden" Canvas.Left="34" TextWrapping="Wrap" Canvas.Top="50" Height="26" Width="270" FontFamily="Segoe UI Semilight" Foreground="White" FontSize="11" TextAlignment="Center">
+                            </TextBlock>
+                            <TextBlock Name="pairWiimotePressSync" Visibility="Hidden" Canvas.Left="34" TextWrapping="Wrap" Canvas.Top="50" Height="26" Width="270" FontFamily="Segoe UI Semilight" Foreground="White" FontSize="11" TextAlignment="Center">
                             Press the SYNC<Image Height="12" Width="12" Source="Resources/sync.png" Cursor="Hand" Stretch="None"/> button now
-                    </TextBlock>
-                    <TextBlock Name="pairWiimoteTryAgain" Visibility="Hidden" Canvas.Left="58" TextWrapping="Wrap" Canvas.Top="61" Height="26" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                            </TextBlock>
+                            <TextBlock Name="pairWiimoteTryAgain" Visibility="Hidden" Canvas.Left="58" TextWrapping="Wrap" Canvas.Top="61" Height="26" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
                             <Hyperlink Click="pairWiimoteTryAgain_Click" Foreground="White">Try again
                             </Hyperlink>
-                    </TextBlock>
+                            </TextBlock>
 
-                    <TextBlock Name="pairWiimoteTRFail" Visibility="Hidden" Foreground="White" Canvas.Left="70" TextWrapping="Wrap" Canvas.Top="7" Height="63" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
+                            <TextBlock Name="pairWiimoteTRFail" Visibility="Hidden" Foreground="White" Canvas.Left="70" TextWrapping="Wrap" Canvas.Top="7" Height="63" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
                             At least one of your Wiimotes is not compatible with the Microsoft Bluetooth Stack, use only Wiimotes manufactured before November 2011 or try the instructions on 
                             <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="http://touchmote.net/wiimotetr" Foreground="White">
                                 this page
                             </Hyperlink>
-                    </TextBlock>
-                    <Controls:ProgressRing Name="pairProgress" IsActive="True" Foreground="White" Canvas.Left="10" Canvas.Top="10" />
-                    <Rectangle Width="419" Fill="#FF191919" Height="3" Canvas.Bottom="0"/>
-                </Canvas>
+                            </TextBlock>
+                            <Controls:ProgressRing Name="pairProgress" IsActive="True" Foreground="White" Canvas.Left="10" Canvas.Top="10" />
+                        </Canvas>
+                    </StackPanel>
+                </Border>
+                
                 <!--Canvas Height="40">
                     <Label Content="Waiting for connected Wiimotes..." Canvas.Left="15" Canvas.Top="5" FontFamily="Segoe UI Light" FontSize="15" Foreground="White"/>
                 </Canvas>
