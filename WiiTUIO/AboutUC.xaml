@@ -15,7 +15,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Canvas Height="170">
+    <Canvas Height="196">
         <Button Name="btnAboutBack" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Canvas.Left="10" Canvas.Top="10" Click="btnAboutBack_Click">
             <Rectangle Width="14" Height="14" Fill="Black" Opacity="0.6">
                 <Rectangle.OpacityMask>
@@ -23,11 +23,9 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Button>
-        <Label Name="versionLabel" Content="Touchmote v1.0b8" Canvas.Left="78" Canvas.Top="36" FontFamily="Segoe UI Light" FontSize="18"/>
-        <TextBlock Canvas.Left="78" TextWrapping="Wrap" Canvas.Top="80" Height="54" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
-                            Touchmote provides a way for one or several Wiimotes to communicate with Windows as a multi-touch device.
-        </TextBlock>
-        <TextBlock Canvas.Left="78" TextWrapping="Wrap" Canvas.Top="134" Height="27" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">        
+        <Label Name="versionLabel" Content="Touchmote v1.0b8" Canvas.Left="76" Canvas.Top="36" FontFamily="Segoe UI Light" FontSize="18"/>
+        <TextBlock Canvas.Left="81" TextWrapping="Wrap" Canvas.Top="80" Height="54" Width="270" FontFamily="Segoe UI Semilight"><Run Text="Touchmote provides a way for one or several Wiimotes to"/><Run Language="sv-se" Text=" act as a multi-touch device in Windows 8."/></TextBlock>
+        <TextBlock Canvas.Left="82" TextWrapping="Wrap" Canvas.Top="139" Height="27" Width="270" FontFamily="Segoe UI Semilight">        
                             Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for more information.
         </TextBlock>
     </Canvas>
