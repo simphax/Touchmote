@@ -92,6 +92,8 @@ namespace WiiTUIO
             this.canvasPairing.Visibility = Visibility.Collapsed;
             this.tbPair2.Visibility = Visibility.Visible;
             this.tbPairDone.Visibility = Visibility.Collapsed;
+            this.spErrorMsg.Visibility = Visibility.Collapsed;
+            this.spInfoMsg.Visibility = Visibility.Collapsed;
 
            
             //this.cbConnectOnStart.IsChecked = Settings.Default.connectOnStart;
@@ -217,27 +219,6 @@ namespace WiiTUIO
                 if (totalWiimotes == 0)
                 {
                     this.bConnected = false;
-                    
-                    tbConnected.Visibility = Visibility.Hidden;
-                    if (tryingToConnect)
-                    {
-                        tbWaiting.Visibility = Visibility.Visible;
-                        tbConnect.Visibility = Visibility.Hidden;
-                    }
-                    else if(!Settings.Default.pairedOnce)
-                    {
-                        tbWaiting.Visibility = Visibility.Hidden;
-                        tbConnect.Visibility = Visibility.Hidden;
-                        tbPair.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        tbWaiting.Visibility = Visibility.Hidden;
-                        tbConnect.Visibility = Visibility.Visible;
-                        tbPair.Visibility = Visibility.Hidden;
-                    }
-
-                    batteryLabel.Content = "0%";
 
                     disconnectProviderHandler();
                 }
@@ -295,61 +276,28 @@ namespace WiiTUIO
 
         enum MessageType { Info, Error };
 
-        private void showMessage(string sMessage, MessageType eType)
-        {
-            Console.WriteLine(sMessage);
-            Dispatcher.BeginInvoke(new Action(delegate()
-            {
-            TextBlock pMessage = new TextBlock();
-            pMessage.Text = sMessage;
-            pMessage.TextWrapping = TextWrapping.Wrap;
-            pMessage.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            pMessage.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            pMessage.FontWeight = FontWeights.Bold;
-            if (eType == MessageType.Error)
-            {
-                pMessage.Foreground = new SolidColorBrush(Colors.White);
-                pMessage.FontSize = 16.0;
-            }
-
-            this.showMessage(pMessage, eType);
-
-            }), null);
-        }
-
-        private void showMessage(UIElement pMessage, MessageType eType)
-        {
-            showMessage(pMessage, 750.0, eType);
-        }
-
-        private void showMessage(UIElement pElement, double fTimeout, MessageType eType)
+        private void showMessage(string message, MessageType eType)
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-            // Show (and possibly initialise) the error message overlay
-            //brdOverlay.Height = this.ActualHeight - 8;
-            //brdOverlay.Width = this.ActualWidth - 8;
-            brdOverlay.Opacity = 0.0;
-            brdOverlay.Visibility = System.Windows.Visibility.Visible;
             switch (eType)
             {
                 case MessageType.Error:
-                    brdOverlay.Background = new SolidColorBrush(Color.FromArgb(192, 255, 0, 0));
+                    this.spErrorMsg.Visibility = System.Windows.Visibility.Visible;
+                    this.tbErrorMsg.Text = message;
                     break;
                 case MessageType.Info:
-                    brdOverlay.Background = new SolidColorBrush(Colors.White);
+                    this.spInfoMsg.Visibility = System.Windows.Visibility.Visible;
+                    this.tbInfoMsg.Text = message;
                     break;
             }
-
-            // Set the message
-            brdOverlay.Child = pElement;
-
+            
             // Fade in and out.
-            messageFadeIn(fTimeout, false);
+            //messageFadeIn(fTimeout, false);
             
             }), null);
         }
-
+        /*
         private void messageFadeIn(double fTimeout, bool bFadeOut)
         {
             // Now fade it in with an animation.
@@ -375,7 +323,7 @@ namespace WiiTUIO
             pAnimation.Freeze();
             brdOverlay.BeginAnimation(Canvas.OpacityProperty, pAnimation, HandoffBehavior.Compose);
         }
-
+        */
         #region Animation Helpers
         /**
          * @brief Helper method to create a double animation.
@@ -534,21 +482,10 @@ namespace WiiTUIO
         {
             if (!this.tryingToConnect)
             {
-                Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    this.tbPair.Visibility = Visibility.Hidden;
-                    this.tbConnect.Visibility = Visibility.Hidden;
-                    this.tbWaiting.Visibility = Visibility.Visible;
-                }), null);
-
                 Launcher.Launch("Driver", "devcon", " enable \"BTHENUM*_VID*57e*_PID&0306*\"", null);
 
                 this.startProvider();
 
-                /*
-                Thread thread = new Thread(new ThreadStart(tryConnectingProvider));
-                thread.Start();
-                 * */
             }
         }
         /*
@@ -643,50 +580,6 @@ namespace WiiTUIO
         }
         #endregion
 
-
-        #region UI Events
-
-        /// <summary>
-        /// Called when there is a mouse down event over the 'brdOverlay'
-        /// </summary>
-        /// Enables the messages that are displayed to disappear on mouse down events
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void brdOverlay_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            messageFadeOut(750.0);
-        }
-
-        /// <summary>
-        /// Called when the 'Connect' or 'Disconnect' button is clicked.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnConnect_Click(object sender, RoutedEventArgs e)
-        {
-            if (!this.bConnected && !this.tryingToConnect)
-            {
-                this.connectProvider();
-            }
-            else
-            {
-                this.disconnectProvider();
-            }
-        }
-
-        /// <summary>
-        /// Called when exit is clicked in the context menu
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnExit_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown(0);
-        }
-
-        #endregion
-
-
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
@@ -721,12 +614,8 @@ namespace WiiTUIO
                     this.tbPair2.Visibility = Visibility.Collapsed;
                     this.tbPairDone.Visibility = Visibility.Visible;
 
-                    this.pairingTitle.Content = "Pairing Wiimotes";
                     this.pairWiimoteTRFail.Visibility = Visibility.Hidden;
                     this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
-                    this.imgClosePairCheck.Visibility = Visibility.Hidden;
-                    this.imgClosePairClose.Visibility = Visibility.Visible;
-                    this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
                     this.pairProgress.Visibility = Visibility.Visible;
                 }), null);
                 if (this.wiiPairThread != null)
@@ -746,6 +635,7 @@ namespace WiiTUIO
         }
 
         private void stopWiiPair() {
+            this.wiiPairRunning = false;
             wiiPair.stop();
         }
 
@@ -756,20 +646,6 @@ namespace WiiTUIO
             if (report.numberPaired > 0)
             {
                 Settings.Default.pairedOnce = true;
-                
-                Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    if (report.numberPaired == 1)
-                    {
-                        this.pairingTitle.Content = "One Wiimote Paired";
-                    }
-                    else
-                    {
-                        this.pairingTitle.Content = report.numberPaired + " Wiimotes Paired";
-                    }
-                    this.imgClosePairCheck.Visibility = Visibility.Visible;
-                    this.imgClosePairClose.Visibility = Visibility.Hidden;
-                }), null);
                 
                 if (!this.wiiPairRunning)
                 {
@@ -798,7 +674,6 @@ namespace WiiTUIO
                             this.pairWiimoteText.Text = @"";
                             this.pairWiimotePressSync.Visibility = Visibility.Hidden;
                             this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
-                            this.pairWiimoteCheckmarkImg.Visibility = Visibility.Visible;
 
                             this.pairProgress.Visibility = Visibility.Hidden;
 
@@ -815,8 +690,6 @@ namespace WiiTUIO
             {
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    this.imgClosePairCheck.Visibility = Visibility.Hidden;
-                    this.imgClosePairClose.Visibility = Visibility.Visible;
                 }), null);
             }
         }
@@ -837,11 +710,9 @@ namespace WiiTUIO
 
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    this.imgClosePairCheck.Visibility = Visibility.Hidden;
-                    this.imgClosePairClose.Visibility = Visibility.Visible;
-
                     this.connectProvider();
                 }), null);
+
                 int stopat = 10;
                 if (this.startupPair)
                 {
@@ -855,11 +726,6 @@ namespace WiiTUIO
                 this.wiiPairRunning = false;
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    //this.pairingTitle.Content = "Pairing Cancelled";
-                    //this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
-                    this.imgClosePairCheck.Visibility = Visibility.Hidden;
-                    this.imgClosePairClose.Visibility = Visibility.Visible;
-                    //this.pairWiimoteCheckmarkImg.Visibility = Visibility.Hidden;
                     this.canvasPairing.Visibility = Visibility.Collapsed;
                     this.tbPair2.Visibility = Visibility.Visible;
                     this.tbPairDone.Visibility = Visibility.Collapsed;
@@ -893,10 +759,6 @@ namespace WiiTUIO
                 {
                     pairWiimotePressSync.Visibility = Visibility.Visible;
 
-                    if (this.imgClosePairCheck.Visibility == Visibility.Hidden && this.imgClosePairClose.Visibility == Visibility.Hidden)
-                    {
-                        this.imgClosePairClose.Visibility = Visibility.Visible;
-                    }
                 }
                 else
                 {
@@ -910,23 +772,9 @@ namespace WiiTUIO
             
             if (this.wiiPairRunning)
             {
-                if (this.imgClosePairClose.Visibility == Visibility.Visible)
-                {
-                    this.pairWiimoteText.Text = "Cancelling...";
-                }
-                else
-                {
-                    this.pairWiimoteText.Text = "Finishing...";
-                }
-                this.imgClosePairCheck.Visibility = Visibility.Hidden;
-                this.imgClosePairClose.Visibility = Visibility.Hidden;
+                this.pairWiimoteText.Text = "Closing...";
                 this.pairWiimotePressSync.Visibility = Visibility.Hidden;
                 this.stopWiiPair();
-            }
-            else
-            {
-                this.pairWiimoteOverlay.Visibility = Visibility.Hidden;
-                this.enableMainControls();
             }
         }
 
@@ -945,31 +793,6 @@ namespace WiiTUIO
             this.btnAbout_Click(null, null);
         }
 
-        private void imgClose_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            this.btnConnect_Click(null, null);
-        }
-
-        private void imgPair_MouseEnter(object sender, MouseEventArgs e)
-        {
-            imgConnect.Opacity = 0.6;
-        }
-
-        private void imgPair_MouseLeave(object sender, MouseEventArgs e)
-        {
-            imgConnect.Opacity = 0.4;
-        }
-
-        private void imgConnect_MouseEnter(object sender, MouseEventArgs e)
-        {
-            imgConnect.Opacity = 0.6;
-        }
-
-        private void imgConnect_MouseLeave(object sender, MouseEventArgs e)
-        {
-            imgConnect.Opacity = 0.4;
-        }
-
         private void ConfigImg_MouseUp(object sender, MouseButtonEventArgs e)
         {
             this.showConfig();
@@ -980,13 +803,7 @@ namespace WiiTUIO
             this.hideConfig();
         }
 
-        private void btnProviderSettingsDone_Click(object sender, RoutedEventArgs e)
-        {
-            Settings.Default.Save();
-            this.providerSettingsOverlay.Visibility = Visibility.Hidden;
-            this.enableMainControls();
-        }
-
+        /*
         private void driverNotInstalled()
         {
             Dispatcher.BeginInvoke(new Action(delegate()
@@ -1029,22 +846,7 @@ namespace WiiTUIO
         {
             Launcher.RestartComputer();
         }
-
-
-
-        private void infoOverlay_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            this.infoOverlay.Visibility = Visibility.Hidden;
-        }
-
-        private void disableMainControls() {
-            this.canvasMain.IsEnabled = false;
-        }
-
-        private void enableMainControls()
-        {
-            this.canvasMain.IsEnabled = true;
-        }
+        */
 
         private void btnAppSettings_Click(object sender, RoutedEventArgs e)
         {
@@ -1066,16 +868,7 @@ namespace WiiTUIO
         {
             if (this.wiiPairRunning)
             {
-                if (this.imgClosePairClose.Visibility == Visibility.Visible)
-                {
-                    this.pairWiimoteText.Text = "Cancelling...";
-                }
-                else
-                {
-                    this.pairWiimoteText.Text = "Finishing...";
-                }
-                this.imgClosePairCheck.Visibility = Visibility.Hidden;
-                this.imgClosePairClose.Visibility = Visibility.Hidden;
+                this.pairWiimoteText.Text = "Closing...";
                 
                 //this.pairWiimotePressSync.Visibility = Visibility.Hidden;
                 this.stopWiiPair();
@@ -1085,6 +878,16 @@ namespace WiiTUIO
                 //this.pairWiimoteOverlay.Visibility = Visibility.Hidden;
                 //this.enableMainControls();
             }
+        }
+
+        private void spInfoMsg_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            this.spInfoMsg.Visibility = Visibility.Collapsed;
+        }
+
+        private void spErrorMsg_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            this.spErrorMsg.Visibility = Visibility.Collapsed;
         }
 
     }

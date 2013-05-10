@@ -66,7 +66,10 @@ namespace WiiTUIO
 
         private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            this.reloadState();
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.reloadState();
+            }), null);
         }
 
         private async void cbWindowsStart_Checked(object sender, RoutedEventArgs e)
