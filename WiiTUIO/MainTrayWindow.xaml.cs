@@ -813,7 +813,7 @@ namespace WiiTUIO
             wiiPair.stop();
         }
 
-        public void onPairingSuccess(WiiCPP.WiiPairSuccessReport report)
+        public void onPairingProgress(WiiCPP.WiiPairReport report)
         {
             Console.WriteLine("Success report: number=" + report.numberPaired + " removeMode=" + report.removeMode + " devicelist=" + report.deviceNames);
 
@@ -899,7 +899,7 @@ namespace WiiTUIO
             this.runWiiPair();
         }
 
-        public void onPairingDone(WiiCPP.WiiPairSuccessReport report)
+        public void onPairingDone(WiiCPP.WiiPairReport report)
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {

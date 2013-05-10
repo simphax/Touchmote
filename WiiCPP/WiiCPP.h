@@ -18,10 +18,19 @@ using namespace System;
 
 namespace WiiCPP {
 
-	public ref class WiiPairSuccessReport
+	public ref class WiiPairReport
 	{
 	public:
 
+		enum class Status
+		{
+			RUNNING,
+			CANCELLED,
+			EXCEPTION,
+			DONE
+		};
+
+		Status status;
 		int numberPaired;
 		bool removeMode;
 		array<String^>^ deviceNames;
@@ -42,8 +51,7 @@ namespace WiiCPP {
 		void pairingConsole(System::String ^message);
 		void pairingMessage(System::String ^message, MessageType type);
 		void onPairingStarted();
-		void onPairingDone(WiiPairSuccessReport ^report);
-		void onPairingSuccess(WiiPairSuccessReport ^report);
+		void onPairingProgress(WiiPairReport ^report);
 	};
 
 	public ref class WiiPair
@@ -51,6 +59,7 @@ namespace WiiCPP {
 	private:
 
 		bool killme;
+		bool cancelled;
 
 		WiiPairListener ^listener;
 
@@ -107,12 +116,14 @@ namespace WiiCPP {
 
 		void stop() {
 			killme = true;
+			cancelled = true;
 		}
 
 		void start(bool removeMode, int stopat)
 		{
+			cancelled = false;
 			killme = false;
-			WiiPairSuccessReport ^report = gcnew WiiPairSuccessReport();
+			WiiPairReport ^report = gcnew WiiPairReport();
 			HANDLE hRadios[256];
 			int nRadios;
 			int nPaired = 0;
@@ -145,7 +156,8 @@ namespace WiiCPP {
 				{
 					ShowErrorCode(_T("Error enumerating radios"), GetLastError());
 					listener->pairingMessage("Could not find any bluetooth devices",WiiPairListener::MessageType::ERR);
-					listener->onPairingDone(report);
+					report->status = WiiPairReport::Status::EXCEPTION;
+					listener->onPairingProgress(report);
 					return;
 				}
 				nRadios--;
@@ -223,7 +235,8 @@ namespace WiiCPP {
 						{
 							listener->pairingMessage("Could not find any bluetooth devices",WiiPairListener::MessageType::ERR);
 							ShowErrorCode(_T("Error enumerating devices"), GetLastError());
-							listener->onPairingDone(report);
+							report->status = WiiPairReport::Status::EXCEPTION;
+							listener->onPairingProgress(report);
 							return;
 						}
 					}
@@ -314,7 +327,8 @@ namespace WiiCPP {
 									report->deviceNames[nPaired] = (gcnew System::String(btdi.szName));
 									nPaired++;
 									report->numberPaired = nPaired;
-									listener->onPairingSuccess(report);
+									report->status = WiiPairReport::Status::RUNNING;
+									listener->onPairingProgress(report);
 									if(nPaired >= stopat) {
 										killme = true;
 									}
@@ -330,7 +344,6 @@ namespace WiiCPP {
 					} // if (hFind == NULL)
 				} // for (radio = 0; radio < nRadios; radio++)
 
-				//Sleep(1000);
 			}
 
 			///////////////////////////////////////////////////////////////////////
@@ -350,14 +363,15 @@ namespace WiiCPP {
 			System::String^ str =  nPaired + " Wii devices paired\n";
 			listener->pairingConsole(str);
 
-			//if(nPaired == 0 && !removeMode)
-			//{
-				listener->onPairingDone(report);
-			//}
-			//else
-			//{
-			//	listener->onPairingSuccess(report);
-			//}
+			if(cancelled)
+			{
+				report->status = WiiPairReport::Status::CANCELLED;
+			}
+			else
+			{
+				report->status = WiiPairReport::Status::DONE;
+			}
+			listener->onPairingProgress(report);
 
 			return;
 		}

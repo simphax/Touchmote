@@ -621,54 +621,52 @@ namespace WiiTUIO
             wiiPair.stop();
         }
 
-        public void onPairingSuccess(WiiCPP.WiiPairSuccessReport report)
+        public void onPairingProgress(WiiCPP.WiiPairReport report)
         {
-            Console.WriteLine("Success report: number=" + report.numberPaired + " removeMode=" + report.removeMode + " devicelist=" + report.deviceNames);
-
-            if (report.numberPaired > 0)
+            Console.WriteLine("Pairing progress: number=" + report.numberPaired + " removeMode=" + report.removeMode + " devicelist=" + report.deviceNames);
+            if (report.status == WiiCPP.WiiPairReport.Status.RUNNING)
             {
-                Settings.Default.pairedOnce = true;
-                
-                if (!this.wiiPairRunning)
+                if (report.numberPaired > 0)
                 {
+                    Settings.Default.pairedOnce = true;
+
                     if (report.deviceNames.Contains(@"Nintendo RVL-CNT-01-TR"))
                     {
-                        Dispatcher.BeginInvoke(new Action(delegate()
-                        {
-                            this.pairWiimoteText.Text = @"";
-                            this.pairWiimotePressSync.Visibility = Visibility.Hidden;
-                            this.pairWiimoteTRFail.Visibility = Visibility.Visible;
-                            this.pairWiimoteTryAgain.Visibility = Visibility.Visible;
-
-                            this.pairProgress.Visibility = Visibility.Hidden;
-                            this.pairProgress.IsActive = false;
-
-                        }), null);
-                    }
-                    else
-                    {
-                        Dispatcher.BeginInvoke(new Action(delegate()
-                        {
-                            this.pairWiimoteText.Text = @"";
-                            this.pairWiimotePressSync.Visibility = Visibility.Hidden;
-                            this.pairWiimoteTryAgain.Visibility = Visibility.Hidden;
-
-                            this.pairProgress.Visibility = Visibility.Hidden;
-
-                            this.pairProgress.IsActive = false;
-
-                            this.canvasPairing.Visibility = Visibility.Collapsed;
-                            this.tbPair2.Visibility = Visibility.Visible;
-                            this.tbPairDone.Visibility = Visibility.Collapsed;
-                        }), null);
+                        this.showMessage("At least one of your Wiimotes is not compatible with the Microsoft Bluetooth Stack, use only Wiimotes manufactured before November 2011 or try the instructions on touchmote.net/wiimotetr ",MessageType.Info);
                     }
                 }
             }
             else
             {
-                Dispatcher.BeginInvoke(new Action(delegate()
+                if (report.removeMode)
                 {
-                }), null);
+                    this.wiiPairRunning = true;
+
+                    Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        this.connectProvider();
+                    }), null);
+
+                    int stopat = 10;
+                    if (this.startupPair)
+                    {
+                        stopat = 1;
+                        this.startupPair = false;
+                    }
+                    wiiPair.start(false, stopat); //Run the actual pairing after removing all previous connected devices.
+                }
+                else
+                {
+                    this.wiiPairRunning = false;
+                    Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        this.canvasPairing.Visibility = Visibility.Collapsed;
+                        this.tbPair2.Visibility = Visibility.Visible;
+                        this.tbPairDone.Visibility = Visibility.Collapsed;
+
+                        this.pairProgress.IsActive = false;
+                    }), null);
+                }
             }
         }
 
@@ -677,40 +675,6 @@ namespace WiiTUIO
         {
             this.stopWiiPair();
             this.runWiiPair();
-        }
-
-        public void onPairingDone(WiiCPP.WiiPairSuccessReport report)
-        {
-            
-            if (report.removeMode)
-            {
-                this.wiiPairRunning = true;
-
-                Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    this.connectProvider();
-                }), null);
-
-                int stopat = 10;
-                if (this.startupPair)
-                {
-                    stopat = 1;
-                    this.startupPair = false;
-                }
-                wiiPair.start(false,stopat); //Run the actual pairing after removing all previous connected devices.
-            }
-            else
-            {
-                this.wiiPairRunning = false;
-                Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    this.canvasPairing.Visibility = Visibility.Collapsed;
-                    this.tbPair2.Visibility = Visibility.Visible;
-                    this.tbPairDone.Visibility = Visibility.Collapsed;
-
-                    this.pairProgress.IsActive = false;
-                }), null);
-            }
         }
 
         public void onPairingStarted()
@@ -742,6 +706,12 @@ namespace WiiTUIO
                 {
                     pairWiimotePressSync.Visibility = Visibility.Hidden;
                 }
+
+                if (type == WiiCPP.WiiPairListener.MessageType.ERR)
+                {
+                    this.showMessage(message, MessageType.Error);
+                }
+
             }), null);
         }
 
