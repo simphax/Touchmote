@@ -74,33 +74,14 @@ namespace WiiTUIO
             // Load from the XAML.
             InitializeComponent();
             this.Initialize();
+            //Process currentProcess = Process.GetCurrentProcess();
+            //currentProcess.PriorityClass = ProcessPriorityClass.RealTime;
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
             if (Settings.Default.minimizeToTray)
             {
                 MinimizeToTray.Enable(this);
             }
-
-
-            /*
-            switch (outputType)
-            {
-                case OutputFactory.OutputType.TOUCH:
-                    this.cbiTouch.IsSelected = true;
-                    break;
-                case OutputFactory.OutputType.TUIO:
-                    this.cbiTUIO.IsSelected = true;
-                    break;
-            }
-             * */
-
-            /*
-            if (!TUIOVmultiProviderHandler.HasDriver())
-            {
-                this.driverNotInstalled();
-            }
-
-             */
         }
 
         public async void Initialize()
@@ -112,19 +93,8 @@ namespace WiiTUIO
             this.tbPair2.Visibility = Visibility.Visible;
             this.tbPairDone.Visibility = Visibility.Collapsed;
 
-            InputFactory.InputType inputType = InputFactory.getType(Settings.Default.input);
-            OutputFactory.OutputType outputType = OutputFactory.getType(Settings.Default.output);
-
-            switch (inputType)
-            {
-                case InputFactory.InputType.POINTER:
-                    this.cbiPointer.IsSelected = true;
-                    break;
-                case InputFactory.InputType.PEN:
-                    this.cbiPen.IsSelected = true;
-                    break;
-            }
-            this.cbConnectOnStart.IsChecked = Settings.Default.connectOnStart;
+           
+            //this.cbConnectOnStart.IsChecked = Settings.Default.connectOnStart;
 
             Application.Current.Exit += appWillExit;
 
@@ -132,19 +102,6 @@ namespace WiiTUIO
             wiiPair.addListener(this);
 
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
-
-            if (!Settings.Default.pairedOnce)
-            {
-                this.tbConnect.Visibility = Visibility.Hidden;
-                this.tbPair.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                this.tbConnect.Visibility = Visibility.Visible;
-                this.tbPair.Visibility = Visibility.Hidden;
-            }
-            this.cbWindowsStart.IsChecked = await ApplicationAutostart.IsAutostartAsync("Touchmote");
-
 
             // Create the providers.
             this.createProvider();
@@ -159,21 +116,31 @@ namespace WiiTUIO
             {
                 this.connectProvider();
             }
+
+            AppSettingsUC settingspanel = new AppSettingsUC();
+            settingspanel.OnClose += SettingsPanel_OnClose;
+
+            this.canvasSettings.Children.Add(settingspanel);
+
+            AboutUC aboutpanel = new AboutUC();
+            aboutpanel.OnClose += AboutPanel_OnClose;
+
+            this.canvasAbout.Children.Add(aboutpanel);
+
+        }
+
+        private void AboutPanel_OnClose()
+        {
+            this.hideAbout();
+        }
+
+        private void SettingsPanel_OnClose()
+        {
+            this.hideConfig();
         }
 
         void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (Settings.Default.pairedOnce)
-            {
-                Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    this.tbPair.Visibility = Visibility.Hidden;
-                    if(!tryingToConnect && !bConnected)
-                    {
-                        this.tbConnect.Visibility = Visibility.Visible;
-                    }
-                }), null);
-            }
         }
 
         /// <summary>
@@ -438,15 +405,6 @@ namespace WiiTUIO
 
         private void showConfig()
         {
-            //this.disableMainControls();
-            //this.configOverlay.Visibility = Visibility.Visible;
-
-            if (this.pWiiProvider != null)
-            {
-                this.providerSettingsContent.Children.Clear();
-                this.providerSettingsContent.Children.Add(this.pWiiProvider.getSettingsControl());
-            }
-
             this.mainPanel.Visibility = Visibility.Collapsed;
             this.canvasAbout.Visibility = Visibility.Collapsed;
             this.canvasSettings.Visibility = Visibility.Visible;
@@ -685,31 +643,6 @@ namespace WiiTUIO
         }
         #endregion
 
-        #region Form Stuff
-
-        /*
-        ~ClientForm()
-        {
-            // Disconnect the providers.
-            this.disconnectProvider();
-        }
-        */
-        private Hyperlink createHyperlink(string sText, string sUri)
-        {
-            Hyperlink link = new Hyperlink();
-            link.Inlines.Add(sText);
-            link.NavigateUri = new Uri(sUri);
-            link.Click += oLinkToBrowser;
-            return link;
-        }
-
-        private RoutedEventHandler oLinkToBrowser = new RoutedEventHandler(delegate(object oSource, RoutedEventArgs pArgs)
-        {
-            System.Diagnostics.Process.Start((oSource as Hyperlink).NavigateUri.ToString());
-        });
-        #endregion
-
-
 
         #region UI Events
 
@@ -753,57 +686,13 @@ namespace WiiTUIO
 
         #endregion
 
-        private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            if (ModeComboBox.SelectedItem != null && ((ComboBoxItem)ModeComboBox.SelectedItem).Content != null)
-            {
-                ComboBoxItem cbItem = (ComboBoxItem)ModeComboBox.SelectedItem;
-                if (cbItem == cbiPointer)
-                {
-                    this.disconnectProvider();
-                    Settings.Default.input = InputFactory.getType(InputFactory.InputType.POINTER);
-                    this.createProvider();
-                }
-                else if (cbItem == cbiPen)
-                {
-                    this.disconnectProvider();
-                    Settings.Default.input = InputFactory.getType(InputFactory.InputType.PEN);
-                    this.createProvider();
-                }
-            }
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
 
-        private void btnSettings_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.pWiiProvider != null)
-            {
-                this.providerSettingsContent.Children.Clear();
-                this.providerSettingsContent.Children.Add(this.pWiiProvider.getSettingsControl());
-                this.disableMainControls();
-                this.providerSettingsOverlay.Visibility = Visibility.Visible;
-            }
-        }
-        /*
-        private void OutputComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (OutputComboBox.SelectedItem != null)
-            {
-                ComboBoxItem cbItem = (ComboBoxItem)OutputComboBox.SelectedItem;
-                if (cbItem == cbiTUIO)
-                {
-                    this.disconnectProviderHandler();
-                    Settings.Default.output = OutputFactory.getType(OutputFactory.OutputType.TUIO);
-                    this.createProviderHandler();
-                }
-                else if (cbItem == cbiTouch)
-                {
-                    this.disconnectProviderHandler();
-                    Settings.Default.output = OutputFactory.getType(OutputFactory.OutputType.TOUCH);
-                    this.createProviderHandler();
-                }
-            }
-        }
-        */
         private void btnOutputSettings_Click(object sender, RoutedEventArgs e)
         {
             if (this.pProviderHandler != null)
@@ -1085,25 +974,6 @@ namespace WiiTUIO
         {
             this.showConfig();
         }
-        private async void cbWindowsStart_Checked(object sender, RoutedEventArgs e)
-        {
-            this.cbWindowsStart.IsChecked = await ApplicationAutostart.SetAutostartAsync(true, "Touchmote", "", "", true);
-        }
-
-        private async void cbWindowsStart_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.cbWindowsStart.IsChecked = !(await ApplicationAutostart.SetAutostartAsync(false, "Touchmote", "", "", true));
-        }
-
-        private void cbConnectOnStart_Checked(object sender, RoutedEventArgs e)
-        {
-            Settings.Default.connectOnStart = true;
-        }
-
-        private void cbConnectOnStart_Unchecked(object sender, RoutedEventArgs e)
-        {
-            Settings.Default.connectOnStart = false;
-        }
 
         private void btnConfigDone_Click(object sender, RoutedEventArgs e)
         {
@@ -1160,11 +1030,7 @@ namespace WiiTUIO
             Launcher.RestartComputer();
         }
 
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
-        }
+
 
         private void infoOverlay_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -1190,10 +1056,6 @@ namespace WiiTUIO
             this.showAbout();
         }
 
-        private void btnAppSettingsBack_Click(object sender, RoutedEventArgs e)
-        {
-            this.hideConfig();
-        }
 
         private void btnAboutBack_Click(object sender, RoutedEventArgs e)
         {
@@ -1224,6 +1086,7 @@ namespace WiiTUIO
                 //this.enableMainControls();
             }
         }
+
     }
 
     

@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="WiiTUIO.AboutUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" d:DesignWidth="419">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Canvas Height="170">
+        <Button Name="btnAboutBack" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Canvas.Left="10" Canvas.Top="10" Click="btnAboutBack_Click">
+            <Rectangle Width="14" Height="14" Fill="Black" Opacity="0.6">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Visual="{StaticResource appbar_arrow_left}" Stretch="Fill" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
+        <Label Name="versionLabel" Content="Touchmote v1.0b8" Canvas.Left="78" Canvas.Top="36" FontFamily="Segoe UI Light" FontSize="18"/>
+        <TextBlock Canvas.Left="78" TextWrapping="Wrap" Canvas.Top="80" Height="54" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
+                            Touchmote provides a way for one or several Wiimotes to communicate with Windows as a multi-touch device.
+        </TextBlock>
+        <TextBlock Canvas.Left="78" TextWrapping="Wrap" Canvas.Top="134" Height="27" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">        
+                            Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for more information.
+        </TextBlock>
+    </Canvas>
+</UserControl>

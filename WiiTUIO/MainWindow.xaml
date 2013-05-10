@@ -81,7 +81,7 @@
 
                     <TextBlock Name="pairWiimoteTRFail" Visibility="Hidden" Foreground="White" Canvas.Left="70" TextWrapping="Wrap" Canvas.Top="7" Height="63" Width="270" FontFamily="Segoe UI Semilight" FontSize="11" TextAlignment="Center">
                             At least one of your Wiimotes is not compatible with the Microsoft Bluetooth Stack, use only Wiimotes manufactured before November 2011 or try the instructions on 
-                            <Hyperlink Click="oLinkToBrowser" NavigateUri="http://touchmote.net/wiimotetr" Foreground="White">
+                            <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="http://touchmote.net/wiimotetr" Foreground="White">
                                 this page
                             </Hyperlink>
                     </TextBlock>
@@ -108,10 +108,6 @@
 
             <Canvas Height="100" Background="White" Name="canvasMain" Visibility="Collapsed">
 
-                <TextBlock Canvas.Left="267" Canvas.Top="64" FontFamily="Segoe UI Semilight">                                
-                            <Hyperlink Click="btnSettings_Click">Configure
-                            </Hyperlink>
-                </TextBlock>
                 <Button Visibility="Collapsed" x:Name="btnOutputSettings" HorizontalAlignment="Right" Margin="0,10,0,0" Width="75" Content="Settings" Click="btnOutputSettings_Click"/>
                 <!--<Button Name="btnHide"  Click="btnHide_Click"  Width="60" HorizontalAlignment="Right" Margin="5, 0, 5, 0">Hide</Button>-->
                 <TextBlock Visibility="Hidden" Name="tbPair" Canvas.Left="15" Canvas.Top="97" FontSize="36" FontFamily="Segoe UI Light">                                
@@ -206,45 +202,8 @@
             </Canvas>
         </StackPanel>
         <StackPanel x:Name="canvasSettings">
-            <Canvas Height="192">
-                <Button Name="btnAppSettingsBack" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Canvas.Left="10" Canvas.Top="10" Click="btnAppSettingsBack_Click">
-                    <Rectangle Width="14" Height="14" Fill="Black" Opacity="0.6">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Visual="{StaticResource appbar_arrow_left}" Stretch="Fill" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-
-                </Button>
-
-                <CheckBox x:Name="cbWindowsStart" Content="Start Touchmote with Windows" Canvas.Left="125" Canvas.Top="86" FontFamily="Segoe UI Semilight" Checked="cbWindowsStart_Checked" Unchecked="cbWindowsStart_Unchecked"/>
-                <CheckBox x:Name="cbConnectOnStart" Content="Connect on startup" Canvas.Left="125" Canvas.Top="117" FontFamily="Segoe UI Semilight" Checked="cbConnectOnStart_Checked" Unchecked="cbConnectOnStart_Unchecked" />
-                <!--Button Name="btnConfigDone" Content="Done" Canvas.Left="236" Canvas.Top="126" Width="44" Background="#FFECECEC" BorderBrush="Gainsboro" Height="25"/-->
-                <Label Content="Touchmote settings" Canvas.Left="73" Canvas.Top="36" FontFamily="Segoe UI Light" FontSize="18"/>
-                <ComboBox x:Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="183" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="125" Canvas.Top="156" FontFamily="Segoe UI Semilight">
-                    <ComboBoxItem x:Name="cbiPointer" IsSelected="True" Content="IR Sensor Bar"/>
-                    <ComboBoxItem x:Name="cbiPen" Visibility="Collapsed" Content="IR Pen"/>
-                </ComboBox>
-                <Label Content="Mode" Canvas.Left="82" Canvas.Top="157" FontFamily="Segoe UI Semilight" FontSize="12"/>
-            </Canvas>
-            <StackPanel x:Name="providerSettingsContent" />
         </StackPanel>
         <StackPanel Name="canvasAbout">
-            <Canvas Height="300">
-                <Button Name="btnAboutBack" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Canvas.Left="10" Canvas.Top="10" Click="btnAboutBack_Click">
-                    <Rectangle Width="14" Height="14" Fill="Black" Opacity="0.6">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Visual="{StaticResource appbar_arrow_left}" Stretch="Fill" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-                <Label Name="versionLabel" Content="Touchmote v1.0b8" Canvas.Left="133" Canvas.Top="14" FontFamily="Segoe UI Light" FontSize="18"/>
-                <TextBlock Canvas.Left="66" TextWrapping="Wrap" Canvas.Top="58" Height="54" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">
-                            Touchmote provides a way for one or several Wiimotes to communicate with Windows as a multi-touch device.
-                </TextBlock>
-                <TextBlock Canvas.Left="66" TextWrapping="Wrap" Canvas.Top="112" Height="27" Width="270" FontFamily="Segoe UI Semilight" TextAlignment="Center">        
-                            Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for more information.
-                </TextBlock>
-            </Canvas>
         </StackPanel>
     </StackPanel>
 </Controls:MetroWindow>

@@ -19,6 +19,8 @@ namespace WiiTUIO.Provider
     /// </summary>
     public partial class WiiPointerProviderSettings : UserControl
     {
+        bool initializing = true;
+
         public WiiPointerProviderSettings()
         {
             InitializeComponent();
@@ -37,21 +39,25 @@ namespace WiiTUIO.Provider
             {
                 this.cbiCenter.IsSelected = true;
             }
+            this.initializing = false;
         }
 
         private void SBPositionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.cbiTop.IsSelected)
+            if (!this.initializing)
             {
-                Settings.Default.pointer_sensorBarPos = "top";
-            }
-            else if (this.cbiBottom.IsSelected)
-            {
-                Settings.Default.pointer_sensorBarPos = "bottom";
-            }
-            else
-            {
-                Settings.Default.pointer_sensorBarPos = "center";
+                if (this.cbiTop.IsSelected)
+                {
+                    Settings.Default.pointer_sensorBarPos = "top";
+                }
+                else if (this.cbiBottom.IsSelected)
+                {
+                    Settings.Default.pointer_sensorBarPos = "bottom";
+                }
+                else
+                {
+                    Settings.Default.pointer_sensorBarPos = "center";
+                }
             }
         }
         /*

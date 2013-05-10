@@ -742,7 +742,7 @@ namespace WiiTUIO
             if (this.pWiiProvider != null)
             {
                 this.providerSettingsContent.Children.Clear();
-                this.providerSettingsContent.Children.Add(this.pWiiProvider.getSettingsControl());
+                //this.providerSettingsContent.Children.Add(this.pWiiProvider.getSettingsControl());
                 this.disableMainControls();
                 this.providerSettingsOverlay.Visibility = Visibility.Visible;
             }

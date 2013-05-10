@@ -38,7 +38,6 @@ namespace WiiTUIO.Provider
 
         private WiimoteCollection pWC;
 
-        private UserControl settingsControl = null;
 
         private EventHandler<WiimoteChangedEventArgs> wiimoteChangedEventHandler;
         private EventHandler<WiimoteExtensionChangedEventArgs> wiimoteExtensionChangedEventHandler;
@@ -81,8 +80,6 @@ namespace WiiTUIO.Provider
         /// </summary>
         public MultiWiiPointerProvider()
         {
-
-            this.settingsControl = new WiiPointerProviderSettings();
 
             this.pWC = new WiimoteCollection();
 
@@ -625,9 +622,9 @@ namespace WiiTUIO.Provider
         }
         #endregion
 
-        public UserControl getSettingsControl()
+        public static UserControl getSettingsControl()
         {
-            return this.settingsControl;
+            return new WiiPointerProviderSettings();
         }
     }
 }
