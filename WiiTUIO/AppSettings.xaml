@@ -37,6 +37,7 @@
             <CheckBox x:Name="cbPairOnStart" Content="Pair one remote on startup" Canvas.Left="125" Canvas.Top="109" FontFamily="Segoe UI Semilight" Checked="cbPairOnStart_Checked" Unchecked="cbPairOnStart_Unchecked" />
             <CheckBox x:Name="cbMinimizeToTray" Content="Minimize to tray" Canvas.Left="125" Canvas.Top="134" FontFamily="Segoe UI Semilight" Checked="cbMinimizeToTray_Checked" Unchecked="cbMinimizeToTray_Unchecked" />
             <CheckBox x:Name="cbMinimizeOnStart" Content="Start minimized" Canvas.Left="125" Canvas.Top="158" FontFamily="Segoe UI Semilight" Checked="cbMinimizeOnStart_Checked" Unchecked="cbMinimizeOnStart_Unchecked" />
+            <CheckBox x:Name="cbUseCustomCursor" Content="Use Touchmote cursor" Canvas.Left="125" Canvas.Top="181" FontFamily="Segoe UI Semilight" Checked="cbUseCustomCursor_Checked" Unchecked="cbUseCustomCursor_Unchecked" />
         </Canvas>
         <StackPanel x:Name="providerSettingsContent" />
     </StackPanel>
