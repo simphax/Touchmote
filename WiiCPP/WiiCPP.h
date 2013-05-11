@@ -310,9 +310,10 @@ namespace WiiCPP {
 										listener->pairingMessage("Paired",WiiPairListener::MessageType::SUCCESS);
 									}
 								}
-
+								
 								if (!error && !removeMode)
 								{
+									Sleep(100);
 									// Activate service
 									if (ShowErrorCode(_T("BluetoothSetServiceState"), BluetoothSetServiceState (hRadios[radio], &btdi, &HumanInterfaceDeviceServiceClass_UUID, BLUETOOTH_SERVICE_ENABLE )) != ERROR_SUCCESS) {
 										error = TRUE;
