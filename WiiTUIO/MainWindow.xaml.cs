@@ -152,6 +152,9 @@ namespace WiiTUIO
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
+            Settings.Default.Save();
+            CursorWindow.getInstance().Close();
+            /*
             if (this.bConnected)
             {
                 MessageBoxResult result = MessageBox.Show(this, "All Wiimotes will be disconnected. Are you sure?",
@@ -163,6 +166,7 @@ namespace WiiTUIO
             {
                 CursorWindow.getInstance().Close();
             }
+             * */
         }
 
         
