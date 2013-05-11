@@ -21,7 +21,8 @@ namespace WiiTUIO.Provider
     /// </summary>
     public class MultiWiiPointerProvider : IProvider
     {
-        private int WIIMOTE_POWER_SAVE_DISCONNECT_TIMEOUT = 6000;
+        private int WIIMOTE_POWER_SAVE_DISCONNECT_TIMEOUT = 15000;
+        private int POWER_SAVE_STATUS_INTERVAL = 6000;
  
         private int WIIMOTE_DISCONNECT_TIMEOUT = 2000; //If we haven't recieved input from a wiimote in 2 seconds we consider it disconnected.
         private int WIIMOTE_SIGNIFICANT_DISCONNECT_TIMEOUT = Settings.Default.autoDisconnectTimeout; //If we haven't recieved significant input from a wiimote in 60 seconds we will put it to sleep
@@ -29,6 +30,7 @@ namespace WiiTUIO.Provider
         private int CONNECTION_THREAD_SLEEP = 2000;
         private int POWER_SAVE_BLINK_DELAY = 10000;
         private int blinkWait = 0;
+        private int statusWait = 0;
 
         private Mutex pDeviceMutex = new Mutex();
 
@@ -180,7 +182,8 @@ namespace WiiTUIO.Provider
 
             try
             {
-                foreach (WiimoteControl control in pWiimoteMap.Values)
+                IEnumerable<WiimoteControl> enumerate = pWiimoteMap.Values.AsEnumerable();
+                foreach (WiimoteControl control in enumerate)
                 {
                     Wiimote pDevice = control.Wiimote;
                     try
@@ -209,15 +212,22 @@ namespace WiiTUIO.Provider
                         }
                         else if (control.Status.InPowerSave)
                         {
-                            control.WiimoteMutex.WaitOne();
-                            try
+                            
+
+                            if (CONNECTION_THREAD_SLEEP * statusWait >= POWER_SAVE_STATUS_INTERVAL)
                             {
-                                control.Wiimote.GetStatus();
-                            }
-                            catch { }
-                            finally
-                            {
+                                statusWait = 0;
+                                control.WiimoteMutex.WaitOne();
+                                try
+                                {
+                                    control.Wiimote.GetStatus();
+                                }
+                                catch { }
                                 control.WiimoteMutex.ReleaseMutex();
+                            }
+                            else
+                            {
+                                statusWait++;
                             }
 
                             if (CONNECTION_THREAD_SLEEP * blinkWait >= POWER_SAVE_BLINK_DELAY)

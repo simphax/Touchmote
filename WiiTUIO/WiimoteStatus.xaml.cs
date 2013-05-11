@@ -59,8 +59,8 @@ namespace WiiTUIO
         }
 
         public void setBattery(int percentage) {
-            Brush light = Brushes.White;
-            Brush dark = Brushes.Gray;
+            Brush light = percentage < 20 ? Brushes.Red : Brushes.White;
+            Brush dark = new SolidColorBrush(Color.FromRgb(64, 64, 64));
             this.battery1.Fill = percentage > 10 ? light : dark;
             this.battery2.Fill = percentage > 20 ? light : dark;
             this.battery3.Fill = percentage > 30 ? light : dark;

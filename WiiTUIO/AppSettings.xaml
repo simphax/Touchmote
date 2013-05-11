@@ -18,7 +18,7 @@
     <StackPanel x:Name="canvasSettings">
         <Canvas Height="250">
             <Button x:Name="btnAppSettingsBack" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Canvas.Left="10" Canvas.Top="10" Click="btnAppSettingsBack_Click">
-                <Rectangle Width="14" Height="14" Fill="Black" Opacity="0.6">
+                <Rectangle Width="14" Height="14" Fill="Black" Opacity="0.8">
                     <Rectangle.OpacityMask>
                         <VisualBrush Visual="{StaticResource appbar_arrow_left}" Stretch="Fill" />
                     </Rectangle.OpacityMask>
