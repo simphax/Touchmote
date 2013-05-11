@@ -416,7 +416,7 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
 cd "C:\Program Files\Touchmote"
-"C:\Program Files (x86)\Windows Kits\8.0\bin\x64\signtool.exe" sign /v /s MY /n TouchmoteCert /t http://timestamp.verisign.com/scripts/timstamp.dll Touchmote.exe</PostBuildEvent>
+"C:\Program Files (x86)\Windows Kits\8.0\bin\$(PlatformName)\signtool.exe" sign /v /s MY /n Touchmote /t http://timestamp.verisign.com/scripts/timestamp.dll Touchmote.exe</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

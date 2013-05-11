@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,29 +32,42 @@ namespace DriverInstall
         {
             InitializeComponent();
 
-            foreach (string arg in Environment.GetCommandLineArgs())
+            if (Environment.GetCommandLineArgs().Contains("-silent"))
             {
-                if (arg == "-silent")
+                this.Visibility = Visibility.Hidden;
+                this.shutdown = true;
+            }
+
+            if (Environment.GetCommandLineArgs().Contains("-install"))
+            {
+                if (Environment.GetCommandLineArgs().Contains("-driver"))
                 {
-                    this.Visibility = Visibility.Hidden;
-                    this.shutdown = true;
+                    this.installDriverComplete();
+                }
+
+                if (Environment.GetCommandLineArgs().Contains("-certificate"))
+                {
+                    this.installCert();
+                }
+            }
+            else if (Environment.GetCommandLineArgs().Contains("-uninstall"))
+            {
+                if (Environment.GetCommandLineArgs().Contains("-driver"))
+                {
+                    this.uninstallDriverComplete();
+                }
+
+                if (Environment.GetCommandLineArgs().Contains("-certificate"))
+                {
+                    this.uninstallCert();
                 }
             }
 
-            foreach (string arg in Environment.GetCommandLineArgs())
+            if (shutdown)
             {
-                if (arg == "-install")
-                {
-                    this.installAll();
-                }
-
-
-                if (arg == "-uninstall")
-                {
-                    this.uninstallAll();
-                }
-
+                Application.Current.Shutdown(1);
             }
+
             
         }
 
@@ -63,6 +78,18 @@ namespace DriverInstall
 
         private void installAll()
         {
+            this.installDriverComplete();
+            this.installCert();
+        }
+
+        private void uninstallAll()
+        {
+            this.uninstallDriverComplete();
+            this.uninstallCert();
+        }
+
+        private void installDriverComplete()
+        {
             this.uninstallDriver();
             this.uninstallDriver();
             this.installDriver();
@@ -71,17 +98,47 @@ namespace DriverInstall
             //this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
             //this.install_service(etd_ServiceName, etd_ServiceFilename, "3333");
             //this.give_service_permissions(etd_ServiceName);
-            if (shutdown)
-                Application.Current.Shutdown(1);
         }
 
-        private void uninstallAll()
+        private void installCert()
+        {
+            X509Store store = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+            StorePermission sp = new StorePermission(PermissionState.Unrestricted);
+            sp.Flags = StorePermissionFlags.OpenStore;
+            sp.Assert();
+            store.Open(OpenFlags.ReadWrite);
+            X509Certificate2Collection collection = new X509Certificate2Collection();
+            string path = System.AppDomain.CurrentDomain.BaseDirectory + "CodeSign.cer";
+            X509Certificate2 cert = new X509Certificate2(path);
+            byte[] encodedCert = cert.GetRawCertData();
+            consoleLine("Adding Touchmote Test Certificate to trusted root.");
+            store.Add(cert);
+            store.Close();
+        }
+
+        private void uninstallCert()
+        {
+            X509Store store = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+            StorePermission sp = new StorePermission(PermissionState.Unrestricted);
+            sp.Flags = StorePermissionFlags.OpenStore;
+            sp.Assert();
+            store.Open(OpenFlags.ReadWrite);
+            consoleLine("Removing Touchmote Test Certificate.");
+            foreach (X509Certificate2 c in store.Certificates)
+            {
+                if (c.IssuerName.Name.Contains("Touchmote"))
+                {
+                    store.Remove(c);
+                }
+            }
+            store.Close();
+        }
+
+        private void uninstallDriverComplete()
         {
             this.uninstallDriver();
             this.uninstallDriver();
             //this.uninstall_service(etd_ServiceName,etd_ServiceFilename);
-            if (shutdown)
-                Application.Current.Shutdown(1);
         }
 
         private void installDriver()
