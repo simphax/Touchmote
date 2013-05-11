@@ -39,17 +39,18 @@
     </Controls:MetroWindow.WindowCommands>
     <StackPanel>
         <StackPanel Name="mainPanel">
-            <StackPanel Name="spErrorMsg" Background="#FFFF4138" MouseUp="spErrorMsg_MouseUp">
+            <StackPanel Name="spErrorMsg" Background="#FFFF4138" MouseUp="spErrorMsg_MouseUp" Cursor="Hand">
                 <TextBlock Margin="10" FontSize="14" FontFamily="Segoe UI Semibold">Error</TextBlock>
                 <TextBlock Margin="10,0,10,10" Name="tbErrorMsg" FontSize="12" FontFamily="Segoe UI Semilight" TextWrapping="Wrap">message</TextBlock>
+                <Rectangle Fill="#FF191919" Height="3"/>
             </StackPanel>
-            <StackPanel Name="spInfoMsg" Background="#FFFFDC00" MouseUp="spInfoMsg_MouseUp">
+            <StackPanel Name="spInfoMsg" Background="#FFFFDC00" MouseUp="spInfoMsg_MouseUp" Cursor="Hand">
                 <TextBlock Margin="10" FontSize="14" FontFamily="Segoe UI Semibold">Info</TextBlock>
                 <TextBlock Margin="10,0,10,10" Name="tbInfoMsg" FontSize="12" FontFamily="Segoe UI Semilight" TextWrapping="Wrap">message</TextBlock>
+                <Rectangle Fill="#FF191919" Height="3"/>
             </StackPanel>
             <Canvas Height="64">
-                <Label Name="connectedCount" Content="0" Canvas.Left="15" Canvas.Top="10" FontFamily="Segoe UI Light" FontSize="24"/>
-                <Label Content="Wiimotes connected" Canvas.Left="35" Canvas.Top="10" FontFamily="Segoe UI Light" FontSize="24"/>
+                <Label Name="connectedCount" Content="0 Wiimotes connected" Canvas.Left="15" Canvas.Top="10" FontFamily="Segoe UI Light" FontSize="24"/>
             </Canvas>
             <StackPanel Background="#FF232323">
 
@@ -89,15 +90,11 @@
 
                 <Rectangle Fill="#FF191919" Height="3"/-->
             </StackPanel>
-            <TextBlock Name="tbPair2" Background="#FF00A2FF" Padding="10" FontSize="24" FontFamily="Segoe UI Light" TextAlignment="Center">                                
-                <Hyperlink Click="PairWiimotes_Click" TextDecorations="" Foreground="White">
-                    Pair Wiimotes
-                </Hyperlink>
+            <TextBlock MouseUp="PairWiimotes_Click" Name="tbPair2" Background="#FF00A2FF" Padding="10" FontSize="24" FontFamily="Segoe UI Light" TextAlignment="Center" Cursor="Hand" Foreground="White">                                
+                Pair Wiimotes
             </TextBlock>
-            <TextBlock Name="tbPairDone" Background="#FF6DD533" Padding="10" FontSize="24" FontFamily="Segoe UI Light" TextAlignment="Center">                                
-                <Hyperlink Click="PairWiimotesDone_Click" TextDecorations="" Foreground="White">
-                    Done
-                </Hyperlink>
+            <TextBlock MouseUp="PairWiimotesDone_Click" Name="tbPairDone" Background="#FF6DD533" Padding="10" FontSize="24" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
+                Done
             </TextBlock>
         </StackPanel>
         <StackPanel Name="canvasSettings">

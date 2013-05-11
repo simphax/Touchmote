@@ -30,8 +30,9 @@ namespace WiiTUIO
         {
             InitializeComponent();
             this.ID = id;
-            this.lbId.Content = ""+id;
+            this.lbId.Text = ""+id;
             this.setBattery(0);
+            this.color.Stroke = new SolidColorBrush(CursorColor.getColor(id));
         }
 
         public void updateStatus(WiimoteStatus status)

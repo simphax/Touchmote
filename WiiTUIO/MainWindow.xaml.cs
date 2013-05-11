@@ -202,7 +202,15 @@ namespace WiiTUIO
             {
                 this.bConnected = true;
 
-                this.connectedCount.Content = totalWiimotes;
+                
+                if (totalWiimotes == 1)
+                {
+                    this.connectedCount.Content = "One Wiimote connected";
+                }
+                else
+                {
+                    this.connectedCount.Content = totalWiimotes+" Wiimotes connected";
+                }
                 statusStackMutex.WaitOne();
                 WiimoteStatusUC uc = new WiimoteStatusUC(ID);
                 FrameworkElement child = (FrameworkElement)uc.GetChildObjects().First();
@@ -227,7 +235,14 @@ namespace WiiTUIO
             // Dispatch it.
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-                this.connectedCount.Content = totalWiimotes;
+                if (totalWiimotes == 1)
+                {
+                    this.connectedCount.Content = "One Wiimote connected";
+                }
+                else
+                {
+                    this.connectedCount.Content = totalWiimotes + " Wiimotes connected";
+                }
                 statusStackMutex.WaitOne();
                 foreach (UIElement child in this.statusStack.Children)
                 {
@@ -325,12 +340,12 @@ namespace WiiTUIO
 
         private void animateExpand(FrameworkElement elem)
         {
-            if (elem.GetChildObjects().First() is FrameworkElement)
+            if (elem.ActualHeight < 20)
             {
-                //elem.Height = double.NaN; //auto height
+                elem.Height = double.NaN; //auto height
                 elem.Visibility = Visibility.Visible;
-                elem.Measure(new Size(1000,1000));
-                double height = (elem.DesiredSize.Height > 0) ? elem.DesiredSize.Height : 100;
+                elem.Measure(new Size(2000,2000));
+                double height = (elem.DesiredSize.Height > 0) ? elem.DesiredSize.Height : elem.ActualHeight;
                 DoubleAnimation pAnimation = createDoubleAnimation(height, 1000, false);
                 elem.Height = 0;
                 elem.Visibility = Visibility.Visible;
@@ -341,7 +356,7 @@ namespace WiiTUIO
                     //elem.BeginAnimation(FrameworkElement., null);
                 };
                 //pAnimation.Freeze();
-                elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.Compose);
+                elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.SnapshotAndReplace);
             }
         }
         private void animateCollapse(FrameworkElement elem, bool remove)
@@ -365,7 +380,7 @@ namespace WiiTUIO
                     }
                 };
                 //pAnimation.Freeze();
-                elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.Compose);
+                elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.SnapshotAndReplace);
             }
         }
 
