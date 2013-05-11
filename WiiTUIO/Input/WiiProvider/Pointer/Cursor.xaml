@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
-    <Ellipse Name="outerEllipse" Width="60" Height="60" Fill="Black" Opacity="0.4"/>
-    <Ellipse Name="innerEllipse" Width="50" Height="50" Fill="White" Opacity="0.5"/>
+    <Ellipse Name="outerEllipse" Width="50" Height="50" Fill="Black" Opacity="0.4"/>
+    <Ellipse Name="innerEllipse" Width="40" Height="40" Fill="White" Opacity="0.5"/>
+    <Ellipse Name="stroke" Width="56" Height="56" Stroke="Red" Opacity="0.5" StrokeThickness="3" />
     </Grid>

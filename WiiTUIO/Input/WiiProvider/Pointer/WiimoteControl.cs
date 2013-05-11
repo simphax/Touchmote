@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 using WiimoteLib;
 using WiiTUIO.Properties;
@@ -51,7 +51,7 @@ namespace WiiTUIO.Provider
 
         private WiimoteLib.Point lastpoint;
 
-        private Rectangle screenBounds;
+        private System.Drawing.Rectangle screenBounds;
 
         private WiimoteState lastWiimoteState;
 
@@ -87,8 +87,11 @@ namespace WiiTUIO.Provider
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    this.masterCursor = new Cursor();
-                    this.slaveCursor = new Cursor();
+                    Color myColor = CursorColor.getColor(this.Status.ID);
+                    this.masterCursor = new Cursor(myColor);
+                    this.slaveCursor = new Cursor(myColor);
+                    this.masterCursor.Hide();
+                    this.slaveCursor.Hide();
                     CursorWindow.getInstance().addCursor(masterCursor);
                     CursorWindow.getInstance().addCursor(slaveCursor);
                 }), null);
