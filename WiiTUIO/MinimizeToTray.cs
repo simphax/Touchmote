@@ -10,16 +10,21 @@ using System.Reflection;
 /// </summary>
 using System.Windows;
 using System.Windows.Forms;
+using WiiTUIO;
 public static class MinimizeToTray
 {
     /// <summary>
     /// Enables "minimize to tray" behavior for the specified Window.
     /// </summary>
     /// <param name="window">Window to enable the behavior for.</param>
-    public static void Enable(Window window)
+    public static void Enable(Window window, bool minimizeNow)
     {
         // No need to track this instance; its event handlers will keep it alive
         MinimizeToTrayInstance mtti = new MinimizeToTrayInstance(window);
+        if (minimizeNow)
+        {
+            mtti.MinimizeNow();
+        }
     }
 
     /// <summary>
@@ -40,6 +45,14 @@ public static class MinimizeToTray
             Debug.Assert(window != null, "window parameter is null.");
             _window = window;
             _window.StateChanged += new EventHandler(HandleStateChanged);
+        }
+
+        public void MinimizeNow()
+        {
+            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.HandleStateChanged(null, null);
+            }),null);
         }
 
         /// <summary>

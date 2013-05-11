@@ -76,14 +76,18 @@ namespace WiiTUIO
             currentProcess.PriorityClass = ProcessPriorityClass.High;
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
+            if (Settings.Default.minimizeOnStart)
+            {
+                this.ShowActivated = false;
+                this.WindowState = System.Windows.WindowState.Minimized;
+            }
+
             // Load from the XAML.
             InitializeComponent();
             this.Initialize();
 
-            if (Settings.Default.minimizeToTray)
-            {
-                MinimizeToTray.Enable(this);
-            }
+            
+            
         }
 
         public async void Initialize()
@@ -104,6 +108,7 @@ namespace WiiTUIO
             }
 
             Application.Current.Exit += appWillExit;
+            Application.Current.SessionEnding += windowsShutdownEvent;
 
             wiiPair = new WiiCPP.WiiPair();
             wiiPair.addListener(this);
@@ -134,6 +139,12 @@ namespace WiiTUIO
 
             this.canvasAbout.Children.Add(aboutpanel);
 
+
+        }
+
+        private void windowsShutdownEvent(object sender, SessionEndingCancelEventArgs e)
+        {
+            Settings.Default.Save();
         }
 
         private void AboutPanel_OnClose()
@@ -143,6 +154,7 @@ namespace WiiTUIO
 
         private void SettingsPanel_OnClose()
         {
+            Settings.Default.Save();
             this.showMain();
         }
 
@@ -152,7 +164,6 @@ namespace WiiTUIO
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            Settings.Default.Save();
             CursorWindow.getInstance().Close();
             /*
             if (this.bConnected)
@@ -168,23 +179,52 @@ namespace WiiTUIO
             }
              * */
         }
+        /*
+        protected override void OnActivated(EventArgs e)
+        {
+            if (!this.minimizedOnce && Settings.Default.minimizeToTray)
+            {
+                MinimizeToTray.Enable(this, Settings.Default.minimizeOnStart);
+                this.minimizedOnce = true;
+            }
+            base.OnActivated(e);
+        }
 
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            
+            base.OnRender(drawingContext);
+        }
+         * */
+        public override void OnApplyTemplate()
+        {
+            if (!this.minimizedOnce && Settings.Default.minimizeToTray)
+            {
+                MinimizeToTray.Enable(this, Settings.Default.minimizeOnStart);
+                this.minimizedOnce = true;
+            }
+            base.OnApplyTemplate();
+            
+        }
         
-
         /// <summary>
         /// Raises the <see cref="E:System.Windows.FrameworkElement.Initialized"/> event.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
-        protected override void OnActivated(EventArgs e)
+        /*protected override void OnActivated(EventArgs e)
         {
-            // Call the base class.
-            base.OnActivated(e);
             if (!this.minimizedOnce && Settings.Default.minimizeOnStart)
             {
                 this.WindowState = System.Windows.WindowState.Minimized;
                 this.minimizedOnce = true;
+                
             }
-        }
+            else
+            {
+                // Call the base class.
+                base.OnActivated(e);
+            }
+        }*/
         
         private void appWillExit(object sender, ExitEventArgs e)
         {
