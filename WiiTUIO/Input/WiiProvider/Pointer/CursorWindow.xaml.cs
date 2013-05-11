@@ -39,6 +39,16 @@ namespace WiiTUIO.Provider
             InitializeComponent();
             this.Width = System.Windows.SystemParameters.PrimaryScreenWidth;
             this.Height = System.Windows.SystemParameters.PrimaryScreenHeight;
+
+            //Compensate for DPI settings
+            Loaded += (o, e) =>
+            {
+                PresentationSource source = PresentationSource.FromVisual(this);
+                CompositionTarget ct = source.CompositionTarget;
+                Matrix transformMatrix = ct.TransformFromDevice;
+                this.cursorCanvas.RenderTransform = new MatrixTransform(transformMatrix);
+            };
+            
         }
 
         public void addCursor(Cursor cursor)
