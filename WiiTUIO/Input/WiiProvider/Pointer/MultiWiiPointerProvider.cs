@@ -180,49 +180,20 @@ namespace WiiTUIO.Provider
 
             try
             {
-                this.pWC.Clear();
-                this.pWC.FindAllWiimotes();
-                
-                foreach (Wiimote pDevice in pWC)
+                foreach (WiimoteControl control in pWiimoteMap.Values)
                 {
+                    Wiimote pDevice = control.Wiimote;
                     try
                     {
-                        if (!pWiimoteMap.Keys.Contains(pDevice.HIDDevicePath))
-                        {
-                            Console.WriteLine("Trying to connect " + pDevice.HIDDevicePath);
-                            // Try to establish a connection, enable the IR reader and flag some LEDs.
-                            pDevice.Connect();
-                            pDevice.SetReportType(InputReport.IRExtensionAccel, IRSensitivity.Maximum, true);
-
-                            pDevice.SetRumble(true);
-
-                            Thread stopRumbleThread = new Thread(stopRumble);
-                            stopRumbleThread.Start(pDevice);
-
-                            int id = this.getFirstFreeId();
-                            pDevice.SetLEDs((id - 1) % 4 + 1);
-
-                            WiimoteControl control = new WiimoteControl(id,pDevice);
-
-                            pDeviceMutex.WaitOne(); //Don't mess with the list of wiimotes if it is enumerating in an update
-                            pWiimoteMap[pDevice.HIDDevicePath] = control;
-                            pDeviceMutex.ReleaseMutex();
-
-                            // Hook up device event handlers.
-                            pDevice.WiimoteChanged += this.wiimoteChangedEventHandler;
-                            pDevice.WiimoteExtensionChanged += this.wiimoteExtensionChangedEventHandler;
-
-                            OnConnect(id, this.pWiimoteMap.Count);
-                        }
-                        else if (!pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave 
-                            && pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null 
+                        if (!pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave
+                            && pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null
                             && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_TIMEOUT)
                         {
                             Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
                             teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
                         }
-                        else if (!pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave 
-                            && pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime != null 
+                        else if (!pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave
+                            && pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime != null
                             && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime).TotalMilliseconds > WIIMOTE_SIGNIFICANT_DISCONNECT_TIMEOUT)
                         {
                             Console.WriteLine("Put " + pDevice.HIDDevicePath + " to power saver mode because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime).TotalMilliseconds);
@@ -260,6 +231,55 @@ namespace WiiTUIO.Provider
                             {
                                 blinkWait++;
                             }
+                        }
+                    }
+                    catch (Exception pError)
+                    {
+                        try
+                        {
+                            Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of " + pError.Message);
+                            this.teardownWiimoteConnection(pDevice);
+                        }
+                        finally
+                        {
+                        }
+                        pErrorReport = pError;
+                    }
+                }
+
+                this.pWC.Clear();
+                this.pWC.FindAllWiimotes();
+                
+                foreach (Wiimote pDevice in pWC)
+                {
+                    try
+                    {
+                        if (!pWiimoteMap.Keys.Contains(pDevice.HIDDevicePath))
+                        {
+                            Console.WriteLine("Trying to connect " + pDevice.HIDDevicePath);
+                            // Try to establish a connection, enable the IR reader and flag some LEDs.
+                            pDevice.Connect();
+                            pDevice.SetReportType(InputReport.IRExtensionAccel, IRSensitivity.Maximum, true);
+
+                            pDevice.SetRumble(true);
+
+                            Thread stopRumbleThread = new Thread(stopRumble);
+                            stopRumbleThread.Start(pDevice);
+
+                            int id = this.getFirstFreeId();
+                            pDevice.SetLEDs((id - 1) % 4 + 1);
+
+                            WiimoteControl control = new WiimoteControl(id,pDevice);
+
+                            pDeviceMutex.WaitOne(); //Don't mess with the list of wiimotes if it is enumerating in an update
+                            pWiimoteMap[pDevice.HIDDevicePath] = control;
+                            pDeviceMutex.ReleaseMutex();
+
+                            // Hook up device event handlers.
+                            pDevice.WiimoteChanged += this.wiimoteChangedEventHandler;
+                            pDevice.WiimoteExtensionChanged += this.wiimoteExtensionChangedEventHandler;
+
+                            OnConnect(id, this.pWiimoteMap.Count);
                         }
                     }
                     // If something went wrong - notify the user..

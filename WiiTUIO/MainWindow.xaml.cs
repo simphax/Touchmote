@@ -97,6 +97,7 @@ namespace WiiTUIO
             this.tbPairDone.Visibility = Visibility.Collapsed;
             this.spErrorMsg.Visibility = Visibility.Collapsed;
             this.spInfoMsg.Visibility = Visibility.Collapsed;
+            this.animateExpand(this.mainPanel);
 
             Application.Current.Exit += appWillExit;
 
@@ -133,12 +134,12 @@ namespace WiiTUIO
 
         private void AboutPanel_OnClose()
         {
-            this.hideAbout();
+            this.showMain();
         }
 
         private void SettingsPanel_OnClose()
         {
-            this.hideConfig();
+            this.showMain();
         }
 
         void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -304,36 +305,46 @@ namespace WiiTUIO
         {
             if (elem.GetChildObjects().First() is FrameworkElement)
             {
+                //elem.Height = double.NaN; //auto height
                 elem.Visibility = Visibility.Visible;
                 elem.Measure(new Size(1000,1000));
-                DoubleAnimation pAnimation = createDoubleAnimation(elem.DesiredSize.Height, 1000, false);
+                double height = (elem.DesiredSize.Height > 0) ? elem.DesiredSize.Height : 100;
+                DoubleAnimation pAnimation = createDoubleAnimation(height, 1000, false);
                 elem.Height = 0;
                 elem.Visibility = Visibility.Visible;
+                pAnimation.FillBehavior = FillBehavior.Stop;
                 pAnimation.Completed += delegate(object sender, EventArgs pEvent)
                 {
-
+                    elem.Height = Double.NaN;
+                    //elem.BeginAnimation(FrameworkElement., null);
                 };
-                pAnimation.Freeze();
+                //pAnimation.Freeze();
                 elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.Compose);
             }
         }
         private void animateCollapse(FrameworkElement elem, bool remove)
         {
-            DoubleAnimation pAnimation = createDoubleAnimation(0, 1000, false);
-            pAnimation.Completed += delegate(object sender, EventArgs pEvent)
+            if (elem.DesiredSize.Height > 0)
             {
-                if (remove && elem.Parent is Panel)
+                elem.Height = elem.DesiredSize.Height;
+                DoubleAnimation pAnimation = createDoubleAnimation(0, 1000, false);
+                pAnimation.FillBehavior = FillBehavior.Stop;
+                pAnimation.Completed += delegate(object sender, EventArgs pEvent)
                 {
-                    ((Panel)elem.Parent).Children.Remove(elem);
-                }
-                else
-                {
-                    elem.Visibility = Visibility.Collapsed;
-                }
-            };
-            pAnimation.Freeze();
-            elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.Compose);
-
+                    //elem.BeginAnimation(FrameworkElement.HeightProperty, null);
+                    if (remove && elem.Parent is Panel)
+                    {
+                        ((Panel)elem.Parent).Children.Remove(elem);
+                    }
+                    else
+                    {
+                        elem.Visibility = Visibility.Collapsed;
+                        elem.Height = Double.NaN;
+                    }
+                };
+                //pAnimation.Freeze();
+                elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.Compose);
+            }
         }
 
         #region Animation Helpers
@@ -365,31 +376,61 @@ namespace WiiTUIO
 
         private void showConfig()
         {
-            this.mainPanel.Visibility = Visibility.Collapsed;
-            this.canvasAbout.Visibility = Visibility.Collapsed;
-            this.canvasSettings.Visibility = Visibility.Visible;
+            if (this.mainPanel.IsVisible)
+            {
+                animateCollapse(this.mainPanel,false);
+            }
+            if (this.canvasAbout.IsVisible)
+            {
+                animateCollapse(this.canvasAbout, false);
+            }
+            if (!this.canvasSettings.IsVisible)
+            {
+                animateExpand(this.canvasSettings);
+            }
+            //this.mainPanel.Visibility = Visibility.Collapsed;
+            //this.canvasAbout.Visibility = Visibility.Collapsed;
+            //this.canvasSettings.Visibility = Visibility.Visible;
         }
 
-        private void hideConfig()
+        private void showMain()
         {
-            this.canvasSettings.Visibility = Visibility.Collapsed;
-            this.canvasAbout.Visibility = Visibility.Collapsed;
-            this.mainPanel.Visibility = Visibility.Visible;
+            if (this.canvasSettings.IsVisible)
+            {
+                animateCollapse(this.canvasSettings, false);
+            }
+            if (this.canvasAbout.IsVisible)
+            {
+                animateCollapse(this.canvasAbout, false);
+            }
+            if (!this.mainPanel.IsVisible)
+            {
+                animateExpand(this.mainPanel);
+            }
+            //this.canvasSettings.Visibility = Visibility.Collapsed;
+            //this.canvasAbout.Visibility = Visibility.Collapsed;
+            //this.mainPanel.Visibility = Visibility.Visible;
         }
 
         private void showAbout()
         {
-            this.mainPanel.Visibility = Visibility.Collapsed;
-            this.canvasAbout.Visibility = Visibility.Visible;
-            this.canvasSettings.Visibility = Visibility.Collapsed;
+            if (this.canvasSettings.IsVisible)
+            {
+                animateCollapse(this.canvasSettings, false);
+            }
+            if (this.mainPanel.IsVisible)
+            {
+                animateCollapse(this.mainPanel, false);
+            }
+            if (!this.canvasAbout.IsVisible)
+            {
+                animateExpand(this.canvasAbout);
+            }
+            //this.mainPanel.Visibility = Visibility.Collapsed;
+            //this.canvasAbout.Visibility = Visibility.Visible;
+            //this.canvasSettings.Visibility = Visibility.Collapsed;
         }
 
-        private void hideAbout()
-        {
-            this.canvasSettings.Visibility = Visibility.Collapsed;
-            this.canvasAbout.Visibility = Visibility.Collapsed;
-            this.mainPanel.Visibility = Visibility.Visible;
-        }
 
         #region Create and Die
 
