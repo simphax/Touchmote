@@ -291,9 +291,9 @@ namespace WiiCPP {
 									DWORD error = BluetoothAuthenticateDevice(NULL, hRadios[radio], &btdi, pass, 6);
 									if (ShowErrorCode(_T("BluetoothAuthenticateDevice"), error) != ERROR_SUCCESS) {
 									//if (ShowErrorCode(_T("BluetoothAuthenticateDevice"), BluetoothAuthenticateDeviceEx(NULL, hRadios[radio], &btdi, NULL,MITMProtectionNotDefined)) != ERROR_SUCCESS) {
-										error = TRUE;
+										//error = TRUE;
 										if(error != ERROR_NO_MORE_ITEMS) {
-											listener->pairingMessage("Could not authenticate",WiiPairListener::MessageType::ERR);
+											//listener->pairingMessage("Could not authenticate",WiiPairListener::MessageType::ERR);
 										}
 									} else {
 										listener->pairingMessage("Authenticated",WiiPairListener::MessageType::SUCCESS);

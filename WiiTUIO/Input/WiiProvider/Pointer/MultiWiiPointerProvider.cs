@@ -185,47 +185,47 @@ namespace WiiTUIO.Provider
                     Wiimote pDevice = control.Wiimote;
                     try
                     {
-                        if (!pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave
-                            && pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null
-                            && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_TIMEOUT)
+                        if (!control.Status.InPowerSave
+                            && control.LastWiimoteEventTime != null
+                            && DateTime.Now.Subtract(control.LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_TIMEOUT)
                         {
                             Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
-                            teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
+                            teardownWiimoteConnection(control.Wiimote);
                         }
-                        else if (!pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave
-                            && pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime != null
-                            && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime).TotalMilliseconds > WIIMOTE_SIGNIFICANT_DISCONNECT_TIMEOUT)
+                        else if (!control.Status.InPowerSave
+                            && control.LastSignificantWiimoteEventTime != null
+                            && DateTime.Now.Subtract(control.LastSignificantWiimoteEventTime).TotalMilliseconds > WIIMOTE_SIGNIFICANT_DISCONNECT_TIMEOUT)
                         {
-                            Console.WriteLine("Put " + pDevice.HIDDevicePath + " to power saver mode because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastSignificantWiimoteEventTime).TotalMilliseconds);
+                            Console.WriteLine("Put " + pDevice.HIDDevicePath + " to power saver mode because of timeout with delta " + DateTime.Now.Subtract(control.LastSignificantWiimoteEventTime).TotalMilliseconds);
                             //teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
-                            putToPowerSave(pWiimoteMap[pDevice.HIDDevicePath]);
+                            putToPowerSave(control);
                         }
-                        else if (pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave
-                        && pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime != null
-                        && DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_POWER_SAVE_DISCONNECT_TIMEOUT)
+                        else if (control.Status.InPowerSave
+                        && control.LastWiimoteEventTime != null
+                        && DateTime.Now.Subtract(control.LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_POWER_SAVE_DISCONNECT_TIMEOUT)
                         {
-                            Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
-                            teardownWiimoteConnection(pWiimoteMap[pDevice.HIDDevicePath].Wiimote);
+                            Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(control.LastWiimoteEventTime).TotalMilliseconds);
+                            teardownWiimoteConnection(control.Wiimote);
                         }
-                        else if (pWiimoteMap[pDevice.HIDDevicePath].Status.InPowerSave)
+                        else if (control.Status.InPowerSave)
                         {
-                            pWiimoteMap[pDevice.HIDDevicePath].WiimoteMutex.WaitOne();
+                            control.WiimoteMutex.WaitOne();
                             try
                             {
-                                pWiimoteMap[pDevice.HIDDevicePath].Wiimote.GetStatus();
+                                control.Wiimote.GetStatus();
                             }
                             catch { }
                             finally
                             {
-                                pWiimoteMap[pDevice.HIDDevicePath].WiimoteMutex.ReleaseMutex();
+                                control.WiimoteMutex.ReleaseMutex();
                             }
 
                             if (CONNECTION_THREAD_SLEEP * blinkWait >= POWER_SAVE_BLINK_DELAY)
                             {
                                 blinkWait = 0;
-                                pWiimoteMap[pDevice.HIDDevicePath].Wiimote.SetLEDs(true, true, true, true);
+                                control.Wiimote.SetLEDs(true, true, true, true);
                                 Thread.Sleep(100);
-                                pWiimoteMap[pDevice.HIDDevicePath].Wiimote.SetLEDs(false, false, false, false);
+                                control.Wiimote.SetLEDs(false, false, false, false);
                             }
                             else
                             {
@@ -267,7 +267,7 @@ namespace WiiTUIO.Provider
                             stopRumbleThread.Start(pDevice);
 
                             int id = this.getFirstFreeId();
-                            pDevice.SetLEDs((id - 1) % 4 + 1);
+                            pDevice.SetLEDs(id==1,id==2,id==3,id==4);
 
                             WiimoteControl control = new WiimoteControl(id,pDevice);
 
@@ -360,7 +360,8 @@ namespace WiiTUIO.Provider
             {
                 control.Wiimote.SetReportType(InputReport.IRExtensionAccel, IRSensitivity.Maximum, true);
                 control.Status.InPowerSave = false;
-                control.Wiimote.SetLEDs((control.Status.ID - 1) % 4 + 1);
+                int id = control.Status.ID;
+                control.Wiimote.SetLEDs(id == 1, id == 2, id == 3, id == 4);
                 control.Wiimote.SetRumble(true);
                 Thread stopRumbleThread = new Thread(stopRumble);
                 stopRumbleThread.Start(control.Wiimote);
