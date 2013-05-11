@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TCD.System.TouchInjection;
+using WiiTUIO.Properties;
 using WiiTUIO.Provider;
 
 namespace WiiTUIO.Output
@@ -21,6 +22,7 @@ namespace WiiTUIO.Output
 
         public void connect()
         {
+            TouchFeedback feedback = Settings.Default.pointer_customCursor ?  TouchFeedback.NONE : TouchFeedback.INDIRECT;
             if (!TCD.System.TouchInjection.TouchInjector.InitializeTouchInjection((uint)maxTouchPoints, TouchFeedback.NONE))
             {
                 throw new Exception("Can not initialize touch injection");

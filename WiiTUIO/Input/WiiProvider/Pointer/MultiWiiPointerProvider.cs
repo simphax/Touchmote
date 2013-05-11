@@ -421,6 +421,7 @@ namespace WiiTUIO.Provider
                 if (pWiimoteMap.Keys.Contains(pDevice.HIDDevicePath))
                 {
                     wiimoteid = this.pWiimoteMap[pDevice.HIDDevicePath].Status.ID;
+                    this.pWiimoteMap[pDevice.HIDDevicePath].Teardown();
                     this.pWiimoteMap.Remove(pDevice.HIDDevicePath);
                 }
                 else

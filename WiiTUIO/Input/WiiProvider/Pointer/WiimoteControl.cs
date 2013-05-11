@@ -368,5 +368,14 @@ namespace WiiTUIO.Provider
             WiimoteMutex.ReleaseMutex();
             return significant;
         }
+
+        public void Teardown()
+        {
+            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                CursorWindow.getInstance().removeCursor(this.masterCursor);
+                CursorWindow.getInstance().removeCursor(this.slaveCursor);
+            }), null);
+        }
     }
 }
