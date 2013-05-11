@@ -94,7 +94,7 @@
                     Pair Wiimotes
                 </Hyperlink>
             </TextBlock>
-            <TextBlock Name="tbPairDone" Background="#FF7BD82E" Padding="10" FontSize="24" FontFamily="Segoe UI Light" TextAlignment="Center">                                
+            <TextBlock Name="tbPairDone" Background="#FF6DD533" Padding="10" FontSize="24" FontFamily="Segoe UI Light" TextAlignment="Center">                                
                 <Hyperlink Click="PairWiimotesDone_Click" TextDecorations="" Foreground="White">
                     Done
                 </Hyperlink>

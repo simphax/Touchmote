@@ -7,7 +7,7 @@
     <StackPanel Width="419" Background="#FF232323">
         <Canvas Height="63">
             <Label Name="lbId" Content="2" Canvas.Left="15" Canvas.Top="15" FontFamily="Segoe UI Light" FontSize="15" Foreground="White"/>
-            <Label Name="lbStatus" Content="connected" Canvas.Left="105" Canvas.Top="15" FontFamily="Segoe UI Light" FontSize="15" Foreground="#FFA2FF00"/>
+            <Label Name="lbStatus" Content="connected" Canvas.Left="105" Canvas.Top="15" FontFamily="Segoe UI Light" FontSize="15" Foreground="#FF5BFF00"/>
             <Label Content="battery:" Canvas.Left="281" Canvas.Top="15" FontFamily="Segoe UI Light" FontSize="15" Foreground="White"/>
             <Rectangle Name="battery1" Fill="White" Height="20" Width="7" Canvas.Left="342" Canvas.Top="21"/>
             <Rectangle Name="battery2" Fill="White" Height="20" Width="7" Canvas.Left="351" Canvas.Top="21"/>

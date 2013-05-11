@@ -52,7 +52,7 @@ namespace WiiTUIO
                 }
                 else
                 {
-                    this.lbStatus.Foreground = new SolidColorBrush(Color.FromRgb(255,163,255));
+                    this.lbStatus.Foreground = new SolidColorBrush(Color.FromRgb(91,255,0));
                     this.lbStatus.Content = "connected";
                 }
             }
