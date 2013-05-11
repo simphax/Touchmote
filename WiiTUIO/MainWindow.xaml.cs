@@ -146,6 +146,19 @@ namespace WiiTUIO
         {
         }
 
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.bConnected)
+            {
+                MessageBoxResult result = MessageBox.Show(this, "All Wiimotes will be disconnected. Are you sure?",
+     "Comfirmation", MessageBoxButton.YesNo, MessageBoxImage.Information);
+
+                e.Cancel = result != MessageBoxResult.Yes;
+            }
+        }
+
+        
+
         /// <summary>
         /// Raises the <see cref="E:System.Windows.FrameworkElement.Initialized"/> event.
         /// </summary>
