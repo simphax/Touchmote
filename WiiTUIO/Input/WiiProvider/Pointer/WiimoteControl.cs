@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using WiimoteLib;
+using WiiTUIO.Properties;
 using WindowsInput;
 
 namespace WiiTUIO.Provider
@@ -53,7 +55,8 @@ namespace WiiTUIO.Provider
 
         private WiimoteState lastWiimoteState;
 
-
+        private Cursor masterCursor;
+        private Cursor slaveCursor;
 
         public WiimoteControl(int id, Wiimote wiimote)
         {
@@ -79,6 +82,22 @@ namespace WiiTUIO.Provider
 
             this.inputSimulator = new InputSimulator();
             this.screenPositionCalculator = new ScreenPositionCalculator();
+
+            if (Settings.Default.pointer_customCursor)
+            {
+                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    this.masterCursor = new Cursor();
+                    this.slaveCursor = new Cursor();
+                    CursorWindow.getInstance().addCursor(masterCursor);
+                    CursorWindow.getInstance().addCursor(slaveCursor);
+                }), null);
+            }
+        }
+
+        private bool usingCursors()
+        {
+            return Settings.Default.pointer_customCursor && this.masterCursor != null && this.slaveCursor != null;
         }
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
@@ -123,10 +142,24 @@ namespace WiiTUIO.Provider
             }
             if (evt.Action.ToLower() == "touchmaster" && !evt.Handled)
             {
+                if (this.usingCursors())
+                {
+                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        this.masterCursor.TouchUp();
+                    }), null);
+                }
                 touchDownMaster = false;
             }
             if (evt.Action.ToLower() == "touchslave" && !evt.Handled)
             {
+                if (this.usingCursors())
+                {
+                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        this.slaveCursor.TouchUp();
+                    }), null);
+                }
                 touchDownSlave = false;
             }
         }
@@ -135,10 +168,24 @@ namespace WiiTUIO.Provider
         {
             if (evt.Action.ToLower() == "touchmaster" && !evt.Handled)
             {
+                if (this.usingCursors())
+                {
+                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        this.masterCursor.TouchDown();
+                    }), null);
+                }
                 touchDownMaster = true;
             }
             if (evt.Action.ToLower() == "touchslave" && !evt.Handled)
             {
+                if (this.usingCursors())
+                {
+                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        this.slaveCursor.TouchDown();
+                    }), null);
+                }
                 touchDownSlave = true;
             }
         }
@@ -186,6 +233,13 @@ namespace WiiTUIO.Provider
 
                 if (!pointerOutOfReach)
                 {
+                    if (this.usingCursors())
+                    {
+                        App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                        {
+                            this.masterCursor.Show();
+                        }), null);
+                    }
                     significant = true;
                     if (this.touchDownMaster)
                     {
@@ -200,17 +254,51 @@ namespace WiiTUIO.Provider
 
                     if (this.touchDownSlave)
                     {
+                        if (this.usingCursors())
+                        {
+                            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                            {
+                                this.slaveCursor.Show();
+                            }), null);
+                        }
                         duoTouch.setSlavePosition(new System.Windows.Point(newpoint.X, newpoint.Y));
                         duoTouch.setContactSlave();
                     }
                     else
                     {
                         duoTouch.releaseContactSlave();
+                        if (this.usingCursors())
+                        {
+                            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                            {
+                                this.slaveCursor.Hide();
+                            }), null);
+                        }
                     }
 
                     lastpoint = newpoint;
 
                     lFrame = duoTouch.getFrame();
+                    if (this.usingCursors())
+                    {
+                        foreach (WiiContact contact in lFrame)
+                        {
+                            if (contact.Priority == DuoTouch.MASTER_PRIORITY)
+                            {
+                                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                                {
+                                    this.masterCursor.setPosition(contact.Position);
+                                }), null);
+                            }
+                            if (contact.Priority == DuoTouch.SLAVE_PRIORITY)
+                            {
+                                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                                {
+                                    this.slaveCursor.setPosition(contact.Position);
+                                }), null);
+                            }
+                        }
+                    }
 
                     FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), lFrame);
 
@@ -246,6 +334,16 @@ namespace WiiTUIO.Provider
                             this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * newpoint.X) / this.screenBounds.Width, (65535 * newpoint.Y) / this.screenBounds.Height);
                         }
                         MouseSimulator.WakeCursor();
+                    }
+                }
+                else //pointer out of reach
+                {
+                    if (this.usingCursors())
+                    {
+                        App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                        {
+                            this.masterCursor.Hide();
+                        }), null);
                     }
                 }
 

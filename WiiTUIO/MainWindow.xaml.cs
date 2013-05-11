@@ -99,6 +99,11 @@ namespace WiiTUIO
             this.spInfoMsg.Visibility = Visibility.Collapsed;
             this.animateExpand(this.mainPanel);
 
+            if (Settings.Default.pointer_customCursor)
+            {
+                CursorWindow.getInstance().Show();
+            }
+
             Application.Current.Exit += appWillExit;
 
             wiiPair = new WiiCPP.WiiPair();
@@ -154,6 +159,10 @@ namespace WiiTUIO
      "Comfirmation", MessageBoxButton.YesNo, MessageBoxImage.Information);
 
                 e.Cancel = result != MessageBoxResult.Yes;
+            }
+            if (!e.Cancel)
+            {
+                CursorWindow.getInstance().Close();
             }
         }
 

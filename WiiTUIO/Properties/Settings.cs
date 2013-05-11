@@ -137,6 +137,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private bool _pointer_customCursor = true;
+        public bool pointer_customCursor
+        {
+            get { return _pointer_customCursor; }
+            set
+            {
+                _pointer_customCursor = value;
+                OnPropertyChanged("pointer_customCursor");
+            }
+        }
+
         private bool _pointer_moveCursor = true;
         public bool pointer_moveCursor
         {

@@ -21,7 +21,7 @@ namespace WiiTUIO.Output
 
         public void connect()
         {
-            if (!TCD.System.TouchInjection.TouchInjector.InitializeTouchInjection((uint)maxTouchPoints, TouchFeedback.INDIRECT))
+            if (!TCD.System.TouchInjection.TouchInjector.InitializeTouchInjection((uint)maxTouchPoints, TouchFeedback.NONE))
             {
                 throw new Exception("Can not initialize touch injection");
             }

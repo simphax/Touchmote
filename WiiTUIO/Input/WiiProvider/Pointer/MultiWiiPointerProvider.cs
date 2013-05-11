@@ -547,12 +547,12 @@ namespace WiiTUIO.Provider
                                             {
                                                 if (contact.Type == ContactType.EndToHover)
                                                 {
-                                                    WiiContact newContact = new WiiContact(contact.ID, ContactType.Hover, contact.Position, new Vector(Util.ScreenWidth, Util.ScreenHeight));
+                                                    WiiContact newContact = new WiiContact(contact.ID, ContactType.Hover, contact.Position,contact.Priority, new Vector(Util.ScreenWidth, Util.ScreenHeight));
                                                     allContacts.Enqueue(newContact);
                                                 }
                                                 else if (contact.Type == ContactType.Start)
                                                 {
-                                                    WiiContact newContact = new WiiContact(contact.ID, ContactType.Move, contact.Position, new Vector(Util.ScreenWidth, Util.ScreenHeight));
+                                                    WiiContact newContact = new WiiContact(contact.ID, ContactType.Move, contact.Position,contact.Priority, new Vector(Util.ScreenWidth, Util.ScreenHeight));
                                                     allContacts.Enqueue(newContact);
                                                 }
                                                 else if (contact.Type == ContactType.End || contact.Type == ContactType.EndFromHover)

@@ -47,6 +47,8 @@ namespace WiiTUIO.Provider
         /// </summary>
         public Vector Size { get; protected set; }
 
+        public int Priority { get; protected set; }
+
         /// <summary>
         /// Return the bounding rectangle of the contact (using the size as the width and height and the position as the center).
         /// </summary>
@@ -83,11 +85,12 @@ namespace WiiTUIO.Provider
         /// <param name="tNormalPosition">The maximum width/height so that we can generate a normalised position.</param>
         /// <param name="pClassifier">The classifer responsible for the history</param>
         /// <param name="pTracker">The tracker within the classifer responsible for the direct history.</param>
-        public WiiContact(ulong iID, ContactType eContactType, Point tPosition, Vector tScreenSize)
+        public WiiContact(ulong iID, ContactType eContactType, Point tPosition, int priority, Vector tScreenSize)
         {
             this.ID = iID;
             this.Type = eContactType;
             this.Position = tPosition;
+            this.Priority = priority;
             this.NormalPosition = new Point(tPosition.X / tScreenSize.X, tPosition.Y / tScreenSize.Y);
             this.Size = new Vector(0, 0);
         }
