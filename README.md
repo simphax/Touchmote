@@ -43,6 +43,13 @@ WPFNotifyIcon:		http://www.hardcodet.net/projects/wpf-notifyicon<br />
 
 Release History
 ==============
+**v1.0 beta 8**<br />
+- Implemented custom cursors
+- New windowed UI
+- Added Sleepmode to save battery when Wiimote is not in use.
+- Added option to pair a Wiimote at startup.
+- Increased CPU utilization, for smoother cursor movement.
+
 **v1.0 beta 7**<br />
 - Added ability to connect several Wiimotes.
 - Enabled individual keymap settings for each Wiimote.
