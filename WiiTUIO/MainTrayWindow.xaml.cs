@@ -24,7 +24,6 @@ using System.Windows.Input;
 using WiiTUIO.Output;
 using Microsoft.Win32;
 using System.Diagnostics;
-using TCD.System.ApplicationExtensions;
 using Newtonsoft.Json;
 
 namespace WiiTUIO
@@ -121,7 +120,7 @@ namespace WiiTUIO
                 this.tbConnect.Visibility = Visibility.Visible;
                 this.tbPair.Visibility = Visibility.Hidden;
             }
-            this.cbWindowsStart.IsChecked = await ApplicationAutostart.IsAutostartAsync("Touchmote");
+            //this.cbWindowsStart.IsChecked = await ApplicationAutostart.IsAutostartAsync("Touchmote");
 
 
             // Create the providers.
@@ -1019,12 +1018,12 @@ namespace WiiTUIO
         }
         private async void cbWindowsStart_Checked(object sender, RoutedEventArgs e)
         {
-            this.cbWindowsStart.IsChecked = await ApplicationAutostart.SetAutostartAsync(true, "Touchmote", "", "", true);
+            //this.cbWindowsStart.IsChecked = await ApplicationAutostart.SetAutostartAsync(true, "Touchmote", "", "", true);
         }
 
         private async void cbWindowsStart_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.cbWindowsStart.IsChecked = !(await ApplicationAutostart.SetAutostartAsync(false, "Touchmote", "", "", true));
+            //this.cbWindowsStart.IsChecked = !(await ApplicationAutostart.SetAutostartAsync(false, "Touchmote", "", "", true));
         }
 
         private void cbConnectOnStart_Checked(object sender, RoutedEventArgs e)

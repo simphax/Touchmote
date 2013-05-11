@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TCD.System.ApplicationExtensions;
 using WiiTUIO.Input;
 using WiiTUIO.Output;
 using WiiTUIO.Properties;
@@ -62,7 +61,7 @@ namespace WiiTUIO
             this.providerSettingsContent.Children.Clear();
             this.providerSettingsContent.Children.Add(MultiWiiPointerProvider.getSettingsControl());
 
-            this.cbWindowsStart.IsChecked = await ApplicationAutostart.IsAutostartAsync("Touchmote");
+            this.cbWindowsStart.IsChecked = Autostart.IsAutostart();
         }
 
         private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -75,12 +74,12 @@ namespace WiiTUIO
 
         private async void cbWindowsStart_Checked(object sender, RoutedEventArgs e)
         {
-            this.cbWindowsStart.IsChecked = await ApplicationAutostart.SetAutostartAsync(true, "Touchmote", "", "", true);
+            this.cbWindowsStart.IsChecked = Autostart.SetAutostart();
         }
 
         private async void cbWindowsStart_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.cbWindowsStart.IsChecked = !(await ApplicationAutostart.SetAutostartAsync(false, "Touchmote", "", "", true));
+            this.cbWindowsStart.IsChecked = !(Autostart.UnsetAutostart());
         }
 
         private void btnAppSettingsBack_Click(object sender, RoutedEventArgs e)

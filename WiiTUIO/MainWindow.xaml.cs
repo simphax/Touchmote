@@ -24,7 +24,6 @@ using System.Windows.Input;
 using WiiTUIO.Output;
 using Microsoft.Win32;
 using System.Diagnostics;
-using TCD.System.ApplicationExtensions;
 using Newtonsoft.Json;
 using MahApps.Metro.Controls;
 
