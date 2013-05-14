@@ -25,21 +25,21 @@ Please use the GitHub Issue tracker to report bugs. Always include the following
 
 How to build
 ==============
-Install the drivers by downloading the installer from touchmote.net<br />
-Get the source and open Touchmote.sln with Microsoft Visual Studio. <br />
-Go to Build->Configuration manager...<br />
-Choose solution platform for either x86 or x64 depending on your system. Close it and Build.<br />
+1. Install the Touchmote test certificate by running the installer from touchmote.net<br />
+2. Get the source and open Touchmote.sln with Microsoft Visual Studio. Make sure Visual Studio is run with admin priviliges. <br />
+3. If you want to use the debugger, edit the file called app.manifest and change uiAccess to false. Otherwise the app has to be run under Program Files. This is for the cursor to be able to show outside the desktop.<br />
+4. Go to Build->Configuration manager...<br />
+5. Choose solution platform for either x86 or x64 depending on your system. Close it and Build.<br />
 
 Credits
 ==============
+WiimoteLib 1.7:  	http://wiimotelib.codeplex.com/<br />
 WiiTUIO project:	http://code.google.com/p/wiituio/<br />
 TouchInjector:	  http://touchinjector.codeplex.com/<br />
 EcoTUIOdriver:    https://github.com/ecologylab/EcoTUIODriver<br />
-WiimoteLib 1.7:		http://wiimotelib.codeplex.com/<br />
 HidLibrary:				https://github.com/mikeobrien/HidLibrary<br />
 WiiPair:					http://www.richlynch.com/code/wiipair<br />
 MultiTouchVista   http://multitouchvista.codeplex.com<br />
-WPFNotifyIcon:		http://www.hardcodet.net/projects/wpf-notifyicon<br />
 
 Release History
 ==============
