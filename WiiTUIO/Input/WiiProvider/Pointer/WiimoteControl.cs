@@ -49,7 +49,7 @@ namespace WiiTUIO.Provider
 
         private bool gamingMouse = false;
 
-        private WiimoteLib.Point lastpoint;
+        private CursorPos lastpoint;
 
         private System.Drawing.Rectangle screenBounds;
 
@@ -64,9 +64,7 @@ namespace WiiTUIO.Provider
             this.Status = new WiimoteStatus();
             this.Status.ID = id;
 
-            lastpoint = new WiimoteLib.Point();
-            lastpoint.X = 0;
-            lastpoint.Y = 0;
+            lastpoint = new CursorPos(0,0,0);
 
             this.screenBounds = Util.ScreenBounds;
 
@@ -216,9 +214,9 @@ namespace WiiTUIO.Provider
 
                 bool pointerOutOfReach = false;
 
-                WiimoteLib.Point newpoint = lastpoint;
+                CursorPos newpoint = lastpoint;
 
-                newpoint = screenPositionCalculator.GetPosition(e);
+                newpoint = screenPositionCalculator.CalculateCursorPos(e);
 
                 if (newpoint.X < 0 || newpoint.Y < 0)
                 {
@@ -290,14 +288,16 @@ namespace WiiTUIO.Provider
                             {
                                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                                 {
-                                    this.masterCursor.setPosition(contact.Position);
+                                    this.masterCursor.SetPosition(contact.Position);
+                                    this.masterCursor.SetRotation(newpoint.Rotation);
                                 }), null);
                             }
                             if (contact.Priority == DuoTouch.SLAVE_PRIORITY)
                             {
                                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                                 {
-                                    this.slaveCursor.setPosition(contact.Position);
+                                    this.slaveCursor.SetPosition(contact.Position);
+                                    this.slaveCursor.SetRotation(newpoint.Rotation);
                                 }), null);
                             }
                         }

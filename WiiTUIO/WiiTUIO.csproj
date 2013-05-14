@@ -199,6 +199,7 @@
     <Compile Include="Input\WiiProvider\Pointer\Cursor.xaml.cs">
       <DependentUpon>Cursor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Input\WiiProvider\Pointer\CursorPos.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiimoteStatus.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

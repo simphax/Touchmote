@@ -483,7 +483,9 @@ namespace WiiTUIO.Provider
 
             WiimoteLib.Point newpoint = lastpoint;
 
-            newpoint = screenPositionCalculator.GetPosition(e);
+            CursorPos temp = screenPositionCalculator.CalculateCursorPos(e);
+            newpoint.X = temp.X;
+            newpoint.Y = temp.Y;
 
             if (newpoint.X < 0 || newpoint.Y < 0)
             {
