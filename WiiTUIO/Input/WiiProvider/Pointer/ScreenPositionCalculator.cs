@@ -24,9 +24,13 @@ namespace WiiTUIO.Provider
 
         private System.Drawing.Rectangle screenBounds;
 
+        SmoothingBuffer rotationSmoothing;
+
         public ScreenPositionCalculator()
         {
             this.recalculateScreenBounds();
+
+            this.rotationSmoothing = new SmoothingBuffer(20);
         }
 
         private void recalculateScreenBounds()
@@ -41,7 +45,7 @@ namespace WiiTUIO.Provider
             SBPositionOffset = (screenBounds.Width / 4);
         }
 
-        public Point GetPosition(WiimoteChangedEventArgs args)
+        public CursorPos CalculateCursorPos(WiimoteChangedEventArgs args)
         {
             if (!Util.ScreenBounds.Equals(screenBounds))
             {
@@ -76,9 +80,8 @@ namespace WiiTUIO.Provider
 
             if (!foundMidpoint)
             {
-                Point err = new Point();
-                err.X = -1;
-                err.Y = -1;
+                CursorPos err = new CursorPos(-1,-1,0);
+                
                 return err;
             }
 
@@ -92,8 +95,22 @@ namespace WiiTUIO.Provider
             {
                 offsetY = SBPositionOffset;
             }
+            rotationSmoothing.addValue(new System.Windows.Vector(args.WiimoteState.AccelState.Values.X, args.WiimoteState.AccelState.Values.Z));
+            System.Windows.Vector smoothedRotation = rotationSmoothing.getSmoothedValue();
 
-            x = Convert.ToInt32((float)maxWidth * (1.0F - relativePosition.X) + minXPos);
+            double rotation = -1*(Math.Atan2(smoothedRotation.Y,smoothedRotation.X) - (Math.PI / 2.0));
+
+            relativePosition.X = 1 - relativePosition.X;
+
+            relativePosition.X = relativePosition.X - 0.5F;
+            relativePosition.Y = relativePosition.Y - 0.5F;
+
+            relativePosition = this.rotatePoint(relativePosition,rotation);
+
+            relativePosition.X = relativePosition.X + 0.5F;
+            relativePosition.Y = relativePosition.Y + 0.5F;
+
+            x = Convert.ToInt32((float)maxWidth * relativePosition.X + minXPos);
             y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;
 
             if (x <= 0)
@@ -113,10 +130,24 @@ namespace WiiTUIO.Provider
                 y = Util.ScreenHeight - 1;
             }
 
-            Point point = new Point();
-            point.X = x;
-            point.Y = y;
-            return point;
+            CursorPos result = new CursorPos(x,y,rotation);
+            return result;
+        }
+
+        private PointF rotatePoint(PointF point, double angle)
+        {
+            double sin = Math.Sin(angle);
+            double cos = Math.Cos(angle);
+
+            double xnew = point.X * cos - point.Y * sin;
+            double ynew = point.X * sin + point.Y * cos;
+
+            PointF result;
+            
+            result.X = (float)xnew;
+            result.Y = (float)ynew;
+
+            return result;
         }
 
     }

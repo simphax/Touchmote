@@ -29,7 +29,15 @@ namespace WiiTUIO.Provider
             this.stroke.Stroke = new SolidColorBrush(color);
         }
 
-        public void setPosition(Point point)
+        public void SetRotation(double rotation)
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.rotationIndicator.RenderTransform = new RotateTransform(this.radianToDegree(rotation));
+            }), null);
+        }
+
+        public void SetPosition(Point point)
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
@@ -129,6 +137,11 @@ namespace WiiTUIO.Provider
             if (bFreeze)
                 pAction.Freeze();
             return pAction;
+        }
+
+        private double radianToDegree(double angle)
+        {
+            return angle * (180.0 / Math.PI);
         }
     }
 }
