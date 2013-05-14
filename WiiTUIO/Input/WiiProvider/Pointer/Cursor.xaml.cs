@@ -31,10 +31,12 @@ namespace WiiTUIO.Provider
 
         public void SetRotation(double rotation)
         {
+            /*
             Dispatcher.BeginInvoke(new Action(delegate()
             {
                 this.rotationIndicator.RenderTransform = new RotateTransform(this.radianToDegree(rotation));
             }), null);
+            */
         }
 
         public void SetPosition(Point point)

@@ -6,5 +6,5 @@
     <Ellipse Name="outerEllipse" Width="50" Height="50" Fill="Black" Opacity="0.4"/>
     <Ellipse Name="innerEllipse" Width="40" Height="40" Fill="White" Opacity="0.5"/>
     <Ellipse Name="stroke" Width="56" Height="56" Stroke="Red" Opacity="0.5" StrokeThickness="3" />
-    <Ellipse Name="rotationIndicator" Width="10" Height="10" Fill="Red" Opacity="0.5" RenderTransformOrigin="0.5,3" Margin="0,0,0,50" />
+    <Ellipse Visibility="Hidden" Name="rotationIndicator" Width="10" Height="10" Fill="Red" Opacity="0.5" RenderTransformOrigin="0.5,3" Margin="0,0,0,50" />
 </Grid>
