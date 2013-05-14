@@ -147,7 +147,7 @@ namespace WiiTUIO.Provider
                 {
                     App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                     {
-                        this.masterCursor.TouchUp();
+                        this.masterCursor.SetReleased();
                     }), null);
                 }
                 touchDownMaster = false;
@@ -158,7 +158,7 @@ namespace WiiTUIO.Provider
                 {
                     App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                     {
-                        this.slaveCursor.TouchUp();
+                        this.slaveCursor.SetReleased();
                     }), null);
                 }
                 touchDownSlave = false;
@@ -173,7 +173,7 @@ namespace WiiTUIO.Provider
                 {
                     App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                     {
-                        this.masterCursor.TouchDown();
+                        this.masterCursor.SetPressed();
                     }), null);
                 }
                 touchDownMaster = true;
@@ -184,7 +184,7 @@ namespace WiiTUIO.Provider
                 {
                     App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                     {
-                        this.slaveCursor.TouchDown();
+                        this.slaveCursor.SetPressed();
                     }), null);
                 }
                 touchDownSlave = true;
@@ -346,6 +346,7 @@ namespace WiiTUIO.Provider
                         App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                         {
                             this.masterCursor.Hide();
+                            this.masterCursor.SetPosition(new System.Windows.Point(lastpoint.X,lastpoint.Y));
                         }), null);
                     }
                 }

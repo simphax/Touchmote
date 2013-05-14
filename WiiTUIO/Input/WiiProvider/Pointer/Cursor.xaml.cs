@@ -22,11 +22,14 @@ namespace WiiTUIO.Provider
     public partial class Cursor : Grid
     {
         public static double CANVAS_WIDTH = 80;
+        public bool hidden = false;
+        public bool pressed = false;
 
         public Cursor(Color color)
         {
             InitializeComponent();
             this.stroke.Stroke = new SolidColorBrush(color);
+            this.cursor.RenderTransform = new ScaleTransform();
         }
 
         public void SetRotation(double rotation)
@@ -50,15 +53,51 @@ namespace WiiTUIO.Provider
 
         public void Hide()
         {
-            this.cursor.Visibility = Visibility.Hidden;
+            if (!hidden)
+            {
+                this.hidden = true;
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    DoubleAnimation animation = createDoubleAnimation(0, 200, false);
+                    animation.FillBehavior = FillBehavior.HoldEnd;
+                    animation.Completed += delegate(object sender, EventArgs pEvent)
+                    {
+                        this.cursor.Visibility = Visibility.Hidden;
+                    };
+                    this.innerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                    this.innerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                    this.outerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                    this.outerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                    this.stroke.BeginAnimation(FrameworkElement.WidthProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                    this.stroke.BeginAnimation(FrameworkElement.HeightProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                }), null);
+            }
         }
 
         public void Show()
         {
             this.cursor.Visibility = Visibility.Visible;
+            if (hidden)
+            {
+                this.hidden = false;
+                if (this.pressed)
+                    this.animatePressed();
+                else
+                    this.animateReleased();
+            }
         }
 
-        public void TouchDown()
+        public void SetPressed()
+        {
+            if (!pressed)
+            {
+                this.pressed = true;
+                this.animatePressed();
+                
+            }
+        }
+
+        private void animatePressed()
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
@@ -91,7 +130,16 @@ namespace WiiTUIO.Provider
             }), null);
         }
 
-        public void TouchUp()
+        public void SetReleased()
+        {
+            if (pressed)
+            {
+                this.pressed = false;
+                this.animateReleased();
+            }
+        }
+
+        private void animateReleased()
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
@@ -112,7 +160,7 @@ namespace WiiTUIO.Provider
                 };
                 this.outerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation2, HandoffBehavior.SnapshotAndReplace);
                 this.outerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation2, HandoffBehavior.SnapshotAndReplace);
-                
+
                 DoubleAnimation animation3 = createDoubleAnimation(56, 200, false);
                 animation3.FillBehavior = FillBehavior.HoldEnd;
                 animation3.Completed += delegate(object sender, EventArgs pEvent)
