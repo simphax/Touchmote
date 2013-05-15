@@ -469,7 +469,7 @@ namespace WiiTUIO.Provider
 
         public void updateNunchuck(NunchukState nunchuk)
         {
-            //this.inputSimulator.Mouse.MoveMouseBy((int)(nunchuk.Joystick.X*10),-(int)(nunchuk.Joystick.Y*10));
+            this.inputSimulator.Mouse.MoveMouseBy((int)(nunchuk.Joystick.X*10),-(int)(nunchuk.Joystick.Y*10));
             //Console.WriteLine("Nunchuk RAW : " + nunchuk.RawJoystick);
             //Console.WriteLine("Nunchuk : " + nunchuk.Joystick);
         }

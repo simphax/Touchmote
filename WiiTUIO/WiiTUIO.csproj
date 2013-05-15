@@ -195,6 +195,7 @@
       <DependentUpon>AppSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Autostart.cs" />
+    <Compile Include="External\VJoy.cs" />
     <Compile Include="Input\WiiProvider\CursorColor.cs" />
     <Compile Include="Input\WiiProvider\Pointer\Cursor.xaml.cs">
       <DependentUpon>Cursor.xaml</DependentUpon>
@@ -333,7 +334,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="app.manifest" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Keymaps\Applications.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -413,7 +416,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
+    <PostBuildEvent>xcopy "$(ProjectDir)VJoy.dll" "$(TargetDir)VJoy.dll"
+xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
 cd "C:\Program Files\Touchmote"
 "C:\Program Files (x86)\Windows Kits\8.0\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.verisign.com/scripts/timestamp.dll Touchmote.exe</PostBuildEvent>
   </PropertyGroup>
