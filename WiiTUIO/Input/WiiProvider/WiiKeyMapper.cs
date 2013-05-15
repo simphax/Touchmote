@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using VJoylib;
 using WiimoteLib;
 using WindowsInput;
 using WindowsInput.Native;
@@ -456,6 +457,8 @@ namespace WiiTUIO.Provider
 
         private InputSimulator inputSimulator;
 
+        private VJoy vjoycontrol;
+
         public WiiKeyMap(JObject jsonObj)
         {
             this.jsonObj = jsonObj;
@@ -463,13 +466,28 @@ namespace WiiTUIO.Provider
             this.Pointer = this.jsonObj.GetValue("Pointer").ToString();
 
             this.inputSimulator = new InputSimulator();
+
+            this.vjoycontrol = new VJoy();
+            this.vjoycontrol.Initialize();
+            this.vjoycontrol.Reset();
         }
 
         private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave";
 
         public void updateNunchuck(NunchukState nunchuk)
         {
-            this.inputSimulator.Mouse.MoveMouseBy((int)(nunchuk.Joystick.X*10),-(int)(nunchuk.Joystick.Y*10));
+            double axisx = nunchuk.Joystick.X * 32768 * 2;
+            short joyx = (short)axisx;
+            joyx = axisx > 32767 ? (short)32767 : joyx;
+            joyx = axisx < -32768 ? (short)-32768 : joyx;
+            double axisy = nunchuk.Joystick.Y * -32768 * 2;
+            short joyy = (short)axisy;
+            joyy = axisy > 32767 ? (short)32767 : joyy;
+            joyy = axisy < -32768 ? (short)-32768 : joyy;
+            this.vjoycontrol.SetXAxis(0,joyx);
+            this.vjoycontrol.SetYAxis(0,joyy);
+            this.vjoycontrol.Update(0);
+            //this.inputSimulator.Mouse.MoveMouseBy((int)(nunchuk.Joystick.X*10),-(int)(nunchuk.Joystick.Y*10));
             //Console.WriteLine("Nunchuk RAW : " + nunchuk.RawJoystick);
             //Console.WriteLine("Nunchuk : " + nunchuk.Joystick);
         }

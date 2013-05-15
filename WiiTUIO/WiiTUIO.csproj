@@ -416,7 +416,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)VJoy.dll" "$(TargetDir)VJoy.dll"
+    <PostBuildEvent>copy "$(ProjectDir)VJoy.dll" "$(TargetDir)VJoy.dll"
 xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
 cd "C:\Program Files\Touchmote"
 "C:\Program Files (x86)\Windows Kits\8.0\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.verisign.com/scripts/timestamp.dll Touchmote.exe</PostBuildEvent>
