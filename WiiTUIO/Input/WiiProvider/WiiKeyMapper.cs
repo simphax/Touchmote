@@ -79,7 +79,7 @@ namespace WiiTUIO.Provider
             MergeJSON(commonKeymap, specificKeymap);
             this.defaultKeymapJson = commonKeymap;
 
-            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson,  new XinputDevice(XinputBus.Default, wiimoteID));
+            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson, new XinputDevice(XinputBus.Default, wiimoteID), new XinputReport(wiimoteID));
 
             this.processMonitor = SystemProcessMonitor.getInstance();
 
@@ -500,7 +500,7 @@ namespace WiiTUIO.Provider
 
         private int id;
 
-        public WiiKeyMap(JObject jsonObj, XinputDevice xinput)
+        public WiiKeyMap(JObject jsonObj, XinputDevice xinput, XinputReport xinputReport)
         {
             this.jsonObj = jsonObj;
 
@@ -508,7 +508,7 @@ namespace WiiTUIO.Provider
 
             this.inputSimulator = new InputSimulator();
             this.XinputDevice = xinput;
-            this.XinputReport = new XinputReport();
+            this.XinputReport = xinputReport;
         }
 
         private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave";
@@ -518,26 +518,40 @@ namespace WiiTUIO.Provider
             JToken key = this.jsonObj.GetValue("Nunchuk.StickX");
             if (key != null)
             {
-                if ("360.sticklx".Equals(key.ToString().ToLower()))
+                switch (key.ToString().ToLower())
                 {
-                    XinputReport.StickLX = nunchuk.Joystick.X * 2;
-                }
-                else if ("360.stickly".Equals(key.ToString().ToLower()))
-                {
-                    XinputReport.StickLY = nunchuk.Joystick.X * 2;
+                    case "360.sticklx":
+                        XinputReport.StickLX = nunchuk.Joystick.X + 0.5;
+                        break;
+                    case "360.stickly":
+                        XinputReport.StickLY = nunchuk.Joystick.X + 0.5;
+                        break;
+                    case "360.stickrx":
+                        XinputReport.StickRX = nunchuk.Joystick.X + 0.5;
+                        break;
+                    case "360.stickry":
+                        XinputReport.StickRY = nunchuk.Joystick.X + 0.5;
+                        break;
                 }
             }
             
             key = this.jsonObj.GetValue("Nunchuk.StickY");
             if (key != null)
             {
-                if ("360.sticklx".Equals(key.ToString().ToLower()))
+                switch (key.ToString().ToLower())
                 {
-                    XinputReport.StickLX = -nunchuk.Joystick.Y * 2;
-                }
-                else if ("360.stickly".Equals(key.ToString().ToLower()))
-                {
-                    XinputReport.StickLY = -nunchuk.Joystick.Y * 2;
+                    case "360.sticklx":
+                        XinputReport.StickLX = -nunchuk.Joystick.Y + 0.5;
+                        break;
+                    case "360.stickly":
+                        XinputReport.StickLY = -nunchuk.Joystick.Y + 0.5;
+                        break;
+                    case "360.stickrx":
+                        XinputReport.StickRX = -nunchuk.Joystick.Y + 0.5;
+                        break;
+                    case "360.stickry":
+                        XinputReport.StickRY = -nunchuk.Joystick.Y + 0.5;
+                        break;
                 }
             }
             
@@ -679,25 +693,117 @@ namespace WiiTUIO.Provider
 
         public void xinputButtonUp(string button)
         {
-            if ("triggerr".Equals(button))
+            switch (button)
             {
-                this.XinputReport.TriggerR = 0.0;
-            }
-            else if ("triggerl".Equals(button))
-            {
-                this.XinputReport.TriggerL = 0.0;
+                case "triggerr":
+                    this.XinputReport.TriggerR = 0.0;
+                    break;
+                case "triggerl":
+                    this.XinputReport.TriggerL = 0.0;
+                    break;
+                case "a":
+                    this.XinputReport.A = false;
+                    break;
+                case "b":
+                    this.XinputReport.B = false;
+                    break;
+                case "x":
+                    this.XinputReport.X = false;
+                    break;
+                case "y":
+                    this.XinputReport.Y = false;
+                    break;
+                case "back":
+                    this.XinputReport.Back = false;
+                    break;
+                case "start":
+                    this.XinputReport.Start = false;
+                    break;
+                case "stickpressl":
+                    this.XinputReport.StickPressL = false;
+                    break;
+                case "stickpressr":
+                    this.XinputReport.StickPressR = false;
+                    break;
+                case "up":
+                    this.XinputReport.Up = false;
+                    break;
+                case "down":
+                    this.XinputReport.Down = false;
+                    break;
+                case "right":
+                    this.XinputReport.Right = false;
+                    break;
+                case "left":
+                    this.XinputReport.Left = false;
+                    break;
+                case "guide":
+                    this.XinputReport.Guide = false;
+                    break;
+                case "bumperl":
+                    this.XinputReport.BumperL = false;
+                    break;
+                case "bumperr":
+                    this.XinputReport.BumperR = false;
+                    break;
             }
         }
 
         public void xinputButtonDown(string button)
         {
-            if ("triggerr".Equals(button))
+            switch (button)
             {
-                this.XinputReport.TriggerR = 1.0;
-            }
-            else if ("triggerl".Equals(button))
-            {
-                this.XinputReport.TriggerL = 1.0;
+                case "triggerr":
+                    this.XinputReport.TriggerR = 1.0;
+                    break;
+                case "triggerl":
+                    this.XinputReport.TriggerL = 1.0;
+                    break;
+                case "a":
+                    this.XinputReport.A = true;
+                    break;
+                case "b":
+                    this.XinputReport.B = true;
+                    break;
+                case "x":
+                    this.XinputReport.X = true;
+                    break;
+                case "y":
+                    this.XinputReport.Y = true;
+                    break;
+                case "back":
+                    this.XinputReport.Back = true;
+                    break;
+                case "start":
+                    this.XinputReport.Start = true;
+                    break;
+                case "stickpressl":
+                    this.XinputReport.StickPressL = true;
+                    break;
+                case "stickpressr":
+                    this.XinputReport.StickPressR = true;
+                    break;
+                case "up":
+                    this.XinputReport.Up = true;
+                    break;
+                case "down":
+                    this.XinputReport.Down = true;
+                    break;
+                case "right":
+                    this.XinputReport.Right = true;
+                    break;
+                case "left":
+                    this.XinputReport.Left = true;
+                    break;
+                case "guide":
+                    this.XinputReport.Guide = true;
+                    break;
+                case "bumperl":
+                    this.XinputReport.BumperL = true;
+                    break;
+                case "bumperr":
+                    this.XinputReport.BumperR = true;
+                    break;
             }
         }
     }
