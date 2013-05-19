@@ -488,7 +488,7 @@ namespace WiiTUIO.Provider
         public Action<WiiButtonEvent> OnButtonUp;
         public Action<WiiButtonEvent> OnButtonDown;
         public Action<WiiKeyMapConfigChangedEvent> OnConfigChanged;
-        public Action<bool> OnRumble;
+        public Action<double> OnRumble;
 
         public string Pointer;
 
@@ -514,7 +514,7 @@ namespace WiiTUIO.Provider
             Console.WriteLine("Xinput rumble: big=" + big + " small=" + small);
             if (this.OnRumble != null)
             {
-                OnRumble(big > 200 || small > 200);
+                OnRumble(((double)big)/255.0);
             }
         }
 

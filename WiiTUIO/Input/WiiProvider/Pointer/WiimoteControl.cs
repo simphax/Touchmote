@@ -97,13 +97,82 @@ namespace WiiTUIO.Provider
             }
         }
 
-        private void WiiKeyMap_OnRumble(bool rumble)
+        private void WiiKeyMap_OnRumble(double rumble)
         {
             Console.WriteLine("Set rumble to: "+rumble);
-            WiimoteMutex.WaitOne();
-            this.Wiimote.SetRumble(rumble);
-            WiimoteMutex.ReleaseMutex();
+            
+
+            if (rumble == 0)
+            {
+                this.rumble = false;
+            }
+            else
+            {
+                this.rumble = true;
+                this.rumbleWait = TimeSpan.FromMilliseconds(300 - rumble * 300);
+                if (rumbleThread == null)
+                {
+                    rumbleThread = new Thread(rumbleThreadWorker);
+                    rumbleThread.Priority = ThreadPriority.BelowNormal;
+                    rumbleThread.Start();
+
+                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        App.Current.Exit += delegate
+                        {
+                            WiimoteMutex.WaitOne();
+                            this.Wiimote.SetRumble(false);
+                            rumbleThread.Abort();
+                            WiimoteMutex.ReleaseMutex();
+                        };
+                    }), null);
+                }
+            }
+            
         }
+
+        private bool rumble = false;
+        private TimeSpan rumbleWait = TimeSpan.MinValue;
+
+        private Thread rumbleThread;
+
+        private void rumbleThreadWorker()
+        {
+            while (true)
+            {
+                if (rumble)
+                {
+                    WiimoteMutex.WaitOne();
+                    if (!this.Wiimote.WiimoteState.Rumble)
+                    {
+                        this.Wiimote.SetRumble(true);
+
+                        if (rumbleWait.Milliseconds > 50)
+                        {
+                            Thread.Sleep(rumbleWait.Milliseconds / 2);
+                            this.Wiimote.SetRumble(false);
+                            Thread.Sleep(rumbleWait);
+                        }
+                    }
+                    WiimoteMutex.ReleaseMutex();
+                    if (rumbleWait.Milliseconds <= 50)
+                    {
+                        Thread.Sleep(50);
+                    }
+                }
+                else
+                {
+                    WiimoteMutex.WaitOne();
+                    if (this.Wiimote.WiimoteState.Rumble)
+                    {
+                        this.Wiimote.SetRumble(false);
+                    }
+                    WiimoteMutex.ReleaseMutex();
+                    Thread.Sleep(500);
+                }
+            }
+        }
+
 
         private bool usingCursors()
         {
