@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HidLibrary", "HidLibrary\Hi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriverInstall", "DriverInstall\DriverInstall.csproj", "{914C6098-F4B6-4AFA-AFD0-5B90411C9271}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScpControl", "ScpControl\ScpControl.csproj", "{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,22 @@ Global
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x64.Build.0 = Release|x64
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x86.ActiveCfg = Release|x86
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x86.Build.0 = Release|x86
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Debug|x64.ActiveCfg = Debug|x64
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Debug|x64.Build.0 = Debug|x64
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Debug|x86.ActiveCfg = Debug|x86
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Debug|x86.Build.0 = Debug|x86
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Release|x64.ActiveCfg = Release|x64
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Release|x64.Build.0 = Release|x64
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Release|x86.ActiveCfg = Release|x86
+		{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
