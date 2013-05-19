@@ -274,10 +274,11 @@ namespace WiiTUIO.Provider
             ButtonState buttonState = wiimoteState.ButtonState;
             bool significant = false;
 
+            this.KeyMap.updateAccelerometer(wiimoteState.AccelState);
+
             if(wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.Nunchuk)
             {
                 this.KeyMap.updateNunchuk(wiimoteState.NunchukState);
-                significant = true;
 
                 if (wiimoteState.NunchukState.C && !NunchukPressedButtons.C)
                 {
@@ -449,10 +450,7 @@ namespace WiiTUIO.Provider
                 significant = true;
             }
 
-            if (significant)
-            {
-                this.KeyMap.XinputDevice.Update(this.KeyMap.XinputReport);
-            }
+            this.KeyMap.XinputDevice.Update(this.KeyMap.XinputReport);
 
             return significant;
         }
@@ -499,8 +497,6 @@ namespace WiiTUIO.Provider
         public XinputDevice XinputDevice;
         public XinputReport XinputReport;
 
-        private int id;
-
         public WiiKeyMap(JObject jsonObj, XinputDevice xinput, XinputReport xinputReport)
         {
             this.jsonObj = jsonObj;
@@ -523,6 +519,29 @@ namespace WiiTUIO.Provider
         }
 
         private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave";
+
+        internal void updateAccelerometer(AccelState accelState)
+        {
+            JToken key = this.jsonObj.GetValue("SteeringWheel");
+            if (key != null)
+            {
+                switch (key.ToString().ToLower())
+                {
+                    case "360.sticklx":
+                        XinputReport.StickLX = accelState.Values.Y * -0.5 + 0.5;
+                        break;
+                    case "360.stickly":
+                        XinputReport.StickLY = accelState.Values.Y * -0.5 + 0.5;
+                        break;
+                    case "360.stickrx":
+                        XinputReport.StickRX = accelState.Values.Y * -0.5 + 0.5;
+                        break;
+                    case "360.stickry":
+                        XinputReport.StickRY = accelState.Values.Y * -0.5 + 0.5;
+                        break;
+                }
+            }
+        }
 
         public void updateNunchuk(NunchukState nunchuk)
         {
