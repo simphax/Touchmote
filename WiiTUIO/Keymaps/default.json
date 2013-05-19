@@ -14,6 +14,10 @@
     "Two": [
       "LWin",
       "Tab"
-    ]
+    ],
+	"Nunchuk.StickX": "360.StickLX",
+	"Nunchuk.StickY": "360.StickLY",
+	"Nunchuk.C": "360.TriggerL",
+	"Nunchuk.Z": "360.TriggerR"
   }
 }
