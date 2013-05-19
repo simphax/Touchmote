@@ -97,7 +97,7 @@ namespace WiiTUIO.Provider
             }
             if (StickLX < 0.0)
             {
-                return 1;
+                return 0;
             }
             return (Byte)(StickLX * 255);
         }
@@ -110,7 +110,7 @@ namespace WiiTUIO.Provider
             }
             if (StickLY < 0.0)
             {
-                return 1;
+                return 0;
             }
             return (Byte)(StickLY * 255);
         }
@@ -123,7 +123,7 @@ namespace WiiTUIO.Provider
             }
             if (StickRX < 0.0)
             {
-                return 1;
+                return 0;
             }
             return (Byte)(StickRX * 255);
         }
@@ -136,7 +136,7 @@ namespace WiiTUIO.Provider
             }
             if (StickRY < 0.0)
             {
-                return 1;
+                return 0;
             }
             return (Byte)(StickRY * 255);
         }
@@ -149,7 +149,7 @@ namespace WiiTUIO.Provider
             }
             if (TriggerR < 0.0)
             {
-                return 1;
+                return 0;
             }
             return (Byte)(TriggerL * 255);
         }
@@ -162,7 +162,7 @@ namespace WiiTUIO.Provider
             }
             if (TriggerR < 0.0)
             {
-                return 1;
+                return 0;
             }
             return (Byte)(TriggerR * 255);
         }
