@@ -42,12 +42,12 @@ namespace WiiTUIO.Provider
 
         public override Int32 Parse(Byte[] Input, Byte[] Output)
         {
-            Byte Serial = (Byte)(Input[0] + 1);
+            Byte Serial = Input[0];
 
             for (Int32 Index = 0; Index < 28; Index++) Output[Index] = 0x00;
 
             Output[0] = 0x1C;
-            Output[4] = (Byte)(Input[0] + 1);
+            Output[4] = Input[0];
             Output[9] = 0x14;
 
             if (Input[1] == 0x02) // Pad is active

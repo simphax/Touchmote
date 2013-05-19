@@ -75,6 +75,7 @@ namespace WiiTUIO.Provider
             this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
             this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
             this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
+            this.keyMapper.KeyMap.OnRumble += WiiKeyMap_OnRumble;
 
             this.WiiKeyMap_ConfigChanged(new WiiKeyMapConfigChangedEvent(this.keyMapper.KeyMap.Pointer));
 
@@ -94,6 +95,14 @@ namespace WiiTUIO.Provider
                     CursorWindow.getInstance().addCursor(slaveCursor);
                 }), null);
             }
+        }
+
+        private void WiiKeyMap_OnRumble(bool rumble)
+        {
+            Console.WriteLine("Set rumble to: "+rumble);
+            WiimoteMutex.WaitOne();
+            this.Wiimote.SetRumble(rumble);
+            WiimoteMutex.ReleaseMutex();
         }
 
         private bool usingCursors()

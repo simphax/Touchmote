@@ -47,7 +47,7 @@ namespace WiiTUIO.Provider
 
             Byte[] input = new Byte[28];
 
-            input[0] = 0;
+            input[0] = (Byte)this.ID;
             input[1] = 0x02;
 
             input[10] = 0;
