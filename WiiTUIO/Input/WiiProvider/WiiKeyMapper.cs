@@ -29,6 +29,12 @@ namespace WiiTUIO.Provider
         B
     }
 
+    public struct NunchukButtonState
+    {
+        public bool C;
+        public bool Z;
+    }
+
     class WiiKeyMapper
     {
 
@@ -38,6 +44,7 @@ namespace WiiTUIO.Provider
 
         public WiiKeyMap KeyMap;
         public ButtonState PressedButtons;
+        public NunchukButtonState NunchukPressedButtons;
 
         private SystemProcessMonitor processMonitor;
 
@@ -51,6 +58,7 @@ namespace WiiTUIO.Provider
             this.wiimoteID = wiimoteID;
 
             PressedButtons = new ButtonState();
+            NunchukPressedButtons = new NunchukButtonState();
 
             System.IO.Directory.CreateDirectory(KEYMAPS_PATH);
             this.applicationsJson = this.createDefaultApplicationsJSON();
@@ -268,8 +276,34 @@ namespace WiiTUIO.Provider
 
             if(wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.Nunchuk)
             {
-                this.KeyMap.updateNunchuck(wiimoteState.NunchukState);
+                this.KeyMap.updateNunchuk(wiimoteState.NunchukState);
                 significant = true;
+
+                if (wiimoteState.NunchukState.C && !NunchukPressedButtons.C)
+                {
+                    this.KeyMap.executeButtonDown("Nunchuk.C");
+                    NunchukPressedButtons.C = true;
+                    significant = true;
+                }
+                else if (!wiimoteState.NunchukState.C && NunchukPressedButtons.C)
+                {
+                    this.KeyMap.executeButtonUp("Nunchuk.C");
+                    NunchukPressedButtons.C = false;
+                    significant = true;
+                }
+
+                if (wiimoteState.NunchukState.Z && !NunchukPressedButtons.Z)
+                {
+                    this.KeyMap.executeButtonDown("Nunchuk.Z");
+                    NunchukPressedButtons.Z = true;
+                    significant = true;
+                }
+                else if (!wiimoteState.NunchukState.Z && NunchukPressedButtons.Z)
+                {
+                    this.KeyMap.executeButtonUp("Nunchuk.Z");
+                    NunchukPressedButtons.Z = false;
+                    significant = true;
+                }
             }
 
             if (buttonState.A && !PressedButtons.A)
@@ -415,6 +449,11 @@ namespace WiiTUIO.Provider
                 significant = true;
             }
 
+            if (significant)
+            {
+                this.KeyMap.XinputDevice.Update(this.KeyMap.XinputReport);
+            }
+
             return significant;
         }
     }
@@ -456,7 +495,8 @@ namespace WiiTUIO.Provider
 
         private InputSimulator inputSimulator;
 
-        private XinputDevice xinputDevice;
+        public XinputDevice XinputDevice;
+        public XinputReport XinputReport;
 
         private int id;
 
@@ -467,17 +507,40 @@ namespace WiiTUIO.Provider
             this.Pointer = this.jsonObj.GetValue("Pointer").ToString();
 
             this.inputSimulator = new InputSimulator();
-            this.xinputDevice = xinput;
+            this.XinputDevice = xinput;
+            this.XinputReport = new XinputReport();
         }
 
         private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave";
 
-        public void updateNunchuck(NunchukState nunchuk)
+        public void updateNunchuk(NunchukState nunchuk)
         {
-            XinputReport report = new XinputReport();
-            report.LStickX = nunchuk.Joystick.X*2;
-            report.LStickY = -nunchuk.Joystick.Y*2;
-            this.xinputDevice.Update(report);
+            JToken key = this.jsonObj.GetValue("Nunchuk.StickX");
+            if (key != null)
+            {
+                if ("360.sticklx".Equals(key.ToString().ToLower()))
+                {
+                    XinputReport.StickLX = nunchuk.Joystick.X * 2;
+                }
+                else if ("360.stickly".Equals(key.ToString().ToLower()))
+                {
+                    XinputReport.StickLY = nunchuk.Joystick.X * 2;
+                }
+            }
+            
+            key = this.jsonObj.GetValue("Nunchuk.StickY");
+            if (key != null)
+            {
+                if ("360.sticklx".Equals(key.ToString().ToLower()))
+                {
+                    XinputReport.StickLX = -nunchuk.Joystick.Y * 2;
+                }
+                else if ("360.stickly".Equals(key.ToString().ToLower()))
+                {
+                    XinputReport.StickLY = -nunchuk.Joystick.Y * 2;
+                }
+            }
+            
             //this.inputSimulator.Mouse.MoveMouseBy((int)(nunchuk.Joystick.X*10),-(int)(nunchuk.Joystick.Y*10));
             //Console.WriteLine("Nunchuk RAW : " + nunchuk.RawJoystick);
             //Console.WriteLine("Nunchuk : " + nunchuk.Joystick);
@@ -485,13 +548,25 @@ namespace WiiTUIO.Provider
 
         public void executeButtonUp(WiimoteButton button)
         {
+            this.executeButtonUp(button.ToString());//ToString converts WiimoteButton.A to "A" for instance
+        }
+
+        public void executeButtonUp(string button)
+        {
+
+            Console.WriteLine("button up"+button);
             bool handled = false;
 
-            JToken key = this.jsonObj.GetValue(button.ToString()); //ToString converts WiimoteButton.A to "A" for instance
+            JToken key = this.jsonObj.GetValue(button); 
 
             if (key != null)
             {
-                if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper())) //Enum.Parse does the opposite...
+                if (key.ToString().Length > 4 && key.ToString().ToLower().Substring(0, 4).Equals("360."))
+                {
+                    this.xinputButtonUp(key.ToString().ToLower().Substring(4));
+                    handled = true;
+                }
+                else if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper())) //Enum.Parse does the opposite...
                 {
                     this.inputSimulator.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
                     handled = true;
@@ -548,12 +623,23 @@ namespace WiiTUIO.Provider
 
         public void executeButtonDown(WiimoteButton button)
         {
+            this.executeButtonDown(button.ToString());
+        }
+
+        public void executeButtonDown(string button)
+        {
+            Console.WriteLine("button down" + button);
             bool handled = false;
 
-            JToken key = this.jsonObj.GetValue(button.ToString());
+            JToken key = this.jsonObj.GetValue(button);
             if (key != null)
             {
-                if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper()))
+                if (key.ToString().Length > 4 && key.ToString().ToLower().Substring(0, 4).Equals("360."))
+                {
+                    this.xinputButtonDown(key.ToString().ToLower().Substring(4));
+                    handled = true;
+                }
+                else if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToString().ToUpper()))
                 {
                     VirtualKeyCode theKeyCode = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true);
                     if (theKeyCode == VirtualKeyCode.VOLUME_UP || theKeyCode == VirtualKeyCode.VOLUME_DOWN)
@@ -590,15 +676,39 @@ namespace WiiTUIO.Provider
                 OnButtonDown(new WiiButtonEvent(key.ToString(), button, handled));
             }
         }
+
+        public void xinputButtonUp(string button)
+        {
+            if ("triggerr".Equals(button))
+            {
+                this.XinputReport.TriggerR = 0.0;
+            }
+            else if ("triggerl".Equals(button))
+            {
+                this.XinputReport.TriggerL = 0.0;
+            }
+        }
+
+        public void xinputButtonDown(string button)
+        {
+            if ("triggerr".Equals(button))
+            {
+                this.XinputReport.TriggerR = 1.0;
+            }
+            else if ("triggerl".Equals(button))
+            {
+                this.XinputReport.TriggerL = 1.0;
+            }
+        }
     }
 
     public class WiiButtonEvent
     {
         public bool Handled = false;
         public string Action = "";
-        public WiimoteButton Button;
+        public string Button;
 
-        public WiiButtonEvent(string action, WiimoteButton button, bool handled = false)
+        public WiiButtonEvent(string action, string button, bool handled = false)
         {
             this.Action = action;
             this.Button = button;

@@ -8,8 +8,11 @@ namespace WiiTUIO.Provider
 {
     public class XinputReport
     {
-        public double LStickX;
-        public double LStickY;
+        public double StickLX;
+        public double StickLY;
+
+        public double TriggerL;
+        public double TriggerR;
 
         public Byte[] ToBytes() {
 
@@ -18,37 +21,66 @@ namespace WiiTUIO.Provider
             result[0] = 1;
             result[1] = 0;
 
-            result[4] = getLStickXRaw();
-            result[5] = getLStickYRaw();
+            result[2] = getTriggerLRaw();
+            result[3] = getTriggerRRaw();
+
+            result[4] = getStickLXRaw();
+            result[5] = getStickLYRaw();
 
             return result;
         }
 
 
-        public Byte getLStickXRaw()
+        public Byte getStickLXRaw()
         {
-            if (LStickX > 1.0)
+            if (StickLX > 1.0)
             {
                 return 255;
             }
-            if (LStickX < -1.0)
+            if (StickLX < -1.0)
             {
                 return 1;
             }
-            return (Byte)((LStickX + 1) * 0.5 * 255);
+            return (Byte)((StickLX + 1) * 0.5 * 255);
         }
 
-        public Byte getLStickYRaw()
+        public Byte getStickLYRaw()
         {
-            if (LStickY > 1.0)
+            if (StickLY > 1.0)
             {
                 return 255;
             }
-            if (LStickY < -1.0)
+            if (StickLY < -1.0)
             {
                 return 1;
             }
-            return (Byte)((LStickY + 1) * 0.5 * 255);
+            return (Byte)((StickLY + 1) * 0.5 * 255);
+        }
+
+        public Byte getTriggerLRaw()
+        {
+            if (TriggerL > 1.0)
+            {
+                return 255;
+            }
+            if (TriggerR < 0.0)
+            {
+                return 1;
+            }
+            return (Byte)(TriggerL * 255);
+        }
+
+        public Byte getTriggerRRaw()
+        {
+            if (TriggerR > 1.0)
+            {
+                return 255;
+            }
+            if (TriggerR < 0.0)
+            {
+                return 1;
+            }
+            return (Byte)(TriggerR * 255);
         }
     }
 }
