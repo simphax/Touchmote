@@ -8,26 +8,84 @@ namespace WiiTUIO.Provider
 {
     public class XinputReport
     {
-        public double StickLX;
-        public double StickLY;
+        public double StickLX = 0.5;
+        public double StickLY = 0.5;
+        public double StickRX = 0.5;
+        public double StickRY = 0.5;
 
         public double TriggerL;
         public double TriggerR;
 
+        public bool A;
+        public bool B;
+        public bool X;
+        public bool Y;
+
+        public bool Back;
+        public bool StickPressL;
+        public bool StickPressR;
+        public bool Start;
+
+        public bool Up;
+        public bool Down;
+        public bool Right;
+        public bool Left;
+
+        public bool BumperL;
+        public bool BumperR;
+
+        public bool Guide;
+
+        private int ID;
+
+        public XinputReport(int ID)
+        {
+            this.ID = ID;
+        }
+
         public Byte[] ToBytes() {
 
-            Byte[] result = new Byte[6];
+            Byte[] input = new Byte[28];
 
-            result[0] = 1;
-            result[1] = 0;
+            input[0] = 0;
+            input[1] = 0x02;
 
-            result[2] = getTriggerLRaw();
-            result[3] = getTriggerRRaw();
+            input[10] = 0;
+            input[11] = 0;
+            input[12] = 0;
+            input[13] = 0;
 
-            result[4] = getStickLXRaw();
-            result[5] = getStickLYRaw();
+            input[10] |= (Byte)(this.Back ? 1 << 0 : 0);
+            input[10] |= (Byte)(this.StickPressL ? 1 << 1 : 0);
+            input[10] |= (Byte)(this.StickPressR ? 1 << 2 : 0);
+            input[10] |= (Byte)(this.Start ? 1 << 3 : 0);
 
-            return result;
+            input[10] |= (Byte)(this.Up ? 1 << 4 : 0);
+            input[10] |= (Byte)(this.Down ? 1 << 5 : 0);
+            input[10] |= (Byte)(this.Right ? 1 << 6 : 0);
+            input[10] |= (Byte)(this.Left ? 1 << 7 : 0);
+
+            input[11] |= (Byte)(this.BumperL ? 1 << 2 : 0);
+            input[11] |= (Byte)(this.BumperR ? 1 << 3 : 0);
+
+            input[11] |= (Byte)(this.Y ? 1 << 4 : 0);
+            input[11] |= (Byte)(this.B ? 1 << 5 : 0);
+
+            input[11] |= (Byte)(this.A ? 1 << 6 : 0);
+            input[11] |= (Byte)(this.X ? 1 << 7 : 0);
+
+            input[12] |= (Byte)(this.Guide ? 1 << 0 : 0);
+
+            input[26] = getTriggerLRaw();
+            input[27] = getTriggerRRaw();
+
+            input[14] = getStickLXRaw();
+            input[15] = getStickLYRaw();
+
+            input[16] = getStickRXRaw();
+            input[17] = getStickRYRaw();
+
+            return input;
         }
 
 
@@ -37,11 +95,11 @@ namespace WiiTUIO.Provider
             {
                 return 255;
             }
-            if (StickLX < -1.0)
+            if (StickLX < 0.0)
             {
                 return 1;
             }
-            return (Byte)((StickLX + 1) * 0.5 * 255);
+            return (Byte)(StickLX * 255);
         }
 
         public Byte getStickLYRaw()
@@ -50,11 +108,37 @@ namespace WiiTUIO.Provider
             {
                 return 255;
             }
-            if (StickLY < -1.0)
+            if (StickLY < 0.0)
             {
                 return 1;
             }
-            return (Byte)((StickLY + 1) * 0.5 * 255);
+            return (Byte)(StickLY * 255);
+        }
+
+        public Byte getStickRXRaw()
+        {
+            if (StickRX > 1.0)
+            {
+                return 255;
+            }
+            if (StickRX < 0.0)
+            {
+                return 1;
+            }
+            return (Byte)(StickRX * 255);
+        }
+
+        public Byte getStickRYRaw()
+        {
+            if (StickRY > 1.0)
+            {
+                return 255;
+            }
+            if (StickRY < 0.0)
+            {
+                return 1;
+            }
+            return (Byte)(StickRY * 255);
         }
 
         public Byte getTriggerLRaw()
