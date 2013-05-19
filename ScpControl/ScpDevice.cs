@@ -428,7 +428,7 @@ namespace ScpControl
 
                         if (SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref DeviceInterfaceData, detailDataBuffer, bufferSize, ref bufferSize, ref da))
                         {
-                            IntPtr pDevicePathName = new IntPtr(detailDataBuffer.ToInt32() + 4);
+                            IntPtr pDevicePathName = detailDataBuffer + 4;
 
                             Path = Marshal.PtrToStringAuto(pDevicePathName).ToUpper();
                             Marshal.FreeHGlobal(detailDataBuffer);
