@@ -71,7 +71,7 @@ namespace WiiTUIO.Provider
             MergeJSON(commonKeymap, specificKeymap);
             this.defaultKeymapJson = commonKeymap;
 
-            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson);
+            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson,  new XinputDevice(XinputBus.Default, wiimoteID));
 
             this.processMonitor = SystemProcessMonitor.getInstance();
 
@@ -456,19 +456,28 @@ namespace WiiTUIO.Provider
 
         private InputSimulator inputSimulator;
 
-        public WiiKeyMap(JObject jsonObj)
+        private XinputDevice xinputDevice;
+
+        private int id;
+
+        public WiiKeyMap(JObject jsonObj, XinputDevice xinput)
         {
             this.jsonObj = jsonObj;
 
             this.Pointer = this.jsonObj.GetValue("Pointer").ToString();
 
             this.inputSimulator = new InputSimulator();
+            this.xinputDevice = xinput;
         }
 
         private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave";
 
         public void updateNunchuck(NunchukState nunchuk)
         {
+            XinputReport report = new XinputReport();
+            report.LStickX = nunchuk.Joystick.X*2;
+            report.LStickY = -nunchuk.Joystick.Y*2;
+            this.xinputDevice.Update(report);
             //this.inputSimulator.Mouse.MoveMouseBy((int)(nunchuk.Joystick.X*10),-(int)(nunchuk.Joystick.Y*10));
             //Console.WriteLine("Nunchuk RAW : " + nunchuk.RawJoystick);
             //Console.WriteLine("Nunchuk : " + nunchuk.Joystick);

@@ -117,9 +117,7 @@
   <PropertyGroup>
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
@@ -136,6 +134,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ScpControl">
+      <HintPath>.\ScpControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -201,6 +202,11 @@
     </Compile>
     <Compile Include="Input\WiiProvider\Pointer\CursorPos.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiimoteStatus.cs" />
+    <Compile Include="Input\WiiProvider\XinputBus.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Input\WiiProvider\XinputReport.cs" />
+    <Compile Include="Input\WiiProvider\XinputDevice.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
