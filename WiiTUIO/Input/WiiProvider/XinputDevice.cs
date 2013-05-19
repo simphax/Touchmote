@@ -12,6 +12,8 @@ namespace WiiTUIO.Provider
         private int ID;
         private XinputBus bus;
 
+        public Action<Byte,Byte> OnRumble;
+
         public XinputDevice(XinputBus bus, int ID)
         {
             this.bus = bus;
@@ -27,7 +29,22 @@ namespace WiiTUIO.Provider
 
             bus.Parse(input, report);
 
-            return bus.Report(report, rumble);
+            if (bus.Report(report, rumble))
+            {
+                if (rumble[1] == 0x08)
+                {
+                    Byte big = (Byte)(rumble[3]);
+                    Byte small = (Byte)(rumble[4]);
+
+                    if (OnRumble != null)
+                    {
+                        OnRumble(big, small);
+                    }
+                }
+                return true;
+            }
+
+            return false;
         }
     }
 }

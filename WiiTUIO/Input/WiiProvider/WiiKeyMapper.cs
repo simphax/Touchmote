@@ -490,6 +490,7 @@ namespace WiiTUIO.Provider
         public Action<WiiButtonEvent> OnButtonUp;
         public Action<WiiButtonEvent> OnButtonDown;
         public Action<WiiKeyMapConfigChangedEvent> OnConfigChanged;
+        public Action<bool> OnRumble;
 
         public string Pointer;
 
@@ -509,6 +510,16 @@ namespace WiiTUIO.Provider
             this.inputSimulator = new InputSimulator();
             this.XinputDevice = xinput;
             this.XinputReport = xinputReport;
+            xinput.OnRumble += Xinput_OnRumble;
+        }
+
+        private void Xinput_OnRumble(byte big, byte small)
+        {
+            Console.WriteLine("Xinput rumble: big=" + big + " small=" + small);
+            if (this.OnRumble != null)
+            {
+                OnRumble(big > 200 || small > 200);
+            }
         }
 
         private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave";
