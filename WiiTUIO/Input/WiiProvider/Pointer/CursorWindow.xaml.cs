@@ -24,15 +24,18 @@ namespace WiiTUIO.Provider
     public partial class CursorWindow : Window
     {
 
-        private static CursorWindow _instance;
+        private static CursorWindow defaultInstance;
 
-        public static CursorWindow getInstance()
+        public static CursorWindow Current
         {
-            if (_instance == null)
+            get
             {
-                _instance = new CursorWindow();
+                if (defaultInstance == null)
+                {
+                    defaultInstance = new CursorWindow();
+                }
+                return defaultInstance;
             }
-            return _instance;
         }
 
         private CursorWindow()

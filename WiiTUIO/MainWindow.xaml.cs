@@ -104,8 +104,10 @@ namespace WiiTUIO
 
             if (Settings.Default.pointer_customCursor)
             {
-                CursorWindow.getInstance().Show();
+                CursorWindow.Current.Show();
             }
+
+            OverlayWindow.Current.Show();
 
             Application.Current.Exit += appWillExit;
             Application.Current.SessionEnding += windowsShutdownEvent;
@@ -164,7 +166,8 @@ namespace WiiTUIO
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            CursorWindow.getInstance().Close();
+            CursorWindow.Current.Close();
+            OverlayWindow.Current.Close();
             /*
             if (this.bConnected)
             {

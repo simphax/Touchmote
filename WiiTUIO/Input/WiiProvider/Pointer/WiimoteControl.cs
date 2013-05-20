@@ -91,8 +91,8 @@ namespace WiiTUIO.Provider
                     this.slaveCursor = new Cursor(myColor);
                     this.masterCursor.Hide();
                     this.slaveCursor.Hide();
-                    CursorWindow.getInstance().addCursor(masterCursor);
-                    CursorWindow.getInstance().addCursor(slaveCursor);
+                    CursorWindow.Current.addCursor(masterCursor);
+                    CursorWindow.Current.addCursor(slaveCursor);
                 }), null);
             }
         }
@@ -384,8 +384,8 @@ namespace WiiTUIO.Provider
             this.keyMapper.KeyMap.XinputDevice.Remove();
             App.Current.Dispatcher.BeginInvoke(new Action(delegate()
             {
-                CursorWindow.getInstance().removeCursor(this.masterCursor);
-                CursorWindow.getInstance().removeCursor(this.slaveCursor);
+                CursorWindow.Current.removeCursor(this.masterCursor);
+                CursorWindow.Current.removeCursor(this.slaveCursor);
             }), null);
         }
     }
