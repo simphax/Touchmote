@@ -1,0 +1,60 @@
+﻿<Window x:Class="WiiTUIO.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cursor"
+        Topmost="True"
+        Top="0"
+        Left="0"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Background="Transparent"
+        ShowInTaskbar="False" >
+    <Grid MouseUp="Grid_MouseUp">
+        <ScrollViewer PanningMode="VerticalOnly" Name="layoutOverlay" Width="800" Height="500" Background="#FF232323">
+            <StackPanel>
+                <Label Content="Choose a layout" FontSize="38" FontFamily="Segoe UI Light" Foreground="White" Margin="10"></Label>
+                <Border MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
+                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
+                Racing
+                    </TextBlock>
+                </Border>
+
+                <Border MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
+                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
+                Racing
+                    </TextBlock>
+                </Border>
+                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
+                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
+                Racing
+                    </TextBlock>
+                </Border>
+                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
+                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
+                Racing
+                    </TextBlock>
+                </Border>
+                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
+                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
+                Racing
+                    </TextBlock>
+                </Border>
+                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
+                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
+                Racing
+                    </TextBlock>
+                </Border>
+                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
+                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
+                Racing
+                    </TextBlock>
+                </Border>
+                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
+                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
+                Racing
+                    </TextBlock>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
