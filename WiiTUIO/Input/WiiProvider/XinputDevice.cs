@@ -21,6 +21,11 @@ namespace WiiTUIO.Provider
             bus.Plugin(ID);
         }
 
+        public void Remove()
+        {
+            bus.Unplug(ID);
+        }
+
         public bool Update(XinputReport reportobj)
         {
             Byte[] input = reportobj.ToBytes();
