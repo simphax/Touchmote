@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -40,6 +41,8 @@ namespace WiiTUIO.Provider
             this.Width = System.Windows.SystemParameters.PrimaryScreenWidth;
             this.Height = System.Windows.SystemParameters.PrimaryScreenHeight;
 
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+
             //Compensate for DPI settings
             Loaded += (o, e) =>
             {
@@ -51,9 +54,14 @@ namespace WiiTUIO.Provider
             
         }
 
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            this.Width = Util.ScreenBounds.Width;
+            this.Height = Util.ScreenBounds.Height;
+        }
+
         public void addCursor(Cursor cursor)
         {
-
             this.cursorCanvas.Children.Add(cursor);
         }
 
