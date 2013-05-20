@@ -381,6 +381,7 @@ namespace WiiTUIO.Provider
 
         public void Teardown()
         {
+            this.keyMapper.KeyMap.XinputDevice.Remove();
             App.Current.Dispatcher.BeginInvoke(new Action(delegate()
             {
                 CursorWindow.getInstance().removeCursor(this.masterCursor);
