@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,13 @@ namespace WiiTUIO.Provider
             this.recalculateScreenBounds();
 
             this.rotationSmoothing = new SmoothingBuffer(20);
+
+            SystemEvents.DisplaySettingsChanged +=SystemEvents_DisplaySettingsChanged;
+        }
+
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            recalculateScreenBounds();
         }
 
         private void recalculateScreenBounds()
@@ -47,10 +55,6 @@ namespace WiiTUIO.Provider
 
         public CursorPos CalculateCursorPos(WiimoteChangedEventArgs args)
         {
-            if (!Util.ScreenBounds.Equals(screenBounds))
-            {
-                recalculateScreenBounds();
-            }
             int x;
             int y;
 
