@@ -605,7 +605,45 @@ namespace WiiTUIO.Provider
 
             if (key != null)
             {
-                if (key.ToString().Length > 4 && key.ToString().ToLower().Substring(0, 4).Equals("360."))
+                if (key.Values().Count() > 0)
+                {
+
+                    foreach (JToken token in key.Values<JToken>())
+                    {
+                        if (token.ToString().Length > 4 && token.ToString().ToLower().Substring(0, 4).Equals("360."))
+                        {
+                            this.xinputButtonUp(key.ToString().ToLower().Substring(4));
+                            handled = true;
+                        }
+                    }
+
+                    if (!handled)
+                    {
+                        IEnumerable<JToken> array = key.Values<JToken>();
+
+                        List<VirtualKeyCode> modifiers = new List<VirtualKeyCode>();
+
+                        for (int i = 0; i < array.Count() - 1; i++)
+                        {
+                            if (Enum.IsDefined(typeof(VirtualKeyCode), array.ElementAt(i).ToString().ToUpper()))
+                            {
+                                modifiers.Add((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.ElementAt(i).ToString(), true));
+                            }
+                        }
+                        VirtualKeyCode actionKey = 0;
+                        if (Enum.IsDefined(typeof(VirtualKeyCode), array.Last().ToString().ToUpper()))
+                        {
+                            actionKey = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.Last().ToString(), true);
+                        }
+
+                        if (modifiers.Count() > 0 && actionKey != 0)
+                        {
+                            this.inputSimulator.Keyboard.ModifiedKeyStroke(modifiers, actionKey);
+                            handled = true;
+                        }
+                    }
+                }
+                else if (key.ToString().Length > 4 && key.ToString().ToLower().Substring(0, 4).Equals("360."))
                 {
                     this.xinputButtonUp(key.ToString().ToLower().Substring(4));
                     handled = true;
@@ -628,31 +666,6 @@ namespace WiiTUIO.Provider
                             this.inputSimulator.Mouse.RightButtonUp();
                             handled = true;
                             break;
-                    }
-                }
-                else if (key.Values().Count() > 0)
-                {
-                    IEnumerable<JToken> array = key.Values<JToken>();
-
-                    List<VirtualKeyCode> modifiers = new List<VirtualKeyCode>();
-
-                    for (int i = 0; i < array.Count()-1; i++)
-                    {
-                        if (Enum.IsDefined(typeof(VirtualKeyCode), array.ElementAt(i).ToString().ToUpper()))
-                        {
-                            modifiers.Add((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.ElementAt(i).ToString(), true));
-                        }
-                    }
-                    VirtualKeyCode actionKey = 0;
-                    if (Enum.IsDefined(typeof(VirtualKeyCode), array.Last().ToString().ToUpper()))
-                    {
-                        actionKey = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), array.Last().ToString(), true);
-                    }
-
-                    if (modifiers.Count() > 0 && actionKey != 0)
-                    {
-                        this.inputSimulator.Keyboard.ModifiedKeyStroke(modifiers, actionKey);
-                        handled = true;
                     }
                 }
                 else if(!supportedSpecialCodes.ToLower().Contains(key.ToString().ToLower())) //If we can not find any valid key code, just treat it as a string to type :P (Good if the user writes X instead of VK_X)
@@ -678,7 +691,18 @@ namespace WiiTUIO.Provider
             JToken key = this.jsonObj.GetValue(button);
             if (key != null)
             {
-                if (key.ToString().Length > 4 && key.ToString().ToLower().Substring(0, 4).Equals("360."))
+                if (key.Values().Count() > 1)
+                {
+                    foreach (JToken token in key.Values<JToken>())
+                    {
+                        if (token.ToString().Length > 4 && token.ToString().ToLower().Substring(0, 4).Equals("360."))
+                        {
+                            this.xinputButtonDown(key.ToString().ToLower().Substring(4));
+                            handled = true;
+                        }
+                    }
+                }
+                else if (key.ToString().Length > 4 && key.ToString().ToLower().Substring(0, 4).Equals("360."))
                 {
                     this.xinputButtonDown(key.ToString().ToLower().Substring(4));
                     handled = true;
@@ -776,6 +800,30 @@ namespace WiiTUIO.Provider
                 case "bumperr":
                     this.XinputReport.BumperR = false;
                     break;
+                case "stickrx+":
+                    this.XinputReport.StickRX = 0.5;
+                    break;
+                case "stickry+":
+                    this.XinputReport.StickRY = 0.5;
+                    break;
+                case "sticklx+":
+                    this.XinputReport.StickLX = 0.5;
+                    break;
+                case "stickly+":
+                    this.XinputReport.StickLY = 0.5;
+                    break;
+                case "stickrx-":
+                    this.XinputReport.StickRX = 0.5;
+                    break;
+                case "stickry-":
+                    this.XinputReport.StickRY = 0.5;
+                    break;
+                case "sticklx-":
+                    this.XinputReport.StickLX = 0.5;
+                    break;
+                case "stickly-":
+                    this.XinputReport.StickLY = 0.5;
+                    break;
             }
         }
 
@@ -833,6 +881,30 @@ namespace WiiTUIO.Provider
                     break;
                 case "bumperr":
                     this.XinputReport.BumperR = true;
+                    break;
+                case "stickrx+":
+                    this.XinputReport.StickRX = 1.0;
+                    break;
+                case "stickry+":
+                    this.XinputReport.StickRY = 0.0;
+                    break;
+                case "sticklx+":
+                    this.XinputReport.StickLX = 1.0;
+                    break;
+                case "stickly+":
+                    this.XinputReport.StickLY = 0.0;
+                    break;
+                case "stickrx-":
+                    this.XinputReport.StickRX = 0.0;
+                    break;
+                case "stickry-":
+                    this.XinputReport.StickRY = 1.0;
+                    break;
+                case "sticklx-":
+                    this.XinputReport.StickLX = 0.0;
+                    break;
+                case "stickly-":
+                    this.XinputReport.StickLY = 1.0;
                     break;
             }
         }
