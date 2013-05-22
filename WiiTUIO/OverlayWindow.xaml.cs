@@ -44,19 +44,34 @@ namespace WiiTUIO
         private OverlayWindow()
         {
             InitializeComponent();
-            this.Width = System.Windows.SystemParameters.PrimaryScreenWidth;
-            this.Height = System.Windows.SystemParameters.PrimaryScreenHeight;
+            this.Width = Util.ScreenBounds.Width;
+            this.Height = Util.ScreenBounds.Height;
+            this.baseGrid.Width = Util.ScreenBounds.Width;
+            this.baseGrid.Height = Util.ScreenBounds.Height;
 
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
             this.baseGrid.Visibility = Visibility.Hidden;
             this.layoutOverlay.Visibility = Visibility.Hidden;
+
+            this.layoutOverlay.Height = this.Height / 2;
+            
+            //Compensate for DPI settings
+            Loaded += (o, e) =>
+            {
+                PresentationSource source = PresentationSource.FromVisual(this);
+                CompositionTarget ct = source.CompositionTarget;
+                Matrix transformMatrix = ct.TransformFromDevice;
+                this.baseCanvas.RenderTransform = new MatrixTransform(transformMatrix);
+            };
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
             this.Width = Util.ScreenBounds.Width;
             this.Height = Util.ScreenBounds.Height;
+            this.baseGrid.Width = Util.ScreenBounds.Width;
+            this.baseGrid.Height = Util.ScreenBounds.Height;
         }
 
         public void ShowLayoutOverlay(WiiKeyMapper keyMapper)
