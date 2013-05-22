@@ -1,4 +1,18 @@
 {
+  "LayoutChooser": [
+    {
+      "Name": "Default",
+      "Keymap": "default.json"
+    },
+    {
+      "Name": "Mouse",
+      "Keymap": "mouse.json"
+    },
+    {
+      "Name": "Steering Wheel",
+      "Keymap": "steeringwheel.json"
+    }
+  ],
   "Applications": [
     {
       "Name": "supercratebox.exe",

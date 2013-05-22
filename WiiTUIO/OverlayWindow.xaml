@@ -13,82 +13,8 @@
         <StackPanel Name="layoutOverlay" Width="500" Height="680" Background="#F20A0A0A">
             <Label Content="Choose a layout" FontSize="38" FontFamily="Segoe UI Light" Foreground="White" Margin="10"></Label>
             <ScrollViewer PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Height="600">
-                <StackPanel>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
-                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
-                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
-                Default
-                        </TextBlock>
-                    </Border>
+                <StackPanel Name="layoutList">
+                    
                 </StackPanel>
             </ScrollViewer>
         </StackPanel>

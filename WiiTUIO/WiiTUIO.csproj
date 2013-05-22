@@ -208,6 +208,9 @@
     </Compile>
     <Compile Include="Input\WiiProvider\XinputReport.cs" />
     <Compile Include="Input\WiiProvider\XinputDevice.cs" />
+    <Compile Include="LayoutSelectionRow.xaml.cs">
+      <DependentUpon>LayoutSelectionRow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -235,6 +238,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Input\WiiProvider\Pointer\Cursor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LayoutSelectionRow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -350,7 +357,13 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Keymaps\Applications.json">
+    <None Include="Keymaps\mouse.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Keymaps\steeringwheel.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Keymaps\Keymaps.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Keymaps\fps.json">
