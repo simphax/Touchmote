@@ -41,8 +41,8 @@ namespace WiiTUIO.Provider
         private CursorWindow()
         {
             InitializeComponent();
-            this.Width = System.Windows.SystemParameters.PrimaryScreenWidth;
-            this.Height = System.Windows.SystemParameters.PrimaryScreenHeight;
+            this.Width = Util.ScreenBounds.Width;
+            this.Height = Util.ScreenBounds.Height;
 
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 

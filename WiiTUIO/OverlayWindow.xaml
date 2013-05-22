@@ -9,16 +9,18 @@
         WindowStyle="None"
         Background="Transparent"
         ShowInTaskbar="False" >
-    <Grid MouseUp="Grid_MouseUp" Name="baseGrid" Background="#33000000">
-        <Border Name="layoutOverlay" Width="500" Height="680" Background="#F20A0A0A" BorderThickness="3" BorderBrush="Red">
-            <StackPanel>
-                <Label Name="title" Content="Choose a layout" FontSize="30" FontFamily="Segoe UI Light" Foreground="White" Margin="10"></Label>
-                <ScrollViewer PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Height="600">
-                    <StackPanel Name="layoutList">
+    <Canvas Name="baseCanvas">
+        <Grid MouseUp="Grid_MouseUp" Name="baseGrid" Background="#33000000">
+            <Border Name="layoutOverlay" Width="500" Height="680" Background="#F20A0A0A" BorderThickness="3" BorderBrush="Red">
+                <StackPanel>
+                    <Label Name="title" Content="Choose a layout" FontSize="30" FontFamily="Segoe UI Light" Foreground="White" Margin="10"></Label>
+                    <ScrollViewer PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Height="600">
+                        <StackPanel Name="layoutList">
 
-                    </StackPanel>
-                </ScrollViewer>
-            </StackPanel>
-        </Border>
-    </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Canvas>
 </Window>
