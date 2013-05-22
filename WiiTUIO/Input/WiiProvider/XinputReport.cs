@@ -79,66 +79,77 @@ namespace WiiTUIO.Provider
             input[26] = getTriggerLRaw();
             input[27] = getTriggerRRaw();
 
-            input[14] = getStickLXRaw();
-            input[15] = getStickLYRaw();
+            Int32 ThumbLX = getStickLXRaw();
+            Int32 ThumbLY = -getStickLYRaw();
+            Int32 ThumbRX = getStickRXRaw();
+            Int32 ThumbRY = -getStickRYRaw();
 
-            input[16] = getStickRXRaw();
-            input[17] = getStickRYRaw();
+            input[14] = (Byte)((ThumbLX >> 0) & 0xFF); // LX
+            input[15] = (Byte)((ThumbLX >> 8) & 0xFF);
+
+            input[16] = (Byte)((ThumbLY >> 0) & 0xFF); // LY
+            input[17] = (Byte)((ThumbLY >> 8) & 0xFF);
+
+            input[18] = (Byte)((ThumbRX >> 0) & 0xFF); // RX
+            input[19] = (Byte)((ThumbRX >> 8) & 0xFF);
+
+            input[20] = (Byte)((ThumbRY >> 0) & 0xFF); // RY
+            input[21] = (Byte)((ThumbRY >> 8) & 0xFF);
 
             return input;
         }
 
 
-        public Byte getStickLXRaw()
+        public Int32 getStickLXRaw()
         {
             if (StickLX > 1.0)
             {
-                return 255;
+                return 32767;
             }
             if (StickLX < 0.0)
             {
-                return 0;
+                return -32767;
             }
-            return (Byte)(StickLX * 255);
+            return (Int32)((StickLX-0.5) * 2 * 32767);
         }
 
-        public Byte getStickLYRaw()
+        public Int32 getStickLYRaw()
         {
             if (StickLY > 1.0)
             {
-                return 255;
+                return 32767;
             }
             if (StickLY < 0.0)
             {
-                return 0;
+                return -32767;
             }
-            return (Byte)(StickLY * 255);
+            return (Int32)((StickLY - 0.5) * 2 * 32767);
         }
 
-        public Byte getStickRXRaw()
+        public Int32 getStickRXRaw()
         {
             if (StickRX > 1.0)
             {
-                return 255;
+                return 32767;
             }
             if (StickRX < 0.0)
             {
-                return 0;
+                return -32767;
             }
-            return (Byte)(StickRX * 255);
+            return (Int32)((StickRX - 0.5) * 2 * 32767);
         }
 
-        public Byte getStickRYRaw()
+        public Int32 getStickRYRaw()
         {
             if (StickRY > 1.0)
             {
-                return 255;
+                return 32767;
             }
             if (StickRY < 0.0)
             {
-                return 0;
+                return -32767;
             }
-            return (Byte)(StickRY * 255);
+            return (Int32)((StickRY - 0.5) * 2 * 32767);
         }
 
         public Byte getTriggerLRaw()

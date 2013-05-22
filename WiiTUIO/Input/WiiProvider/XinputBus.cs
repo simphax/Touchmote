@@ -77,22 +77,17 @@ namespace WiiTUIO.Provider
                 Output[12] = Input[26]; // Left Trigger
                 Output[13] = Input[27]; // Right Trigger
 
-                Int32 ThumbLX = Scale(Input[14], Global.FlipLX);
-                Int32 ThumbLY = -Scale(Input[15], Global.FlipLY);
-                Int32 ThumbRX = Scale(Input[16], Global.FlipRX);
-                Int32 ThumbRY = -Scale(Input[17], Global.FlipRY);
+                Output[14] = Input[14]; // LX
+                Output[15] = Input[15];
 
-                Output[14] = (Byte)((ThumbLX >> 0) & 0xFF); // LX
-                Output[15] = (Byte)((ThumbLX >> 8) & 0xFF);
+                Output[16] = Input[16]; // LY
+                Output[17] = Input[17];
 
-                Output[16] = (Byte)((ThumbLY >> 0) & 0xFF); // LY
-                Output[17] = (Byte)((ThumbLY >> 8) & 0xFF);
+                Output[18] = Input[18]; // RX
+                Output[19] = Input[19];
 
-                Output[18] = (Byte)((ThumbRX >> 0) & 0xFF); // RX
-                Output[19] = (Byte)((ThumbRX >> 8) & 0xFF);
-
-                Output[20] = (Byte)((ThumbRY >> 0) & 0xFF); // RY
-                Output[21] = (Byte)((ThumbRY >> 8) & 0xFF);
+                Output[20] = Input[20]; // RY
+                Output[21] = Input[21];
             }
 
             return Input[0];
