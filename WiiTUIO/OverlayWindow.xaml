@@ -9,52 +9,88 @@
         WindowStyle="None"
         Background="Transparent"
         ShowInTaskbar="False" >
-    <Grid MouseUp="Grid_MouseUp">
-        <ScrollViewer PanningMode="VerticalOnly" Name="layoutOverlay" Width="800" Height="500" Background="#FF232323">
-            <StackPanel>
-                <Label Content="Choose a layout" FontSize="38" FontFamily="Segoe UI Light" Foreground="White" Margin="10"></Label>
-                <Border MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
-                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
-                Racing
-                    </TextBlock>
-                </Border>
-
-                <Border MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
-                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
-                Racing
-                    </TextBlock>
-                </Border>
-                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
-                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
-                Racing
-                    </TextBlock>
-                </Border>
-                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
-                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
-                Racing
-                    </TextBlock>
-                </Border>
-                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
-                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
-                Racing
-                    </TextBlock>
-                </Border>
-                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
-                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
-                Racing
-                    </TextBlock>
-                </Border>
-                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
-                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
-                Racing
-                    </TextBlock>
-                </Border>
-                <Border TouchMove="Border_TouchEnter" TouchEnter="Border_TouchEnter" TouchLeave="Border_TouchLeave" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderBrush="#FF232323" BorderThickness="7">
-                    <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" TextAlignment="Center" Foreground="White" Cursor="Hand">                                
-                Racing
-                    </TextBlock>
-                </Border>
-            </StackPanel>
-        </ScrollViewer>
+    <Grid MouseUp="Grid_MouseUp" Name="baseGrid" Background="#33000000">
+        <StackPanel Name="layoutOverlay" Width="500" Height="680" Background="#F20A0A0A">
+            <Label Content="Choose a layout" FontSize="38" FontFamily="Segoe UI Light" Foreground="White" Margin="10"></Label>
+            <ScrollViewer PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Height="600">
+                <StackPanel>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                    <Border BorderBrush="#F20A0A0A" BorderThickness="7">
+                        <TextBlock Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand">                                
+                Default
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </StackPanel>
     </Grid>
 </Window>
