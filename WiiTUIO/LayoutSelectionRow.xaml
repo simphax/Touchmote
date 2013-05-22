@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="WiiTUIO.LayoutSelectionRow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Border Name="border" BorderBrush="#00EEEEEE" BorderThickness="7">
+    <TextBlock TouchDown="tbName_TouchDown_1" TouchUp="tbName_TouchUp_1" MouseDown="tbName_MouseDown" MouseUp="tbName_MouseUp" Name="tbName" Text="Default" Padding="15" FontSize="28" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand" />
+    </Border>
+</UserControl>

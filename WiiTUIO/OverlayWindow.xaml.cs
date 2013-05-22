@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WiiTUIO.Provider;
@@ -24,6 +26,7 @@ namespace WiiTUIO
     public partial class OverlayWindow : Window
     {
 
+        private WiiKeyMapper keyMapper;
         private static OverlayWindow defaultInstance;
 
         public static OverlayWindow Current
@@ -56,14 +59,42 @@ namespace WiiTUIO
             this.Height = Util.ScreenBounds.Height;
         }
 
-        public void ShowLayoutOverlay(int wiimoteId)
+        public void ShowLayoutOverlay(WiiKeyMapper keyMapper)
         {
+            this.keyMapper = keyMapper;
             Dispatcher.BeginInvoke(new Action(delegate()
             {
+                this.baseGrid.Opacity = 0.0;
                 this.baseGrid.Visibility = Visibility.Visible;
                 this.layoutOverlay.Visibility = Visibility.Visible;
                 this.Activate();
+
+                this.layoutList.Children.Clear();
+                foreach(JObject config in this.keyMapper.GetLayoutList())
+                {
+                    string name = config.GetValue("Name").ToString();
+                    string filename = config.GetValue("Keymap").ToString();
+                    LayoutSelectionRow row = new LayoutSelectionRow(name, filename);
+                    row.OnClick += Select_Layout;
+                    this.layoutList.Children.Add(row);
+                }
+
+                DoubleAnimation animation = createDoubleAnimation(1.0, 200, false);
+                animation.FillBehavior = FillBehavior.HoldEnd;
+                animation.Completed += delegate(object sender, EventArgs pEvent)
+                {
+
+                };
+                this.baseGrid.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
+ 
+                
             }), null);
+        }
+
+        private void Select_Layout(string filename)
+        {
+            this.keyMapper.SetDefaultKeymap(filename);
+            this.HideOverlay();
         }
 
         public bool OverlayIsOn()
@@ -75,7 +106,14 @@ namespace WiiTUIO
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-                this.baseGrid.Visibility = Visibility.Hidden;
+                DoubleAnimation animation = createDoubleAnimation(0.0, 200, false);
+                animation.FillBehavior = FillBehavior.HoldEnd;
+                animation.Completed += delegate(object sender, EventArgs pEvent)
+                {
+                    this.baseGrid.Visibility = Visibility.Hidden;
+                };
+                this.baseGrid.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
+
             }), null);
         }
 
@@ -105,10 +143,25 @@ namespace WiiTUIO
 
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            this.baseGrid.Visibility = Visibility.Hidden;
-            this.layoutOverlay.Visibility = Visibility.Hidden;
+            this.HideOverlay();
         }
 
+        private static DoubleAnimation createDoubleAnimation(double fNew, double fTime, bool bFreeze)
+        {
+            // Create the animation.
+            DoubleAnimation pAction = new DoubleAnimation(fNew, new Duration(TimeSpan.FromMilliseconds(fTime)))
+            {
+                // Specify settings.
+                AccelerationRatio = 0.1,
+                DecelerationRatio = 0.9,
+                FillBehavior = FillBehavior.HoldEnd
+            };
+
+            // Pause the action before starting it and then return it.
+            if (bFreeze)
+                pAction.Freeze();
+            return pAction;
+        }
 
         //http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/cdbe457f-d653-4a18-9295-bb9b609bc4e3
         public enum GetWindowCmd : uint

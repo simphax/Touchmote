@@ -36,11 +36,11 @@ namespace WiiTUIO.Provider
         public bool Z;
     }
 
-    class WiiKeyMapper
+    public class WiiKeyMapper
     {
 
         private string KEYMAPS_PATH = "Keymaps\\";
-        private string APPLICATIONS_JSON_FILENAME = "Applications.json";
+        private string APPLICATIONS_JSON_FILENAME = "Keymaps.json";
         private string DEFAULT_JSON_FILENAME = "default.json";
 
         public WiiKeyMap KeyMap;
@@ -50,16 +50,17 @@ namespace WiiTUIO.Provider
         private SystemProcessMonitor processMonitor;
 
         private JObject applicationsJson;
-        private JObject defaultKeymapJson;
+        private JObject defaultKeymapJson; //Always default.json
+        private JObject fallbackKeymapJson; //Decided by the layout chooser
 
         private Timer homeButtonTimer;
 
-        private int wiimoteID;
+        public int WiimoteID;
         private bool hideOverlayOnUp;
 
         public WiiKeyMapper(int wiimoteID)
         {
-            this.wiimoteID = wiimoteID;
+            this.WiimoteID = wiimoteID;
 
             PressedButtons = new ButtonState();
             NunchukPressedButtons = new NunchukButtonState();
@@ -71,9 +72,9 @@ namespace WiiTUIO.Provider
             JObject specificKeymap = new JObject();
             JObject commonKeymap = new JObject();
 
-            if (this.defaultKeymapJson.GetValue(this.wiimoteID.ToString()) != null)
+            if (this.defaultKeymapJson.GetValue(this.WiimoteID.ToString()) != null)
             {
-                specificKeymap = (JObject)this.defaultKeymapJson.GetValue(this.wiimoteID.ToString());
+                specificKeymap = (JObject)this.defaultKeymapJson.GetValue(this.WiimoteID.ToString());
             }
             if (this.defaultKeymapJson.GetValue("All") != null)
             {
@@ -82,6 +83,7 @@ namespace WiiTUIO.Provider
 
             MergeJSON(commonKeymap, specificKeymap);
             this.defaultKeymapJson = commonKeymap;
+            this.fallbackKeymapJson = commonKeymap;
 
             this.KeyMap = new WiiKeyMap(this.defaultKeymapJson, new XinputDevice(XinputBus.Default, wiimoteID), new XinputReport(wiimoteID));
 
@@ -95,11 +97,22 @@ namespace WiiTUIO.Provider
             homeButtonTimer.Elapsed += homeButtonTimer_Elapsed;
         }
 
+        public IEnumerable<JObject> GetLayoutList()
+        {
+            return this.applicationsJson.GetValue("LayoutChooser").Children<JObject>();
+        }
+
+        public void SetDefaultKeymap(string filename)
+        {
+            this.loadKeyMap(KEYMAPS_PATH + filename);
+            this.fallbackKeymapJson = this.KeyMap.JsonObj;
+        }
+
         void homeButtonTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (this.PressedButtons.Home)
             {
-                OverlayWindow.Current.ShowLayoutOverlay(this.wiimoteID);
+                OverlayWindow.Current.ShowLayoutOverlay(this);
             }
         }
 
@@ -125,7 +138,7 @@ namespace WiiTUIO.Provider
                 }
                 if (!keymapFound)
                 {
-                    this.KeyMap.JsonObj = this.defaultKeymapJson;
+                    this.KeyMap.JsonObj = this.fallbackKeymapJson;
                 }
 
             }
@@ -260,9 +273,9 @@ namespace WiiTUIO.Provider
                     JObject specificKeymap = new JObject();
                     JObject commonKeymap = new JObject();
 
-                    if (newKeymap.GetValue(this.wiimoteID.ToString()) != null)
+                    if (newKeymap.GetValue(this.WiimoteID.ToString()) != null)
                     {
-                        specificKeymap = (JObject)newKeymap.GetValue(this.wiimoteID.ToString());
+                        specificKeymap = (JObject)newKeymap.GetValue(this.WiimoteID.ToString());
                     }
                     if (newKeymap.GetValue("All") != null)
                     {
