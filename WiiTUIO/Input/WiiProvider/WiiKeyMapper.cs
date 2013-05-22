@@ -601,9 +601,9 @@ namespace WiiTUIO.Provider
                 {
                     OverlayWindow.Current.ShowLayoutOverlay(1);
                 }
-                else if (OverlayWindow.Current.LayoutOverlayIsVisible())
+                else if (OverlayWindow.Current.OverlayIsOn())
                 {
-                    OverlayWindow.Current.HideLayoutOverlay();
+                    OverlayWindow.Current.HideOverlay();
                 }
                 else
                 {
