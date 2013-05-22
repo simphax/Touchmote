@@ -140,22 +140,6 @@ namespace WiiTUIO.Provider
 
         public void executeButtonUp(WiimoteButton button)
         {
-            if (button == WiimoteButton.Home)
-            {
-                int timediff = (int)DateTime.Now.Subtract(this.HomeButtonDown).TotalMilliseconds;
-                if (timediff > 1000)
-                {
-                    OverlayWindow.Current.ShowLayoutOverlay(1);
-                }
-                else if (OverlayWindow.Current.OverlayIsOn())
-                {
-                    OverlayWindow.Current.HideOverlay();
-                }
-                else
-                {
-                    this.executeButtonDown(button.ToString());
-                }
-            }
             this.executeButtonUp(button.ToString());//ToString converts WiimoteButton.A to "A" for instance
         }
 
@@ -244,19 +228,7 @@ namespace WiiTUIO.Provider
 
         public void executeButtonDown(WiimoteButton button)
         {
-            if (button == WiimoteButton.Home)
-            {
-                this.HomeButtonDown = DateTime.Now;
-                JToken key = this.jsonObj.GetValue(button.ToString());
-                if (!"lwin".Equals(key.ToString().ToLower()))
-                {
-                    this.executeButtonDown(button.ToString());
-                }
-            }
-            else
-            {
-                this.executeButtonDown(button.ToString());
-            }
+            this.executeButtonDown(button.ToString());
         }
 
         public void executeButtonDown(string button)

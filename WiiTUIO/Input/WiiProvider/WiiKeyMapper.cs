@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using WiimoteLib;
 using WindowsInput;
@@ -51,7 +52,10 @@ namespace WiiTUIO.Provider
         private JObject applicationsJson;
         private JObject defaultKeymapJson;
 
+        private Timer homeButtonTimer;
+
         private int wiimoteID;
+        private bool hideOverlayOnUp;
 
         public WiiKeyMapper(int wiimoteID)
         {
@@ -84,6 +88,19 @@ namespace WiiTUIO.Provider
             this.processMonitor = SystemProcessMonitor.getInstance();
 
             this.processMonitor.ProcessChanged += processChanged;
+
+            homeButtonTimer = new Timer();
+            homeButtonTimer.Interval = 1000;
+            homeButtonTimer.AutoReset = true;
+            homeButtonTimer.Elapsed += homeButtonTimer_Elapsed;
+        }
+
+        void homeButtonTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (this.PressedButtons.Home)
+            {
+                OverlayWindow.Current.ShowLayoutOverlay(this.wiimoteID);
+            }
         }
 
         private void processChanged(ProcessChangedEvent evt)
@@ -387,13 +404,31 @@ namespace WiiTUIO.Provider
 
             if (buttonState.Home && !PressedButtons.Home)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.Home);
+                this.homeButtonTimer.Start();
+                if (OverlayWindow.Current.OverlayIsOn())
+                {
+                    this.hideOverlayOnUp = true;
+                }
                 PressedButtons.Home = true;
                 significant = true;
             }
             else if (!buttonState.Home && PressedButtons.Home)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.Home);
+                this.homeButtonTimer.Stop();
+                
+                if (this.hideOverlayOnUp)
+                {
+                    this.hideOverlayOnUp = false;
+                    OverlayWindow.Current.HideOverlay();
+                }
+                else if (OverlayWindow.Current.OverlayIsOn())
+                {
+                }
+                else
+                {
+                    this.KeyMap.executeButtonDown(WiimoteButton.Home);
+                    this.KeyMap.executeButtonUp(WiimoteButton.Home);
+                }
                 PressedButtons.Home = false;
                 significant = true;
             }
