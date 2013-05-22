@@ -202,6 +202,7 @@
     </Compile>
     <Compile Include="Input\WiiProvider\Pointer\CursorPos.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiimoteStatus.cs" />
+    <Compile Include="Input\WiiProvider\WiiKeyMap.cs" />
     <Compile Include="Input\WiiProvider\XinputBus.cs">
       <SubType>Component</SubType>
     </Compile>
