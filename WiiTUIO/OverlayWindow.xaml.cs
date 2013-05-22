@@ -64,10 +64,17 @@ namespace WiiTUIO
             this.keyMapper = keyMapper;
             Dispatcher.BeginInvoke(new Action(delegate()
             {
+
                 this.baseGrid.Opacity = 0.0;
                 this.baseGrid.Visibility = Visibility.Visible;
                 this.layoutOverlay.Visibility = Visibility.Visible;
                 this.Activate();
+
+                Color bordercolor = CursorColor.getColor(keyMapper.WiimoteID);
+                bordercolor.ScA = 0.5f;
+                this.layoutOverlay.BorderBrush = new SolidColorBrush(bordercolor);
+
+                this.title.Content = "Choose a layout for Wiimote "+keyMapper.WiimoteID;
 
                 this.layoutList.Children.Clear();
                 foreach(JObject config in this.keyMapper.GetLayoutList())
