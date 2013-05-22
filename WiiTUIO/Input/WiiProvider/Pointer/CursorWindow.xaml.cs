@@ -146,6 +146,8 @@ namespace WiiTUIO.Provider
 
       int extendedStyle2 = GetWindowLong(hWndHiddenOwner, GWL_EXSTYLE);
       SetWindowLong(hWndHiddenOwner, GWL_EXSTYLE, extendedStyle2 | WS_EX_TRANSPARENT);
+
+      this.Owner = OverlayWindow.Current;
    }
 
 

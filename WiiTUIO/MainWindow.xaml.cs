@@ -85,9 +85,6 @@ namespace WiiTUIO
             // Load from the XAML.
             InitializeComponent();
             this.Initialize();
-
-            
-            
         }
 
         public async void Initialize()
@@ -102,12 +99,12 @@ namespace WiiTUIO
             this.spInfoMsg.Visibility = Visibility.Collapsed;
             this.animateExpand(this.mainPanel);
 
+            OverlayWindow.Current.Show();
+
             if (Settings.Default.pointer_customCursor)
             {
                 CursorWindow.Current.Show();
             }
-
-            OverlayWindow.Current.Show();
 
             Application.Current.Exit += appWillExit;
             Application.Current.SessionEnding += windowsShutdownEvent;
