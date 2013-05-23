@@ -123,7 +123,7 @@ namespace WiiTUIO
                 this.startupPair = true;
                 this.runWiiPair();
             }
-            else if (Settings.Default.connectOnStart)
+            else //if (Settings.Default.connectOnStart)
             {
                 this.connectProvider();
             }
