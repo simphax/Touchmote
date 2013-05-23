@@ -72,13 +72,6 @@ namespace WiiTUIO.Provider
             this.duoTouch = new DuoTouch(this.screenBounds, Properties.Settings.Default.pointer_smoothingSize, touchStartID);
             this.keyMapper = new WiiKeyMapper(id);
 
-            this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
-            this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
-            this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
-            this.keyMapper.KeyMap.OnRumble += WiiKeyMap_OnRumble;
-
-            this.WiiKeyMap_ConfigChanged(new WiiKeyMapConfigChangedEvent(this.keyMapper.KeyMap.Pointer));
-
             this.inputSimulator = new InputSimulator();
             this.screenPositionCalculator = new ScreenPositionCalculator();
 
@@ -93,7 +86,32 @@ namespace WiiTUIO.Provider
                     this.slaveCursor.Hide();
                     CursorWindow.Current.addCursor(masterCursor);
                     CursorWindow.Current.addCursor(slaveCursor);
+
+                    this.WiiKeyMap_ConfigChanged(new WiiKeyMapConfigChangedEvent(this.keyMapper.KeyMap.Pointer));
+
                 }), null);
+            }
+
+            Settings.Default.PropertyChanged += Settings_PropertyChanged;
+
+            this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
+            this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
+            this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
+            this.keyMapper.KeyMap.OnRumble += WiiKeyMap_OnRumble;
+
+        }
+
+        void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "pointer_customCursor")
+            {
+                if (!Settings.Default.pointer_customCursor)
+                {
+                    if (this.masterCursor != null)
+                        this.masterCursor.Hide();
+                    if (this.slaveCursor != null)
+                        this.slaveCursor.Hide();
+                }
             }
         }
 
@@ -118,6 +136,10 @@ namespace WiiTUIO.Provider
                 if (this.showPointer)
                 {
                     this.duoTouch.enableHover();
+                    if (this.usingCursors())
+                    {
+                        this.masterCursor.Show();
+                    }
                 }
             }
             else if (evt.NewPointer.ToLower() == "mouse")
@@ -125,6 +147,11 @@ namespace WiiTUIO.Provider
                 this.mouseMode = true;
                 this.gamingMouse = false;
                 this.duoTouch.disableHover();
+                if (this.usingCursors())
+                {
+                    this.masterCursor.Hide();
+                    this.slaveCursor.Hide();
+                }
                 MouseSimulator.WakeCursor();
             }
             else if (evt.NewPointer.ToLower() == "gamingmouse")
@@ -132,6 +159,11 @@ namespace WiiTUIO.Provider
                 this.mouseMode = true;
                 this.gamingMouse = true;
                 this.duoTouch.disableHover();
+                if (this.usingCursors())
+                {
+                    this.masterCursor.Hide();
+                    this.slaveCursor.Hide();
+                }
                 MouseSimulator.WakeCursor();
             }
         }
@@ -144,10 +176,19 @@ namespace WiiTUIO.Provider
                 if (this.showPointer)
                 {
                     this.duoTouch.enableHover();
+                    if (this.usingCursors() && !mouseMode)
+                    {
+                        this.masterCursor.Show();
+                    }
                 }
                 else
                 {
                     this.duoTouch.disableHover();
+                    if (this.usingCursors())
+                    {
+                        this.masterCursor.Hide();
+                        this.slaveCursor.Hide();
+                    }
                 }
             }
             if (evt.Action.ToLower() == "touchmaster" && !evt.Handled)
@@ -243,7 +284,7 @@ namespace WiiTUIO.Provider
 
                 if (!pointerOutOfReach)
                 {
-                    if (this.usingCursors())
+                    if (this.usingCursors() && !mouseMode && showPointer)
                     {
                         App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                         {
@@ -264,7 +305,7 @@ namespace WiiTUIO.Provider
 
                     if (this.touchDownSlave)
                     {
-                        if (this.usingCursors())
+                        if (this.usingCursors() && !mouseMode && showPointer)
                         {
                             App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                             {
@@ -277,7 +318,7 @@ namespace WiiTUIO.Provider
                     else
                     {
                         duoTouch.releaseContactSlave();
-                        if (this.usingCursors())
+                        if (this.usingCursors() && !mouseMode)
                         {
                             App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                             {
@@ -289,7 +330,7 @@ namespace WiiTUIO.Provider
                     lastpoint = newpoint;
 
                     lFrame = duoTouch.getFrame();
-                    if (this.usingCursors())
+                    if (this.usingCursors() && !mouseMode)
                     {
                         foreach (WiiContact contact in lFrame)
                         {
@@ -350,7 +391,7 @@ namespace WiiTUIO.Provider
                 }
                 else //pointer out of reach
                 {
-                    if (this.usingCursors())
+                    if (this.usingCursors() && !mouseMode)
                     {
                         App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                         {
