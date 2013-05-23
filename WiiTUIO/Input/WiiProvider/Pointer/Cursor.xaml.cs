@@ -62,7 +62,6 @@ namespace WiiTUIO.Provider
                     animation.FillBehavior = FillBehavior.HoldEnd;
                     animation.Completed += delegate(object sender, EventArgs pEvent)
                     {
-                        this.cursor.Visibility = Visibility.Hidden;
                     };
                     this.innerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation, HandoffBehavior.SnapshotAndReplace);
                     this.innerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation, HandoffBehavior.SnapshotAndReplace);
@@ -76,14 +75,17 @@ namespace WiiTUIO.Provider
 
         public void Show()
         {
-            this.cursor.Visibility = Visibility.Visible;
             if (hidden)
             {
                 this.hidden = false;
-                if (this.pressed)
-                    this.animatePressed();
-                else
-                    this.animateReleased();
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    if (this.pressed)
+                        this.animatePressed();
+                    else
+                        this.animateReleased();
+
+                }), null);
             }
         }
 
@@ -99,35 +101,38 @@ namespace WiiTUIO.Provider
 
         private void animatePressed()
         {
-            Dispatcher.BeginInvoke(new Action(delegate()
+            if (!hidden)
             {
-                DoubleAnimation animation = createDoubleAnimation(20, 200, false);
-                animation.FillBehavior = FillBehavior.HoldEnd;
-                animation.Completed += delegate(object sender, EventArgs pEvent)
+                Dispatcher.BeginInvoke(new Action(delegate()
                 {
+                    DoubleAnimation animation = createDoubleAnimation(20, 200, false);
+                    animation.FillBehavior = FillBehavior.HoldEnd;
+                    animation.Completed += delegate(object sender, EventArgs pEvent)
+                    {
 
-                };
-                this.innerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation, HandoffBehavior.SnapshotAndReplace);
-                this.innerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                    };
+                    this.innerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                    this.innerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation, HandoffBehavior.SnapshotAndReplace);
 
-                DoubleAnimation animation2 = createDoubleAnimation(40, 200, false);
-                animation2.FillBehavior = FillBehavior.HoldEnd;
-                animation2.Completed += delegate(object sender, EventArgs pEvent)
-                {
+                    DoubleAnimation animation2 = createDoubleAnimation(40, 200, false);
+                    animation2.FillBehavior = FillBehavior.HoldEnd;
+                    animation2.Completed += delegate(object sender, EventArgs pEvent)
+                    {
 
-                };
-                this.outerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation2, HandoffBehavior.SnapshotAndReplace);
-                this.outerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation2, HandoffBehavior.SnapshotAndReplace);
+                    };
+                    this.outerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation2, HandoffBehavior.SnapshotAndReplace);
+                    this.outerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation2, HandoffBehavior.SnapshotAndReplace);
 
-                DoubleAnimation animation3 = createDoubleAnimation(46, 200, false);
-                animation3.FillBehavior = FillBehavior.HoldEnd;
-                animation3.Completed += delegate(object sender, EventArgs pEvent)
-                {
+                    DoubleAnimation animation3 = createDoubleAnimation(46, 200, false);
+                    animation3.FillBehavior = FillBehavior.HoldEnd;
+                    animation3.Completed += delegate(object sender, EventArgs pEvent)
+                    {
 
-                };
-                this.stroke.BeginAnimation(FrameworkElement.WidthProperty, animation3, HandoffBehavior.SnapshotAndReplace);
-                this.stroke.BeginAnimation(FrameworkElement.HeightProperty, animation3, HandoffBehavior.SnapshotAndReplace);
-            }), null);
+                    };
+                    this.stroke.BeginAnimation(FrameworkElement.WidthProperty, animation3, HandoffBehavior.SnapshotAndReplace);
+                    this.stroke.BeginAnimation(FrameworkElement.HeightProperty, animation3, HandoffBehavior.SnapshotAndReplace);
+                }), null);
+            }
         }
 
         public void SetReleased()
@@ -141,35 +146,38 @@ namespace WiiTUIO.Provider
 
         private void animateReleased()
         {
-            Dispatcher.BeginInvoke(new Action(delegate()
+            if (!hidden)
             {
-                DoubleAnimation animation = createDoubleAnimation(40, 200, false);
-                animation.FillBehavior = FillBehavior.HoldEnd;
-                animation.Completed += delegate(object sender, EventArgs pEvent)
+                Dispatcher.BeginInvoke(new Action(delegate()
                 {
+                    DoubleAnimation animation = createDoubleAnimation(40, 200, false);
+                    animation.FillBehavior = FillBehavior.HoldEnd;
+                    animation.Completed += delegate(object sender, EventArgs pEvent)
+                    {
 
-                };
-                this.innerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation, HandoffBehavior.SnapshotAndReplace);
-                this.innerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                    };
+                    this.innerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                    this.innerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation, HandoffBehavior.SnapshotAndReplace);
 
-                DoubleAnimation animation2 = createDoubleAnimation(50, 200, false);
-                animation2.FillBehavior = FillBehavior.HoldEnd;
-                animation2.Completed += delegate(object sender, EventArgs pEvent)
-                {
+                    DoubleAnimation animation2 = createDoubleAnimation(50, 200, false);
+                    animation2.FillBehavior = FillBehavior.HoldEnd;
+                    animation2.Completed += delegate(object sender, EventArgs pEvent)
+                    {
 
-                };
-                this.outerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation2, HandoffBehavior.SnapshotAndReplace);
-                this.outerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation2, HandoffBehavior.SnapshotAndReplace);
+                    };
+                    this.outerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation2, HandoffBehavior.SnapshotAndReplace);
+                    this.outerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation2, HandoffBehavior.SnapshotAndReplace);
 
-                DoubleAnimation animation3 = createDoubleAnimation(56, 200, false);
-                animation3.FillBehavior = FillBehavior.HoldEnd;
-                animation3.Completed += delegate(object sender, EventArgs pEvent)
-                {
+                    DoubleAnimation animation3 = createDoubleAnimation(56, 200, false);
+                    animation3.FillBehavior = FillBehavior.HoldEnd;
+                    animation3.Completed += delegate(object sender, EventArgs pEvent)
+                    {
 
-                };
-                this.stroke.BeginAnimation(FrameworkElement.WidthProperty, animation3, HandoffBehavior.SnapshotAndReplace);
-                this.stroke.BeginAnimation(FrameworkElement.HeightProperty, animation3, HandoffBehavior.SnapshotAndReplace);
-            }), null);
+                    };
+                    this.stroke.BeginAnimation(FrameworkElement.WidthProperty, animation3, HandoffBehavior.SnapshotAndReplace);
+                    this.stroke.BeginAnimation(FrameworkElement.HeightProperty, animation3, HandoffBehavior.SnapshotAndReplace);
+                }), null);
+            }
         }
 
         private static DoubleAnimation createDoubleAnimation(double fNew, double fTime, bool bFreeze)
