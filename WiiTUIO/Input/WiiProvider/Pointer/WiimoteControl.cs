@@ -43,6 +43,8 @@ namespace WiiTUIO.Provider
 
         private bool touchDownSlave = false;
 
+        private bool useCustomCursor = false;
+
         private bool showPointer = true;
 
         private bool mouseMode = false;
@@ -74,8 +76,8 @@ namespace WiiTUIO.Provider
 
             this.inputSimulator = new InputSimulator();
             this.screenPositionCalculator = new ScreenPositionCalculator();
-
-            if (Settings.Default.pointer_customCursor)
+            this.useCustomCursor = Settings.Default.pointer_customCursor;
+            if (this.useCustomCursor)
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
@@ -92,27 +94,11 @@ namespace WiiTUIO.Provider
                 }), null);
             }
 
-            Settings.Default.PropertyChanged += Settings_PropertyChanged;
-
             this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
             this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
             this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
             this.keyMapper.KeyMap.OnRumble += WiiKeyMap_OnRumble;
 
-        }
-
-        void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "pointer_customCursor")
-            {
-                if (!Settings.Default.pointer_customCursor)
-                {
-                    if (this.masterCursor != null)
-                        this.masterCursor.Hide();
-                    if (this.slaveCursor != null)
-                        this.slaveCursor.Hide();
-                }
-            }
         }
 
         private void WiiKeyMap_OnRumble(bool rumble)
@@ -125,7 +111,7 @@ namespace WiiTUIO.Provider
 
         private bool usingCursors()
         {
-            return Settings.Default.pointer_customCursor && this.masterCursor != null && this.slaveCursor != null;
+            return this.useCustomCursor && this.masterCursor != null && this.slaveCursor != null;
         }
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
