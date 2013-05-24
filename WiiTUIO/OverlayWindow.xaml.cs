@@ -29,6 +29,8 @@ namespace WiiTUIO
         private WiiKeyMapper keyMapper;
         private static OverlayWindow defaultInstance;
 
+        private bool hidden = true;
+
         public static OverlayWindow Current
         {
             get
@@ -85,41 +87,45 @@ namespace WiiTUIO
 
         public void ShowLayoutOverlay(WiiKeyMapper keyMapper)
         {
-            this.keyMapper = keyMapper;
-            Dispatcher.BeginInvoke(new Action(delegate()
+            if (this.hidden)
             {
-
-                this.baseGrid.Opacity = 0.0;
-                this.baseGrid.Visibility = Visibility.Visible;
-                this.layoutChooserOverlay.Visibility = Visibility.Visible;
-                this.Activate();
-
-                Color bordercolor = CursorColor.getColor(keyMapper.WiimoteID);
-                bordercolor.ScA = 0.5f;
-                this.layoutChooserOverlay.BorderBrush = new SolidColorBrush(bordercolor);
-
-                this.title.Content = "Choose a layout for Wiimote "+keyMapper.WiimoteID;
-
-                this.layoutList.Children.Clear();
-                foreach(JObject config in this.keyMapper.GetLayoutList())
-                {
-                    string name = config.GetValue("Title").ToString();
-                    string filename = config.GetValue("Keymap").ToString();
-                    LayoutSelectionRow row = new LayoutSelectionRow(name, filename);
-                    row.OnClick += Select_Layout;
-                    this.layoutList.Children.Add(row);
-                }
-
-                DoubleAnimation animation = UIHelpers.createDoubleAnimation(1.0, 200, false);
-                animation.FillBehavior = FillBehavior.HoldEnd;
-                animation.Completed += delegate(object sender, EventArgs pEvent)
+                this.keyMapper = keyMapper;
+                this.keyMapper.SwitchToDefault();
+                Dispatcher.BeginInvoke(new Action(delegate()
                 {
 
-                };
-                this.baseGrid.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
- 
-                
-            }), null);
+                    this.baseGrid.Opacity = 0.0;
+                    this.baseGrid.Visibility = Visibility.Visible;
+                    this.layoutChooserOverlay.Visibility = Visibility.Visible;
+                    this.Activate();
+
+                    Color bordercolor = CursorColor.getColor(keyMapper.WiimoteID);
+                    bordercolor.ScA = 0.5f;
+                    this.layoutChooserOverlay.BorderBrush = new SolidColorBrush(bordercolor);
+
+                    this.title.Content = "Choose a layout for Wiimote " + keyMapper.WiimoteID;
+
+                    this.layoutList.Children.Clear();
+                    foreach (JObject config in this.keyMapper.GetLayoutList())
+                    {
+                        string name = config.GetValue("Title").ToString();
+                        string filename = config.GetValue("Keymap").ToString();
+                        LayoutSelectionRow row = new LayoutSelectionRow(name, filename);
+                        row.OnClick += Select_Layout;
+                        this.layoutList.Children.Add(row);
+                    }
+
+                    DoubleAnimation animation = UIHelpers.createDoubleAnimation(1.0, 200, false);
+                    animation.FillBehavior = FillBehavior.HoldEnd;
+                    animation.Completed += delegate(object sender, EventArgs pEvent)
+                    {
+
+                    };
+                    this.baseGrid.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
+
+                    this.hidden = false;
+                }), null);
+            }
         }
 
         private void Select_Layout(string filename)
@@ -130,22 +136,26 @@ namespace WiiTUIO
 
         public bool OverlayIsOn()
         {
-            return this.baseGrid.Visibility == Visibility.Visible;
+            return !this.hidden;
         }
 
         public void HideOverlay()
         {
-            Dispatcher.BeginInvoke(new Action(delegate()
+            if (!this.hidden)
             {
-                DoubleAnimation animation = UIHelpers.createDoubleAnimation(0.0, 200, false);
-                animation.FillBehavior = FillBehavior.HoldEnd;
-                animation.Completed += delegate(object sender, EventArgs pEvent)
+                this.keyMapper.SwitchToFallback();
+                Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    this.baseGrid.Visibility = Visibility.Hidden;
-                };
-                this.baseGrid.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
-
-            }), null);
+                    DoubleAnimation animation = UIHelpers.createDoubleAnimation(0.0, 200, false);
+                    animation.FillBehavior = FillBehavior.HoldEnd;
+                    animation.Completed += delegate(object sender, EventArgs pEvent)
+                    {
+                        this.baseGrid.Visibility = Visibility.Hidden;
+                    };
+                    this.baseGrid.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
+                    this.hidden = true;
+                }), null);
+            }
         }
 
         private void Border_MouseEnter(object sender, MouseEventArgs e)

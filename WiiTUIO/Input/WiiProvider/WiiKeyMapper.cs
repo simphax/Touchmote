@@ -55,10 +55,12 @@ namespace WiiTUIO.Provider
 
         private Timer homeButtonTimer;
 
+        private string defaultName;
         private string fallbackName;
+        private string fallbackFile;
 
         public int WiimoteID;
-        private bool hideOverlayOnUp;
+        private bool hideOverlayOnUp = false;
 
         public WiiKeyMapper(int wiimoteID)
         {
@@ -71,7 +73,9 @@ namespace WiiTUIO.Provider
             this.applicationsJson = this.createDefaultApplicationsJSON();
             this.defaultKeymapJson = this.createDefaultKeymapJSON();
 
-            this.fallbackName = this.defaultKeymapJson.GetValue("Title").ToString();
+            this.defaultName =  this.defaultKeymapJson.GetValue("Title").ToString();
+            this.fallbackName = this.defaultName;
+            this.fallbackFile = DEFAULT_JSON_FILENAME;
 
             JObject specificKeymap = new JObject();
             JObject commonKeymap = new JObject();
@@ -89,7 +93,7 @@ namespace WiiTUIO.Provider
             this.defaultKeymapJson = commonKeymap;
             this.fallbackKeymapJson = commonKeymap;
 
-            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson, this.fallbackName, KEYMAPS_PATH+DEFAULT_JSON_FILENAME, new XinputDevice(XinputBus.Default, wiimoteID), new XinputReport(wiimoteID));
+            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson, this.fallbackName, this.fallbackFile, new XinputDevice(XinputBus.Default, wiimoteID), new XinputReport(wiimoteID));
 
             this.processMonitor = SystemProcessMonitor.getInstance();
 
@@ -113,15 +117,29 @@ namespace WiiTUIO.Provider
 
         public void SetFallbackKeymap(string filename)
         {
-            this.loadKeyMap(KEYMAPS_PATH + filename);
+            this.loadKeyMap(filename);
             this.fallbackKeymapJson = this.KeyMap.JsonObj;
+            this.fallbackName = this.KeyMap.Name;
+            this.fallbackFile = this.KeyMap.Filename;
+        }
+
+        public void SwitchToDefault()
+        {
+            this.KeyMap.SetConfig(this.defaultKeymapJson, this.defaultName, DEFAULT_JSON_FILENAME); //Switch to fallback even if we did not choose anything in the chooser.
+        }
+
+        public void SwitchToFallback()
+        {
+            this.KeyMap.SetConfig(this.fallbackKeymapJson, this.fallbackName, this.fallbackFile); //Switch to fallback even if we did not choose anything in the chooser.
         }
 
         void homeButtonTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (this.PressedButtons.Home)
             {
+                this.KeyMap.SetConfig(this.defaultKeymapJson, "Default", DEFAULT_JSON_FILENAME);
                 OverlayWindow.Current.ShowLayoutOverlay(this);
+                this.PressedButtons.Home = true;
             }
         }
 
@@ -147,7 +165,7 @@ namespace WiiTUIO.Provider
                 }
                 if (!keymapFound)
                 {
-                    this.KeyMap.SetConfig(this.fallbackKeymapJson,this.fallbackName,"");
+                    this.KeyMap.SetConfig(this.fallbackKeymapJson,this.fallbackName,this.fallbackFile);
                 }
 
             }
@@ -166,7 +184,6 @@ namespace WiiTUIO.Provider
         {
             
         }
-
 
         private JObject createDefaultApplicationsJSON()
         {
@@ -280,16 +297,16 @@ namespace WiiTUIO.Provider
             }
         }
 
-        public void loadKeyMap(string path)
+        public void loadKeyMap(string filename)
         {
 
             string name = "";
 
             JObject union = (JObject)this.defaultKeymapJson.DeepClone();
 
-            if (File.Exists(path))
+            if (File.Exists(KEYMAPS_PATH + filename))
             {
-                StreamReader reader = File.OpenText(path);
+                StreamReader reader = File.OpenText(KEYMAPS_PATH + filename);
                 try
                 {
                     JObject newKeymap = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
@@ -315,15 +332,15 @@ namespace WiiTUIO.Provider
                 }
                 catch (Exception e)
                 {
-                    throw new Exception(path + " is not valid JSON");
+                    throw new Exception(filename + " is not valid JSON");
                 }
             }
 
-            this.KeyMap.SetConfig(union,name,path);
+            this.KeyMap.SetConfig(union, name, filename);
 
             this.processWiimoteState(new WiimoteState()); //Sets all buttons to "not pressed"
 
-            Console.WriteLine("Loaded new keymap on " + path);
+            Console.WriteLine("Loaded new keymap " + filename);
         }
 
         public bool processWiimoteState(WiimoteState wiimoteState) //Returns true if anything happened.
@@ -339,121 +356,123 @@ namespace WiiTUIO.Provider
 
                 if (wiimoteState.NunchukState.C && !NunchukPressedButtons.C)
                 {
-                    this.KeyMap.executeButtonDown("Nunchuk.C");
                     NunchukPressedButtons.C = true;
                     significant = true;
+                    this.KeyMap.executeButtonDown("Nunchuk.C");
                 }
                 else if (!wiimoteState.NunchukState.C && NunchukPressedButtons.C)
                 {
-                    this.KeyMap.executeButtonUp("Nunchuk.C");
                     NunchukPressedButtons.C = false;
                     significant = true;
+                    this.KeyMap.executeButtonUp("Nunchuk.C");
                 }
 
                 if (wiimoteState.NunchukState.Z && !NunchukPressedButtons.Z)
                 {
-                    this.KeyMap.executeButtonDown("Nunchuk.Z");
                     NunchukPressedButtons.Z = true;
                     significant = true;
+                    this.KeyMap.executeButtonDown("Nunchuk.Z");
                 }
                 else if (!wiimoteState.NunchukState.Z && NunchukPressedButtons.Z)
                 {
-                    this.KeyMap.executeButtonUp("Nunchuk.Z");
                     NunchukPressedButtons.Z = false;
                     significant = true;
+                    this.KeyMap.executeButtonUp("Nunchuk.Z");
                 }
             }
 
             if (buttonState.A && !PressedButtons.A)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.A);
                 PressedButtons.A = true;
                 significant = true;
+                this.KeyMap.executeButtonDown(WiimoteButton.A);
             }
             else if (!buttonState.A && PressedButtons.A)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.A);
                 PressedButtons.A = false;
                 significant = true;
+                this.KeyMap.executeButtonUp(WiimoteButton.A);
             }
 
             if (buttonState.B && !PressedButtons.B)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.B);
                 PressedButtons.B = true;
                 significant = true;
+                this.KeyMap.executeButtonDown(WiimoteButton.B);
             }
             else if (!buttonState.B && PressedButtons.B)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.B);
                 PressedButtons.B = false;
                 significant = true;
+                this.KeyMap.executeButtonUp(WiimoteButton.B);
             }
 
             if (buttonState.Up && !PressedButtons.Up)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.Up);
                 PressedButtons.Up = true;
                 significant = true;
+                this.KeyMap.executeButtonDown(WiimoteButton.Up);
             }
             else if (!buttonState.Up && PressedButtons.Up)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.Up);
                 PressedButtons.Up = false;
                 significant = true;
+                this.KeyMap.executeButtonUp(WiimoteButton.Up);
             }
 
             if (buttonState.Down && !PressedButtons.Down)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.Down);
                 PressedButtons.Down = true;
                 significant = true;
+                this.KeyMap.executeButtonDown(WiimoteButton.Down);
             }
             else if (!buttonState.Down && PressedButtons.Down)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.Down);
                 PressedButtons.Down = false;
                 significant = true;
+                this.KeyMap.executeButtonUp(WiimoteButton.Down);
             }
 
             if (buttonState.Left && !PressedButtons.Left)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.Left);
                 PressedButtons.Left = true;
                 significant = true;
+                this.KeyMap.executeButtonDown(WiimoteButton.Left);
             }
             else if (!buttonState.Left && PressedButtons.Left)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.Left);
                 PressedButtons.Left = false;
                 significant = true;
+                this.KeyMap.executeButtonUp(WiimoteButton.Left);
             }
 
             if (buttonState.Right && !PressedButtons.Right)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.Right);
                 PressedButtons.Right = true;
                 significant = true;
+                this.KeyMap.executeButtonDown(WiimoteButton.Right);
             }
             else if (!buttonState.Right && PressedButtons.Right)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.Right);
                 PressedButtons.Right = false;
                 significant = true;
+                this.KeyMap.executeButtonUp(WiimoteButton.Right);
             }
 
             if (buttonState.Home && !PressedButtons.Home)
             {
+                PressedButtons.Home = true;
+                significant = true;
                 this.homeButtonTimer.Start();
                 if (OverlayWindow.Current.OverlayIsOn())
                 {
                     this.hideOverlayOnUp = true;
                 }
-                PressedButtons.Home = true;
-                significant = true;
             }
             else if (!buttonState.Home && PressedButtons.Home)
             {
+                PressedButtons.Home = false;
+                significant = true;
                 this.homeButtonTimer.Stop();
                 
                 if (this.hideOverlayOnUp)
@@ -469,60 +488,58 @@ namespace WiiTUIO.Provider
                     this.KeyMap.executeButtonDown(WiimoteButton.Home);
                     this.KeyMap.executeButtonUp(WiimoteButton.Home);
                 }
-                PressedButtons.Home = false;
-                significant = true;
             }
 
             if (buttonState.Plus && !PressedButtons.Plus)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.Plus);
                 PressedButtons.Plus = true;
                 significant = true;
+                this.KeyMap.executeButtonDown(WiimoteButton.Plus);
             }
             else if (PressedButtons.Plus && !buttonState.Plus)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.Plus);
                 PressedButtons.Plus = false;
                 significant = true;
+                this.KeyMap.executeButtonUp(WiimoteButton.Plus);
             }
 
             if (buttonState.Minus && !PressedButtons.Minus)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.Minus);
                 PressedButtons.Minus = true;
                 significant = true;
+                this.KeyMap.executeButtonDown(WiimoteButton.Minus);
             }
             else if (PressedButtons.Minus && !buttonState.Minus)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.Minus);
                 PressedButtons.Minus = false;
                 significant = true;
+                this.KeyMap.executeButtonUp(WiimoteButton.Minus);
             }
 
             if (buttonState.One && !PressedButtons.One)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.One);
                 PressedButtons.One = true;
                 significant = true;
+                this.KeyMap.executeButtonDown(WiimoteButton.One);
             }
             else if (PressedButtons.One && !buttonState.One)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.One);
                 PressedButtons.One = false;
                 significant = true;
+                this.KeyMap.executeButtonUp(WiimoteButton.One);
             }
 
             if (buttonState.Two && !PressedButtons.Two)
             {
-                this.KeyMap.executeButtonDown(WiimoteButton.Two);
                 PressedButtons.Two = true;
                 significant = true;
+                this.KeyMap.executeButtonDown(WiimoteButton.Two);
             }
             else if (PressedButtons.Two && !buttonState.Two)
             {
-                this.KeyMap.executeButtonUp(WiimoteButton.Two);
                 PressedButtons.Two = false;
                 significant = true;
+                this.KeyMap.executeButtonUp(WiimoteButton.Two);
             }
 
             this.KeyMap.XinputDevice.Update(this.KeyMap.XinputReport);

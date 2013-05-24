@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -62,6 +63,8 @@ namespace WiiTUIO.Provider
         private Cursor masterCursor;
         private Cursor slaveCursor;
 
+        private string currentKeymap;
+
         public WiimoteControl(int id, Wiimote wiimote)
         {
             this.Wiimote = wiimote;
@@ -119,6 +122,7 @@ namespace WiiTUIO.Provider
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
         {
+            currentKeymap = evt.Filename;
             if (firstConfig)
             {
                 firstConfig = false;
@@ -176,6 +180,30 @@ namespace WiiTUIO.Provider
 
         private void WiiButton_Up(WiiButtonEvent evt)
         {
+            if (evt.Action.ToLower() == "nextlayout" && !evt.Handled)
+            {
+                IEnumerable<JObject> layoutList = this.keyMapper.GetLayoutList();
+                int curpos = 0;
+                int foundpos = 0;
+                foreach (JObject obj in layoutList)
+                {
+                    JToken token = obj.GetValue("Keymap");
+                    if (token != null)
+                    {
+                        if(token.ToString() == this.currentKeymap)
+                        {
+                            foundpos = curpos;
+                        }
+                    }
+                    curpos++;
+                }
+                JObject nextLayout = layoutList.ElementAt(++foundpos % (layoutList.Count()-1));
+                if (nextLayout.GetValue("Keymap") != null)
+                {
+                    this.keyMapper.SetFallbackKeymap(nextLayout.GetValue("Keymap").ToString());
+                    evt.Handled = true;
+                }
+            }
             if (evt.Action.ToLower() == "pointertoggle" && !evt.Handled)
             {
                 this.showPointer = this.showPointer ? false : true;

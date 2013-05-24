@@ -32,13 +32,13 @@ namespace WiiTUIO.Provider
 
         public DateTime HomeButtonDown = DateTime.Now;
 
-        private string configName;
-        private string configFilename;
+        public string Name;
+        public string Filename;
 
         public WiiKeyMap(JObject jsonObj, string configName, string configFilename, XinputDevice xinput, XinputReport xinputReport)
         {
-            this.configName = configName;
-            this.configFilename = configFilename;
+            this.Name = configName;
+            this.Filename = configFilename;
             this.jsonObj = jsonObj;
 
             this.inputSimulator = new InputSimulator();
@@ -49,11 +49,11 @@ namespace WiiTUIO.Provider
 
         public void SetConfig(JObject newConfig, string name, string filename)
         {
-            if (this.jsonObj != newConfig)
+            if (this.jsonObj != newConfig && this.Filename != filename)
             {
                 this.jsonObj = newConfig;
-                this.configName = name;
-                this.configFilename = filename;
+                this.Name = name;
+                this.Filename = filename;
                 string pointer = this.jsonObj.GetValue("Pointer").ToString();
                 if (this.OnConfigChanged != null)
                 {
@@ -66,7 +66,7 @@ namespace WiiTUIO.Provider
         {
             if (this.OnConfigChanged != null)
             {
-                this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(this.configName, this.configFilename, this.jsonObj.GetValue("Pointer").ToString()));
+                this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(this.Name, this.Filename, this.jsonObj.GetValue("Pointer").ToString()));
             }
         }
 
@@ -79,7 +79,7 @@ namespace WiiTUIO.Provider
             }
         }
 
-        private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave";
+        private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave NextLayout";
 
         internal void updateAccelerometer(AccelState accelState)
         {
