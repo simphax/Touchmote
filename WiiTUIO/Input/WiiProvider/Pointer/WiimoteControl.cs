@@ -118,14 +118,12 @@ namespace WiiTUIO.Provider
         {
             if (evt.NewPointer.ToLower() == "touch")
             {
+                this.showPointer = true;
                 this.mouseMode = false;
-                if (this.showPointer)
+                this.duoTouch.enableHover();
+                if (this.usingCursors())
                 {
-                    this.duoTouch.enableHover();
-                    if (this.usingCursors())
-                    {
-                        this.masterCursor.Show();
-                    }
+                    this.masterCursor.Show();
                 }
             }
             else if (evt.NewPointer.ToLower() == "mouse")
@@ -151,6 +149,17 @@ namespace WiiTUIO.Provider
                     this.slaveCursor.Hide();
                 }
                 MouseSimulator.WakeCursor();
+            }
+            else
+            {
+                this.showPointer = false;
+                this.mouseMode = false;
+                this.duoTouch.disableHover();
+                if (this.usingCursors())
+                {
+                    this.masterCursor.Hide();
+                    this.slaveCursor.Hide();
+                }
             }
         }
 
