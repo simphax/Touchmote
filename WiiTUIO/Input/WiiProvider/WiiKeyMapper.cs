@@ -161,14 +161,20 @@ namespace WiiTUIO.Provider
 
         private JObject createDefaultApplicationsJSON()
         {
+            JArray layouts = new JArray();
+            layouts.Add(new JObject(
+                new JProperty("Name","Default"),
+                new JProperty("Keymap",DEFAULT_JSON_FILENAME)
+            ));
+
             JArray applications = new JArray();
 
             JObject applicationList =
                 new JObject(
-                    new JProperty("Applications",
-                        applications),
+                    new JProperty("LayoutChooser", layouts),
+                    new JProperty("Applications", applications),
                     new JProperty("Default", DEFAULT_JSON_FILENAME)
-            );
+                );
 
             JObject union = applicationList;
 
@@ -213,12 +219,20 @@ namespace WiiTUIO.Provider
 
             buttons.Add(new JProperty("Minus", "Volume_Down"));
 
-            buttons.Add(new JProperty("One", "PointerToggle"));
+            JArray buttonOne = new JArray();
+            buttonOne.Add(new JValue("LWin"));
+            buttonOne.Add(new JValue("VK_C"));
+            buttons.Add(new JProperty("One", buttonOne));
 
             JArray buttonTwo = new JArray();
             buttonTwo.Add(new JValue("LWin"));
             buttonTwo.Add(new JValue("Tab"));
             buttons.Add(new JProperty("Two", buttonTwo));
+
+            buttons.Add(new JProperty("Nunchuk.StickX", "360.StickLX"));
+            buttons.Add(new JProperty("Nunchuk.StickY", "360.StickLY"));
+            buttons.Add(new JProperty("Nunchuk.C", "360.TriggerL"));
+            buttons.Add(new JProperty("Nunchuk.Z", "360.TriggerR"));
 
             JObject allButtons = new JObject();
             allButtons.Add(new JProperty("All", buttons));
