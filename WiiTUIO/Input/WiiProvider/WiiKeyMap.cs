@@ -17,26 +17,12 @@ namespace WiiTUIO.Provider
         public JObject JsonObj
         {
             get { return this.jsonObj; }
-            set
-            {
-                if (this.JsonObj != value)
-                {
-                    this.jsonObj = value;
-                    this.Pointer = this.jsonObj.GetValue("Pointer").ToString();
-                    if (this.Pointer != null && this.OnConfigChanged != null)
-                    {
-                        this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(this.Pointer));
-                    }
-                }
-            }
         }
 
         public Action<WiiButtonEvent> OnButtonUp;
         public Action<WiiButtonEvent> OnButtonDown;
         public Action<WiiKeyMapConfigChangedEvent> OnConfigChanged;
         public Action<bool> OnRumble;
-
-        public string Pointer;
 
         private InputSimulator inputSimulator;
 
@@ -45,16 +31,42 @@ namespace WiiTUIO.Provider
 
         public DateTime HomeButtonDown = DateTime.Now;
 
-        public WiiKeyMap(JObject jsonObj, XinputDevice xinput, XinputReport xinputReport)
-        {
-            this.jsonObj = jsonObj;
+        private string configName;
+        private string configFilename;
 
-            this.Pointer = this.jsonObj.GetValue("Pointer").ToString();
+        public WiiKeyMap(JObject jsonObj, string configName, string configFilename, XinputDevice xinput, XinputReport xinputReport)
+        {
+            this.configName = configName;
+            this.configFilename = configFilename;
+            this.jsonObj = jsonObj;
 
             this.inputSimulator = new InputSimulator();
             this.XinputDevice = xinput;
             this.XinputReport = xinputReport;
             xinput.OnRumble += Xinput_OnRumble;
+        }
+
+        public void SetConfig(JObject newConfig, string name, string filename)
+        {
+            if (this.jsonObj != newConfig)
+            {
+                this.jsonObj = newConfig;
+                this.configName = name;
+                this.configFilename = filename;
+                string pointer = this.jsonObj.GetValue("Pointer").ToString();
+                if (this.OnConfigChanged != null)
+                {
+                    this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(name,filename,pointer));
+                }
+            }
+        }
+
+        public void SendConfigChangedEvt()
+        {
+            if (this.OnConfigChanged != null)
+            {
+                this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(this.configName, this.configFilename, this.jsonObj.GetValue("Pointer").ToString()));
+            }
         }
 
         private void Xinput_OnRumble(byte big, byte small)
@@ -495,11 +507,15 @@ namespace WiiTUIO.Provider
 
     public class WiiKeyMapConfigChangedEvent
     {
-        public string NewPointer;
+        public string Name;
+        public string Filename;
+        public string Pointer;
 
-        public WiiKeyMapConfigChangedEvent(string newPointer)
+        public WiiKeyMapConfigChangedEvent(string name, string filename, string pointer)
         {
-            this.NewPointer = newPointer;
+            this.Name = name;
+            this.Filename = filename;
+            this.Pointer = pointer;
         }
     }
 }

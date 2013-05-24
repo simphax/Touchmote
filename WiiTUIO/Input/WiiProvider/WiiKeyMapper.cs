@@ -40,7 +40,7 @@ namespace WiiTUIO.Provider
     {
 
         private string KEYMAPS_PATH = "Keymaps\\";
-        private string APPLICATIONS_JSON_FILENAME = "Keymaps.json";
+        private string CONFIG_JSON_FILENAME = "Keymaps.json";
         private string DEFAULT_JSON_FILENAME = "default.json";
 
         public WiiKeyMap KeyMap;
@@ -55,6 +55,8 @@ namespace WiiTUIO.Provider
 
         private Timer homeButtonTimer;
 
+        private string fallbackName;
+
         public int WiimoteID;
         private bool hideOverlayOnUp;
 
@@ -68,6 +70,8 @@ namespace WiiTUIO.Provider
             System.IO.Directory.CreateDirectory(KEYMAPS_PATH);
             this.applicationsJson = this.createDefaultApplicationsJSON();
             this.defaultKeymapJson = this.createDefaultKeymapJSON();
+
+            this.fallbackName = this.defaultKeymapJson.GetValue("Name").ToString();
 
             JObject specificKeymap = new JObject();
             JObject commonKeymap = new JObject();
@@ -85,7 +89,7 @@ namespace WiiTUIO.Provider
             this.defaultKeymapJson = commonKeymap;
             this.fallbackKeymapJson = commonKeymap;
 
-            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson, new XinputDevice(XinputBus.Default, wiimoteID), new XinputReport(wiimoteID));
+            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson, this.fallbackName, KEYMAPS_PATH+DEFAULT_JSON_FILENAME, new XinputDevice(XinputBus.Default, wiimoteID), new XinputReport(wiimoteID));
 
             this.processMonitor = SystemProcessMonitor.getInstance();
 
@@ -97,12 +101,17 @@ namespace WiiTUIO.Provider
             homeButtonTimer.Elapsed += homeButtonTimer_Elapsed;
         }
 
+        public void Teardown()
+        {
+            this.KeyMap.XinputDevice.Remove();
+        }
+
         public IEnumerable<JObject> GetLayoutList()
         {
             return this.applicationsJson.GetValue("LayoutChooser").Children<JObject>();
         }
 
-        public void SetDefaultKeymap(string filename)
+        public void SetFallbackKeymap(string filename)
         {
             this.loadKeyMap(KEYMAPS_PATH + filename);
             this.fallbackKeymapJson = this.KeyMap.JsonObj;
@@ -127,9 +136,9 @@ namespace WiiTUIO.Provider
                 IEnumerable<JObject> applicationConfigurations = this.applicationsJson.GetValue("Applications").Children<JObject>();
                 foreach (JObject configuration in applicationConfigurations)
                 {
-                    string appName = configuration.GetValue("Name").ToString();
+                    string search = configuration.GetValue("Search").ToString();
 
-                    if (appStringToMatch.ToLower().Replace(" ", "").Contains(appName.ToLower().Replace(" ", "")))
+                    if (appStringToMatch.ToLower().Replace(" ", "").Contains(search.ToLower().Replace(" ", "")))
                     {
                         this.loadKeyMap(KEYMAPS_PATH + configuration.GetValue("Keymap").ToString());
                         keymapFound = true;
@@ -138,7 +147,7 @@ namespace WiiTUIO.Provider
                 }
                 if (!keymapFound)
                 {
-                    this.KeyMap.JsonObj = this.fallbackKeymapJson;
+                    this.KeyMap.SetConfig(this.fallbackKeymapJson,this.fallbackName,"");
                 }
 
             }
@@ -178,9 +187,9 @@ namespace WiiTUIO.Provider
 
             JObject union = applicationList;
 
-            if (File.Exists(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME))
+            if (File.Exists(KEYMAPS_PATH + CONFIG_JSON_FILENAME))
             {
-                StreamReader reader = File.OpenText(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME);
+                StreamReader reader = File.OpenText(KEYMAPS_PATH + CONFIG_JSON_FILENAME);
                 try
                 {
                     JObject existingConfig = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
@@ -190,11 +199,11 @@ namespace WiiTUIO.Provider
                 }
                 catch (Exception e) 
                 {
-                    throw new Exception(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME + " is not valid JSON");
+                    throw new Exception(KEYMAPS_PATH + CONFIG_JSON_FILENAME + " is not valid JSON");
                 }
             }
-            
-            File.WriteAllText(KEYMAPS_PATH + APPLICATIONS_JSON_FILENAME, union.ToString());
+
+            File.WriteAllText(KEYMAPS_PATH + CONFIG_JSON_FILENAME, union.ToString());
             return union;
         }
 
@@ -274,6 +283,8 @@ namespace WiiTUIO.Provider
         public void loadKeyMap(string path)
         {
 
+            string name = "";
+
             JObject union = (JObject)this.defaultKeymapJson.DeepClone();
 
             if (File.Exists(path))
@@ -283,6 +294,8 @@ namespace WiiTUIO.Provider
                 {
                     JObject newKeymap = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
                     reader.Close();
+
+                    name = newKeymap.GetValue("Name").ToString();
 
                     JObject specificKeymap = new JObject();
                     JObject commonKeymap = new JObject();
@@ -306,7 +319,7 @@ namespace WiiTUIO.Provider
                 }
             }
 
-            this.KeyMap.JsonObj = union;
+            this.KeyMap.SetConfig(union,name,path);
 
             this.processWiimoteState(new WiimoteState()); //Sets all buttons to "not pressed"
 

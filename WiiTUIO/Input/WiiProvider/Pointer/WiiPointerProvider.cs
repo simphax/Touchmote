@@ -214,10 +214,10 @@ namespace WiiTUIO.Provider
             this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
             this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
             this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
+            this.keyMapper.KeyMap.SendConfigChangedEvt();
 
             this.inputSimulator = new InputSimulator();
 
-            this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
             this.showPointer = Settings.Default.pointer_moveCursor;
             if (this.showPointer && !this.mouseMode)
             {
@@ -233,7 +233,7 @@ namespace WiiTUIO.Provider
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
         {
-            if (evt.NewPointer.ToLower() == "touch")
+            if (evt.Pointer.ToLower() == "touch")
             {
                 this.mouseMode = false;
                 if (this.showPointer)
@@ -241,7 +241,7 @@ namespace WiiTUIO.Provider
                     this.duoTouch.enableHover();
                 }
             }
-            else if (evt.NewPointer.ToLower() == "mouse")
+            else if (evt.Pointer.ToLower() == "mouse")
             {
                 this.mouseMode = true;
                 this.duoTouch.disableHover();

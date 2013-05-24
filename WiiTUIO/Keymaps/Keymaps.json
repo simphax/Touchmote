@@ -1,33 +1,33 @@
 {
   "LayoutChooser": [
     {
-      "Name": "Default",
+      "Title": "Default",
       "Keymap": "default.json"
     },
     {
-      "Name": "Mouse",
+      "Title": "Mouse",
       "Keymap": "mouse.json"
     },
     {
-      "Name": "Steering Wheel",
+      "Title": "Steering Wheel",
       "Keymap": "steeringwheel.json"
     },
 	{
-      "Name": "First Person Games",
+      "Title": "First Person Games",
       "Keymap": "fps.json"
     }
   ],
   "Applications": [
     {
-      "Name": "supercratebox.exe",
+      "Search": "supercratebox.exe",
       "Keymap": "supercratebox.json"
     },
     {
-      "Name": "Super Smash Land",
+      "Search": "Super Smash Land",
       "Keymap": "supersmashland.json"
     },
     {
-      "Name": "iw3",
+      "Search": "iw3",
       "Keymap": "fps.json"
     }
   ],

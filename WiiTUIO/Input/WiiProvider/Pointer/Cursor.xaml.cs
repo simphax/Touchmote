@@ -58,7 +58,7 @@ namespace WiiTUIO.Provider
                 this.hidden = true;
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    DoubleAnimation animation = createDoubleAnimation(0, 200, false);
+                    DoubleAnimation animation = UIHelpers.createDoubleAnimation(0, 200, false);
                     animation.FillBehavior = FillBehavior.HoldEnd;
                     animation.Completed += delegate(object sender, EventArgs pEvent)
                     {
@@ -105,7 +105,7 @@ namespace WiiTUIO.Provider
             {
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    DoubleAnimation animation = createDoubleAnimation(20, 200, false);
+                    DoubleAnimation animation = UIHelpers.createDoubleAnimation(20, 200, false);
                     animation.FillBehavior = FillBehavior.HoldEnd;
                     animation.Completed += delegate(object sender, EventArgs pEvent)
                     {
@@ -114,7 +114,7 @@ namespace WiiTUIO.Provider
                     this.innerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation, HandoffBehavior.SnapshotAndReplace);
                     this.innerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation, HandoffBehavior.SnapshotAndReplace);
 
-                    DoubleAnimation animation2 = createDoubleAnimation(40, 200, false);
+                    DoubleAnimation animation2 = UIHelpers.createDoubleAnimation(40, 200, false);
                     animation2.FillBehavior = FillBehavior.HoldEnd;
                     animation2.Completed += delegate(object sender, EventArgs pEvent)
                     {
@@ -123,7 +123,7 @@ namespace WiiTUIO.Provider
                     this.outerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation2, HandoffBehavior.SnapshotAndReplace);
                     this.outerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation2, HandoffBehavior.SnapshotAndReplace);
 
-                    DoubleAnimation animation3 = createDoubleAnimation(46, 200, false);
+                    DoubleAnimation animation3 = UIHelpers.createDoubleAnimation(46, 200, false);
                     animation3.FillBehavior = FillBehavior.HoldEnd;
                     animation3.Completed += delegate(object sender, EventArgs pEvent)
                     {
@@ -150,7 +150,7 @@ namespace WiiTUIO.Provider
             {
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    DoubleAnimation animation = createDoubleAnimation(40, 200, false);
+                    DoubleAnimation animation = UIHelpers.createDoubleAnimation(40, 200, false);
                     animation.FillBehavior = FillBehavior.HoldEnd;
                     animation.Completed += delegate(object sender, EventArgs pEvent)
                     {
@@ -159,7 +159,7 @@ namespace WiiTUIO.Provider
                     this.innerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation, HandoffBehavior.SnapshotAndReplace);
                     this.innerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation, HandoffBehavior.SnapshotAndReplace);
 
-                    DoubleAnimation animation2 = createDoubleAnimation(50, 200, false);
+                    DoubleAnimation animation2 = UIHelpers.createDoubleAnimation(50, 200, false);
                     animation2.FillBehavior = FillBehavior.HoldEnd;
                     animation2.Completed += delegate(object sender, EventArgs pEvent)
                     {
@@ -168,7 +168,7 @@ namespace WiiTUIO.Provider
                     this.outerEllipse.BeginAnimation(FrameworkElement.WidthProperty, animation2, HandoffBehavior.SnapshotAndReplace);
                     this.outerEllipse.BeginAnimation(FrameworkElement.HeightProperty, animation2, HandoffBehavior.SnapshotAndReplace);
 
-                    DoubleAnimation animation3 = createDoubleAnimation(56, 200, false);
+                    DoubleAnimation animation3 = UIHelpers.createDoubleAnimation(56, 200, false);
                     animation3.FillBehavior = FillBehavior.HoldEnd;
                     animation3.Completed += delegate(object sender, EventArgs pEvent)
                     {
@@ -178,23 +178,6 @@ namespace WiiTUIO.Provider
                     this.stroke.BeginAnimation(FrameworkElement.HeightProperty, animation3, HandoffBehavior.SnapshotAndReplace);
                 }), null);
             }
-        }
-
-        private static DoubleAnimation createDoubleAnimation(double fNew, double fTime, bool bFreeze)
-        {
-            // Create the animation.
-            DoubleAnimation pAction = new DoubleAnimation(fNew, new Duration(TimeSpan.FromMilliseconds(fTime)))
-            {
-                // Specify settings.
-                AccelerationRatio = 0.1,
-                DecelerationRatio = 0.9,
-                FillBehavior = FillBehavior.HoldEnd
-            };
-
-            // Pause the action before starting it and then return it.
-            if (bFreeze)
-                pAction.Freeze();
-            return pAction;
         }
 
         private double radianToDegree(double angle)

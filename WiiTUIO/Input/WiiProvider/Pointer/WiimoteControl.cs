@@ -74,6 +74,11 @@ namespace WiiTUIO.Provider
             this.duoTouch = new DuoTouch(this.screenBounds, Properties.Settings.Default.pointer_smoothingSize, touchStartID);
             this.keyMapper = new WiiKeyMapper(id);
 
+            this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
+            this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
+            this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
+            this.keyMapper.KeyMap.OnRumble += WiiKeyMap_OnRumble;
+
             this.inputSimulator = new InputSimulator();
             this.screenPositionCalculator = new ScreenPositionCalculator();
             this.useCustomCursor = Settings.Default.pointer_customCursor;
@@ -89,15 +94,11 @@ namespace WiiTUIO.Provider
                     CursorWindow.Current.addCursor(masterCursor);
                     CursorWindow.Current.addCursor(slaveCursor);
 
-                    this.WiiKeyMap_ConfigChanged(new WiiKeyMapConfigChangedEvent(this.keyMapper.KeyMap.Pointer));
+                    this.keyMapper.KeyMap.SendConfigChangedEvt();
 
                 }), null);
             }
 
-            this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
-            this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
-            this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
-            this.keyMapper.KeyMap.OnRumble += WiiKeyMap_OnRumble;
 
         }
 
@@ -116,7 +117,9 @@ namespace WiiTUIO.Provider
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
         {
-            if (evt.NewPointer.ToLower() == "touch")
+            OverlayWindow.Current.ShowNotice("Layout for Wiimote "+this.Status.ID+" changed to \""+evt.Name+"\"", this.Status.ID);
+
+            if (evt.Pointer.ToLower() == "touch")
             {
                 this.showPointer = true;
                 this.mouseMode = false;
@@ -126,7 +129,7 @@ namespace WiiTUIO.Provider
                     this.masterCursor.Show();
                 }
             }
-            else if (evt.NewPointer.ToLower() == "mouse")
+            else if (evt.Pointer.ToLower() == "mouse")
             {
                 this.mouseMode = true;
                 this.gamingMouse = false;
@@ -138,7 +141,7 @@ namespace WiiTUIO.Provider
                 }
                 MouseSimulator.WakeCursor();
             }
-            else if (evt.NewPointer.ToLower() == "gamingmouse")
+            else if (evt.Pointer.ToLower() == "gamingmouse")
             {
                 this.mouseMode = true;
                 this.gamingMouse = true;
@@ -417,7 +420,7 @@ namespace WiiTUIO.Provider
 
         public void Teardown()
         {
-            this.keyMapper.KeyMap.XinputDevice.Remove();
+            this.keyMapper.Teardown();
             App.Current.Dispatcher.BeginInvoke(new Action(delegate()
             {
                 CursorWindow.Current.removeCursor(this.masterCursor);

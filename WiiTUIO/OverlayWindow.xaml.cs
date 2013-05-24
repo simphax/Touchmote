@@ -52,9 +52,9 @@ namespace WiiTUIO
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
             this.baseGrid.Visibility = Visibility.Hidden;
-            this.layoutOverlay.Visibility = Visibility.Hidden;
+            this.layoutChooserOverlay.Visibility = Visibility.Hidden;
 
-            this.layoutOverlay.Height = this.Height / 2;
+            this.layoutChooserOverlay.Height = this.Height / 2;
             
             //Compensate for DPI settings
             Loaded += (o, e) =>
@@ -74,6 +74,15 @@ namespace WiiTUIO
             this.baseGrid.Height = Util.ScreenBounds.Height;
         }
 
+        public void ShowNotice(string message, int wiimoteID)
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                OverlayNotice notice = new OverlayNotice(message, wiimoteID, 3000);
+                this.noticeStack.Children.Add(notice);
+            }), null);
+        }
+
         public void ShowLayoutOverlay(WiiKeyMapper keyMapper)
         {
             this.keyMapper = keyMapper;
@@ -82,26 +91,26 @@ namespace WiiTUIO
 
                 this.baseGrid.Opacity = 0.0;
                 this.baseGrid.Visibility = Visibility.Visible;
-                this.layoutOverlay.Visibility = Visibility.Visible;
+                this.layoutChooserOverlay.Visibility = Visibility.Visible;
                 this.Activate();
 
                 Color bordercolor = CursorColor.getColor(keyMapper.WiimoteID);
                 bordercolor.ScA = 0.5f;
-                this.layoutOverlay.BorderBrush = new SolidColorBrush(bordercolor);
+                this.layoutChooserOverlay.BorderBrush = new SolidColorBrush(bordercolor);
 
                 this.title.Content = "Choose a layout for Wiimote "+keyMapper.WiimoteID;
 
                 this.layoutList.Children.Clear();
                 foreach(JObject config in this.keyMapper.GetLayoutList())
                 {
-                    string name = config.GetValue("Name").ToString();
+                    string name = config.GetValue("Title").ToString();
                     string filename = config.GetValue("Keymap").ToString();
                     LayoutSelectionRow row = new LayoutSelectionRow(name, filename);
                     row.OnClick += Select_Layout;
                     this.layoutList.Children.Add(row);
                 }
 
-                DoubleAnimation animation = createDoubleAnimation(1.0, 200, false);
+                DoubleAnimation animation = UIHelpers.createDoubleAnimation(1.0, 200, false);
                 animation.FillBehavior = FillBehavior.HoldEnd;
                 animation.Completed += delegate(object sender, EventArgs pEvent)
                 {
@@ -115,7 +124,7 @@ namespace WiiTUIO
 
         private void Select_Layout(string filename)
         {
-            this.keyMapper.SetDefaultKeymap(filename);
+            this.keyMapper.SetFallbackKeymap(filename);
             this.HideOverlay();
         }
 
@@ -128,7 +137,7 @@ namespace WiiTUIO
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-                DoubleAnimation animation = createDoubleAnimation(0.0, 200, false);
+                DoubleAnimation animation = UIHelpers.createDoubleAnimation(0.0, 200, false);
                 animation.FillBehavior = FillBehavior.HoldEnd;
                 animation.Completed += delegate(object sender, EventArgs pEvent)
                 {
@@ -168,72 +177,9 @@ namespace WiiTUIO
             this.HideOverlay();
         }
 
-        private static DoubleAnimation createDoubleAnimation(double fNew, double fTime, bool bFreeze)
-        {
-            // Create the animation.
-            DoubleAnimation pAction = new DoubleAnimation(fNew, new Duration(TimeSpan.FromMilliseconds(fTime)))
-            {
-                // Specify settings.
-                AccelerationRatio = 0.1,
-                DecelerationRatio = 0.9,
-                FillBehavior = FillBehavior.HoldEnd
-            };
-
-            // Pause the action before starting it and then return it.
-            if (bFreeze)
-                pAction.Freeze();
-            return pAction;
-        }
-
-        //http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/cdbe457f-d653-4a18-9295-bb9b609bc4e3
-        public enum GetWindowCmd : uint
-        {
-            GW_HWNDFIRST = 0,
-            GW_HWNDLAST = 1,
-            GW_HWNDNEXT = 2,
-            GW_HWNDPREV = 3,
-            GW_OWNER = 4,
-            GW_CHILD = 5,
-            GW_ENABLEDPOPUP = 6
-        }
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetWindow(IntPtr hWnd, GetWindowCmd uCmd);
-
-
-        [Flags]
-        public enum SetWindowPosFlags
-        {
-            SWP_NOSIZE = 0x0001,
-            SWP_NOMOVE = 0x0002,
-            SWP_NOZORDER = 0x0004,
-            SWP_NOREDRAW = 0x0008,
-            SWP_NOACTIVATE = 0x0010,
-            SWP_FRAMECHANGED = 0x0020,
-            SWP_SHOWWINDOW = 0x0040,
-            SWP_HIDEWINDOW = 0x0080,
-            SWP_NOCOPYBITS = 0x0100,
-            SWP_NOOWNERZORDER = 0x0200,
-            SWP_NOSENDCHANGING = 0x0400
-        }
-
-        [DllImport("user32.dll")]
-        public static extern int SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, SetWindowPosFlags uFlags);
-
         protected override void OnActivated(EventArgs e)
         {
-            IntPtr hWnd = new WindowInteropHelper(this).Handle;
-
-            IntPtr hWndHiddenOwner = GetWindow(hWnd, GetWindowCmd.GW_OWNER);
-
-            if (hWndHiddenOwner != IntPtr.Zero)
-            {
-                IntPtr HWND_TOPMOST = new IntPtr(-1);
-                SetWindowPos(hWndHiddenOwner, HWND_TOPMOST, 0, 0, 0, 0,
-                   SetWindowPosFlags.SWP_NOMOVE |
-                   SetWindowPosFlags.SWP_NOSIZE |
-                   SetWindowPosFlags.SWP_NOACTIVATE);
-            }
+            UIHelpers.TopmostFix(this);
         }
     }
 }
