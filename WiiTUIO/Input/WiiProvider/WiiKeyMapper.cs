@@ -71,7 +71,7 @@ namespace WiiTUIO.Provider
             this.applicationsJson = this.createDefaultApplicationsJSON();
             this.defaultKeymapJson = this.createDefaultKeymapJSON();
 
-            this.fallbackName = this.defaultKeymapJson.GetValue("Name").ToString();
+            this.fallbackName = this.defaultKeymapJson.GetValue("Title").ToString();
 
             JObject specificKeymap = new JObject();
             JObject commonKeymap = new JObject();
@@ -295,7 +295,7 @@ namespace WiiTUIO.Provider
                     JObject newKeymap = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
                     reader.Close();
 
-                    name = newKeymap.GetValue("Name").ToString();
+                    name = newKeymap.GetValue("Title").ToString();
 
                     JObject specificKeymap = new JObject();
                     JObject commonKeymap = new JObject();
