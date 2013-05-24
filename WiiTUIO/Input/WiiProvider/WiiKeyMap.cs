@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WiimoteLib;
+using WiiTUIO.Properties;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -74,7 +75,7 @@ namespace WiiTUIO.Provider
             Console.WriteLine("Xinput rumble: big=" + big + " small=" + small);
             if (this.OnRumble != null)
             {
-                OnRumble(big > 200 || small > 200);
+                OnRumble(big > Settings.Default.xinput_rumbleThreshold_big || small > Settings.Default.xinput_rumbleThreshold_small);
             }
         }
 
