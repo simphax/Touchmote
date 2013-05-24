@@ -30,7 +30,10 @@ namespace WiiTUIO
         {
             InitializeComponent();
             this.noticeMessage.Text = ""+message;
-            this.noticeBorder.BorderBrush = new SolidColorBrush(CursorColor.getColor(wiimoteID));
+
+            Color bordercolor = CursorColor.getColor(wiimoteID);
+            bordercolor.ScA = 0.5f;
+            this.noticeBorder.BorderBrush = new SolidColorBrush(bordercolor);
 
             this.hideTimer = new Timer();
             this.hideTimer.Interval = timeout;
