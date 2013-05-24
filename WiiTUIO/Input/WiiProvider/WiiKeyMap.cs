@@ -70,7 +70,7 @@ namespace WiiTUIO.Provider
 
         internal void updateAccelerometer(AccelState accelState)
         {
-            JToken key = this.jsonObj.GetValue("SteeringWheel");
+            JToken key = this.jsonObj.GetValue("SteeringWheelX");
             if (key != null)
             {
                 switch (key.ToString().ToLower())
@@ -86,6 +86,26 @@ namespace WiiTUIO.Provider
                         break;
                     case "360.stickry":
                         XinputReport.StickRY = accelState.Values.Y * -0.5 + 0.5;
+                        break;
+                }
+            }
+
+            key = this.jsonObj.GetValue("SteeringWheelY");
+            if (key != null)
+            {
+                switch (key.ToString().ToLower())
+                {
+                    case "360.sticklx":
+                        XinputReport.StickLX = accelState.Values.Z * -0.5 + 0.5;
+                        break;
+                    case "360.stickly":
+                        XinputReport.StickLY = accelState.Values.Z * -0.5 + 0.5;
+                        break;
+                    case "360.stickrx":
+                        XinputReport.StickRX = accelState.Values.Z * -0.5 + 0.5;
+                        break;
+                    case "360.stickry":
+                        XinputReport.StickRY = accelState.Values.Z * -0.5 + 0.5;
                         break;
                 }
             }

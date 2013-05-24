@@ -1,6 +1,7 @@
 {
   "All": {
-    "SteeringWheel": "360.StickLX",
+    "SteeringWheelX": "360.StickLX",
+	"SteeringWheelY": "360.StickLY",
 	"Two": "360.TriggerR",
 	"One": "360.TriggerL"
   }
