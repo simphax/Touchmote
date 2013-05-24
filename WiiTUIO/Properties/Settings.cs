@@ -224,6 +224,28 @@ namespace WiiTUIO.Properties
                 OnPropertyChanged("touch_edgeGestureHelperRelease");
             }
         }
+        
+        private int _xinput_rumbleThreshold_big = 200;
+        public int xinput_rumbleThreshold_big
+        {
+            get { return _xinput_rumbleThreshold_big; }
+            set
+            {
+                _xinput_rumbleThreshold_big = value;
+                OnPropertyChanged("xinput_rumbleThreshold_big");
+            }
+        }
+
+        private int _xinput_rumbleThreshold_small = 200;
+        public int xinput_rumbleThreshold_small
+        {
+            get { return _xinput_rumbleThreshold_small; }
+            set
+            {
+                _xinput_rumbleThreshold_small = value;
+                OnPropertyChanged("xinput_rumbleThreshold_small");
+            }
+        }
       
         private static string SETTINGS_FILENAME = "settings.json";
 
