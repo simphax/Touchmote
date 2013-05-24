@@ -354,6 +354,7 @@ namespace WiiTUIO
             }), null);
         }
 
+
         #region Messages - Err/Inf
 
         enum MessageType { Info, Error };
@@ -381,78 +382,18 @@ namespace WiiTUIO
             }), null);
         }
 
+        #endregion
+
+
         private void animateExpand(FrameworkElement elem)
         {
-            if (elem.ActualHeight < 20)
-            {
-                elem.Height = double.NaN; //auto height
-                elem.Visibility = Visibility.Visible;
-                elem.Measure(new Size(2000,2000));
-                double height = (elem.DesiredSize.Height > 0) ? elem.DesiredSize.Height : elem.ActualHeight;
-                DoubleAnimation pAnimation = createDoubleAnimation(height, 1000, false);
-                elem.Height = 0;
-                elem.Visibility = Visibility.Visible;
-                pAnimation.FillBehavior = FillBehavior.Stop;
-                pAnimation.Completed += delegate(object sender, EventArgs pEvent)
-                {
-                    elem.Height = Double.NaN;
-                    //elem.BeginAnimation(FrameworkElement., null);
-                };
-                //pAnimation.Freeze();
-                elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.SnapshotAndReplace);
-            }
+            UIHelpers.animateExpand(elem);
         }
+
         private void animateCollapse(FrameworkElement elem, bool remove)
         {
-            if (elem.DesiredSize.Height > 0)
-            {
-                elem.Height = elem.DesiredSize.Height;
-                DoubleAnimation pAnimation = createDoubleAnimation(0, 1000, false);
-                pAnimation.FillBehavior = FillBehavior.Stop;
-                pAnimation.Completed += delegate(object sender, EventArgs pEvent)
-                {
-                    //elem.BeginAnimation(FrameworkElement.HeightProperty, null);
-                    if (remove && elem.Parent is Panel)
-                    {
-                        ((Panel)elem.Parent).Children.Remove(elem);
-                    }
-                    else
-                    {
-                        elem.Visibility = Visibility.Collapsed;
-                        elem.Height = Double.NaN;
-                    }
-                };
-                //pAnimation.Freeze();
-                elem.BeginAnimation(FrameworkElement.HeightProperty, pAnimation, HandoffBehavior.SnapshotAndReplace);
-            }
+            UIHelpers.animateCollapse(elem,remove);
         }
-
-        #region Animation Helpers
-        /**
-         * @brief Helper method to create a double animation.
-         * @param fNew The new value we want to move too.
-         * @param fTime The time we want to allow in ms.
-         * @param bFreeze Do we want to freeze this animation (so we can't modify it).
-         */
-        private static DoubleAnimation createDoubleAnimation(double fNew, double fTime, bool bFreeze)
-        {
-            // Create the animation.
-            DoubleAnimation pAction = new DoubleAnimation(fNew, new Duration(TimeSpan.FromMilliseconds(fTime)))
-            {
-                // Specify settings.
-                AccelerationRatio = 0.1,
-                DecelerationRatio = 0.9,
-                FillBehavior = FillBehavior.HoldEnd
-            };
-
-            // Pause the action before starting it and then return it.
-            if (bFreeze)
-                pAction.Freeze();
-            return pAction;
-        }
-        #endregion
-        #endregion
-
 
         private void showConfig()
         {

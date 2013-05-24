@@ -218,6 +218,9 @@
     <Compile Include="Input\WiiProvider\Pointer\CursorWindow.xaml.cs">
       <DependentUpon>CursorWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OverlayNotice.xaml.cs">
+      <DependentUpon>OverlayNotice.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OverlayWindow.xaml.cs">
       <DependentUpon>OverlayWindow.xaml</DependentUpon>
     </Compile>
@@ -226,6 +229,7 @@
     <Compile Include="Input\WiiProvider\Pointer\WiiPointerProvider.cs" />
     <Compile Include="SubPanel.cs" />
     <Compile Include="SystemProcessMonitor.cs" />
+    <Compile Include="UIHelpers.cs" />
     <Compile Include="WiimoteStatus.xaml.cs">
       <DependentUpon>WiimoteStatus.xaml</DependentUpon>
     </Compile>
@@ -285,6 +289,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Output\Settings\TUIOSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OverlayNotice.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

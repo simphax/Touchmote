@@ -11,7 +11,7 @@
         ShowInTaskbar="False" >
     <Canvas Name="baseCanvas">
         <Grid MouseUp="Grid_MouseUp" Name="baseGrid" Background="#33000000">
-            <Border Name="layoutOverlay" Width="500" Height="680" Background="#F20A0A0A" BorderThickness="3" BorderBrush="Red">
+            <Border Name="layoutChooserOverlay" Width="500" Height="680" Background="#F20A0A0A" BorderThickness="3" BorderBrush="Red">
                 <StackPanel>
                     <Label Name="title" Content="Choose a layout" FontSize="30" FontFamily="Segoe UI Light" Foreground="White" Margin="10"></Label>
                     <ScrollViewer PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Height="600">
@@ -22,5 +22,8 @@
                 </StackPanel>
             </Border>
         </Grid>
+        <StackPanel Name="noticeStack" Canvas.Right="50" Canvas.Top="50" Width="500">
+            
+        </StackPanel>
     </Canvas>
 </Window>

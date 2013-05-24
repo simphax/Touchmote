@@ -23,7 +23,7 @@ namespace WiiTUIO
         private string name;
         private string file;
 
-        public Action<string> OnClick;
+        public Action<string> OnClick; //filename
 
         public LayoutSelectionRow(string name, string file)
         {
