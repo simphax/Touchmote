@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WiiTUIO.Properties;
 
 namespace WiiTUIO.Provider
 {
@@ -54,7 +55,11 @@ namespace WiiTUIO.Provider
                 Matrix transformMatrix = ct.TransformFromDevice;
                 this.cursorCanvas.RenderTransform = new MatrixTransform(transformMatrix);
             };
-            
+
+            Timeline.DesiredFrameRateProperty.OverrideMetadata(
+                typeof(Timeline),
+                new FrameworkPropertyMetadata { DefaultValue = Settings.Default.pointer_cursorFPS }
+            );
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)

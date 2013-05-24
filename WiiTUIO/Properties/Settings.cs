@@ -159,6 +159,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private int _pointer_cursorFPS = 200;
+        public int pointer_cursorFPS
+        {
+            get { return _pointer_cursorFPS; }
+            set
+            {
+                _pointer_cursorFPS = value;
+                OnPropertyChanged("pointer_cursorFPS");
+            }
+        }
+
         private string _pointer_sensorBarPos = "center";
         public string pointer_sensorBarPos
         {
