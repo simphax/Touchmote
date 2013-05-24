@@ -165,10 +165,6 @@ namespace WiiTUIO.Provider
                         break;
                 }
             }
-
-            //this.inputSimulator.Mouse.MoveMouseBy((int)(nunchuk.Joystick.X*10),-(int)(nunchuk.Joystick.Y*10));
-            //Console.WriteLine("Nunchuk RAW : " + nunchuk.RawJoystick);
-            //Console.WriteLine("Nunchuk : " + nunchuk.Joystick);
         }
 
         public void executeButtonUp(WiimoteButton button)
@@ -178,8 +174,6 @@ namespace WiiTUIO.Provider
 
         public void executeButtonUp(string button)
         {
-
-            Console.WriteLine("button up" + button);
             bool handled = false;
 
             JToken key = this.jsonObj.GetValue(button);
@@ -266,7 +260,6 @@ namespace WiiTUIO.Provider
 
         public void executeButtonDown(string button)
         {
-            Console.WriteLine("button down" + button);
             bool handled = false;
 
             JToken key = this.jsonObj.GetValue(button);
