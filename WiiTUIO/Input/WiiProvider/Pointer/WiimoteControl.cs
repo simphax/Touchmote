@@ -51,6 +51,8 @@ namespace WiiTUIO.Provider
 
         private bool gamingMouse = false;
 
+        private bool firstConfig = true;
+
         private CursorPos lastpoint;
 
         private System.Drawing.Rectangle screenBounds;
@@ -117,8 +119,14 @@ namespace WiiTUIO.Provider
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
         {
-            OverlayWindow.Current.ShowNotice("Layout for Wiimote "+this.Status.ID+" changed to \""+evt.Name+"\"", this.Status.ID);
-
+            if (firstConfig)
+            {
+                firstConfig = false;
+            }
+            else
+            {
+                OverlayWindow.Current.ShowNotice("Layout for Wiimote " + this.Status.ID + " changed to \"" + evt.Name + "\"", this.Status.ID);
+            }
             if (evt.Pointer.ToLower() == "touch")
             {
                 this.showPointer = true;
