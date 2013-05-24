@@ -1,15 +1,20 @@
 {
-  "1": {
-    "Pointer": "GamingMouse",
-    "A": "MouseRight",
-    "B": "MouseLeft",
-    "Left": "VK_A",
-    "Right": "VK_D",
-    "Up": "VK_W",
-    "Down": "VK_S",
-    "One": "VK_F",
-    "Two": "VK_R",
-    "Plus": "RETURN",
-    "Minus": "ESCAPE"
+  "All": {
+    "Pointer": "",
+    "Left": "360.StickLX-",
+    "Right": "360.StickLX+",
+    "Up": "360.StickLY+",
+    "Down": "360.StickLY-",
+    "A": "360.BumperL",
+    "B": "360.StickLY+",
+    "One": "360.B",
+    "Two": "360.Y",
+    "Plus": "360.A",
+	"Home": "360.Start",
+    "Minus": "360.Back",
+    "Nunchuk.StickX": "360.StickRX",
+    "Nunchuk.StickY": "360.StickRY",
+    "Nunchuk.C": "360.BumperR",
+    "Nunchuk.Z": "360.TriggerR"
   }
 }

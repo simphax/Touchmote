@@ -11,6 +11,10 @@
     {
       "Name": "Steering Wheel",
       "Keymap": "steeringwheel.json"
+    },
+	{
+      "Name": "First Person Games",
+      "Keymap": "fps.json"
     }
   ],
   "Applications": [

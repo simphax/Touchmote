@@ -10,7 +10,10 @@
     "Down": "Down",
     "Plus": "Volume_Up",
     "Minus": "Volume_Down",
-    "One": "PointerToggle",
+    "One": [
+      "LWin",
+      "VK_C"
+    ],
     "Two": [
       "LWin",
       "Tab"
