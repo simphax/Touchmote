@@ -11,10 +11,7 @@
     "Down": "Down",
     "Plus": "Volume_Up",
     "Minus": "Volume_Down",
-    "One": [
-      "LWin",
-      "VK_C"
-    ],
+    "One": "NextLayout",
     "Two": [
       "LWin",
       "Tab"
