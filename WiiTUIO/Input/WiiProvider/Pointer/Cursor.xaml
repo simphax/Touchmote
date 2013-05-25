@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
-    <Ellipse Name="outerEllipse" Width="50" Height="50" Fill="Black" Opacity="0.4"/>
-    <Ellipse Name="innerEllipse" Width="40" Height="40" Fill="White" Opacity="0.5"/>
-    <Ellipse Name="stroke" Width="56" Height="56" Stroke="Red" Opacity="0.5" StrokeThickness="3" />
-    <Ellipse Visibility="Hidden" Name="rotationIndicator" Width="10" Height="10" Fill="Red" Opacity="0.5" RenderTransformOrigin="0.5,3" Margin="0,0,0,50" />
+    <Ellipse Name="outerEllipse" Width="50" Height="50" Fill="#66000000"/>
+    <Ellipse Name="innerEllipse" Width="40" Height="40" Fill="#7FFFFFFF"/>
+    <Ellipse Name="stroke" Width="56" Height="56" Stroke="#7FFF0000" StrokeThickness="3" />
+    <Ellipse Visibility="Collapsed" Name="rotationIndicator" Width="10" Height="10" Fill="Red" Opacity="0.5" RenderTransformOrigin="0.5,3" Margin="0,0,0,50" />
 </Grid>

@@ -21,13 +21,14 @@ namespace WiiTUIO.Provider
     /// </summary>
     public partial class Cursor : Grid
     {
-        public static double CANVAS_WIDTH = 80;
+        private const double CANVAS_HALF_WIDTH = 40; //80/2
         public bool hidden = false;
         public bool pressed = false;
 
         public Cursor(Color color)
         {
             InitializeComponent();
+            color.ScA = 0.5f;
             this.stroke.Stroke = new SolidColorBrush(color);
             this.cursor.RenderTransform = new ScaleTransform();
         }
@@ -46,9 +47,10 @@ namespace WiiTUIO.Provider
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-                this.cursor.SetValue(Canvas.LeftProperty, point.X - (CANVAS_WIDTH/2));
-                this.cursor.SetValue(Canvas.TopProperty, point.Y - (CANVAS_WIDTH/2));
-            }), null);
+                this.SetValue(Canvas.LeftProperty, point.X - CANVAS_HALF_WIDTH);
+                this.SetValue(Canvas.TopProperty, point.Y - CANVAS_HALF_WIDTH);
+                //this.RenderTransform = new TranslateTransform() { X = point.X - CANVAS_HALF_WIDTH, Y = point.Y - CANVAS_HALF_WIDTH };
+            }),System.Windows.Threading.DispatcherPriority.Input, null);
         }
 
         public void Hide()
