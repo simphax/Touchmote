@@ -44,9 +44,11 @@ namespace WiiTUIO.Provider
             InitializeComponent();
             this.Width = Util.ScreenBounds.Width;
             this.Height = Util.ScreenBounds.Height;
+            this.cursorCanvas.Width = Util.ScreenBounds.Width;
+            this.cursorCanvas.Height = Util.ScreenBounds.Height;
 
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
-
+            
             //Compensate for DPI settings
             Loaded += (o, e) =>
             {
@@ -55,6 +57,8 @@ namespace WiiTUIO.Provider
                 Matrix transformMatrix = ct.TransformFromDevice;
                 this.cursorCanvas.RenderTransform = new MatrixTransform(transformMatrix);
             };
+            
+            Console.WriteLine("Render capability Tier: " + (RenderCapability.Tier >> 16));
 
             Timeline.DesiredFrameRateProperty.OverrideMetadata(
                 typeof(Timeline),
@@ -66,6 +70,8 @@ namespace WiiTUIO.Provider
         {
             this.Width = Util.ScreenBounds.Width;
             this.Height = Util.ScreenBounds.Height;
+            this.cursorCanvas.Width = Util.ScreenBounds.Width;
+            this.cursorCanvas.Height = Util.ScreenBounds.Height;
         }
 
         public void addCursor(Cursor cursor)
