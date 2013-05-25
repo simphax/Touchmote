@@ -60,8 +60,8 @@ namespace WiiTUIO.Provider
 
         private WiimoteState lastWiimoteState;
 
-        private Cursor masterCursor;
-        private Cursor slaveCursor;
+        private Cursor2 masterCursor;
+        private Cursor2 slaveCursor;
 
         private string currentKeymap;
 
@@ -92,8 +92,8 @@ namespace WiiTUIO.Provider
                 App.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
                     Color myColor = CursorColor.getColor(this.Status.ID);
-                    this.masterCursor = new Cursor(myColor);
-                    this.slaveCursor = new Cursor(myColor);
+                    this.masterCursor = new Cursor2(myColor);
+                    this.slaveCursor = new Cursor2(myColor);
                     this.masterCursor.Hide();
                     this.slaveCursor.Hide();
                     CursorWindow.Current.addCursor(masterCursor);

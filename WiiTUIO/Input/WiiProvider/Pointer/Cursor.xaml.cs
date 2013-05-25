@@ -33,6 +33,8 @@ namespace WiiTUIO.Provider
             this.cursor.RenderTransform = new ScaleTransform();
         }
 
+
+
         public void SetRotation(double rotation)
         {
             /*
@@ -50,7 +52,7 @@ namespace WiiTUIO.Provider
                 this.SetValue(Canvas.LeftProperty, point.X - CANVAS_HALF_WIDTH);
                 this.SetValue(Canvas.TopProperty, point.Y - CANVAS_HALF_WIDTH);
                 //this.RenderTransform = new TranslateTransform() { X = point.X - CANVAS_HALF_WIDTH, Y = point.Y - CANVAS_HALF_WIDTH };
-            }),System.Windows.Threading.DispatcherPriority.Input, null);
+            }),System.Windows.Threading.DispatcherPriority.Send, null);
         }
 
         public void Hide()

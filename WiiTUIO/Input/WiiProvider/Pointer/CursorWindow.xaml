@@ -9,6 +9,6 @@
         WindowStyle="None"
         Background="Transparent"
         ShowInTaskbar="False" >
-        <Canvas Name="cursorCanvas">
-        </Canvas>
+        <Canvas Name="baseCanvas">
+    </Canvas>
 </Window>
