@@ -44,7 +44,7 @@ namespace WiiTUIO.Provider
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-                this.InvalidateVisual();
+                //this.InvalidateVisual();
             }), System.Windows.Threading.DispatcherPriority.Send, null);
             //this.Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate() { }));
         }
@@ -57,22 +57,24 @@ namespace WiiTUIO.Provider
 
         public void AddCursor(Cursor2 cursor)
         {
-            cursors.Add(cursor);
+            this.Children.Add(cursor);
+            //cursors.Add(cursor);
         }
 
         public void RemoveCursor(Cursor2 cursor)
         {
+            this.Children.Remove(cursor);
             cursors.Remove(cursor);
         }
 
         int frame = 0;
         protected override void OnRender(DrawingContext drawingContext)
         {
-            foreach (Cursor2 cursor in cursors)
+            /*foreach (Cursor2 cursor in cursors)
             {
                 cursor.Render(drawingContext);
-            }
-            //base.OnRender(drawingContext);
+            }*/
+            base.OnRender(drawingContext);
             frame++;
         }
 

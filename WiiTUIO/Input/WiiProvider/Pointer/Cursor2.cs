@@ -4,29 +4,44 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace WiiTUIO.Provider
 {
-    public class Cursor2
+    public class Cursor2 : Canvas
     {
         private Point position;
-        private SolidColorBrush brush;
-        private EllipseGeometry ellipse;
+        private static SolidColorBrush brush;
+        private static EllipseGeometry ellipse;
+        private TranslateTransform transform;
 
         public Cursor2(Color color)
         {
-            this.brush = new SolidColorBrush(color);
-            this.brush.Freeze();
+            this.Width = 80;
+            this.Height = 80;
 
-            this.ellipse = new EllipseGeometry();
-            this.ellipse.RadiusX = 40;
-            this.ellipse.RadiusY = 40;
+            brush = new SolidColorBrush(color);
+            brush.Freeze();
+
+            ellipse = new EllipseGeometry();
+            ellipse.RadiusX = 40;
+            ellipse.RadiusY = 40;
+            ellipse.Freeze();
+
+            this.transform = new TranslateTransform() { X = 0, Y = 0 };
+
+        }
+        protected override void OnRender(DrawingContext dc)
+        {
+            dc.DrawGeometry(brush, null, ellipse);
         }
 
         public void Render(DrawingContext dc)
         {
-            dc.DrawGeometry(this.brush, null, this.ellipse);
+            //dc.PushTransform(this.transform);
+            dc.DrawGeometry(brush, null, ellipse);
+            //dc.Pop();
             //dc.DrawEllipse(brush, null, position, 40, 40);
         }
 
@@ -43,8 +58,12 @@ namespace WiiTUIO.Provider
         public void SetPosition(Point point)
         {
             //this.position = point;
-            this.ellipse.Center = point;
+            //this.ellipse.Center = point;
             //this.ellipse.Transform = new TranslateTransform() { X = point.X, Y = point.Y };
+            //this.transform.X = point.X;
+            //this.transform.Y = point.Y;
+            Canvas.SetLeft(this,point.X-40);
+            Canvas.SetTop(this,point.Y-40);
         }
 
         public void Hide()
