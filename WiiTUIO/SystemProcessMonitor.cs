@@ -22,62 +22,62 @@ namespace WiiTUIO
 
         public Action<ProcessChangedEvent> ProcessChanged;
 
-        private bool running;
-
         private uint lastProcessId = 0;
 
-        private static SystemProcessMonitor instance;
+        private System.Timers.Timer pollingTimer;
 
-        public static SystemProcessMonitor getInstance()
+        private static SystemProcessMonitor defaultInstance;
+        public static SystemProcessMonitor Default
         {
-            if (instance == null)
+            get
             {
-                instance = new SystemProcessMonitor();
+                if (defaultInstance == null)
+                {
+                    defaultInstance = new SystemProcessMonitor();
+                }
+                return defaultInstance;
             }
-            return instance;
         }
 
         private SystemProcessMonitor()
         {
-            
-            this.running = true;
-
-            Thread thread = new Thread(ThreadWorker);
-            thread.Priority = ThreadPriority.BelowNormal;
-            thread.Start();
+            pollingTimer = new System.Timers.Timer();
+            pollingTimer.Interval = 500;
+            pollingTimer.Elapsed += pollingTimer_Elapsed;
+            this.Start();
         }
 
-        private void ThreadWorker()
+        private void pollingTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            while(running)
+            IntPtr foregroundWindow = GetForegroundWindow();
+            uint procId = 0;
+            GetWindowThreadProcessId(foregroundWindow, out procId);
+
+            if (procId != lastProcessId)
             {
-
-                IntPtr foregroundWindow = GetForegroundWindow();
-                uint procId = 0;
-                GetWindowThreadProcessId(foregroundWindow, out procId);
-
-                if (procId != lastProcessId)
+                Process process = Process.GetProcessById((int)procId);
+                if (ProcessChanged != null && process != null && process.Id > 0)
                 {
-                    Process process = Process.GetProcessById((int)procId);
-                    if (ProcessChanged != null && process != null && process.Id > 0)
-                    {
-                        this.ProcessChanged(new ProcessChangedEvent(process));
-                    }
-                    this.lastProcessId = procId;
+                    this.ProcessChanged(new ProcessChangedEvent(process));
                 }
-
-                System.Threading.Thread.Sleep(500);
+                this.lastProcessId = procId;
             }
         }
 
-        public void stop()
+        public void Start()
         {
-            this.running = false;
+            pollingTimer.Start();
+        }
+
+        public void Stop()
+        {
+            pollingTimer.Stop();
         }
 
         public void Dispose()
         {
-            this.running = false;
+            this.Stop();
+            pollingTimer.Dispose();
         }
     }
 

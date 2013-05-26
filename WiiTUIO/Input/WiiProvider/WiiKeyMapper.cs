@@ -95,9 +95,9 @@ namespace WiiTUIO.Provider
 
             this.KeyMap = new WiiKeyMap(this.defaultKeymapJson, this.fallbackName, this.fallbackFile, new XinputDevice(XinputBus.Default, wiimoteID), new XinputReport(wiimoteID));
 
-            this.processMonitor = SystemProcessMonitor.getInstance();
-
+            this.processMonitor = SystemProcessMonitor.Default;
             this.processMonitor.ProcessChanged += processChanged;
+            this.processMonitor.Start();
 
             homeButtonTimer = new Timer();
             homeButtonTimer.Interval = 1000;
