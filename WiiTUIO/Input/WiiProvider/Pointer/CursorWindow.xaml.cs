@@ -56,6 +56,7 @@ namespace WiiTUIO.Provider
 
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
+            /*
             //Compensate for DPI settings
             Loaded += (o, e) =>
             {
@@ -64,7 +65,7 @@ namespace WiiTUIO.Provider
                 Matrix transformMatrix = ct.TransformFromDevice;
                 this.cursorCanvas.RenderTransform = new MatrixTransform(transformMatrix);
             };
-
+            */
             Console.WriteLine("Render capability Tier: " + (RenderCapability.Tier >> 16));
 
         }

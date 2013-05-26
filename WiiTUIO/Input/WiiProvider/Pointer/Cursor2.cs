@@ -12,15 +12,22 @@ namespace WiiTUIO.Provider
     {
         private Point position;
         private SolidColorBrush brush;
+        private EllipseGeometry ellipse;
 
         public Cursor2(Color color)
         {
             this.brush = new SolidColorBrush(color);
+            this.brush.Freeze();
+
+            this.ellipse = new EllipseGeometry();
+            this.ellipse.RadiusX = 40;
+            this.ellipse.RadiusY = 40;
         }
 
         public void Render(DrawingContext dc)
         {
-            dc.DrawEllipse(brush, new Pen(), position, 80, 80);
+            dc.DrawGeometry(this.brush, null, this.ellipse);
+            //dc.DrawEllipse(brush, null, position, 40, 40);
         }
 
         public void SetRotation(double rotation)
@@ -35,7 +42,9 @@ namespace WiiTUIO.Provider
 
         public void SetPosition(Point point)
         {
-            this.position = point;
+            //this.position = point;
+            this.ellipse.Center = point;
+            //this.ellipse.Transform = new TranslateTransform() { X = point.X, Y = point.Y };
         }
 
         public void Hide()

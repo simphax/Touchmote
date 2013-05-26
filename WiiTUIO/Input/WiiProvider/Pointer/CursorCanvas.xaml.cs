@@ -28,7 +28,7 @@ namespace WiiTUIO.Provider
             frameCount.Start();
 
             Timer frameRefresh = new Timer();
-            frameRefresh.Interval = 5;
+            frameRefresh.Interval = 10;
             frameRefresh.Elapsed += frameRefresh_Elapsed;
             frameRefresh.Start();
 
