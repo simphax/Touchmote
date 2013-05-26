@@ -74,7 +74,7 @@ namespace WiiTUIO
             //Set highest priority on main process.
             Process currentProcess = Process.GetCurrentProcess();
             currentProcess.PriorityClass = ProcessPriorityClass.High;
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            Thread.CurrentThread.Priority = ThreadPriority.Normal;
 
             if (Settings.Default.minimizeOnStart)
             {
@@ -111,7 +111,7 @@ namespace WiiTUIO
             });
             overlayUIThread.SetApartmentState(ApartmentState.STA);
             overlayUIThread.IsBackground = true;
-            overlayUIThread.Priority = ThreadPriority.AboveNormal;
+            overlayUIThread.Priority = ThreadPriority.Highest;
             overlayUIThread.Start();
 
             Application.Current.Exit += appWillExit;
