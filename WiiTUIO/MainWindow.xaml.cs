@@ -336,13 +336,13 @@ namespace WiiTUIO
             if (bConnected)
             {
                 // Call these in another thread.
-                Dispatcher.BeginInvoke(new Action(delegate()
+                OverlayWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
                     if (this.pProviderHandler != null && providerHandlerConnected)
                     {
                         this.pProviderHandler.processEventFrame(e);
                     }
-                }), null);
+                }),System.Windows.Threading.DispatcherPriority.Send,null);
             }
         }
 
