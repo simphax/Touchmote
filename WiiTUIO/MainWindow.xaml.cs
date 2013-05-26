@@ -99,12 +99,20 @@ namespace WiiTUIO
             this.spInfoMsg.Visibility = Visibility.Collapsed;
             this.animateExpand(this.mainPanel);
 
-            OverlayWindow.Current.Show();
-
-            if (Settings.Default.pointer_customCursor)
+            Thread overlayUIThread = new Thread(() =>
             {
-                CursorWindow.Current.Show();
-            }
+                OverlayWindow.Current.Show();
+                if (Settings.Default.pointer_customCursor)
+                {
+                    CursorWindow.Current.Show();
+                }
+
+                System.Windows.Threading.Dispatcher.Run();
+            });
+            overlayUIThread.SetApartmentState(ApartmentState.STA);
+            overlayUIThread.IsBackground = true;
+            overlayUIThread.Priority = ThreadPriority.AboveNormal;
+            overlayUIThread.Start();
 
             Application.Current.Exit += appWillExit;
             Application.Current.SessionEnding += windowsShutdownEvent;
@@ -163,8 +171,13 @@ namespace WiiTUIO
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            CursorWindow.Current.Close();
-            OverlayWindow.Current.Close();
+            CursorWindow.Current.Dispatcher.BeginInvoke(new Action(delegate() {
+                CursorWindow.Current.Close();
+            }));
+            OverlayWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                OverlayWindow.Current.Close();
+            }));
             /*
             if (this.bConnected)
             {

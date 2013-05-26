@@ -89,7 +89,7 @@ namespace WiiTUIO.Provider
             this.useCustomCursor = Settings.Default.pointer_customCursor;
             if (this.useCustomCursor)
             {
-                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                CursorWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
                 {
                     Color myColor = CursorColor.getColor(this.Status.ID);
                     this.masterCursor = new Cursor(myColor);

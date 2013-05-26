@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -59,29 +60,33 @@ namespace WiiTUIO.Provider
             };
             
             Console.WriteLine("Render capability Tier: " + (RenderCapability.Tier >> 16));
-
-            Timeline.DesiredFrameRateProperty.OverrideMetadata(
-                typeof(Timeline),
-                new FrameworkPropertyMetadata { DefaultValue = Settings.Default.pointer_cursorFPS }
-            );
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
-            this.Width = Util.ScreenBounds.Width;
-            this.Height = Util.ScreenBounds.Height;
-            this.cursorCanvas.Width = Util.ScreenBounds.Width;
-            this.cursorCanvas.Height = Util.ScreenBounds.Height;
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.Width = Util.ScreenBounds.Width;
+                this.Height = Util.ScreenBounds.Height;
+                this.cursorCanvas.Width = Util.ScreenBounds.Width;
+                this.cursorCanvas.Height = Util.ScreenBounds.Height;
+            }), null);
         }
 
         public void addCursor(Cursor cursor)
         {
-            this.cursorCanvas.Children.Add(cursor);
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.cursorCanvas.Children.Add(cursor);
+            }),null);
         }
 
         public void removeCursor(Cursor cursor)
         {
-            this.cursorCanvas.Children.Remove(cursor);
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.cursorCanvas.Children.Remove(cursor);
+            }), null);
         }
 
         protected override void OnActivated(EventArgs e)
