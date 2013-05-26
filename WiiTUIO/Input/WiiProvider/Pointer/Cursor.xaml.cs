@@ -25,12 +25,24 @@ namespace WiiTUIO.Provider
         public bool hidden = false;
         public bool pressed = false;
 
+        private static Brush innerBrush = new SolidColorBrush(Color.FromScRgb(0.5f, 1, 1, 1));
+        private static Brush outerBrush = new SolidColorBrush(Color.FromScRgb(0.4f, 0, 0, 0));
+
         public Cursor(Color color)
         {
             InitializeComponent();
+
+            innerBrush.Freeze();
+            this.innerEllipse.Fill = innerBrush;
+
+            outerBrush.Freeze();
+            this.outerEllipse.Fill = outerBrush;
+
             color.ScA = 0.5f;
-            this.stroke.Stroke = new SolidColorBrush(color);
-            this.cursor.RenderTransform = new ScaleTransform();
+            Brush strokeBrush = new SolidColorBrush(color);
+            strokeBrush.Freeze();
+            this.stroke.Stroke = strokeBrush;
+            //this.cursor.RenderTransform = new ScaleTransform();
         }
 
         public void SetRotation(double rotation)
@@ -47,10 +59,12 @@ namespace WiiTUIO.Provider
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-                this.SetValue(Canvas.LeftProperty, point.X - CANVAS_HALF_WIDTH);
-                this.SetValue(Canvas.TopProperty, point.Y - CANVAS_HALF_WIDTH);
+                //this.SetValue(Canvas.LeftProperty, point.X - CANVAS_HALF_WIDTH);
+                //this.SetValue(Canvas.TopProperty, point.Y - CANVAS_HALF_WIDTH);
                 //this.RenderTransform = new TranslateTransform() { X = point.X - CANVAS_HALF_WIDTH, Y = point.Y - CANVAS_HALF_WIDTH };
-            }),System.Windows.Threading.DispatcherPriority.Input, null);
+                Canvas.SetLeft(this, point.X - CANVAS_HALF_WIDTH);
+                Canvas.SetTop(this, point.Y - CANVAS_HALF_WIDTH);
+            }),System.Windows.Threading.DispatcherPriority.Send, null);
         }
 
         public void Hide()
