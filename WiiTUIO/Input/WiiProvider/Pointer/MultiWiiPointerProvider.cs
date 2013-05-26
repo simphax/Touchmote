@@ -250,30 +250,7 @@ namespace WiiTUIO.Provider
                     {
                         if (!pWiimoteMap.Keys.Contains(pDevice.HIDDevicePath))
                         {
-                            Console.WriteLine("Trying to connect " + pDevice.HIDDevicePath);
-                            // Try to establish a connection, enable the IR reader and flag some LEDs.
-                            pDevice.Connect();
-                            pDevice.SetReportType(InputReport.IRExtensionAccel, IRSensitivity.Maximum, true);
-
-                            pDevice.SetRumble(true);
-
-                            Thread stopRumbleThread = new Thread(stopRumble);
-                            stopRumbleThread.Start(pDevice);
-
-                            int id = this.getFirstFreeId();
-                            pDevice.SetLEDs(id==1,id==2,id==3,id==4);
-
-                            WiimoteControl control = new WiimoteControl(id,pDevice);
-
-                            pDeviceMutex.WaitOne(); //Don't mess with the list of wiimotes if it is enumerating in an update
-                            pWiimoteMap[pDevice.HIDDevicePath] = control;
-                            pDeviceMutex.ReleaseMutex();
-
-                            // Hook up device event handlers.
-                            pDevice.WiimoteChanged += this.wiimoteChangedEventHandler;
-                            pDevice.WiimoteExtensionChanged += this.wiimoteExtensionChangedEventHandler;
-
-                            OnConnect(id, this.pWiimoteMap.Count);
+                            this.connectWiimote(pDevice);
                         }
                     }
                     // If something went wrong - notify the user..
@@ -305,6 +282,36 @@ namespace WiiTUIO.Provider
             
             return true;
         }
+
+        private void connectWiimote(Wiimote wiimote)
+        {
+            Console.WriteLine("Trying to connect " + wiimote.HIDDevicePath);
+            // Try to establish a connection, enable the IR reader and flag some LEDs.
+            wiimote.Connect();
+            wiimote.SetReportType(InputReport.IRExtensionAccel, IRSensitivity.Maximum, true);
+
+            wiimote.SetRumble(true);
+
+            Timer stopRumbleTimer = new Timer(new TimerCallback(stopRumble), wiimote, 80, Timeout.Infinite);
+
+            int id = this.getFirstFreeId();
+            wiimote.SetLEDs(id == 1, id == 2, id == 3, id == 4);
+
+            WiimoteControl control = new WiimoteControl(id, wiimote);
+
+            pDeviceMutex.WaitOne(); //Don't mess with the list of wiimotes if it is enumerating in an update
+            pWiimoteMap[wiimote.HIDDevicePath] = control;
+            pDeviceMutex.ReleaseMutex();
+
+            // Hook up device event handlers.
+            wiimote.WiimoteChanged += this.wiimoteChangedEventHandler;
+            wiimote.WiimoteExtensionChanged += this.wiimoteExtensionChangedEventHandler;
+
+            OnConnect(id, this.pWiimoteMap.Count);
+
+        }
+
+        
 
         private int getFirstFreeId()
         {
@@ -357,8 +364,7 @@ namespace WiiTUIO.Provider
                 int id = control.Status.ID;
                 control.Wiimote.SetLEDs(id == 1, id == 2, id == 3, id == 4);
                 control.Wiimote.SetRumble(true);
-                Thread stopRumbleThread = new Thread(stopRumble);
-                stopRumbleThread.Start(control.Wiimote);
+                Timer stopRumbleTimer = new Timer(stopRumble,control.Wiimote,80,Timeout.Infinite);
             }
             catch { }
             finally
@@ -428,16 +434,15 @@ namespace WiiTUIO.Provider
         }
         #endregion
 
-        private void stopRumble(Object device)
+        private void stopRumble(object device)
         {
-            Console.WriteLine("Starting stopRumble thread");
-            Thread.Sleep(80);
             Wiimote pDevice = (Wiimote)device;
             bool rumbleStatus = true;
             int retries = 0;
             while (rumbleStatus && retries < 100) //Sometimes the Wiimote does not disable the rumble on the first try
             {
-                try {
+                try
+                {
                     if (pDevice != null)
                     {
                         pDevice.SetRumble(false);
@@ -445,7 +450,9 @@ namespace WiiTUIO.Provider
                         rumbleStatus = pDevice.WiimoteState.Rumble;
                         Console.WriteLine("Rumble status for " + pDevice.HIDDevicePath + " is " + rumbleStatus);
                     }
-                } catch {
+                }
+                catch
+                {
                     rumbleStatus = true;
                 }
                 retries++;
