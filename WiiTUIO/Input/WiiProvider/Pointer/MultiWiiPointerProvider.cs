@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
-using System.Threading;
 using System.Windows;
 using WiimoteLib;
 using System.Runtime.InteropServices;
@@ -12,7 +11,7 @@ using System.Drawing;
 using WindowsInput;
 using WiiTUIO.Properties;
 using System.Windows.Controls;
-using System.Windows.Threading;
+using System.Threading;
 
 namespace WiiTUIO.Provider
 {
@@ -34,7 +33,7 @@ namespace WiiTUIO.Provider
 
         private Mutex pDeviceMutex = new Mutex();
 
-        private Thread wiimoteConnectorThread;
+        private System.Timers.Timer wiimoteConnectorTimer;
 
         private Dictionary<string, WiimoteControl> pWiimoteMap = new Dictionary<string, WiimoteControl>();
 
@@ -88,6 +87,9 @@ namespace WiiTUIO.Provider
             this.wiimoteChangedEventHandler = new EventHandler<WiimoteChangedEventArgs>(handleWiimoteChanged);
             this.wiimoteExtensionChangedEventHandler = new EventHandler<WiimoteExtensionChangedEventArgs>(handleWiimoteExtensionChanged);
 
+            wiimoteConnectorTimer = new System.Timers.Timer();
+            wiimoteConnectorTimer.Interval = CONNECTION_THREAD_SLEEP;
+            wiimoteConnectorTimer.Elapsed += wiimoteConnectorTimer_Elapsed;
 
             /*
             this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
@@ -113,31 +115,19 @@ namespace WiiTUIO.Provider
         public void start()
         {
             this.bRunning = true;
-            if (this.wiimoteConnectorThread != null && this.wiimoteConnectorThread.IsAlive)
-            {
-            }
-            else
-            {
-                // Set the running flag.
-                Console.WriteLine("Starting wiimoteConnectorThread");
-                wiimoteConnectorThread = new Thread(new ThreadStart(wiimoteConnectorThreadWorker));
-                wiimoteConnectorThread.Priority = ThreadPriority.BelowNormal;
-                wiimoteConnectorThread.Start();
-            }
+            wiimoteConnectorTimer.Start();
         }
 
-        private void wiimoteConnectorThreadWorker()
+        void wiimoteConnectorTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            Exception pError;
-            while (this.bRunning)
+            if (this.bRunning)
             {
+                Exception pError;
                 if (!this.initialiseWiimoteConnections(out pError))
                 {
                     Console.WriteLine("Could not establish connection to a Wiimote: " + pError.Message, pError);
                 }
-                Thread.Sleep(CONNECTION_THREAD_SLEEP);
             }
-            Console.WriteLine("Exiting wiimoteConnectorThread");
         }
 
         /// <summary>
@@ -148,13 +138,7 @@ namespace WiiTUIO.Provider
             // Set the running flag.
             this.bRunning = false;
 
-            /*
-            try
-            {
-                this.wiimoteConnectorThread.Abort();
-            }
-            catch { }
-            */
+            this.wiimoteConnectorTimer.Stop();
 
             this.teardownWiimoteConnections();
             if (Settings.Default.completelyDisconnect)
