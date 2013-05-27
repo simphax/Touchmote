@@ -26,6 +26,8 @@ namespace WiiTUIO.Provider
     public partial class CursorWindow : Window
     {
 
+        private bool activatedOnce = false;
+
         private static CursorWindow defaultInstance;
 
         public static CursorWindow Current
@@ -91,9 +93,13 @@ namespace WiiTUIO.Provider
 
         protected override void OnActivated(EventArgs e)
         {
-            UIHelpers.TopmostFix(this);
-            UIHelpers.MakeWindowUnclickable(this);
-            this.Owner = OverlayWindow.Current;
+            if (!activatedOnce)
+            {
+                activatedOnce = true;
+                UIHelpers.TopmostFix(this);
+                UIHelpers.MakeWindowUnclickable(this);
+                this.Owner = OverlayWindow.Current;
+            }
         }
 
     }

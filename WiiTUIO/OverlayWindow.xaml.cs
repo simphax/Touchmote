@@ -30,6 +30,7 @@ namespace WiiTUIO
         private static OverlayWindow defaultInstance;
 
         private bool hidden = true;
+        private bool activatedOnce = false;
 
         public static OverlayWindow Current
         {
@@ -70,10 +71,14 @@ namespace WiiTUIO
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
-            this.Width = Util.ScreenBounds.Width;
-            this.Height = Util.ScreenBounds.Height;
-            this.baseGrid.Width = Util.ScreenBounds.Width;
-            this.baseGrid.Height = Util.ScreenBounds.Height;
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                this.Width = Util.ScreenBounds.Width;
+                this.Height = Util.ScreenBounds.Height;
+                this.baseGrid.Width = Util.ScreenBounds.Width;
+                this.baseGrid.Height = Util.ScreenBounds.Height;
+                UIHelpers.TopmostFix(this);
+            }));
         }
 
         public void ShowNotice(string message, int wiimoteID)
@@ -189,7 +194,11 @@ namespace WiiTUIO
 
         protected override void OnActivated(EventArgs e)
         {
-            UIHelpers.TopmostFix(this);
+            if (!activatedOnce)
+            {
+                activatedOnce = true;
+                UIHelpers.TopmostFix(this);
+            }
         }
     }
 }
