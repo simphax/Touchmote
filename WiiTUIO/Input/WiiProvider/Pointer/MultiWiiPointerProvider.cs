@@ -32,6 +32,7 @@ namespace WiiTUIO.Provider
         private int statusWait = 0;
 
         private Mutex pDeviceMutex = new Mutex();
+        private Mutex connectionMutex = new Mutex();
 
         private System.Timers.Timer wiimoteConnectorTimer;
 
@@ -159,6 +160,7 @@ namespace WiiTUIO.Provider
         /// <param name="pErrorReport">A reference to an exception which we want to contain our error if one happened.</param>
         private bool initialiseWiimoteConnections(out Exception pErrorReport)
         {
+            this.connectionMutex.WaitOne();
             // If we have an existing device, teardown the connection.
             //this.teardownWiimoteConnection();
 
@@ -275,11 +277,13 @@ namespace WiiTUIO.Provider
             {
                 pErrorReport = e;
             }
+
+            this.connectionMutex.ReleaseMutex();
+
             if(pErrorReport != null)
             {
                 return false;
             }
-            
             return true;
         }
 
