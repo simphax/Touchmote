@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,15 @@ namespace WiiTUIO.Output
             {
                 throw new Exception("Can not initialize touch injection");
             }
+
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+
             OnConnect();
+        }
+
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            Launcher.Launch("", "ResetTouchInjection.exe", "", null);
         }
 
         public void processEventFrame(Provider.FrameEventArgs e)
