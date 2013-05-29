@@ -301,9 +301,15 @@ namespace WiiTUIO.Provider
                     if (contactType == ContactType.EndFromHover)
                     {
                         this.slaveEnded = true;
-                        if(!this.masterReleased) //If we release slave before master
+                        if (!this.masterReleased) //If we release slave before master
                         {
                             this.stepIDs = true;
+                        }
+                        else
+                        {
+                            this.masterID = (this.masterID - this.startID + 2) % 4 + this.startID;
+                            this.slaveID = (this.slaveID - this.startID + 2) % 4 + this.startID;
+                            this.stepIDs = false;
                         }
                     }
                 }
