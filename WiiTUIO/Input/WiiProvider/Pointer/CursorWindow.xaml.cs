@@ -78,12 +78,12 @@ namespace WiiTUIO.Provider
             this.cursorCanvas.Height = Util.ScreenBounds.Height;
         }
 
-        public void addCursor(Cursor2 cursor)
+        public void addCursor(BitmapCursor cursor)
         {
             this.cursorCanvas.AddCursor(cursor);
         }
 
-        public void removeCursor(Cursor2 cursor)
+        public void removeCursor(BitmapCursor cursor)
         {
             this.cursorCanvas.RemoveCursor(cursor);
         }

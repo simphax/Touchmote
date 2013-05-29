@@ -197,6 +197,7 @@
     </Compile>
     <Compile Include="Autostart.cs" />
     <Compile Include="Input\WiiProvider\CursorColor.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\BitmapCursor.cs" />
     <Compile Include="Input\WiiProvider\Pointer\Cursor.xaml.cs">
       <DependentUpon>Cursor.xaml</DependentUpon>
     </Compile>

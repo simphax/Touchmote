@@ -55,16 +55,16 @@ namespace WiiTUIO.Provider
             frame = 0;
         }
 
-        public void AddCursor(Cursor2 cursor)
+        public void AddCursor(BitmapCursor cursor)
         {
             this.Children.Add(cursor);
             //cursors.Add(cursor);
         }
 
-        public void RemoveCursor(Cursor2 cursor)
+        public void RemoveCursor(BitmapCursor cursor)
         {
             this.Children.Remove(cursor);
-            cursors.Remove(cursor);
+            //cursors.Remove(cursor);
         }
 
         int frame = 0;
