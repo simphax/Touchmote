@@ -200,5 +200,10 @@ namespace WiiTUIO
                 UIHelpers.TopmostFix(this);
             }
         }
+
+        private void layoutChooserOverlay_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }
