@@ -21,12 +21,13 @@ namespace WiiTUIO.Provider
     /// </summary>
     public partial class Cursor : Grid
     {
-        private const double CANVAS_HALF_WIDTH = 40; //80/2
+        private const double CANVAS_HALF_WIDTH = 28; //80/2
         public bool hidden = false;
         public bool pressed = false;
+        private int toggle = 0;
 
-        private static Brush innerBrush = new SolidColorBrush(Color.FromScRgb(0.5f, 1, 1, 1));
-        private static Brush outerBrush = new SolidColorBrush(Color.FromScRgb(0.4f, 0, 0, 0));
+        private Brush innerBrush = new SolidColorBrush(Color.FromScRgb(0.5f, 1, 1, 1));
+        private Brush outerBrush = new SolidColorBrush(Color.FromScRgb(0.4f, 0, 0, 0));
 
         public Cursor(Color color)
         {
@@ -43,6 +44,7 @@ namespace WiiTUIO.Provider
             strokeBrush.Freeze();
             this.stroke.Stroke = strokeBrush;
             //this.cursor.RenderTransform = new ScaleTransform();
+
         }
 
         public void SetRotation(double rotation)
@@ -57,14 +59,18 @@ namespace WiiTUIO.Provider
 
         public void SetPosition(Point point)
         {
-            Dispatcher.BeginInvoke(new Action(delegate()
+            toggle = ++toggle % 2;
+            if (toggle == 0)
             {
-                //this.SetValue(Canvas.LeftProperty, point.X - CANVAS_HALF_WIDTH);
-                //this.SetValue(Canvas.TopProperty, point.Y - CANVAS_HALF_WIDTH);
-                //this.RenderTransform = new TranslateTransform() { X = point.X - CANVAS_HALF_WIDTH, Y = point.Y - CANVAS_HALF_WIDTH };
-                Canvas.SetLeft(this, point.X - CANVAS_HALF_WIDTH);
-                Canvas.SetTop(this, point.Y - CANVAS_HALF_WIDTH);
-            }),System.Windows.Threading.DispatcherPriority.Send, null);
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    //this.SetValue(Canvas.LeftProperty, point.X - CANVAS_HALF_WIDTH);
+                    //this.SetValue(Canvas.TopProperty, point.Y - CANVAS_HALF_WIDTH);
+                    //this.RenderTransform = new TranslateTransform() { X = point.X - CANVAS_HALF_WIDTH, Y = point.Y - CANVAS_HALF_WIDTH };
+                    Canvas.SetLeft(this, point.X - CANVAS_HALF_WIDTH);
+                    Canvas.SetTop(this, point.Y - CANVAS_HALF_WIDTH);
+                }), System.Windows.Threading.DispatcherPriority.Input, null);
+            }
         }
 
         public void Hide()
