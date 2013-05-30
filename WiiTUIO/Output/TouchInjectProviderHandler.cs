@@ -29,6 +29,8 @@ namespace WiiTUIO.Output
                 throw new Exception("Can not initialize touch injection");
             }
 
+            Launcher.Launch("", "ResetTouchInjection.exe", "", null);
+
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
             OnConnect();
