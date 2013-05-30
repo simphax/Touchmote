@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -69,7 +68,7 @@ namespace WiiTUIO.Provider
                     //this.RenderTransform = new TranslateTransform() { X = point.X - CANVAS_HALF_WIDTH, Y = point.Y - CANVAS_HALF_WIDTH };
                     Canvas.SetLeft(this, point.X - CANVAS_HALF_WIDTH);
                     Canvas.SetTop(this, point.Y - CANVAS_HALF_WIDTH);
-                }), System.Windows.Threading.DispatcherPriority.Input, null);
+                }), System.Windows.Threading.DispatcherPriority.Send, null).Wait();
             }
         }
 

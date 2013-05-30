@@ -370,19 +370,13 @@ namespace WiiTUIO.Provider
                         {
                             if (contact.Priority == DuoTouch.MASTER_PRIORITY)
                             {
-                                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                                {
-                                    this.masterCursor.SetPosition(contact.Position);
-                                    this.masterCursor.SetRotation(newpoint.Rotation);
-                                }), null);
+                                this.masterCursor.SetPosition(contact.Position);
+                                this.masterCursor.SetRotation(newpoint.Rotation);
                             }
                             if (contact.Priority == DuoTouch.SLAVE_PRIORITY)
                             {
-                                App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                                {
-                                    this.slaveCursor.SetPosition(contact.Position);
-                                    this.slaveCursor.SetRotation(newpoint.Rotation);
-                                }), null);
+                                this.slaveCursor.SetPosition(contact.Position);
+                                this.slaveCursor.SetRotation(newpoint.Rotation);
                             }
                         }
                     }
@@ -427,11 +421,8 @@ namespace WiiTUIO.Provider
                 {
                     if (this.usingCursors() && !mouseMode)
                     {
-                        App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                        {
-                            this.masterCursor.Hide();
-                            this.masterCursor.SetPosition(new System.Windows.Point(lastpoint.X,lastpoint.Y));
-                        }), null);
+                        this.masterCursor.Hide();
+                        this.masterCursor.SetPosition(new System.Windows.Point(lastpoint.X, lastpoint.Y));
                     }
                 }
 
