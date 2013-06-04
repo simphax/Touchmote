@@ -91,6 +91,18 @@ namespace WiiTUIO.Provider
             }), null);
         }
 
+        public void RefreshCursors()
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                foreach (Cursor cursor in this.cursorCanvas.Children)
+                {
+                    Canvas.SetLeft(cursor, cursor.Position.X);
+                    Canvas.SetTop(cursor, cursor.Position.Y);
+                }
+            }), System.Windows.Threading.DispatcherPriority.Send, null).Wait();
+        }
+
         protected override void OnActivated(EventArgs e)
         {
             if (!activatedOnce)

@@ -30,6 +30,7 @@ namespace WiiTUIO.Provider
         private int POWER_SAVE_BLINK_DELAY = 10000;
         private int CONNECT_RUMBLE_TIME = 100;
 
+        private int cursorUpdateToggle = 0;
 
         private int blinkWait = 0;
         private int statusWait = 0;
@@ -534,6 +535,12 @@ namespace WiiTUIO.Provider
                                     }
                                 }
                             }
+                        }
+
+                        cursorUpdateToggle = ++cursorUpdateToggle % 2; //Update cursors every other update. So it doesn't load the CPU as much.
+                        if (cursorUpdateToggle == 0)
+                        {
+                            CursorWindow.Current.RefreshCursors();
                         }
 
                         FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
