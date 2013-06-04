@@ -108,6 +108,7 @@ namespace WiiTUIO.Provider
         public void Teardown()
         {
             this.KeyMap.XinputDevice.Remove();
+            this.processMonitor.ProcessChanged -= processChanged;
         }
 
         public IEnumerable<JObject> GetLayoutList()
@@ -158,7 +159,7 @@ namespace WiiTUIO.Provider
 
                     if (appStringToMatch.ToLower().Replace(" ", "").Contains(search.ToLower().Replace(" ", "")))
                     {
-                        this.loadKeyMap(KEYMAPS_PATH + configuration.GetValue("Keymap").ToString());
+                        this.loadKeyMap(configuration.GetValue("Keymap").ToString());
                         keymapFound = true;
                     }
                     
