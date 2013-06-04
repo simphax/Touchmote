@@ -25,6 +25,8 @@ namespace WiiTUIO.Provider
         public bool pressed = false;
         private int toggle = 0;
 
+        public Point Position = new Point(0, 0);
+
         private Brush innerBrush = new SolidColorBrush(Color.FromScRgb(0.5f, 1, 1, 1));
         private Brush outerBrush = new SolidColorBrush(Color.FromScRgb(0.4f, 0, 0, 0));
 
@@ -58,18 +60,7 @@ namespace WiiTUIO.Provider
 
         public void SetPosition(Point point)
         {
-            toggle = ++toggle % 2;
-            if (toggle == 0)
-            {
-                Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    //this.SetValue(Canvas.LeftProperty, point.X - CANVAS_HALF_WIDTH);
-                    //this.SetValue(Canvas.TopProperty, point.Y - CANVAS_HALF_WIDTH);
-                    //this.RenderTransform = new TranslateTransform() { X = point.X - CANVAS_HALF_WIDTH, Y = point.Y - CANVAS_HALF_WIDTH };
-                    Canvas.SetLeft(this, point.X - CANVAS_HALF_WIDTH);
-                    Canvas.SetTop(this, point.Y - CANVAS_HALF_WIDTH);
-                }), System.Windows.Threading.DispatcherPriority.Send, null).Wait();
-            }
+            this.Position = new Point(point.X - CANVAS_HALF_WIDTH, point.Y - CANVAS_HALF_WIDTH);
         }
 
         public void Hide()
