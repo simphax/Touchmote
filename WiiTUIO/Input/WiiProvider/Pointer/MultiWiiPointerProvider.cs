@@ -28,6 +28,9 @@ namespace WiiTUIO.Provider
         private ulong OLD_FRAME_TIMEOUT = 200; //Timeout for a previous frame from a Wiimote to be considered old, so we wont enable it when getting input from other wiimotes.
         private int CONNECTION_THREAD_SLEEP = 2000;
         private int POWER_SAVE_BLINK_DELAY = 10000;
+        private int CONNECT_RUMBLE_TIME = 100;
+
+
         private int blinkWait = 0;
         private int statusWait = 0;
 
@@ -35,8 +38,11 @@ namespace WiiTUIO.Provider
         private Mutex connectionMutex = new Mutex();
 
         private System.Timers.Timer wiimoteConnectorTimer;
+        private Thread wiimoteHandlerThread;
 
         private Dictionary<string, WiimoteControl> pWiimoteMap = new Dictionary<string, WiimoteControl>();
+
+        private Dictionary<string, WiimoteChangedEventArgs> eventBuffer = new Dictionary<string, WiimoteChangedEventArgs>();
 
         private WiimoteCollection pWC;
 
@@ -92,6 +98,10 @@ namespace WiiTUIO.Provider
             wiimoteConnectorTimer.Interval = CONNECTION_THREAD_SLEEP;
             wiimoteConnectorTimer.Elapsed += wiimoteConnectorTimer_Elapsed;
 
+            wiimoteHandlerThread = new Thread(WiimoteHandlerWorker);
+            wiimoteHandlerThread.Priority = ThreadPriority.Highest;
+            wiimoteHandlerThread.IsBackground = true;
+
             /*
             this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
             this.showPointer = Settings.Default.pointer_moveCursor;
@@ -117,6 +127,7 @@ namespace WiiTUIO.Provider
         {
             this.bRunning = true;
             wiimoteConnectorTimer.Start();
+            wiimoteHandlerThread.Start();
         }
 
         void wiimoteConnectorTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -294,9 +305,7 @@ namespace WiiTUIO.Provider
             wiimote.Connect();
             wiimote.SetReportType(InputReport.IRExtensionAccel, IRSensitivity.Maximum, true);
 
-            wiimote.SetRumble(true);
-
-            Timer stopRumbleTimer = new Timer(new TimerCallback(stopRumble), wiimote, 80, Timeout.Infinite);
+            new Timer(new TimerCallback(connectRumble), wiimote, 0, Timeout.Infinite);
 
             int id = this.getFirstFreeId();
             wiimote.SetLEDs(id == 1, id == 2, id == 3, id == 4);
@@ -368,7 +377,7 @@ namespace WiiTUIO.Provider
                 int id = control.Status.ID;
                 control.Wiimote.SetLEDs(id == 1, id == 2, id == 3, id == 4);
                 control.Wiimote.SetRumble(true);
-                Timer stopRumbleTimer = new Timer(stopRumble,control.Wiimote,80,Timeout.Infinite);
+                new Timer(connectRumble,control.Wiimote,0,Timeout.Infinite);
             }
             catch { }
             finally
@@ -438,29 +447,13 @@ namespace WiiTUIO.Provider
         }
         #endregion
 
-        private void stopRumble(object device)
+        private void connectRumble(object device)
         {
-            Wiimote pDevice = (Wiimote)device;
-            bool rumbleStatus = true;
-            int retries = 0;
-            while (rumbleStatus && retries < 100) //Sometimes the Wiimote does not disable the rumble on the first try
-            {
-                try
-                {
-                    if (pDevice != null)
-                    {
-                        pDevice.SetRumble(false);
-                        Thread.Sleep(30);
-                        rumbleStatus = pDevice.WiimoteState.Rumble;
-                        Console.WriteLine("Rumble status for " + pDevice.HIDDevicePath + " is " + rumbleStatus);
-                    }
-                }
-                catch
-                {
-                    rumbleStatus = true;
-                }
-                retries++;
-            }
+            Wiimote wiimote = (Wiimote)device;
+            Thread.Sleep(CONNECT_RUMBLE_TIME);
+            wiimote.SetRumble(true);
+            Thread.Sleep(CONNECT_RUMBLE_TIME);
+            wiimote.SetRumble(false);
         }
 
         #region Wiimote Event Handlers
@@ -495,6 +488,72 @@ namespace WiiTUIO.Provider
             
         }
 
+        private void WiimoteHandlerWorker()
+        {
+            while (true)
+            {
+
+                if (bRunning)
+                {
+                    DateTime now = DateTime.Now;
+
+                    pDeviceMutex.WaitOne();
+
+                    try
+                    {
+                        Queue<WiiContact> allContacts = new Queue<WiiContact>();
+
+                        foreach (WiimoteControl control in pWiimoteMap.Values)
+                        {
+
+                            WiimoteChangedEventArgs e = eventBuffer[control.Wiimote.HIDDevicePath];
+
+                            if (e != null)
+                            {
+                                if (control.handleWiimoteChanged(this, e) && control.Status.InPowerSave)
+                                {
+                                    this.wakeFromPowerSave(control);
+                                }
+                            
+                                if (this.OnStatusUpdate != null)
+                                {
+                                    this.OnStatusUpdate(control.Status);
+                                }
+
+                                if (control.FrameQueue.Count > 0)
+                                {
+                                    FrameEventArgs frame = control.FrameQueue.Dequeue();
+
+                                    ulong timeDelta = ((ulong)Stopwatch.GetTimestamp() / 10000) - (frame.Timestamp / 10000);
+                                    if (timeDelta < OLD_FRAME_TIMEOUT) //Happens when the pointer is out of reach
+                                    {
+                                        foreach (WiiContact contact in frame.Contacts)
+                                        {
+                                            allContacts.Enqueue(contact);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
+
+                        this.OnNewFrame(this, newFrame);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error handling Wiimote: " + ex.Message);
+                    }
+
+                    pDeviceMutex.ReleaseMutex();
+
+                    Console.WriteLine("handle wiimote time : " + DateTime.Now.Subtract(now).TotalMilliseconds);
+                }
+                Thread.Sleep(10);
+            }
+        }
+
         /// <summary>
         /// This is called when the state of the wiimote changes and a new state report is available.
         /// </summary>
@@ -502,156 +561,9 @@ namespace WiiTUIO.Provider
         /// <param name="e"></param>
         private void handleWiimoteChanged(object sender, WiimoteChangedEventArgs e)
         {
-            
-            if (bRunning)
-            {
-                pDeviceMutex.WaitOne();
-                try
-                {
-                    if (pWiimoteMap.Keys.Contains(((Wiimote)sender).HIDDevicePath))
-                    {
-                        WiimoteControl senderControl = pWiimoteMap[((Wiimote)sender).HIDDevicePath];
 
-                        if (senderControl.handleWiimoteChanged(sender, e) && senderControl.Status.InPowerSave)
-                        {
-                            this.wakeFromPowerSave(senderControl);
-                        }
+            eventBuffer[((Wiimote)sender).HIDDevicePath] = e;
 
-                        if (this.OnStatusUpdate != null)
-                        {
-                            this.OnStatusUpdate(senderControl.Status);
-                        }
-
-                        if (senderControl.FrameQueue.Count > 0)
-                        {
-                            FrameEventArgs senderFrame = senderControl.FrameQueue.Dequeue();
-
-                            Queue<WiiContact> allContacts = new Queue<WiiContact>(senderFrame.Contacts);
-
-                            foreach (WiimoteControl control in pWiimoteMap.Values) //Asynchronusly include contacts for all connected Wiimotes, send only hover and move events.
-                            {
-                                if (control != senderControl)
-                                {
-                                    FrameEventArgs lastFrame = control.LastFrameEvent;
-                                    if (lastFrame != null)
-                                    {
-                                        ulong timeDelta = ((ulong)Stopwatch.GetTimestamp() / 10000) - (lastFrame.Timestamp / 10000);
-                                        if (timeDelta < OLD_FRAME_TIMEOUT) //Happens when the pointer is out of reach
-                                        {
-                                            IEnumerable<WiiContact> contacts = lastFrame.Contacts;
-                                            foreach (WiiContact contact in contacts)
-                                            {
-                                                if (contact.Type == ContactType.EndToHover)
-                                                {
-                                                    WiiContact newContact = new WiiContact(contact.ID, ContactType.Hover, contact.Position,contact.Priority, new Vector(Util.ScreenWidth, Util.ScreenHeight));
-                                                    allContacts.Enqueue(newContact);
-                                                }
-                                                else if (contact.Type == ContactType.Start)
-                                                {
-                                                    WiiContact newContact = new WiiContact(contact.ID, ContactType.Move, contact.Position,contact.Priority, new Vector(Util.ScreenWidth, Util.ScreenHeight));
-                                                    allContacts.Enqueue(newContact);
-                                                }
-                                                else if (contact.Type == ContactType.End || contact.Type == ContactType.EndFromHover)
-                                                {
-                                                }
-                                                else //contact type was hover or move
-                                                {
-                                                    allContacts.Enqueue(contact);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            //Console.WriteLine("Sending " + allContacts.Count + " contacts");
-                            FrameEventArgs newFrame = new FrameEventArgs(senderFrame.Timestamp, allContacts);
-
-                            this.OnNewFrame(this, newFrame);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Not found: "+((Wiimote)sender).HIDDevicePath);
-                    }
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine("Error handling Wiimote: "+ex.Message);
-                }
-                    /*
-                    bool handledAll = false;
-                    Queue<WiiContact> allContacts = new Queue<WiiContact>(2);
-                    ulong timestamp = 0;
-
-                    foreach (WiimoteControl control in pWiimoteMap.Values)
-                    {
-                        handledAll = control.Handled;
-                        if (handledAll == false)
-                        {
-                            break;
-                        }
-                    }
-                
-                    if (handledAll)
-                    {
-                        foreach (WiimoteControl control in pWiimoteMap.Values)
-                        {
-                            if (control.FrameQueue.Count > 0)
-                            {
-                                FrameEventArgs lastFrameEvent = control.FrameQueue.Dequeue();
-                                while (control.FrameQueue.Count > 0)
-                                {
-
-                                    //Fast forward events which are only consisting of Move or Hover events
-                                    bool importantContact = false;
-                                    foreach (WiiContact contact in lastFrameEvent.Contacts)
-                                    {
-                                        if (contact.Type != ContactType.Hover && contact.Type != ContactType.Move)
-                                        {
-                                            importantContact = true;
-                                            break;
-                                        }
-                                    }
-
-                                    //If the next event contains an End event this one is important too, because End events need to be at the same position as the last one.
-                                    FrameEventArgs nextFrameEvent = control.FrameQueue.Peek();
-                                    foreach (WiiContact contact in nextFrameEvent.Contacts)
-                                    {
-                                        if (contact.Type == ContactType.End || contact.Type == ContactType.EndFromHover || contact.Type == ContactType.EndToHover)
-                                        {
-                                            importantContact = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if (importantContact)
-                                    {
-                                        break;
-                                    }
-
-                                    lastFrameEvent = control.FrameQueue.Dequeue();
-                                }
-
-                                timestamp = timestamp < lastFrameEvent.Timestamp ? timestamp : lastFrameEvent.Timestamp;
-
-                                foreach (WiiContact contact in lastFrameEvent.Contacts)
-                                {
-                                    allContacts.Enqueue(contact);
-                                }
-                            }
-                            control.Handled = false;
-                        }
-                        if (allContacts.Count > 0)
-                        {
-                            FrameEventArgs newFrame = new FrameEventArgs(timestamp, allContacts);
-
-                            this.OnNewFrame(this, newFrame);
-                        }
-                    }
-                 * */
-                
-                pDeviceMutex.ReleaseMutex();
-            }
         }
         #endregion
 
