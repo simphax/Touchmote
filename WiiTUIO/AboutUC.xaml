@@ -23,7 +23,7 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Button>
-        <Label Name="versionLabel" Content="Touchmote v1.0b8" Canvas.Left="76" Canvas.Top="36" FontFamily="Segoe UI Light" FontSize="18"/>
+        <Label Name="versionLabel" Content="Touchmote v1.0b9" Canvas.Left="76" Canvas.Top="36" FontFamily="Segoe UI Light" FontSize="18"/>
         <TextBlock Canvas.Left="81" TextWrapping="Wrap" Canvas.Top="80" Height="54" Width="282" FontFamily="Segoe UI Semilight"><Run Text="Touchmote provides a way for one or several Wiimotes to"/><Run Language="sv-se" Text=" act as a multi-touch device in Windows 8."/></TextBlock>
         <TextBlock Canvas.Left="81" TextWrapping="Wrap" Canvas.Top="118" Height="27" Width="270" FontFamily="Segoe UI Semilight">        
                             Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for more information.
