@@ -16,9 +16,9 @@ namespace WiiTUIO.Provider
                 case 1:
                     return Color.FromRgb(128,255,0);
                 case 2:
-                    return Color.FromRgb(0, 220, 255);
-                case 3:
                     return Color.FromRgb(197, 0, 255);
+                case 3:
+                    return Color.FromRgb(0, 220, 255);
                 case 4:
                     return Color.FromRgb(255, 255, 0);
                 default:
