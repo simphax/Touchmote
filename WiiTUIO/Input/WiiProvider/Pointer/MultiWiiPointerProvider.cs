@@ -38,7 +38,7 @@ namespace WiiTUIO.Provider
         private Mutex pDeviceMutex = new Mutex();
         private Mutex connectionMutex = new Mutex();
 
-        private System.Timers.Timer wiimoteConnectorTimer;
+        private Timer wiimoteConnectorTimer;
         private Thread wiimoteHandlerThread;
 
         private Dictionary<string, WiimoteControl> pWiimoteMap = new Dictionary<string, WiimoteControl>();
@@ -95,13 +95,12 @@ namespace WiiTUIO.Provider
             this.wiimoteChangedEventHandler = new EventHandler<WiimoteChangedEventArgs>(handleWiimoteChanged);
             this.wiimoteExtensionChangedEventHandler = new EventHandler<WiimoteExtensionChangedEventArgs>(handleWiimoteExtensionChanged);
 
-            wiimoteConnectorTimer = new System.Timers.Timer();
-            wiimoteConnectorTimer.Interval = CONNECTION_THREAD_SLEEP;
-            wiimoteConnectorTimer.Elapsed += wiimoteConnectorTimer_Elapsed;
+            wiimoteConnectorTimer = new Timer(wiimoteConnectorTimer_Elapsed, null, Timeout.Infinite, CONNECTION_THREAD_SLEEP);
 
             wiimoteHandlerThread = new Thread(WiimoteHandlerWorker);
             wiimoteHandlerThread.Priority = ThreadPriority.Highest;
             wiimoteHandlerThread.IsBackground = true;
+            wiimoteHandlerThread.Start();
 
             /*
             this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
@@ -127,11 +126,10 @@ namespace WiiTUIO.Provider
         public void start()
         {
             this.bRunning = true;
-            wiimoteConnectorTimer.Start();
-            wiimoteHandlerThread.Start();
+            wiimoteConnectorTimer.Change(0, CONNECTION_THREAD_SLEEP);
         }
 
-        void wiimoteConnectorTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        void wiimoteConnectorTimer_Elapsed(object sender)
         {
             if (this.bRunning)
             {
@@ -151,7 +149,7 @@ namespace WiiTUIO.Provider
             // Set the running flag.
             this.bRunning = false;
 
-            this.wiimoteConnectorTimer.Stop();
+            this.wiimoteConnectorTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
             this.teardownWiimoteConnections();
             if (Settings.Default.completelyDisconnect)
@@ -180,8 +178,8 @@ namespace WiiTUIO.Provider
 
             try
             {
-                IEnumerable<WiimoteControl> enumerate = pWiimoteMap.Values.AsEnumerable();
-                foreach (WiimoteControl control in enumerate)
+                Dictionary<string, WiimoteControl> copy = new Dictionary<string, WiimoteControl>(pWiimoteMap);
+                foreach (WiimoteControl control in copy.Values)
                 {
                     Wiimote pDevice = control.Wiimote;
                     try
@@ -496,7 +494,7 @@ namespace WiiTUIO.Provider
 
                 if (bRunning)
                 {
-                    DateTime now = DateTime.Now;
+                    //DateTime now = DateTime.Now;
 
                     pDeviceMutex.WaitOne();
 
@@ -506,16 +504,15 @@ namespace WiiTUIO.Provider
 
                         foreach (WiimoteControl control in pWiimoteMap.Values)
                         {
-
-                            WiimoteChangedEventArgs e = eventBuffer[control.Wiimote.HIDDevicePath];
-
-                            if (e != null)
+                            if (eventBuffer.ContainsKey(control.Wiimote.HIDDevicePath))
                             {
+                                WiimoteChangedEventArgs e = eventBuffer[control.Wiimote.HIDDevicePath];
+
                                 if (control.handleWiimoteChanged(this, e) && control.Status.InPowerSave)
                                 {
                                     this.wakeFromPowerSave(control);
                                 }
-                            
+
                                 if (this.OnStatusUpdate != null)
                                 {
                                     this.OnStatusUpdate(control.Status);
@@ -537,10 +534,13 @@ namespace WiiTUIO.Provider
                             }
                         }
 
-                        cursorUpdateToggle = ++cursorUpdateToggle % 2; //Update cursors every other update. So it doesn't load the CPU as much.
-                        if (cursorUpdateToggle == 0)
+                        if (Settings.Default.pointer_customCursor)
                         {
-                            CursorWindow.Current.RefreshCursors();
+                            cursorUpdateToggle = ++cursorUpdateToggle % 2; //Update cursors every other update. So it doesn't load the CPU as much.
+                            if (cursorUpdateToggle == 0)
+                            {
+                                CursorWindow.Current.RefreshCursors();
+                            }
                         }
 
                         FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
@@ -555,7 +555,7 @@ namespace WiiTUIO.Provider
 
                     pDeviceMutex.ReleaseMutex();
 
-                    Console.WriteLine("handle wiimote time : " + DateTime.Now.Subtract(now).TotalMilliseconds);
+                    //Console.WriteLine("handle wiimote time : " + DateTime.Now.Subtract(now).TotalMilliseconds);
                 }
                 Thread.Sleep(10);
             }
