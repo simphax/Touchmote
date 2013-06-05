@@ -218,7 +218,7 @@ namespace WiiTUIO.Provider
 
             this.inputSimulator = new InputSimulator();
 
-            this.showPointer = Settings.Default.pointer_moveCursor;
+            this.showPointer = true;
             if (this.showPointer && !this.mouseMode)
             {
                 this.duoTouch.enableHover();
