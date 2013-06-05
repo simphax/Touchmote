@@ -48,14 +48,18 @@ namespace WiiTUIO.Output
 
             foreach (WiiContact contact in e.Contacts)
             {
-                if (Settings.Default.pointer_customCursor && e.Contacts.Count() > 1 && contact.Type == ContactType.Hover)
+                if (Settings.Default.pointer_customCursor && (contact.Type == ContactType.Hover || contact.Type == ContactType.EndFromHover))
                 {
                     //If we are using the custom cursor and it's more than 1 touchpoints, we skip the hovering because otherwise it's not working with edge guestures for example.
                 }
                 else
                 {
-
                     ContactType type = contact.Type;
+
+                    if (Settings.Default.pointer_customCursor && (contact.Type == ContactType.EndToHover))
+                    {
+                        type = ContactType.End;
+                    }
 
                     PointerTouchInfo touch = new PointerTouchInfo();
                     touch.PointerInfo.pointerType = PointerInputType.TOUCH;
