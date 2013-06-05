@@ -45,48 +45,44 @@ namespace WiiTUIO.Output
         {
             touchscreenMutex.WaitOne();
             List<PointerTouchInfo> toFire = new List<PointerTouchInfo>();
-            //Console.WriteLine("Recieved " + e.Contacts.Count() + " contacts");
+
             foreach (WiiContact contact in e.Contacts)
             {
-                /*
-                if (contact.Type != ContactType.Hover)
+                if (Settings.Default.pointer_customCursor && e.Contacts.Count() > 1 && contact.Type == ContactType.Hover)
                 {
-                    Console.WriteLine("Recieved contact " + contact.ID + " type "+contact.Type.ToString() + " position "  + contact.Position.ToString());
+                    //If we are using the custom cursor and it's more than 1 touchpoints, we skip the hovering because otherwise it's not working with edge guestures for example.
                 }
-                */
-                ContactType type = contact.Type;
-                //make a new pointertouchinfo with all neccessary information
-                PointerTouchInfo touch = new PointerTouchInfo();
-                touch.PointerInfo.pointerType = PointerInputType.TOUCH;
-                touch.TouchFlags = TouchFlags.NONE;
-                //contact.Orientation = (uint)cur.getAngleDegrees();//this is only valid for TuioObjects
-                touch.Pressure = 0;
-                touch.TouchMasks = TouchMask.NONE;//.CONTACTAREA;// | TouchMask.ORIENTATION | TouchMask.PRESSURE;
-                touch.PointerInfo.PtPixelLocation.X = (int)contact.Position.X;
-                touch.PointerInfo.PtPixelLocation.Y = (int)contact.Position.Y;
-                touch.PointerInfo.PointerId = (uint)contact.ID;
-                touch.PointerInfo.PerformanceCount = e.Timestamp;
-                /*
-                touch.ContactArea.left = (int)contact.BoundingRectangle.Left;
-                touch.ContactArea.right = (int)contact.BoundingRectangle.Right;
-                touch.ContactArea.top = (int)contact.BoundingRectangle.Top;
-                touch.ContactArea.bottom = (int)contact.BoundingRectangle.Bottom;
-                */
-                //set the right flag
-                if (type == ContactType.Start)
-                    touch.PointerInfo.PointerFlags = PointerFlags.DOWN | PointerFlags.INRANGE | PointerFlags.INCONTACT;
-                else if (type == ContactType.Move)
-                    touch.PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE | PointerFlags.INCONTACT;
-                else if (type == ContactType.End)
-                    touch.PointerInfo.PointerFlags = PointerFlags.UP;
-                else if (type == ContactType.EndToHover)
-                    touch.PointerInfo.PointerFlags = PointerFlags.UP | PointerFlags.INRANGE;
-                else if (type == ContactType.Hover)
-                    touch.PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE;
-                else if (type == ContactType.EndFromHover)
-                    touch.PointerInfo.PointerFlags = PointerFlags.UPDATE;
-                //add it to 'toFire'
-                toFire.Add(touch);
+                else
+                {
+
+                    ContactType type = contact.Type;
+
+                    PointerTouchInfo touch = new PointerTouchInfo();
+                    touch.PointerInfo.pointerType = PointerInputType.TOUCH;
+                    touch.TouchFlags = TouchFlags.NONE;
+                    //contact.Orientation = (uint)cur.getAngleDegrees();//this is only valid for TuioObjects
+                    touch.Pressure = 0;
+                    touch.TouchMasks = TouchMask.NONE;
+                    touch.PointerInfo.PtPixelLocation.X = (int)contact.Position.X;
+                    touch.PointerInfo.PtPixelLocation.Y = (int)contact.Position.Y;
+                    touch.PointerInfo.PointerId = (uint)contact.ID;
+                    touch.PointerInfo.PerformanceCount = e.Timestamp;
+
+                    if (type == ContactType.Start)
+                        touch.PointerInfo.PointerFlags = PointerFlags.DOWN | PointerFlags.INRANGE | PointerFlags.INCONTACT;
+                    else if (type == ContactType.Move)
+                        touch.PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE | PointerFlags.INCONTACT;
+                    else if (type == ContactType.End)
+                        touch.PointerInfo.PointerFlags = PointerFlags.UP;
+                    else if (type == ContactType.EndToHover)
+                        touch.PointerInfo.PointerFlags = PointerFlags.UP | PointerFlags.INRANGE;
+                    else if (type == ContactType.Hover)
+                        touch.PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE;
+                    else if (type == ContactType.EndFromHover)
+                        touch.PointerInfo.PointerFlags = PointerFlags.UPDATE;
+
+                    toFire.Add(touch);
+                }
             }
             //fire the events
             if (toFire.Count > 0)

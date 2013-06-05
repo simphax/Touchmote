@@ -229,10 +229,7 @@ namespace WiiTUIO.Provider
             {
                 if (this.usingCursors())
                 {
-                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                    {
-                        this.masterCursor.SetReleased();
-                    }), null);
+                    this.masterCursor.SetReleased();
                 }
                 touchDownMaster = false;
             }
@@ -240,10 +237,7 @@ namespace WiiTUIO.Provider
             {
                 if (this.usingCursors())
                 {
-                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                    {
-                        this.slaveCursor.SetReleased();
-                    }), null);
+                    this.slaveCursor.SetReleased();
                 }
                 touchDownSlave = false;
             }
@@ -255,10 +249,7 @@ namespace WiiTUIO.Provider
             {
                 if (this.usingCursors())
                 {
-                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                    {
-                        this.masterCursor.SetPressed();
-                    }), null);
+                    this.masterCursor.SetPressed();
                 }
                 touchDownMaster = true;
             }
@@ -266,10 +257,7 @@ namespace WiiTUIO.Provider
             {
                 if (this.usingCursors())
                 {
-                    App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                    {
-                        this.slaveCursor.SetPressed();
-                    }), null);
+                    this.slaveCursor.SetPressed();
                 }
                 touchDownSlave = true;
             }
@@ -320,10 +308,7 @@ namespace WiiTUIO.Provider
                 {
                     if (this.usingCursors() && !mouseMode && showPointer)
                     {
-                        App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                        {
-                            this.masterCursor.Show();
-                        }), null);
+                        this.masterCursor.Show();
                     }
                     significant = true;
                     if (this.touchDownMaster)
@@ -341,10 +326,7 @@ namespace WiiTUIO.Provider
                     {
                         if (this.usingCursors() && !mouseMode && showPointer)
                         {
-                            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                            {
-                                this.slaveCursor.Show();
-                            }), null);
+                            this.slaveCursor.Show();
                         }
                         duoTouch.setSlavePosition(new System.Windows.Point(newpoint.X, newpoint.Y));
                         duoTouch.setContactSlave();
@@ -354,10 +336,7 @@ namespace WiiTUIO.Provider
                         duoTouch.releaseContactSlave();
                         if (this.usingCursors() && !mouseMode)
                         {
-                            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                            {
-                                this.slaveCursor.Hide();
-                            }), null);
+                            this.slaveCursor.Hide();
                         }
                     }
 
@@ -366,18 +345,33 @@ namespace WiiTUIO.Provider
                     lFrame = duoTouch.getFrame();
                     if (this.usingCursors() && !mouseMode)
                     {
+                        WiiContact master = null;
+                        WiiContact slave = null;
                         foreach (WiiContact contact in lFrame)
                         {
-                            if (contact.Priority == DuoTouch.MASTER_PRIORITY)
+                            if (master == null)
                             {
-                                this.masterCursor.SetPosition(contact.Position);
-                                this.masterCursor.SetRotation(newpoint.Rotation);
+                                master = contact;
                             }
-                            if (contact.Priority == DuoTouch.SLAVE_PRIORITY)
+                            else if (master.Priority < contact.Priority)
                             {
-                                this.slaveCursor.SetPosition(contact.Position);
-                                this.slaveCursor.SetRotation(newpoint.Rotation);
+                                slave = master;
+                                master = contact;
                             }
+                            else
+                            {
+                                slave = contact;
+                            }
+                        }
+                        if(master != null)
+                        {
+                            this.masterCursor.SetPosition(master.Position);
+                            this.masterCursor.SetRotation(newpoint.Rotation);
+                        }
+                        if(slave != null)
+                        {
+                            this.slaveCursor.SetPosition(slave.Position);
+                            this.slaveCursor.SetRotation(newpoint.Rotation);
                         }
                     }
 

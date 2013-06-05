@@ -9,8 +9,8 @@ namespace WiiTUIO.Provider
 {
     class DuoTouch
     {
-        public static int MASTER_PRIORITY = 1;
-        public static int SLAVE_PRIORITY = 2;
+        private int masterPriority;
+        private int slavePriority;
 
         private SmoothingBuffer smoothingBuffer;
 
@@ -58,6 +58,10 @@ namespace WiiTUIO.Provider
             this.masterID = startId;
             this.slaveID = startId+1;
             this.startID = startId;
+
+            this.masterPriority = (int)masterID;
+            this.slavePriority = (int)slaveID;
+
             this.screenBounds = screenBounds;
             if (smoothSize < 1)
             {
@@ -213,14 +217,14 @@ namespace WiiTUIO.Provider
                 {
                     if (this.stepIDs && contactType == ContactType.EndToHover) //If we release slave touch before we release master touch we want to make sure Windows treats master as the main touch point again
                     {
-                        this.lastMasterContact = new WiiContact(this.masterID, ContactType.End, this.masterPosition, MASTER_PRIORITY, new Vector(this.screenBounds.Width,this.screenBounds.Height));
+                        this.lastMasterContact = new WiiContact(this.masterID, ContactType.End, this.masterPosition, this.masterPriority, new Vector(this.screenBounds.Width,this.screenBounds.Height));
                         this.masterID = (this.masterID - this.startID + 2) % 4 + this.startID;
                         this.slaveID = (this.slaveID - this.startID + 2) % 4 + this.startID;
                         this.stepIDs = false;
                     }
                     else
                     {
-                        this.lastMasterContact = new WiiContact(this.masterID, contactType, this.masterPosition, MASTER_PRIORITY, new Vector(this.screenBounds.Width, this.screenBounds.Height));
+                        this.lastMasterContact = new WiiContact(this.masterID, contactType, this.masterPosition, this.masterPriority, new Vector(this.screenBounds.Width, this.screenBounds.Height));
                     }
                     newFrame.Enqueue(this.lastMasterContact);
                 }
@@ -295,7 +299,7 @@ namespace WiiTUIO.Provider
 
                 if (!this.slaveEnded)
                 {
-                    this.lastSlaveContact = new WiiContact(this.slaveID, contactType, this.slavePosition,SLAVE_PRIORITY, new Vector(this.screenBounds.Width, this.screenBounds.Height));
+                    this.lastSlaveContact = new WiiContact(this.slaveID, contactType, this.slavePosition,this.slavePriority, new Vector(this.screenBounds.Width, this.screenBounds.Height));
                     newFrame.Enqueue(this.lastSlaveContact);
 
                     if (contactType == ContactType.EndFromHover)
