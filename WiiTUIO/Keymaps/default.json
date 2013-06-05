@@ -11,7 +11,10 @@
     "Down": "Down",
     "Plus": "Volume_Up",
     "Minus": "Volume_Down",
-    "One": "",
+    "One": [
+      "LWin",
+      "VK_C"
+    ],
     "Two": [
       "LWin",
       "Tab"
