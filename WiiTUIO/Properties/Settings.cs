@@ -148,28 +148,6 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private bool _pointer_moveCursor = true;
-        public bool pointer_moveCursor
-        {
-            get { return _pointer_moveCursor; }
-            set
-            {
-                _pointer_moveCursor = value;
-                OnPropertyChanged("pointer_moveCursor");
-            }
-        }
-
-        private int _pointer_cursorFPS = 200;
-        public int pointer_cursorFPS
-        {
-            get { return _pointer_cursorFPS; }
-            set
-            {
-                _pointer_cursorFPS = value;
-                OnPropertyChanged("pointer_cursorFPS");
-            }
-        }
-
         private string _pointer_sensorBarPos = "center";
         public string pointer_sensorBarPos
         {
@@ -181,14 +159,25 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _pointer_smoothingSize = 3;
-        public int pointer_smoothingSize
+        private int _pointer_rotationSmoothing = 30;
+        public int pointer_rotationSmoothing
         {
-            get { return _pointer_smoothingSize; }
+            get { return _pointer_rotationSmoothing; }
             set
             {
-                _pointer_smoothingSize = value;
-                OnPropertyChanged("pointer_smoothingSize");
+                _pointer_rotationSmoothing = value;
+                OnPropertyChanged("pointer_rotationSmoothing");
+            }
+        }
+
+        private int _pointer_positionSmoothing = 3;
+        public int pointer_positionSmoothing
+        {
+            get { return _pointer_positionSmoothing; }
+            set
+            {
+                _pointer_positionSmoothing = value;
+                OnPropertyChanged("pointer_positionSmoothing");
             }
         }
 

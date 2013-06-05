@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WiimoteLib;
+using WiiTUIO.Properties;
 
 namespace WiiTUIO.Provider
 {
@@ -31,7 +32,7 @@ namespace WiiTUIO.Provider
         {
             this.recalculateScreenBounds();
 
-            this.rotationSmoothing = new SmoothingBuffer(20);
+            this.rotationSmoothing = new SmoothingBuffer(Settings.Default.pointer_rotationSmoothing);
 
             SystemEvents.DisplaySettingsChanged +=SystemEvents_DisplaySettingsChanged;
         }
