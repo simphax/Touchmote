@@ -335,10 +335,11 @@ namespace WiiTUIO.Provider
             buttons.Add(new JProperty("Classic.ZL", "360.BumperL"));
             buttons.Add(new JProperty("Classic.ZR", "360.BumperR"));
 
-            JObject allButtons = new JObject();
-            allButtons.Add(new JProperty("All", buttons));
+            JObject union = new JObject();
 
-            JObject union = allButtons;
+            union.Add(new JProperty("Title", "Default"));
+
+            union.Add(new JProperty("All", buttons));
 
             if (File.Exists(KEYMAPS_PATH + DEFAULT_JSON_FILENAME))
             {
