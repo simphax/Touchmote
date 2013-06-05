@@ -143,9 +143,88 @@ namespace WiiTUIO.Provider
             }
         }
 
+        public void updateClassicController(ClassicControllerState classic)
+        {
+            JToken key = this.jsonObj.GetValue("Classic.StickLX");
+            if (key != null)
+            {
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
+                {
+                    this.xinputUpdateAnalog(handle.Substring(4), classic.JoystickL.X + 0.5);
+                }
+            }
+
+            key = this.jsonObj.GetValue("Classic.StickLY");
+            if (key != null)
+            {
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
+                {
+                    this.xinputUpdateAnalog(handle.Substring(4), classic.JoystickL.Y + 0.5);
+                }
+            }
+
+            key = this.jsonObj.GetValue("Classic.StickRX");
+            if (key != null)
+            {
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
+                {
+                    this.xinputUpdateAnalog(handle.Substring(4), classic.JoystickR.X + 0.5);
+                }
+            }
+
+            key = this.jsonObj.GetValue("Classic.StickRY");
+            if (key != null)
+            {
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
+                {
+                    this.xinputUpdateAnalog(handle.Substring(4), classic.JoystickR.Y + 0.5);
+                }
+            }
+
+            key = this.jsonObj.GetValue("Classic.TriggerL");
+            if (key != null)
+            {
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
+                {
+                    this.xinputUpdateAnalog(handle.Substring(4), classic.TriggerL);
+                }
+            }
+
+            key = this.jsonObj.GetValue("Classic.TriggerR");
+            if (key != null)
+            {
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
+                {
+                    this.xinputUpdateAnalog(handle.Substring(4), classic.TriggerR);
+                }
+            }
+        }
+
         public void executeButtonUp(WiimoteButton button)
         {
             this.executeButtonUp(button.ToString());//ToString converts WiimoteButton.A to "A" for instance
+        }
+
+        public void executeButtonUp(NunchukButton button)
+        {
+            this.executeButtonUp("Nunchuk." + button.ToString());
+        }
+
+        public void executeButtonUp(ClassicControllerButton button)
+        {
+            this.executeButtonUp("Classic."+button.ToString());//ToString converts WiimoteButton.A to "A" for instance
         }
 
         public void executeButtonUp(string button)
@@ -232,6 +311,16 @@ namespace WiiTUIO.Provider
         public void executeButtonDown(WiimoteButton button)
         {
             this.executeButtonDown(button.ToString());
+        }
+
+        public void executeButtonDown(NunchukButton button)
+        {
+            this.executeButtonDown("Nunchuk." + button.ToString());
+        }
+
+        public void executeButtonDown(ClassicControllerButton button)
+        {
+            this.executeButtonDown("Classic." + button.ToString());
         }
 
         public void executeButtonDown(string button)

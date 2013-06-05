@@ -11,7 +11,7 @@
     "Down": "Down",
     "Plus": "Volume_Up",
     "Minus": "Volume_Down",
-    "One": "NextLayout",
+    "One": "",
     "Two": [
       "LWin",
       "Tab"
@@ -19,6 +19,27 @@
 	"Nunchuk.StickX": "360.StickLX",
 	"Nunchuk.StickY": "360.StickLY",
 	"Nunchuk.C": "360.TriggerL",
-	"Nunchuk.Z": "360.TriggerR"
+	"Nunchuk.Z": "360.TriggerR",
+	"Classic.Left": "360.Left",
+	"Classic.Right": "360.Right",
+	"Classic.Up": "360.Up",
+	"Classic.Down": "360.Down",
+	"Classic.StickLX": "360.StickLX",
+	"Classic.StickLY": "360.StickLY",
+	"Classic.StickRX": "360.StickRX",
+	"Classic.StickRY": "360.StickRY",
+	"Classic.Minus": "360.Back",
+	"Classic.Plus": "360.Start",
+	"Classic.Home": "360.Guide",
+	"Classic.Y": "360.Y",
+	"Classic.X": "360.X",
+	"Classic.A": "360.A",
+	"Classic.B": "360.B",
+	"Classic.TriggerL": "360.TriggerL",
+	"Classic.TriggerR": "360.TriggerR",
+	"Classic.L": "",
+	"Classic.R": "",
+	"Classic.ZL": "360.BumperL",
+	"Classic.ZR": "360.BumperR"
   }
 }

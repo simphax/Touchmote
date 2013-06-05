@@ -30,6 +30,31 @@ namespace WiiTUIO.Provider
         B
     }
 
+    public enum ClassicControllerButton
+    {
+        Up,
+        Down,
+        Left,
+        Right,
+        Home,
+        Plus,
+        Minus,
+        X,
+        Y,
+        A,
+        B,
+        TriggerL,
+        TriggerR,
+        ZL,
+        ZR
+    }
+
+    public enum NunchukButton
+    {
+        Z,
+        C
+    }
+
     public struct NunchukButtonState
     {
         public bool C;
@@ -44,8 +69,38 @@ namespace WiiTUIO.Provider
         private string DEFAULT_JSON_FILENAME = "default.json";
 
         public WiiKeyMap KeyMap;
-        public ButtonState PressedButtons;
-        public NunchukButtonState NunchukPressedButtons;
+
+        public Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
+        {
+            {"A",false},
+            {"B",false},
+            {"Up",false},
+            {"Down",false},
+            {"Left",false},
+            {"Right",false},
+            {"Minus",false},
+            {"Plus",false},
+            {"Home",false},
+            {"One",false},
+            {"Two",false},
+            {"Nunchuk.C",false},
+            {"Nunchuk.Z",false},
+            {"Classic.A",false},
+            {"Classic.B",false},
+            {"Classic.X",false},
+            {"Classic.Y",false},
+            {"Classic.Up",false},
+            {"Classic.Down",false},
+            {"Classic.Left",false},
+            {"Classic.Right",false},
+            {"Classic.Home",false},
+            {"Classic.Plus",false},
+            {"Classic.Minus",false},
+            {"Classic.L",false},
+            {"Classic.R",false},
+            {"Classic.ZL",false},
+            {"Classic.ZR",false}
+        };
 
         private SystemProcessMonitor processMonitor;
 
@@ -65,9 +120,6 @@ namespace WiiTUIO.Provider
         public WiiKeyMapper(int wiimoteID)
         {
             this.WiimoteID = wiimoteID;
-
-            PressedButtons = new ButtonState();
-            NunchukPressedButtons = new NunchukButtonState();
 
             System.IO.Directory.CreateDirectory(KEYMAPS_PATH);
             this.applicationsJson = this.createDefaultApplicationsJSON();
@@ -136,11 +188,11 @@ namespace WiiTUIO.Provider
 
         void homeButtonTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (this.PressedButtons.Home)
+            if (this.PressedButtons["Home"])
             {
                 this.KeyMap.SetConfig(this.defaultKeymapJson, "Default", DEFAULT_JSON_FILENAME);
                 OverlayWindow.Current.ShowLayoutOverlay(this);
-                this.PressedButtons.Home = true;
+                this.PressedButtons["Home"] = true;
             }
         }
 
@@ -261,6 +313,28 @@ namespace WiiTUIO.Provider
             buttons.Add(new JProperty("Nunchuk.C", "360.TriggerL"));
             buttons.Add(new JProperty("Nunchuk.Z", "360.TriggerR"));
 
+            buttons.Add(new JProperty("Classic.Left", "360.Left"));
+            buttons.Add(new JProperty("Classic.Right", "360.Right"));
+            buttons.Add(new JProperty("Classic.Up", "360.Up"));
+            buttons.Add(new JProperty("Classic.Down", "360.Down"));
+            buttons.Add(new JProperty("Classic.StickLX", "360.StickLX"));
+            buttons.Add(new JProperty("Classic.StickLY", "360.StickLY"));
+            buttons.Add(new JProperty("Classic.StickRX", "360.StickRX"));
+            buttons.Add(new JProperty("Classic.StickRY", "360.StickRY"));
+            buttons.Add(new JProperty("Classic.Minus", "360.Back"));
+            buttons.Add(new JProperty("Classic.Plus", "360.Start"));
+            buttons.Add(new JProperty("Classic.Home", "360.Guide"));
+            buttons.Add(new JProperty("Classic.Y", "360.Y"));
+            buttons.Add(new JProperty("Classic.X", "360.X"));
+            buttons.Add(new JProperty("Classic.A", "360.A"));
+            buttons.Add(new JProperty("Classic.B", "360.B"));
+            buttons.Add(new JProperty("Classic.TriggerL", "360.TriggerL"));
+            buttons.Add(new JProperty("Classic.TriggerR", "360.TriggerR"));
+            buttons.Add(new JProperty("Classic.L", "360.L"));
+            buttons.Add(new JProperty("Classic.R", "360.R"));
+            buttons.Add(new JProperty("Classic.ZL", "360.BumperL"));
+            buttons.Add(new JProperty("Classic.ZR", "360.BumperR"));
+
             JObject allButtons = new JObject();
             allButtons.Add(new JProperty("All", buttons));
 
@@ -344,7 +418,7 @@ namespace WiiTUIO.Provider
             Console.WriteLine("Loaded new keymap " + filename);
         }
 
-        public bool processWiimoteState(WiimoteState wiimoteState) //Returns true if anything happened.
+        public bool processWiimoteState(WiimoteState wiimoteState) //Returns true if anything has changed from last report.
         {
             ButtonState buttonState = wiimoteState.ButtonState;
             bool significant = false;
@@ -355,192 +429,120 @@ namespace WiiTUIO.Provider
             {
                 this.KeyMap.updateNunchuk(wiimoteState.NunchukState);
 
-                if (wiimoteState.NunchukState.C && !NunchukPressedButtons.C)
+                if (wiimoteState.NunchukState.C && !PressedButtons["Nunchuk.C"])
                 {
-                    NunchukPressedButtons.C = true;
+                    PressedButtons["Nunchuk.C"] = true;
                     significant = true;
-                    this.KeyMap.executeButtonDown("Nunchuk.C");
+                    this.KeyMap.executeButtonDown(NunchukButton.C);
                 }
-                else if (!wiimoteState.NunchukState.C && NunchukPressedButtons.C)
+                else if (!wiimoteState.NunchukState.C && PressedButtons["Nunchuk.C"])
                 {
-                    NunchukPressedButtons.C = false;
+                    PressedButtons["Nunchuk.C"] = false;
                     significant = true;
-                    this.KeyMap.executeButtonUp("Nunchuk.C");
+                    this.KeyMap.executeButtonUp(NunchukButton.C);
                 }
 
-                if (wiimoteState.NunchukState.Z && !NunchukPressedButtons.Z)
+                if (wiimoteState.NunchukState.Z && !PressedButtons["Nunchuk.Z"])
                 {
-                    NunchukPressedButtons.Z = true;
+                    PressedButtons["Nunchuk.Z"] = true;
                     significant = true;
-                    this.KeyMap.executeButtonDown("Nunchuk.Z");
+                    this.KeyMap.executeButtonDown(NunchukButton.Z);
                 }
-                else if (!wiimoteState.NunchukState.Z && NunchukPressedButtons.Z)
+                else if (!wiimoteState.NunchukState.Z && PressedButtons["Nunchuk.Z"])
                 {
-                    NunchukPressedButtons.Z = false;
+                    PressedButtons["Nunchuk.Z"] = false;
                     significant = true;
-                    this.KeyMap.executeButtonUp("Nunchuk.Z");
+                    this.KeyMap.executeButtonUp(NunchukButton.Z);
                 }
             }
 
-            if (buttonState.A && !PressedButtons.A)
+            if (wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.ClassicController)
             {
-                PressedButtons.A = true;
-                significant = true;
-                this.KeyMap.executeButtonDown(WiimoteButton.A);
-            }
-            else if (!buttonState.A && PressedButtons.A)
-            {
-                PressedButtons.A = false;
-                significant = true;
-                this.KeyMap.executeButtonUp(WiimoteButton.A);
-            }
+                this.KeyMap.updateClassicController(wiimoteState.ClassicControllerState);
 
-            if (buttonState.B && !PressedButtons.B)
-            {
-                PressedButtons.B = true;
-                significant = true;
-                this.KeyMap.executeButtonDown(WiimoteButton.B);
-            }
-            else if (!buttonState.B && PressedButtons.B)
-            {
-                PressedButtons.B = false;
-                significant = true;
-                this.KeyMap.executeButtonUp(WiimoteButton.B);
-            }
+                ClassicControllerButtonState classicButtonState = wiimoteState.ClassicControllerState.ButtonState;
 
-            if (buttonState.Up && !PressedButtons.Up)
-            {
-                PressedButtons.Up = true;
-                significant = true;
-                this.KeyMap.executeButtonDown(WiimoteButton.Up);
-            }
-            else if (!buttonState.Up && PressedButtons.Up)
-            {
-                PressedButtons.Up = false;
-                significant = true;
-                this.KeyMap.executeButtonUp(WiimoteButton.Up);
-            }
-
-            if (buttonState.Down && !PressedButtons.Down)
-            {
-                PressedButtons.Down = true;
-                significant = true;
-                this.KeyMap.executeButtonDown(WiimoteButton.Down);
-            }
-            else if (!buttonState.Down && PressedButtons.Down)
-            {
-                PressedButtons.Down = false;
-                significant = true;
-                this.KeyMap.executeButtonUp(WiimoteButton.Down);
-            }
-
-            if (buttonState.Left && !PressedButtons.Left)
-            {
-                PressedButtons.Left = true;
-                significant = true;
-                this.KeyMap.executeButtonDown(WiimoteButton.Left);
-            }
-            else if (!buttonState.Left && PressedButtons.Left)
-            {
-                PressedButtons.Left = false;
-                significant = true;
-                this.KeyMap.executeButtonUp(WiimoteButton.Left);
-            }
-
-            if (buttonState.Right && !PressedButtons.Right)
-            {
-                PressedButtons.Right = true;
-                significant = true;
-                this.KeyMap.executeButtonDown(WiimoteButton.Right);
-            }
-            else if (!buttonState.Right && PressedButtons.Right)
-            {
-                PressedButtons.Right = false;
-                significant = true;
-                this.KeyMap.executeButtonUp(WiimoteButton.Right);
-            }
-
-            if (buttonState.Home && !PressedButtons.Home)
-            {
-                PressedButtons.Home = true;
-                significant = true;
-                this.homeButtonTimer.Start();
-                if (OverlayWindow.Current.OverlayIsOn())
+                FieldInfo[] cbuttons = classicButtonState.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+                foreach (FieldInfo button in cbuttons)
                 {
-                    this.hideOverlayOnUp = true;
+                    string buttonName = "Classic." + button.Name;
+                    if (button.Name == "TriggerL")
+                    {
+                        buttonName = "Classic.L";
+                    }
+                    else if (button.Name == "TriggerR")
+                    {
+                        buttonName = "Classic.R";
+                    }
+
+                    bool pressedNow = (bool)button.GetValue(classicButtonState);
+                    bool pressedBefore = PressedButtons[buttonName];
+
+                    if (pressedNow && !pressedBefore)
+                    {
+                        PressedButtons[buttonName] = true;
+                        significant = true;
+                        this.KeyMap.executeButtonDown(buttonName);
+                    }
+                    else if (!pressedNow && pressedBefore)
+                    {
+                        PressedButtons[buttonName] = false;
+                        significant = true;
+                        this.KeyMap.executeButtonUp(buttonName);
+                    }
                 }
             }
-            else if (!buttonState.Home && PressedButtons.Home)
-            {
-                PressedButtons.Home = false;
-                significant = true;
-                this.homeButtonTimer.Stop();
-                
-                if (this.hideOverlayOnUp)
+
+            FieldInfo[] buttons = buttonState.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+            foreach (FieldInfo button in buttons) {
+
+                bool pressedNow = (bool)button.GetValue(buttonState);
+                bool pressedBefore = PressedButtons[button.Name];
+
+                if(pressedNow && !pressedBefore)
                 {
-                    this.hideOverlayOnUp = false;
-                    OverlayWindow.Current.HideOverlay();
+                    PressedButtons[button.Name] = true;
+                    significant = true;
+                    if (button.Name == "Home")
+                    {
+                        this.homeButtonTimer.Start();
+                        if (OverlayWindow.Current.OverlayIsOn())
+                        {
+                            this.hideOverlayOnUp = true;
+                        }
+                    }
+                    else
+                    {
+                        this.KeyMap.executeButtonDown(button.Name);
+                    }
                 }
-                else if (OverlayWindow.Current.OverlayIsOn())
+                else if (!pressedNow && pressedBefore)
                 {
+                    PressedButtons[button.Name] = false;
+                    significant = true;
+                    if(button.Name == "Home")
+                    {
+                        this.homeButtonTimer.Stop();
+
+                        if (this.hideOverlayOnUp)
+                        {
+                            this.hideOverlayOnUp = false;
+                            OverlayWindow.Current.HideOverlay();
+                        }
+                        else if (OverlayWindow.Current.OverlayIsOn())
+                        {
+                        }
+                        else
+                        {
+                            this.KeyMap.executeButtonDown("Home");
+                            this.KeyMap.executeButtonUp("Home");
+                        }
+                    }
+                    else
+                    {
+                        this.KeyMap.executeButtonUp(button.Name);
+                    }
                 }
-                else
-                {
-                    this.KeyMap.executeButtonDown(WiimoteButton.Home);
-                    this.KeyMap.executeButtonUp(WiimoteButton.Home);
-                }
-            }
-
-            if (buttonState.Plus && !PressedButtons.Plus)
-            {
-                PressedButtons.Plus = true;
-                significant = true;
-                this.KeyMap.executeButtonDown(WiimoteButton.Plus);
-            }
-            else if (PressedButtons.Plus && !buttonState.Plus)
-            {
-                PressedButtons.Plus = false;
-                significant = true;
-                this.KeyMap.executeButtonUp(WiimoteButton.Plus);
-            }
-
-            if (buttonState.Minus && !PressedButtons.Minus)
-            {
-                PressedButtons.Minus = true;
-                significant = true;
-                this.KeyMap.executeButtonDown(WiimoteButton.Minus);
-            }
-            else if (PressedButtons.Minus && !buttonState.Minus)
-            {
-                PressedButtons.Minus = false;
-                significant = true;
-                this.KeyMap.executeButtonUp(WiimoteButton.Minus);
-            }
-
-            if (buttonState.One && !PressedButtons.One)
-            {
-                PressedButtons.One = true;
-                significant = true;
-                this.KeyMap.executeButtonDown(WiimoteButton.One);
-            }
-            else if (PressedButtons.One && !buttonState.One)
-            {
-                PressedButtons.One = false;
-                significant = true;
-                this.KeyMap.executeButtonUp(WiimoteButton.One);
-            }
-
-            if (buttonState.Two && !PressedButtons.Two)
-            {
-                PressedButtons.Two = true;
-                significant = true;
-                this.KeyMap.executeButtonDown(WiimoteButton.Two);
-            }
-            else if (PressedButtons.Two && !buttonState.Two)
-            {
-                PressedButtons.Two = false;
-                significant = true;
-                this.KeyMap.executeButtonUp(WiimoteButton.Two);
             }
 
             this.KeyMap.XinputDevice.Update(this.KeyMap.XinputReport);
