@@ -353,7 +353,7 @@ namespace WiiTUIO.Provider
                             {
                                 master = contact;
                             }
-                            else if (master.Priority < contact.Priority)
+                            else if (master.Priority > contact.Priority)
                             {
                                 slave = master;
                                 master = contact;
