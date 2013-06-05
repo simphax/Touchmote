@@ -83,43 +83,37 @@ namespace WiiTUIO.Provider
 
         internal void updateAccelerometer(AccelState accelState)
         {
-            JToken key = this.jsonObj.GetValue("SteeringWheelX");
+
+            JToken key = this.jsonObj.GetValue("AccelX");
             if (key != null)
             {
-                switch (key.ToString().ToLower())
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
                 {
-                    case "360.sticklx":
-                        XinputReport.StickLX = accelState.Values.Y * -0.5 + 0.5;
-                        break;
-                    case "360.stickly":
-                        XinputReport.StickLY = accelState.Values.Y * -0.5 + 0.5;
-                        break;
-                    case "360.stickrx":
-                        XinputReport.StickRX = accelState.Values.Y * -0.5 + 0.5;
-                        break;
-                    case "360.stickry":
-                        XinputReport.StickRY = accelState.Values.Y * -0.5 + 0.5;
-                        break;
+                    this.xinputUpdateAnalog(handle.Substring(4), accelState.Values.X * -0.5 + 0.5);
                 }
             }
 
-            key = this.jsonObj.GetValue("SteeringWheelY");
+            key = this.jsonObj.GetValue("AccelY");
             if (key != null)
             {
-                switch (key.ToString().ToLower())
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
                 {
-                    case "360.sticklx":
-                        XinputReport.StickLX = accelState.Values.Z * -0.5 + 0.5;
-                        break;
-                    case "360.stickly":
-                        XinputReport.StickLY = accelState.Values.Z * -0.5 + 0.5;
-                        break;
-                    case "360.stickrx":
-                        XinputReport.StickRX = accelState.Values.Z * -0.5 + 0.5;
-                        break;
-                    case "360.stickry":
-                        XinputReport.StickRY = accelState.Values.Z * -0.5 + 0.5;
-                        break;
+                    this.xinputUpdateAnalog(handle.Substring(4), accelState.Values.Y * -0.5 + 0.5);
+                }
+            }
+
+            key = this.jsonObj.GetValue("AccelZ");
+            if (key != null)
+            {
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
+                {
+                    this.xinputUpdateAnalog(handle.Substring(4), accelState.Values.Z * -0.5 + 0.5);
                 }
             }
         }
@@ -129,40 +123,22 @@ namespace WiiTUIO.Provider
             JToken key = this.jsonObj.GetValue("Nunchuk.StickX");
             if (key != null)
             {
-                switch (key.ToString().ToLower())
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
                 {
-                    case "360.sticklx":
-                        XinputReport.StickLX = nunchuk.Joystick.X + 0.5;
-                        break;
-                    case "360.stickly":
-                        XinputReport.StickLY = nunchuk.Joystick.X + 0.5;
-                        break;
-                    case "360.stickrx":
-                        XinputReport.StickRX = nunchuk.Joystick.X + 0.5;
-                        break;
-                    case "360.stickry":
-                        XinputReport.StickRY = nunchuk.Joystick.X + 0.5;
-                        break;
+                    this.xinputUpdateAnalog(handle.Substring(4), nunchuk.Joystick.X + 0.5);
                 }
             }
 
             key = this.jsonObj.GetValue("Nunchuk.StickY");
             if (key != null)
             {
-                switch (key.ToString().ToLower())
+                string handle = key.ToString().ToLower();
+
+                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
                 {
-                    case "360.sticklx":
-                        XinputReport.StickLX = -nunchuk.Joystick.Y + 0.5;
-                        break;
-                    case "360.stickly":
-                        XinputReport.StickLY = -nunchuk.Joystick.Y + 0.5;
-                        break;
-                    case "360.stickrx":
-                        XinputReport.StickRX = -nunchuk.Joystick.Y + 0.5;
-                        break;
-                    case "360.stickry":
-                        XinputReport.StickRY = -nunchuk.Joystick.Y + 0.5;
-                        break;
+                    this.xinputUpdateAnalog(handle.Substring(4), nunchuk.Joystick.Y + 0.5);
                 }
             }
         }
@@ -316,6 +292,31 @@ namespace WiiTUIO.Provider
                 }
 
                 OnButtonDown(new WiiButtonEvent(key.ToString(), button, handled));
+            }
+        }
+
+        public void xinputUpdateAnalog(string handle, double value)
+        {
+            switch (handle)
+            {
+                case "sticklx":
+                    XinputReport.StickLX = value;
+                    break;
+                case "stickly":
+                    XinputReport.StickLY = value;
+                    break;
+                case "stickrx":
+                    XinputReport.StickRX = value;
+                    break;
+                case "stickry":
+                    XinputReport.StickRY = value;
+                    break;
+                case "triggerr":
+                    this.XinputReport.TriggerR = value;
+                    break;
+                case "triggerl":
+                    this.XinputReport.TriggerL = value;
+                    break;
             }
         }
 
