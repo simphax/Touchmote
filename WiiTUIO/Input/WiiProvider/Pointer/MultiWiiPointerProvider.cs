@@ -536,11 +536,11 @@ namespace WiiTUIO.Provider
 
                         if (Settings.Default.pointer_customCursor)
                         {
-                            cursorUpdateToggle = ++cursorUpdateToggle % 2; //Update cursors every other update. So it doesn't load the CPU as much.
-                            if (cursorUpdateToggle == 0)
-                            {
+                            //cursorUpdateToggle = ++cursorUpdateToggle % 2; //Update cursors every other update. So it doesn't load the CPU as much.
+                            //if (cursorUpdateToggle == 0)
+                            //{
                                 CursorWindow.Current.RefreshCursors();
-                            }
+                            //}
                         }
 
                         FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
@@ -557,7 +557,7 @@ namespace WiiTUIO.Provider
 
                     //Console.WriteLine("handle wiimote time : " + DateTime.Now.Subtract(now).TotalMilliseconds);
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(5);
             }
         }
 
