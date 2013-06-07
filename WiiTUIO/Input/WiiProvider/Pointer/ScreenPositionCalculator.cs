@@ -45,13 +45,13 @@ namespace WiiTUIO.Provider
         private void recalculateScreenBounds()
         {
             this.screenBounds = Util.ScreenBounds;
-            minXPos = -(screenBounds.Width / 3);
-            maxXPos = screenBounds.Width + (screenBounds.Width / 3);
+            minXPos = -(int)(screenBounds.Width * Settings.Default.pointer_marginsLeftRight);
+            maxXPos = screenBounds.Width + (int)(screenBounds.Width * Settings.Default.pointer_marginsLeftRight);
             maxWidth = maxXPos - minXPos;
-            minYPos = -(screenBounds.Height / 2);
-            maxYPos = screenBounds.Height + (screenBounds.Height / 2);
+            minYPos = -(int)(screenBounds.Height * Settings.Default.pointer_marginsTopBottom);
+            maxYPos = screenBounds.Height + (int)(screenBounds.Height * Settings.Default.pointer_marginsTopBottom);
             maxHeight = maxYPos - minYPos;
-            SBPositionOffset = (screenBounds.Width / 4);
+            SBPositionOffset = (int)(screenBounds.Width * Settings.Default.pointer_sensorBarPosCompensation);
         }
 
         public CursorPos CalculateCursorPos(WiimoteChangedEventArgs args)
@@ -100,20 +100,26 @@ namespace WiiTUIO.Provider
             {
                 offsetY = SBPositionOffset;
             }
-            rotationSmoothing.addValue(new System.Windows.Vector(args.WiimoteState.AccelState.Values.X, args.WiimoteState.AccelState.Values.Z));
-            System.Windows.Vector smoothedRotation = rotationSmoothing.getSmoothedValue();
 
-            double rotation = -1*(Math.Atan2(smoothedRotation.Y,smoothedRotation.X) - (Math.PI / 2.0));
+            double rotation = 0;
 
             relativePosition.X = 1 - relativePosition.X;
 
-            relativePosition.X = relativePosition.X - 0.5F;
-            relativePosition.Y = relativePosition.Y - 0.5F;
+            if (Settings.Default.pointer_considerRotation)
+            {
+                rotationSmoothing.addValue(new System.Windows.Vector(args.WiimoteState.AccelState.Values.X, args.WiimoteState.AccelState.Values.Z));
+                System.Windows.Vector smoothedRotation = rotationSmoothing.getSmoothedValue();
 
-            relativePosition = this.rotatePoint(relativePosition,rotation);
+                rotation = -1 * (Math.Atan2(smoothedRotation.Y, smoothedRotation.X) - (Math.PI / 2.0));
 
-            relativePosition.X = relativePosition.X + 0.5F;
-            relativePosition.Y = relativePosition.Y + 0.5F;
+                relativePosition.X = relativePosition.X - 0.5F;
+                relativePosition.Y = relativePosition.Y - 0.5F;
+
+                relativePosition = this.rotatePoint(relativePosition, rotation);
+
+                relativePosition.X = relativePosition.X + 0.5F;
+                relativePosition.Y = relativePosition.Y + 0.5F;
+            }
 
             x = Convert.ToInt32((float)maxWidth * relativePosition.X + minXPos);
             y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;

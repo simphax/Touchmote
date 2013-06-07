@@ -137,6 +137,50 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private double _pointer_sensorBarPosCompensation = 0.30;
+        public double pointer_sensorBarPosCompensation
+        {
+            get { return _pointer_sensorBarPosCompensation; }
+            set
+            {
+                _pointer_sensorBarPosCompensation = value;
+                OnPropertyChanged("pointer_sensorBarPosCompensation");
+            }
+        }
+
+        private double _pointer_marginsTopBottom = 0.8;
+        public double pointer_marginsTopBottom
+        {
+            get { return _pointer_marginsTopBottom; }
+            set
+            {
+                _pointer_marginsTopBottom = value;
+                OnPropertyChanged("pointer_marginsTopBottom");
+            }
+        }
+
+        private double _pointer_marginsLeftRight = 0.7;
+        public double pointer_marginsLeftRight
+        {
+            get { return _pointer_marginsLeftRight; }
+            set
+            {
+                _pointer_marginsLeftRight = value;
+                OnPropertyChanged("pointer_marginsLeftRight");
+            }
+        }
+
+        private bool _pointer_considerRotation = true;
+        public bool pointer_considerRotation
+        {
+            get { return _pointer_considerRotation; }
+            set
+            {
+                _pointer_considerRotation = value;
+                OnPropertyChanged("pointer_considerRotation");
+            }
+        }
+
         private bool _pointer_customCursor = true;
         public bool pointer_customCursor
         {
@@ -181,7 +225,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _touch_touchTapThreshold = 30;
+        private int _touch_touchTapThreshold = 40;
         public int touch_touchTapThreshold
         {
             get { return _touch_touchTapThreshold; }
