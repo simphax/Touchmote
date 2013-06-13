@@ -60,8 +60,8 @@ namespace WiiTUIO.Provider
 
         private WiimoteState lastWiimoteState;
 
-        private Cursor masterCursor;
-        private Cursor slaveCursor;
+        private D3DCursor masterCursor;
+        private D3DCursor slaveCursor;
 
         private string currentKeymap;
 
@@ -89,19 +89,19 @@ namespace WiiTUIO.Provider
             this.useCustomCursor = Settings.Default.pointer_customCursor;
             if (this.useCustomCursor)
             {
-                CursorWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                {
+                //CursorWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
+                //{
                     Color myColor = CursorColor.getColor(this.Status.ID);
-                    this.masterCursor = new Cursor(myColor);
-                    this.slaveCursor = new Cursor(myColor);
+                    this.masterCursor = new D3DCursor((this.Status.ID-1)*2,myColor);
+                    this.slaveCursor = new D3DCursor((this.Status.ID-1)*2+1,myColor);
                     this.masterCursor.Hide();
                     this.slaveCursor.Hide();
-                    CursorWindow.Current.addCursor(masterCursor);
-                    CursorWindow.Current.addCursor(slaveCursor);
+                    D3DCursorWindow.Current.AddCursor(masterCursor);
+                    D3DCursorWindow.Current.AddCursor(slaveCursor);
 
                     this.keyMapper.KeyMap.SendConfigChangedEvt();
 
-                }), null);
+                //}), null);
             }
 
 
@@ -444,8 +444,8 @@ namespace WiiTUIO.Provider
             this.keyMapper.Teardown();
             App.Current.Dispatcher.BeginInvoke(new Action(delegate()
             {
-                CursorWindow.Current.removeCursor(this.masterCursor);
-                CursorWindow.Current.removeCursor(this.slaveCursor);
+                D3DCursorWindow.Current.RemoveCursor(this.masterCursor);
+                D3DCursorWindow.Current.RemoveCursor(this.slaveCursor);
             }), null);
         }
     }

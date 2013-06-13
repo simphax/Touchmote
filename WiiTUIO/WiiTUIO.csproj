@@ -197,10 +197,9 @@
     </Compile>
     <Compile Include="Autostart.cs" />
     <Compile Include="Input\WiiProvider\CursorColor.cs" />
-    <Compile Include="Input\WiiProvider\Pointer\Cursor.xaml.cs">
-      <DependentUpon>Cursor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Input\WiiProvider\Pointer\CursorPos.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\D3DCursor.cs" />
+    <Compile Include="Input\WiiProvider\Pointer\D3DCursorWindow.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiimoteStatus.cs" />
     <Compile Include="Input\WiiProvider\WiiKeyMap.cs" />
     <Compile Include="Input\WiiProvider\XinputBus.cs">
@@ -215,9 +214,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MinimizeToTray.cs" />
-    <Compile Include="Input\WiiProvider\Pointer\CursorWindow.xaml.cs">
-      <DependentUpon>CursorWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="OverlayNotice.xaml.cs">
       <DependentUpon>OverlayNotice.xaml</DependentUpon>
     </Compile>
@@ -238,10 +234,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AppSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Input\WiiProvider\Pointer\Cursor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -281,10 +273,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Input\WiiProvider\Settings\WiiProviderSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Input\WiiProvider\Pointer\CursorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

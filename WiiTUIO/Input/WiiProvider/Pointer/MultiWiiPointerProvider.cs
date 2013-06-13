@@ -539,7 +539,7 @@ namespace WiiTUIO.Provider
                             //cursorUpdateToggle = ++cursorUpdateToggle % 2; //Update cursors every other update. So it doesn't load the CPU as much.
                             //if (cursorUpdateToggle == 0)
                             //{
-                                CursorWindow.Current.RefreshCursors();
+                                D3DCursorWindow.Current.RefreshCursors();
                             //}
                         }
 
