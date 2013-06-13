@@ -22,7 +22,7 @@
 
 #define NORMAL_SIZE 0.5f
 #define PRESSED_SIZE 0.4f
-#define HIDDEN_SIZE 0.0f
+#define HIDDEN_SIZE 0.00000001f
 #define ANIMATION_DURATION 100
 
 
@@ -231,7 +231,6 @@ VOID Render(VOID)
 			pos.y = cursors[j].y - (SPRITE_SIZE/2);
 
 
-
 			//Animation
 			if(cursors[j].hidden)
 			{
@@ -333,7 +332,7 @@ LRESULT WINAPI WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 // +-----------+---------+
 // | Program entry point |
 // +---------------------+
-extern "C" __declspec(dllexport)INT WINAPI RunD3DCursorWindow(HINSTANCE hInstance, HWND hParent, int width, int height)
+extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInstance, HWND hParent, int width, int height)
 {
   MSG        uMsg;     
   WNDCLASSEX wc    = {sizeof(WNDCLASSEX),              // cbSize
@@ -380,7 +379,7 @@ extern "C" __declspec(dllexport)INT WINAPI RunD3DCursorWindow(HINSTANCE hInstanc
       // Show the window
       ShowWindow(hWnd, SW_SHOWDEFAULT);
       UpdateWindow(hWnd);
-
+	  /*
       // Enter main loop
       while(TRUE)
       {
@@ -403,6 +402,7 @@ extern "C" __declspec(dllexport)INT WINAPI RunD3DCursorWindow(HINSTANCE hInstanc
         //Render();
 		Sleep(10);
       }
+	  */
     }
   }
 

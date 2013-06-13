@@ -26,6 +26,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using MahApps.Metro.Controls;
+using System.Windows.Interop;
 
 namespace WiiTUIO
 {
@@ -102,9 +103,13 @@ namespace WiiTUIO
             Thread overlayUIThread = new Thread(() =>
             {
                 OverlayWindow.Current.Show();
+
                 if (Settings.Default.pointer_customCursor)
                 {
-                    CursorWindow.Current.Show();
+                    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        D3DCursorWindow.Current.Start((new WindowInteropHelper(OverlayWindow.Current)).Handle, Util.ScreenWidth, Util.ScreenHeight);
+                    }));
                 }
 
                 System.Windows.Threading.Dispatcher.Run();
@@ -171,13 +176,13 @@ namespace WiiTUIO
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            CursorWindow.Current.Dispatcher.BeginInvoke(new Action(delegate() {
+            /*CursorWindow.Current.Dispatcher.BeginInvoke(new Action(delegate() {
                 CursorWindow.Current.Close();
             }));
             OverlayWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
             {
                 OverlayWindow.Current.Close();
-            }));
+            }));*/
             /*
             if (this.bConnected)
             {
