@@ -40,9 +40,14 @@ namespace DriverInstall
 
             if (Environment.GetCommandLineArgs().Contains("-install"))
             {
-                if (Environment.GetCommandLineArgs().Contains("-driver"))
+                if (Environment.GetCommandLineArgs().Contains("-vmulti"))
                 {
-                    this.installDriverComplete();
+                    this.installVmultiDriverComplete();
+                }
+
+                if (Environment.GetCommandLineArgs().Contains("-scpbus"))
+                {
+                    this.installScpBusDriverComplete();
                 }
 
                 if (Environment.GetCommandLineArgs().Contains("-certificate"))
@@ -52,9 +57,14 @@ namespace DriverInstall
             }
             else if (Environment.GetCommandLineArgs().Contains("-uninstall"))
             {
-                if (Environment.GetCommandLineArgs().Contains("-driver"))
+                if (Environment.GetCommandLineArgs().Contains("-vmulti"))
                 {
-                    this.uninstallDriverComplete();
+                    this.uninstallVmultiDriverComplete();
+                }
+
+                if (Environment.GetCommandLineArgs().Contains("-scpbus"))
+                {
+                    this.uninstallScpBusDriverComplete();
                 }
 
                 if (Environment.GetCommandLineArgs().Contains("-certificate"))
@@ -78,31 +88,40 @@ namespace DriverInstall
 
         private void installAll()
         {
-            this.installDriverComplete();
+            this.installAllDriversComplete();
             this.uninstallCert();
             this.installCert();
         }
 
         private void uninstallAll()
         {
-            this.uninstallDriverComplete();
+            this.uninstallAllDriversComplete();
             this.uninstallCert();
         }
 
-        private void installDriverComplete()
+        private void installAllDriversComplete()
+        {
+            this.installVmultiDriverComplete();
+            this.installScpBusDriverComplete();
+            //this.store_settings();
+            //this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
+            //this.install_service(etd_ServiceName, etd_ServiceFilename, "3333");
+            //this.give_service_permissions(etd_ServiceName);
+        }
+
+        private void installVmultiDriverComplete()
         {
             this.uninstallVmultiDriver();
             this.uninstallVmultiDriver();
             this.installVmultiDriver();
 
             this.removeAllButTouch();
+        }
 
+        private void installScpBusDriverComplete()
+        {
             this.uninstallScpBusDriver();
             this.installScpBusDriver();
-            //this.store_settings();
-            //this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
-            //this.install_service(etd_ServiceName, etd_ServiceFilename, "3333");
-            //this.give_service_permissions(etd_ServiceName);
         }
 
         private void installCert()
@@ -139,12 +158,22 @@ namespace DriverInstall
             store.Close();
         }
 
-        private void uninstallDriverComplete()
+        private void uninstallAllDriversComplete()
+        {
+            uninstallVmultiDriverComplete();
+            uninstallScpBusDriverComplete();
+            //this.uninstall_service(etd_ServiceName,etd_ServiceFilename);
+        }
+
+        private void uninstallVmultiDriverComplete()
         {
             this.uninstallVmultiDriver();
             this.uninstallVmultiDriver();
+        }
+
+        private void uninstallScpBusDriverComplete()
+        {
             this.uninstallScpBusDriver();
-            //this.uninstall_service(etd_ServiceName,etd_ServiceFilename);
         }
 
         private void installVmultiDriver()
@@ -420,12 +449,12 @@ namespace DriverInstall
 
         private void btnInstall_Click(object sender, RoutedEventArgs e)
         {
-            this.installDriverComplete();
+            this.installAllDriversComplete();
         }
 
         private void btnUninstall_Click(object sender, RoutedEventArgs e)
         {
-            this.uninstallDriverComplete();
+            this.uninstallAllDriversComplete();
         }
 
     }
