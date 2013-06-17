@@ -25,6 +25,8 @@
 #define HIDDEN_SIZE 0.0f
 #define ANIMATION_DURATION 100
 
+#define TEXTURE_PATH L"Resources\\circle.png"
+
 
 struct D3DCURSOR
 {
@@ -51,9 +53,7 @@ IDirect3DDevice9Ex      *g_pD3DDevice  = NULL;
 IDirect3DVertexBuffer9  *g_pVB         = NULL;
 D3DCURSOR				*cursors = new D3DCURSOR[MAX_CURSORS];
 LPD3DXSPRITE g_sprite=NULL;
-LPDIRECT3DTEXTURE9 g_gradiantCircle=NULL;
 LPDIRECT3DTEXTURE9 g_circle=NULL;
-LPDIRECT3DTEXTURE9 g_stroke=NULL;
 INT enabledCursors = 0;
 
 FLOAT scale = 0.1f;
@@ -168,9 +168,7 @@ HRESULT InitSprites(VOID)
 		// created OK
 	}
 
-	D3DXCreateTextureFromFile(g_pD3DDevice,L"circle.png", &g_circle );
-	D3DXCreateTextureFromFile(g_pD3DDevice,L"gradiantcircle.png", &g_gradiantCircle );
-	D3DXCreateTextureFromFile(g_pD3DDevice,L"stroke.png", &g_stroke );
+	D3DXCreateTextureFromFile(g_pD3DDevice,TEXTURE_PATH, &g_circle );
 
 	return S_OK;
 }
@@ -216,10 +214,10 @@ VOID Render(VOID)
 	  clearRect[i].y2 = clearQueue[j].cursor->last_rendered_y + (SPRITE_SIZE/2);
 	  j++;
   }
+
+  g_pD3DDevice->Clear(enabledCursors+nToClear, clearRect, D3DCLEAR_TARGET, ARGB_TRANS, 1.0f, 0);
+  
   nToClear=0;
-
-  g_pD3DDevice->Clear(enabledCursors, clearRect, D3DCLEAR_TARGET, ARGB_TRANS, 1.0f, 0);
-
   // Render scene
   if(SUCCEEDED(g_pD3DDevice->BeginScene()))
   {
@@ -407,7 +405,7 @@ extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInsta
   }
 
   // Shutdown Direct3D
-  D3DShutdown();
+  //D3DShutdown();
 
   // Exit application
   return 0;

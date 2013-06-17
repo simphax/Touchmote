@@ -21,17 +21,20 @@ namespace WiiTUIO.Output
 
         private Mutex touchscreenMutex = new Mutex();
 
-        public void connect()
+        public TouchInjectProviderHandler()
         {
-            TouchFeedback feedback = Settings.Default.pointer_customCursor ?  TouchFeedback.NONE : TouchFeedback.INDIRECT;
+            TouchFeedback feedback = Settings.Default.pointer_customCursor ? TouchFeedback.NONE : TouchFeedback.INDIRECT;
             if (!TCD.System.TouchInjection.TouchInjector.InitializeTouchInjection((uint)maxTouchPoints, feedback))
             {
                 throw new Exception("Can not initialize touch injection");
             }
 
-            Launcher.Launch("", "ResetTouchInjection.exe", "", null);
-
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+        }
+
+        public void connect()
+        {
+            Launcher.Launch("", "ResetTouchInjection.exe", "", null);
 
             OnConnect();
         }

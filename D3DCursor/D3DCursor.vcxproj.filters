@@ -19,9 +19,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="circle.png">
-      <Filter>Source Files</Filter>
-    </Image>
-  </ItemGroup>
 </Project>
