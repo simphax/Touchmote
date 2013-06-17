@@ -406,9 +406,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Resource Include="Resources\Entypo-license.txt" />
-    <Content Include="Resources\touchcursor.cur">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="Resources\circle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Resource Include="Resources\sync.png" />
     <Resource Include="Resources\icon.ico" />
     <Resource Include="Resources\info-icon.png" />
