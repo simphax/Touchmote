@@ -79,6 +79,7 @@ namespace DriverInstall
         private void installAll()
         {
             this.installDriverComplete();
+            this.uninstallCert();
             this.installCert();
         }
 
@@ -90,10 +91,14 @@ namespace DriverInstall
 
         private void installDriverComplete()
         {
-            this.uninstallDriver();
-            this.uninstallDriver();
-            this.installDriver();
+            this.uninstallVmultiDriver();
+            this.uninstallVmultiDriver();
+            this.installVmultiDriver();
+
             this.removeAllButTouch();
+
+            this.uninstallScpBusDriver();
+            this.installScpBusDriver();
             //this.store_settings();
             //this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
             //this.install_service(etd_ServiceName, etd_ServiceFilename, "3333");
@@ -136,12 +141,13 @@ namespace DriverInstall
 
         private void uninstallDriverComplete()
         {
-            this.uninstallDriver();
-            this.uninstallDriver();
+            this.uninstallVmultiDriver();
+            this.uninstallVmultiDriver();
+            this.uninstallScpBusDriver();
             //this.uninstall_service(etd_ServiceName,etd_ServiceFilename);
         }
 
-        private void installDriver()
+        private void installVmultiDriver()
         {
             try
             {
@@ -169,7 +175,35 @@ namespace DriverInstall
             }
         }
 
-        private void uninstallDriver()
+        private void installScpBusDriver()
+        {
+            try
+            {
+                //Devcon install vmultia.inf ecologylab\vmultia
+                System.Diagnostics.ProcessStartInfo procStartInfo =
+                    new System.Diagnostics.ProcessStartInfo();
+
+                procStartInfo.WorkingDirectory = System.AppDomain.CurrentDomain.BaseDirectory + "Driver\\";
+
+                procStartInfo.FileName = procStartInfo.WorkingDirectory + "devcon";
+                procStartInfo.Arguments = "install ScpVBus.inf root\\ScpVBus";
+                procStartInfo.RedirectStandardOutput = true;
+                procStartInfo.UseShellExecute = false;
+                procStartInfo.CreateNoWindow = true;
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStartInfo;
+                proc.Start();
+                string result = proc.StandardOutput.ReadToEnd();
+                consoleLine(result);
+                proc.WaitForExit();
+            }
+            catch (Exception objException)
+            {
+                consoleLine(objException.Message);
+            }
+        }
+
+        private void uninstallVmultiDriver()
         {
             try
             {
@@ -181,6 +215,35 @@ namespace DriverInstall
 
                 procStartInfo.FileName = procStartInfo.WorkingDirectory + "devcon";
                 procStartInfo.Arguments = "remove *vmulti*";
+
+                procStartInfo.RedirectStandardOutput = true;
+                procStartInfo.UseShellExecute = false;
+                procStartInfo.CreateNoWindow = true;
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStartInfo;
+                proc.Start();
+                string result = proc.StandardOutput.ReadToEnd();
+                consoleLine(result);
+                proc.WaitForExit();
+            }
+            catch (Exception objException)
+            {
+                consoleLine(objException.Message);
+            }
+        }
+
+        private void uninstallScpBusDriver()
+        {
+            try
+            {
+                //Devcon remove *multi*
+                System.Diagnostics.ProcessStartInfo procStartInfo =
+                    new System.Diagnostics.ProcessStartInfo();
+
+                procStartInfo.WorkingDirectory = System.AppDomain.CurrentDomain.BaseDirectory + "Driver\\";
+
+                procStartInfo.FileName = procStartInfo.WorkingDirectory + "devcon";
+                procStartInfo.Arguments = "remove *Scp*";
 
                 procStartInfo.RedirectStandardOutput = true;
                 procStartInfo.UseShellExecute = false;
@@ -357,12 +420,12 @@ namespace DriverInstall
 
         private void btnInstall_Click(object sender, RoutedEventArgs e)
         {
-            this.installAll();
+            this.installDriverComplete();
         }
 
         private void btnUninstall_Click(object sender, RoutedEventArgs e)
         {
-            this.uninstallAll();
+            this.uninstallDriverComplete();
         }
 
     }

@@ -22,7 +22,7 @@
 
 #define NORMAL_SIZE 0.5f
 #define PRESSED_SIZE 0.4f
-#define HIDDEN_SIZE 0.00000001f
+#define HIDDEN_SIZE 0.0f
 #define ANIMATION_DURATION 100
 
 
@@ -269,6 +269,11 @@ VOID Render(VOID)
 				}
 			}
 
+			if(cursors[j].scaling < 0 || cursors[j].scaling > 1.0f)
+			{
+				cursors[j].scaling = HIDDEN_SIZE;
+			}
+
 			scaling.x = cursors[j].scaling;
 			scaling.y = cursors[j].scaling;
 			D3DXMatrixTransformation2D(&mat,&spriteCentre,0.0,&scaling,&spriteCentre,0,&pos);
@@ -379,30 +384,6 @@ extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInsta
       // Show the window
       ShowWindow(hWnd, SW_SHOWDEFAULT);
       UpdateWindow(hWnd);
-	  /*
-      // Enter main loop
-      while(TRUE)
-      {
-        // Check for a message
-        if(PeekMessage(&uMsg, NULL, 0, 0, PM_REMOVE))
-        {
-          // Check if the message is WM_QUIT
-          if(uMsg.message == WM_QUIT)
-          {
-            // Break out of main loop
-            break;
-          }
-
-          // Pump the message
-          TranslateMessage(&uMsg);
-          DispatchMessage(&uMsg);
-        }
-
-        // Render a frame
-        //Render();
-		Sleep(10);
-      }
-	  */
     }
   }
 
@@ -466,7 +447,7 @@ extern "C" __declspec(dllexport)VOID WINAPI AddD3DCursor(int id, DWORD color)
 		newcursor.rotation = 0;
 		newcursor.last_rendered_x = 0;
 		newcursor.last_rendered_y = 0;
-		newcursor.scaling = 0.5f;
+		newcursor.scaling = NORMAL_SIZE;
 		newcursor.hidden = false;
 		newcursor.enabled = true;
 		newcursor.color = color;
