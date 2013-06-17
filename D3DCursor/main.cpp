@@ -34,6 +34,11 @@ struct D3DCURSOR
 	clock_t		animationStart;
 };
 
+struct CURSORPTR
+{
+	D3DCURSOR *cursor;
+};
+
 // +---------+
 // | Globals |
 // +---------+
@@ -53,9 +58,13 @@ INT enabledCursors = 0;
 
 FLOAT scale = 0.1f;
 
-  HWND       hWnd  = NULL;
+HWND       hWnd  = NULL;
 
-    D3DXMATRIX Identity;
+D3DXMATRIX Identity;
+
+CURSORPTR				*clearQueue = new CURSORPTR[MAX_CURSORS];
+INT nToClear=0;
+
 
 
 
@@ -184,9 +193,10 @@ VOID Render(VOID)
   if(g_pD3DDevice == NULL) return;
   if(g_sprite == NULL) return;
   
-  D3DRECT *clearRect = new D3DRECT[enabledCursors];
+  D3DRECT *clearRect = new D3DRECT[enabledCursors+nToClear];
   int j = -1;
-  for(int i=0; i<enabledCursors; i++)
+  int i = 0;
+  for(i=0; i<enabledCursors; i++)
   {
 	  while(!cursors[++j].enabled)
 	  {
@@ -198,6 +208,15 @@ VOID Render(VOID)
 	  clearRect[i].y1 = cursors[j].last_rendered_y - (SPRITE_SIZE/2);
 	  clearRect[i].y2 = cursors[j].last_rendered_y + (SPRITE_SIZE/2);
   }
+  for(j=0; i<enabledCursors+nToClear; i++)
+  {
+	  clearRect[i].x1 = clearQueue[j].cursor->last_rendered_x - (SPRITE_SIZE/2);
+	  clearRect[i].x2 = clearQueue[j].cursor->last_rendered_x + (SPRITE_SIZE/2);
+	  clearRect[i].y1 = clearQueue[j].cursor->last_rendered_y - (SPRITE_SIZE/2);
+	  clearRect[i].y2 = clearQueue[j].cursor->last_rendered_y + (SPRITE_SIZE/2);
+	  j++;
+  }
+  nToClear=0;
 
   g_pD3DDevice->Clear(enabledCursors, clearRect, D3DCLEAR_TARGET, ARGB_TRANS, 1.0f, 0);
 
@@ -462,4 +481,6 @@ extern "C" __declspec(dllexport)VOID WINAPI RemoveD3DCursor(int id)
 {
 	cursors[id].enabled = false;
 	enabledCursors--;
+	clearQueue[nToClear].cursor = &cursors[id];
+	nToClear++;
 }
