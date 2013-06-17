@@ -536,11 +536,7 @@ namespace WiiTUIO.Provider
 
                         if (Settings.Default.pointer_customCursor)
                         {
-                            //cursorUpdateToggle = ++cursorUpdateToggle % 2; //Update cursors every other update. So it doesn't load the CPU as much.
-                            //if (cursorUpdateToggle == 0)
-                            //{
-                                D3DCursorWindow.Current.RefreshCursors();
-                            //}
+                            D3DCursorWindow.Current.RefreshCursors();
                         }
 
                         FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);

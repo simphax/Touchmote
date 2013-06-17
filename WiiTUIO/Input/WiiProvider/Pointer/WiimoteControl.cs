@@ -89,19 +89,17 @@ namespace WiiTUIO.Provider
             this.useCustomCursor = Settings.Default.pointer_customCursor;
             if (this.useCustomCursor)
             {
-                //CursorWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                //{
-                    Color myColor = CursorColor.getColor(this.Status.ID);
-                    this.masterCursor = new D3DCursor((this.Status.ID-1)*2,myColor);
-                    this.slaveCursor = new D3DCursor((this.Status.ID-1)*2+1,myColor);
-                    this.masterCursor.Hide();
-                    this.slaveCursor.Hide();
-                    D3DCursorWindow.Current.AddCursor(masterCursor);
-                    D3DCursorWindow.Current.AddCursor(slaveCursor);
+                Color myColor = CursorColor.getColor(this.Status.ID);
+                this.masterCursor = new D3DCursor((this.Status.ID-1)*2,myColor);
+                this.slaveCursor = new D3DCursor((this.Status.ID-1)*2+1,myColor);
 
-                    this.keyMapper.KeyMap.SendConfigChangedEvt();
+                masterCursor.Hide();
+                slaveCursor.Hide();
 
-                //}), null);
+                D3DCursorWindow.Current.AddCursor(masterCursor);
+                D3DCursorWindow.Current.AddCursor(slaveCursor);
+
+                this.keyMapper.KeyMap.SendConfigChangedEvt();
             }
 
 

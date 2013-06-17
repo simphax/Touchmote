@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WiiTUIO.Provider
@@ -29,8 +30,10 @@ namespace WiiTUIO.Provider
         {
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             cursors = new List<D3DCursor>(2);
+            mutex = new Mutex();
         }
 
+        private Mutex mutex;
         private List<D3DCursor> cursors;
             
         [DllImport("D3DCursor.dll")]
@@ -67,16 +70,24 @@ namespace WiiTUIO.Provider
 
         public void AddCursor(D3DCursor cursor)
         {
+            mutex.WaitOne();
             cursors.Add(cursor);
 
-            AddD3DCursor(cursor.ID, (uint)((((uint)cursor.Color.R) << 16) | (((uint)cursor.Color.B) << 8) | (uint)cursor.Color.G));
+            AddD3DCursor(cursor.ID, (uint)((((uint)cursor.Color.R) << 16) | (((uint)cursor.Color.G) << 8) | (uint)cursor.Color.B));
+
+            SetD3DCursorPosition(cursor.ID, cursor.X, cursor.Y);
+            SetD3DCursorPressed(cursor.ID, cursor.Pressed);
+            SetD3DCursorHidden(cursor.ID, cursor.Hidden);
+            mutex.ReleaseMutex();
         }
 
         public void RemoveCursor(D3DCursor cursor)
         {
+            mutex.WaitOne();
             cursors.Remove(cursor);
 
             RemoveD3DCursor(cursor.ID);
+            mutex.ReleaseMutex();
         }
 
         public void RefreshCursors()
