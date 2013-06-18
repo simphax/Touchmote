@@ -1,26 +1,35 @@
 ﻿<Window x:Class="WiiTUIO.OverlayWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cursor"
+        Title="OSD"
         Topmost="True"
         Top="0"
         Left="0"
         AllowsTransparency="True"
         WindowStyle="None"
         Background="Transparent"
-        ShowInTaskbar="False" >
+        ShowInTaskbar="False">
     <Canvas Name="baseCanvas">
         <Grid MouseUp="Grid_MouseUp" Name="baseGrid" Background="#33000000">
-            <Border MouseUp="layoutChooserOverlay_MouseUp" Name="layoutChooserOverlay" Width="500" Height="680" Background="#F20A0A0A" BorderThickness="3" BorderBrush="Red">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0"></Border>
+            <Border Grid.Row="1" MouseUp="layoutChooserOverlay_MouseUp" Name="layoutChooserOverlay" Width="500" Height="Auto">
                 <StackPanel>
-                    <Label Name="title" Content="Choose a layout" FontSize="30" FontFamily="Segoe UI Light" Foreground="White" Margin="10"></Label>
-                    <ScrollViewer PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Height="600">
-                        <StackPanel Name="layoutList">
+                    <Border Name="titleBorder" Background="#F20A0A0A" BorderThickness="3" BorderBrush="Red" Margin="0,0,0,10">
+                        <TextBlock Name="title" Text="Choose a layout" FontSize="30" FontFamily="Segoe UI Light" Foreground="White" Margin="10" TextAlignment="Center"></TextBlock>
+                    </Border>
+                    <ScrollViewer Name="scrollViewer" PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                        <StackPanel Name="layoutList" Margin="0,0,0,10">
 
                         </StackPanel>
                     </ScrollViewer>
                 </StackPanel>
             </Border>
+            <Border Grid.Row="2"></Border>
         </Grid>
         <StackPanel Name="noticeStack" Canvas.Right="50" Canvas.Top="50" Width="500">
             
