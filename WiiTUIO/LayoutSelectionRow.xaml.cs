@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WiiTUIO.Provider;
 
 namespace WiiTUIO
 {
@@ -25,12 +26,15 @@ namespace WiiTUIO
 
         public Action<string> OnClick; //filename
 
-        public LayoutSelectionRow(string name, string file)
+        public LayoutSelectionRow(string name, string file, Color borderColor)
         {
             InitializeComponent();
             this.name = name;
             this.file = file;
             this.tbName.Text = name;
+
+            this.border.BorderBrush = new SolidColorBrush(borderColor);
+
         }
 
         private void tbName_MouseUp(object sender, MouseButtonEventArgs e)

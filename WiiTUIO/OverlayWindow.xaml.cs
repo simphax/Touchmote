@@ -57,7 +57,7 @@ namespace WiiTUIO
             this.baseGrid.Visibility = Visibility.Hidden;
             this.layoutChooserOverlay.Visibility = Visibility.Hidden;
 
-            this.layoutChooserOverlay.Height = this.Height / 2;
+            this.scrollViewer.MaxHeight = this.Height / 2-200;
             
             //Compensate for DPI settings
             Loaded += (o, e) =>
@@ -106,16 +106,16 @@ namespace WiiTUIO
 
                     Color bordercolor = CursorColor.getColor(keyMapper.WiimoteID);
                     bordercolor.ScA = 0.5f;
-                    this.layoutChooserOverlay.BorderBrush = new SolidColorBrush(bordercolor);
+                    this.titleBorder.BorderBrush = new SolidColorBrush(bordercolor);
 
-                    this.title.Content = "Choose a layout for Wiimote " + keyMapper.WiimoteID;
+                    this.title.Text = "Choose a layout for Wiimote " + keyMapper.WiimoteID;
 
                     this.layoutList.Children.Clear();
                     foreach (JObject config in this.keyMapper.GetLayoutList())
                     {
                         string name = config.GetValue("Title").ToString();
                         string filename = config.GetValue("Keymap").ToString();
-                        LayoutSelectionRow row = new LayoutSelectionRow(name, filename);
+                        LayoutSelectionRow row = new LayoutSelectionRow(name, filename, bordercolor);
                         row.OnClick += Select_Layout;
                         this.layoutList.Children.Add(row);
                     }
