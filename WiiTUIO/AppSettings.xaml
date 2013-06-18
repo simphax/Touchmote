@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel x:Name="canvasSettings">
-        <Canvas Height="250">
+        <Canvas Height="220">
             <Button x:Name="btnAppSettingsBack" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Canvas.Left="10" Canvas.Top="10" Click="btnAppSettingsBack_Click">
                 <Rectangle Width="14" Height="14" Fill="Black" Opacity="0.8">
                     <Rectangle.OpacityMask>
@@ -29,15 +29,15 @@
             <CheckBox x:Name="cbWindowsStart" Content="Start Touchmote with Windows" Canvas.Left="125" Canvas.Top="87" FontFamily="Segoe UI Semilight" Checked="cbWindowsStart_Checked" Unchecked="cbWindowsStart_Unchecked"/>
             <!--Button Name="btnConfigDone" Content="Done" Canvas.Left="236" Canvas.Top="126" Width="44" Background="#FFECECEC" BorderBrush="Gainsboro" Height="25"/-->
             <Label Content="Touchmote settings" Canvas.Left="73" Canvas.Top="36" FontFamily="Segoe UI Light" FontSize="18"/>
-            <ComboBox x:Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="127" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="213" Canvas.Top="214" FontFamily="Segoe UI Semilight">
+            <ComboBox Visibility="Collapsed" x:Name="ModeComboBox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="127" SelectionChanged="ComboBox_SelectionChanged_1" Canvas.Left="213" Canvas.Top="214" FontFamily="Segoe UI Semilight">
                 <ComboBoxItem x:Name="cbiPointer" IsSelected="True" Content="IR Sensor Bar"/>
                 <ComboBoxItem x:Name="cbiPen" Visibility="Collapsed" Content="IR Pen"/>
             </ComboBox>
-            <Label Content="Pointer mode" Canvas.Left="120" Canvas.Top="214" FontFamily="Segoe UI Semilight" FontSize="12"/>
+            <Label Visibility="Collapsed" Content="Pointer mode" Canvas.Left="120" Canvas.Top="214" FontFamily="Segoe UI Semilight" FontSize="12"/>
             <CheckBox x:Name="cbPairOnStart" Content="Pair one remote on startup" Canvas.Left="125" Canvas.Top="109" FontFamily="Segoe UI Semilight" Checked="cbPairOnStart_Checked" Unchecked="cbPairOnStart_Unchecked" />
-            <CheckBox Visibility="Collapsed" x:Name="cbMinimizeToTray" Content="Minimize to tray" Canvas.Left="125" Canvas.Top="134" FontFamily="Segoe UI Semilight" Checked="cbMinimizeToTray_Checked" Unchecked="cbMinimizeToTray_Unchecked" />
-            <CheckBox x:Name="cbMinimizeOnStart" Content="Start minimized" Canvas.Left="125" Canvas.Top="131" FontFamily="Segoe UI Semilight" Checked="cbMinimizeOnStart_Checked" Unchecked="cbMinimizeOnStart_Unchecked" />
-            <CheckBox x:Name="cbUseCustomCursor" Content="Use Touchmote cursor (changes on restart)" Canvas.Left="125" Canvas.Top="154" FontFamily="Segoe UI Semilight" Checked="cbUseCustomCursor_Checked" Unchecked="cbUseCustomCursor_Unchecked" />
+            <CheckBox x:Name="cbMinimizeToTray" Content="Minimize to tray" Canvas.Left="125" Canvas.Top="131" FontFamily="Segoe UI Semilight" Checked="cbMinimizeToTray_Checked" Unchecked="cbMinimizeToTray_Unchecked" />
+            <CheckBox x:Name="cbMinimizeOnStart" Content="Start minimized" Canvas.Left="125" Canvas.Top="154" FontFamily="Segoe UI Semilight" Checked="cbMinimizeOnStart_Checked" Unchecked="cbMinimizeOnStart_Unchecked" />
+            <CheckBox x:Name="cbUseCustomCursor" Content="Use Touchmote cursor (changes on restart)" Canvas.Left="125" Canvas.Top="177" FontFamily="Segoe UI Semilight" Checked="cbUseCustomCursor_Checked" Unchecked="cbUseCustomCursor_Unchecked" />
         </Canvas>
         <StackPanel x:Name="providerSettingsContent" />
     </StackPanel>
