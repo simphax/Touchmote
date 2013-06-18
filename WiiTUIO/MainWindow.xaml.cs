@@ -151,7 +151,15 @@ namespace WiiTUIO
 
             this.canvasAbout.Children.Add(aboutpanel);
 
+            Loaded += MainWindow_Loaded;
+        }
 
+        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Settings.Default.minimizeToTray)
+            {
+                MinimizeToTray.Enable(this, Settings.Default.minimizeOnStart);
+            }
         }
 
         private void windowsShutdownEvent(object sender, SessionEndingCancelEventArgs e)
@@ -172,6 +180,19 @@ namespace WiiTUIO
 
         void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+
+            if (e.PropertyName == "minimizeToTray")
+            {
+                if (Settings.Default.minimizeToTray)
+                {
+                    MinimizeToTray.Enable(this,false);
+                }
+                else
+                {
+                    MinimizeToTray.Disable(this);
+                }
+            }
+
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -216,13 +237,8 @@ namespace WiiTUIO
          * */
         public override void OnApplyTemplate()
         {
-            if (!this.minimizedOnce && Settings.Default.minimizeToTray)
-            {
-                MinimizeToTray.Enable(this, Settings.Default.minimizeOnStart);
-                this.minimizedOnce = true;
-            }
             base.OnApplyTemplate();
-            
+
         }
         
         /// <summary>

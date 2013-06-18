@@ -2,6 +2,7 @@
 //http://blogs.msdn.com/b/delay/archive/2009/08/31/get-out-of-the-way-with-the-tray-minimize-to-tray-sample-implementation-for-wpf.aspx
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -19,12 +20,57 @@ public static class MinimizeToTray
     /// <param name="window">Window to enable the behavior for.</param>
     public static void Enable(Window window, bool minimizeNow)
     {
-        // No need to track this instance; its event handlers will keep it alive
-        MinimizeToTrayInstance mtti = new MinimizeToTrayInstance(window);
-        if (minimizeNow)
+        if (MinimizeInstances.ContainsKey(window))
         {
-            mtti.MinimizeNow();
+            Console.WriteLine(string.Format("Minimization already enabled for '{0}'", window.Title));
+            if (minimizeNow)
+            {
+                MinimizeInstances[window].MinimizeNow();
+            }
         }
+        else
+        {
+            var instance = new MinimizeToTrayInstance(window);
+            instance.Enable();
+            MinimizeInstances.Add(window, instance);
+
+            if (minimizeNow)
+            {
+                instance.MinimizeNow();
+            }
+        }
+    }
+
+    public static void Disable(Window window)
+    {
+        if (!MinimizeInstances.ContainsKey(window))
+        {
+            Console.WriteLine(string.Format("Minimization not enabled for '{0}'", window.Title));
+        }
+        else
+        {
+            var instance = MinimizeInstances[window];
+            instance.Disable();
+            MinimizeInstances.Remove(window);
+        }
+    }
+
+    private static Dictionary<Window, MinimizeToTrayInstance> _minimizeInstances;
+    /// <summary>
+    /// Gets or sets the windows for which tray minimization is currently enabled.
+    /// </summary>
+    /// <value>The windows for which tray minimization is currently enabled.</value>
+    private static Dictionary<Window, MinimizeToTrayInstance> MinimizeInstances
+    {
+        get
+        {
+            if (_minimizeInstances == null)
+            {
+                _minimizeInstances = new Dictionary<Window, MinimizeToTrayInstance>();
+            }
+            return _minimizeInstances;
+        }
+        set { _minimizeInstances = value; }
     }
 
     /// <summary>
@@ -37,6 +83,22 @@ public static class MinimizeToTray
         private bool _balloonShown;
 
         /// <summary>
+        /// Enables minimization for this Window.
+        /// </summary>
+        public void Enable()
+        {
+            _window.StateChanged += new EventHandler(HandleStateChanged);
+        }
+
+        /// <summary>
+        /// Disables minimization for this Window.
+        /// </summary>
+        public void Disable()
+        {
+            _window.StateChanged -= new EventHandler(HandleStateChanged);
+        }
+
+        /// <summary>
         /// Initializes a new instance of the MinimizeToTrayInstance class.
         /// </summary>
         /// <param name="window">Window instance to attach to.</param>
@@ -44,14 +106,16 @@ public static class MinimizeToTray
         {
             Debug.Assert(window != null, "window parameter is null.");
             _window = window;
-            _window.StateChanged += new EventHandler(HandleStateChanged);
+            //_window.StateChanged += new EventHandler(HandleStateChanged);
         }
 
         public void MinimizeNow()
         {
             App.Current.Dispatcher.BeginInvoke(new Action(delegate()
             {
+                _window.WindowState = WindowState.Minimized;
                 this.HandleStateChanged(null, null);
+
             }),null);
         }
 
@@ -94,6 +158,8 @@ public static class MinimizeToTray
         {
             // Restore the Window
             _window.WindowState = WindowState.Normal;
+            _window.Width = 419; //Hack to fix layout problems with minimizing on start.
+            _window.Activate();
         }
     }
 }

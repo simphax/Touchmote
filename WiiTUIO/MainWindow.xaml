@@ -37,7 +37,7 @@
             </Button>
         </Controls:WindowCommands>
     </Controls:MetroWindow.WindowCommands>
-    <StackPanel>
+    <StackPanel Width="419">
         <StackPanel Name="mainPanel">
             <StackPanel Name="spErrorMsg" Background="#FFFF4138" MouseUp="spErrorMsg_MouseUp" Cursor="Hand">
                 <TextBlock Margin="10" FontSize="14" FontFamily="Segoe UI Semibold">Error</TextBlock>
