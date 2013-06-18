@@ -280,7 +280,7 @@ namespace WiiTUIO.Properties
             }
         }
       
-        private static string SETTINGS_FILENAME = "settings.json";
+        private static string SETTINGS_FILENAME = System.AppDomain.CurrentDomain.BaseDirectory+"settings.json";
 
         private static Settings defaultInstance;
 
