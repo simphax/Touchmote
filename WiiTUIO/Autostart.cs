@@ -29,7 +29,7 @@ namespace WiiTUIO
 
                 td.Triggers.Add(new LogonTrigger());
 
-                td.Actions.Add(new ExecAction(System.AppDomain.CurrentDomain.BaseDirectory+"Touchmote.exe", null, null));
+                td.Actions.Add(new ExecAction(System.AppDomain.CurrentDomain.BaseDirectory + "Touchmote.exe", null, System.AppDomain.CurrentDomain.BaseDirectory));
                 td.Settings.MultipleInstances = TaskInstancesPolicy.StopExisting;
                 td.Principal.RunLevel = TaskRunLevel.Highest;
 
