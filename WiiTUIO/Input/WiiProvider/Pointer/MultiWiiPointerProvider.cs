@@ -47,6 +47,8 @@ namespace WiiTUIO.Provider
 
         private WiimoteCollection pWC;
 
+        private bool readyToRender = false;
+
 
         private EventHandler<WiimoteChangedEventArgs> wiimoteChangedEventHandler;
         private EventHandler<WiimoteExtensionChangedEventArgs> wiimoteExtensionChangedEventHandler;
@@ -101,6 +103,11 @@ namespace WiiTUIO.Provider
             wiimoteHandlerThread.Priority = ThreadPriority.Highest;
             wiimoteHandlerThread.IsBackground = true;
             wiimoteHandlerThread.Start();
+
+            Thread cursorRenderThread = new Thread(CursorRenderWorker);
+            cursorRenderThread.Priority = ThreadPriority.AboveNormal;
+            cursorRenderThread.IsBackground = true;
+            cursorRenderThread.Start();
 
             /*
             this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
@@ -487,6 +494,20 @@ namespace WiiTUIO.Provider
             
         }
 
+        private void CursorRenderWorker()
+        {
+            while (true)
+            {
+                while (!readyToRender)
+                {
+                    Thread.Sleep(1);
+                }
+                readyToRender = false;
+
+                D3DCursorWindow.Current.RefreshCursors();
+            }
+        }
+
         private void WiimoteHandlerWorker()
         {
             while (true)
@@ -534,14 +555,11 @@ namespace WiiTUIO.Provider
                             }
                         }
 
-                        if (Settings.Default.pointer_customCursor)
-                        {
-                            D3DCursorWindow.Current.RefreshCursors();
-                        }
-
                         FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
 
                         this.OnNewFrame(this, newFrame);
+
+                        readyToRender = true;
 
                     }
                     catch (Exception ex)
