@@ -80,9 +80,9 @@ namespace WiiTUIO.Provider
             input[27] = getTriggerRRaw();
 
             Int32 ThumbLX = getStickLXRaw();
-            Int32 ThumbLY = -getStickLYRaw();
+            Int32 ThumbLY = getStickLYRaw();
             Int32 ThumbRX = getStickRXRaw();
-            Int32 ThumbRY = -getStickRYRaw();
+            Int32 ThumbRY = getStickRYRaw();
 
             input[14] = (Byte)((ThumbLX >> 0) & 0xFF); // LX
             input[15] = (Byte)((ThumbLX >> 8) & 0xFF);
