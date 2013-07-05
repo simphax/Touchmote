@@ -20,7 +20,8 @@ namespace WiiTUIO.Provider
         private int maxHeight;
         private int SBPositionOffset;
 
-        private double smoothedX, smoothedZ;
+        private double smoothedX, smoothedZ, smoothedRotation;
+        private Queue<double> accXhistory, accZhistory, rotationHistory;
         private int orientation;
 
         private int leftPoint = -1;
@@ -36,6 +37,11 @@ namespace WiiTUIO.Provider
             this.accelSmoothing = new SmoothingBuffer(Settings.Default.pointer_rotationSmoothing);
 
             SystemEvents.DisplaySettingsChanged +=SystemEvents_DisplaySettingsChanged;
+
+            accXhistory = new Queue<double>(Settings.Default.pointer_rotationSmoothing);
+            accZhistory = new Queue<double>(Settings.Default.pointer_rotationSmoothing);
+
+            rotationHistory = new Queue<double>(Settings.Default.pointer_rotationSmoothing);
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
@@ -67,7 +73,7 @@ namespace WiiTUIO.Provider
             double rotation = 0;
             bool foundMidpoint = false;
 
-            for(int i=0;i<irState.IRSensors.Count() && !foundMidpoint;i++)//IRSensor sensor in irState.IRSensors)
+            /*for(int i=0;i<irState.IRSensors.Count() && !foundMidpoint;i++)//IRSensor sensor in irState.IRSensors)
             {
                 IRSensor sensor = irState.IRSensors[i];
                 if (sensor.Found)
@@ -76,16 +82,50 @@ namespace WiiTUIO.Provider
                     {
                         IRSensor sensor2 = irState.IRSensors[j];
                         if (sensor2.Found)
-                        {
+                        {*/
+            if(irState.IRSensors[0].Found && irState.IRSensors[1].Found)
+            {
                             foundMidpoint = true;
 
-                            relativePosition.X = (sensor.Position.X + sensor2.Position.X) / 2.0f;
-                            relativePosition.Y = (sensor.Position.Y + sensor2.Position.Y) / 2.0f;
+                            relativePosition.X = (irState.IRSensors[0].Position.X + irState.IRSensors[1].Position.X) / 2.0f;
+                            relativePosition.Y = (irState.IRSensors[0].Position.Y + irState.IRSensors[1].Position.Y) / 2.0f;
 
                             if (Settings.Default.pointer_considerRotation)
                             {
-                                smoothedZ = smoothedZ * 0.9 + args.WiimoteState.AccelState.RawValues.Z * 0.1;
+                                //accelSmoothing.addValue(new System.Windows.Vector(args.WiimoteState.AccelState.RawValues.X, args.WiimoteState.AccelState.RawValues.Z));
+
+                                //System.Windows.Vector smoothedRotation = accelSmoothing.getSmoothedValue();
+                                /*
+                                while (accXhistory.Count >= Settings.Default.pointer_rotationSmoothing)
+                                {
+                                    accXhistory.Dequeue();
+                                }
+                                while (accZhistory.Count >= Settings.Default.pointer_rotationSmoothing)
+                                {
+                                    accZhistory.Dequeue();
+                                }
+
+                                accXhistory.Enqueue(args.WiimoteState.AccelState.RawValues.X);
+                                accZhistory.Enqueue(args.WiimoteState.AccelState.RawValues.Z);
+                                
+                                smoothedX = 0;
+                                smoothedZ = 0;
+
+                                foreach (double accX in accXhistory)
+                                {
+                                    smoothedX += accX;
+                                }
+                                smoothedX /= accXhistory.Count;
+
+                                foreach (double accZ in accZhistory)
+                                {
+                                    smoothedZ += accZ;
+                                }
+                                smoothedZ /= accZhistory.Count;
+                                */
+
                                 smoothedX = smoothedX * 0.9 + args.WiimoteState.AccelState.RawValues.X * 0.1;
+                                smoothedZ = smoothedZ * 0.9 + args.WiimoteState.AccelState.RawValues.Z * 0.1;
 
                                 double absx = Math.Abs(smoothedX - 128), absz = Math.Abs(smoothedZ - 128);
 
@@ -104,21 +144,21 @@ namespace WiiTUIO.Provider
                                 }
 
                                 int l = leftPoint, r;
-                                if (leftPoint == -1)
-                                {
+                                //if (leftPoint == -1)
+                                //{
                                     switch (orientation)
                                     {
-                                        case 0: l = (sensor.Position.X < sensor2.Position.X) ? 0 : 1; break;
-                                        case 1: l = (sensor.Position.Y > sensor2.Position.Y) ? 0 : 1; break;
-                                        case 2: l = (sensor.Position.X > sensor2.Position.X) ? 0 : 1; break;
-                                        case 3: l = (sensor.Position.Y < sensor2.Position.Y) ? 0 : 1; break;
+                                        case 0: l = (irState.IRSensors[0].RawPosition.X < irState.IRSensors[1].RawPosition.X) ? 0 : 1; break;
+                                        case 1: l = (irState.IRSensors[0].RawPosition.Y > irState.IRSensors[1].RawPosition.Y) ? 0 : 1; break;
+                                        case 2: l = (irState.IRSensors[0].RawPosition.X > irState.IRSensors[1].RawPosition.X) ? 0 : 1; break;
+                                        case 3: l = (irState.IRSensors[0].RawPosition.Y < irState.IRSensors[1].RawPosition.Y) ? 0 : 1; break;
                                     }
                                     leftPoint = l;
-                                }
+                                //}
                                 r = 1 - l;
 
-                                double dx = irState.IRSensors[r].Position.X - irState.IRSensors[l].Position.X;
-                                double dy = irState.IRSensors[r].Position.Y - irState.IRSensors[l].Position.Y;
+                                double dx = irState.IRSensors[r].RawPosition.X - irState.IRSensors[l].RawPosition.X;
+                                double dy = irState.IRSensors[r].RawPosition.Y - irState.IRSensors[l].RawPosition.Y;
 
                                 double d = Math.Sqrt(dx * dx + dy * dy);
 
@@ -126,14 +166,34 @@ namespace WiiTUIO.Provider
                                 dy /= d;
 
                                 rotation = Math.Atan2(dy, dx);
+
+                                /*
+                                while (rotationHistory.Count >= Settings.Default.pointer_rotationSmoothing)
+                                {
+                                    rotationHistory.Dequeue();
+                                }
+
+                                rotationHistory.Enqueue(rotation);
+
+                                double smoothedRotation = 0;
+                                foreach (double rot in rotationHistory)
+                                {
+                                    smoothedRotation += rot;
+                                }
+                                smoothedRotation /= rotationHistory.Count;
+                                */
+
+                                //smoothedRotation = smoothedRotation * 0.9 + rotation * 0.1;
+                                //rotation = smoothedRotation;
                             }
-                        }
-                    }
-                }
+                        //}
+                    //}
+                //}
             }
 
             if (!foundMidpoint)
             {
+                leftPoint = -1;
                 CursorPos err = new CursorPos(-1,-1,0);
                 
                 return err;
@@ -156,8 +216,6 @@ namespace WiiTUIO.Provider
             {
                 //accelSmoothing.addValue(new System.Windows.Vector(args.WiimoteState.AccelState.Values.X, args.WiimoteState.AccelState.Values.Z));
 
-                
-
                 //System.Windows.Vector smoothedRotation = accelSmoothing.getSmoothedValue();
 
                 //rotation = -1 * (Math.Atan2(smoothedRotation.Y, smoothedRotation.X) - (Math.PI / 2.0));
@@ -170,10 +228,10 @@ namespace WiiTUIO.Provider
                 relativePosition.X = relativePosition.X + 0.5F;
                 relativePosition.Y = relativePosition.Y + 0.5F;
 
-                relativePosition.X = 1 - relativePosition.X;
-                relativePosition.Y = 1 - relativePosition.Y;
+                //relativePosition.X = 1 - relativePosition.X;
+                //relativePosition.Y = 1 - relativePosition.Y;
             }
-
+            
             x = Convert.ToInt32((float)maxWidth * relativePosition.X + minXPos);
             y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;
 
