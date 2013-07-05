@@ -106,10 +106,10 @@ namespace WiiTUIO
 
                 if (Settings.Default.pointer_customCursor)
                 {
-                    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(delegate()
+                    /*System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(delegate()
                     {
                         D3DCursorWindow.Current.Start((new WindowInteropHelper(OverlayWindow.Current)).Handle, Util.ScreenWidth, Util.ScreenHeight);
-                    }));
+                    }));*/
                 }
 
                 System.Windows.Threading.Dispatcher.Run();

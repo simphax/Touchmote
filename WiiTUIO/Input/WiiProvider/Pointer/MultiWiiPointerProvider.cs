@@ -103,12 +103,6 @@ namespace WiiTUIO.Provider
             wiimoteHandlerThread.Priority = ThreadPriority.Highest;
             wiimoteHandlerThread.IsBackground = true;
             wiimoteHandlerThread.Start();
-
-            Thread cursorRenderThread = new Thread(CursorRenderWorker);
-            cursorRenderThread.Priority = ThreadPriority.AboveNormal;
-            cursorRenderThread.IsBackground = true;
-            cursorRenderThread.Start();
-
             /*
             this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
             this.showPointer = Settings.Default.pointer_moveCursor;
@@ -494,20 +488,6 @@ namespace WiiTUIO.Provider
             
         }
 
-        private void CursorRenderWorker()
-        {
-            while (true)
-            {
-                while (!readyToRender)
-                {
-                    Thread.Sleep(1);
-                }
-                readyToRender = false;
-
-                D3DCursorWindow.Current.RefreshCursors();
-            }
-        }
-
         private void WiimoteHandlerWorker()
         {
             while (true)
@@ -555,11 +535,11 @@ namespace WiiTUIO.Provider
                             }
                         }
 
+                        D3DCursorWindow.Current.RefreshCursors();
+
                         FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
 
                         this.OnNewFrame(this, newFrame);
-
-                        readyToRender = true;
 
                     }
                     catch (Exception ex)
@@ -571,7 +551,7 @@ namespace WiiTUIO.Provider
 
                     //Console.WriteLine("handle wiimote time : " + DateTime.Now.Subtract(now).TotalMilliseconds);
                 }
-                Thread.Sleep(5);
+                Thread.Sleep(2);
             }
         }
 
@@ -585,6 +565,7 @@ namespace WiiTUIO.Provider
 
             eventBuffer[((Wiimote)sender).HIDDevicePath] = e;
 
+            pWiimoteMap[((Wiimote)sender).HIDDevicePath].LastWiimoteEventTime = DateTime.Now;
         }
         #endregion
 
