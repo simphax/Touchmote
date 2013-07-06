@@ -365,7 +365,7 @@ LRESULT WINAPI WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if(cursors[j].window == hWnd)
 			{
 				SetWindowPos(cursors[j].window,HWND_TOPMOST,cursors[j].x-(SPRITE_SIZE/2)/2,cursors[j].y-(SPRITE_SIZE/2)/2,cursors[j].width,cursors[j].height,SWP_NOSIZE|SWP_NOACTIVATE);
-				Render(j);
+				
 				return DefWindowProc(hWnd, uMsg, wParam, lParam);
 			}
 		}
@@ -444,7 +444,7 @@ extern "C" __declspec(dllexport)VOID WINAPI SetD3DCursorWindowSize(int width, in
 	//SetWindowPos(hWnd,HWND_TOPMOST,0,0,g_iWidth,g_iHeight,SWP_NOSIZE|SWP_NOACTIVATE);
 }
 
-extern "C" __declspec(dllexport)VOID WINAPI RenderAllD3DCursors()
+extern "C" __declspec(dllexport)VOID WINAPI MoveAllD3DCursors()
 {
 	int j = -1;
 	for(int i=0; i<enabledCursors; i++)
@@ -457,6 +457,19 @@ extern "C" __declspec(dllexport)VOID WINAPI RenderAllD3DCursors()
 			{
 				SendMessage(cursors[j].window, WM_PAINT, NULL, NULL);
 			}
+	}
+}
+
+extern "C" __declspec(dllexport)VOID WINAPI RenderAllD3DCursors()
+{
+	int j = -1;
+	for(int i=0; i<enabledCursors; i++)
+		{
+			while(!cursors[++j].enabled)
+			{
+		
+			}
+			Render(j);
 	}
 }
 
@@ -512,14 +525,19 @@ extern "C" __declspec(dllexport)VOID WINAPI AddD3DCursor(INT id, DWORD color, HI
 		newcursor.window = NewD3DCursorWindow(id,hInstance,hParent);
 
 		enabledCursors++;
+		
+		Render(id);
 	}
 }
 
 extern "C" __declspec(dllexport)VOID WINAPI RemoveD3DCursor(INT id)
 {
-	CloseWindow(cursors[id].window);
 	cursors[id].enabled = false;
 	enabledCursors--;
+	
+	ShowWindow(cursors[id].window,SW_HIDE);
+	CloseWindow(cursors[id].window);
+	UpdateWindow(cursors[id].window);
 	//clearQueue[nToClear].cursor = &cursors[id];
 	//nToClear++;
 }

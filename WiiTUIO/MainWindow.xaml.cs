@@ -116,7 +116,7 @@ namespace WiiTUIO
             });
             overlayUIThread.SetApartmentState(ApartmentState.STA);
             overlayUIThread.IsBackground = true;
-            overlayUIThread.Priority = ThreadPriority.Highest;
+            overlayUIThread.Priority = ThreadPriority.AboveNormal;
             overlayUIThread.Start();
 
             Application.Current.Exit += appWillExit;

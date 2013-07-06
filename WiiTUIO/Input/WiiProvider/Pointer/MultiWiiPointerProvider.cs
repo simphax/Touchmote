@@ -100,7 +100,7 @@ namespace WiiTUIO.Provider
             wiimoteConnectorTimer = new Timer(wiimoteConnectorTimer_Elapsed, null, Timeout.Infinite, CONNECTION_THREAD_SLEEP);
 
             wiimoteHandlerThread = new Thread(WiimoteHandlerWorker);
-            wiimoteHandlerThread.Priority = ThreadPriority.Highest;
+            wiimoteHandlerThread.Priority = ThreadPriority.Normal;
             wiimoteHandlerThread.IsBackground = true;
             wiimoteHandlerThread.Start();
             /*
@@ -551,7 +551,7 @@ namespace WiiTUIO.Provider
 
                     //Console.WriteLine("handle wiimote time : " + DateTime.Now.Subtract(now).TotalMilliseconds);
                 }
-                Thread.Sleep(2);
+                Thread.Sleep(5);
             }
         }
 

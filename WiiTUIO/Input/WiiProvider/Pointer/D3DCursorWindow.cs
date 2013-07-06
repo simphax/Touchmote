@@ -34,9 +34,14 @@ namespace WiiTUIO.Provider
             mutex = new Mutex();
 
             Thread cursorRenderThread = new Thread(CursorRenderWorker);
-            cursorRenderThread.Priority = ThreadPriority.Normal;
+            cursorRenderThread.Priority = ThreadPriority.BelowNormal;
             cursorRenderThread.IsBackground = true;
             cursorRenderThread.Start();
+
+            Thread cursorMoveThread = new Thread(CursorMoveWorker);
+            cursorMoveThread.Priority = ThreadPriority.Normal;
+            cursorMoveThread.IsBackground = true;
+            cursorMoveThread.Start();
 
         }
 
@@ -60,6 +65,9 @@ namespace WiiTUIO.Provider
         
         [DllImport("D3DCursor.dll")]
         private static extern void RenderAllD3DCursors();
+
+        [DllImport("D3DCursor.dll")]
+        private static extern void MoveAllD3DCursors();
 
 
         //Should be run with a dispatcher
@@ -100,16 +108,30 @@ namespace WiiTUIO.Provider
 
         public void RefreshCursors()
         {
-            //OverlayWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
-            //{
+            OverlayWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
+            {
                 foreach(D3DCursor cursor in cursors)
                 {
                     SetD3DCursorPosition(cursor.ID, cursor.X, cursor.Y);
                     SetD3DCursorPressed(cursor.ID, cursor.Pressed);
                     SetD3DCursorHidden(cursor.ID, cursor.Hidden);
                 }
-            //}));
+            }));
             //renderNow = true;
+        }
+
+        public void CursorMoveWorker()
+        {
+            while (true)
+            {
+                //while (!renderNow)
+                //{
+                //    Thread.Sleep(0);
+                //}
+                //renderNow = false;
+                MoveAllD3DCursors();
+                Thread.Sleep(10);
+            }
         }
 
         public void CursorRenderWorker()
@@ -122,7 +144,7 @@ namespace WiiTUIO.Provider
                 //}
                 //renderNow = false;
                 RenderAllD3DCursors();
-                Thread.Sleep(5);
+                Thread.Sleep(15);
             }
         }
 
