@@ -95,6 +95,7 @@ HRESULT D3DStartup(HWND hWnd)
 	pp.Windowed            = TRUE;
 	pp.SwapEffect          = D3DSWAPEFFECT_DISCARD; // Required for multi sampling
 	pp.BackBufferFormat    = D3DFMT_A8R8G8B8;       // Back buffer format with alpha channel
+	pp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE; //Disables vsync
 	
 	// Set highest quality non-maskable AA available or none if not
 	if(SUCCEEDED(g_pD3D->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT,
