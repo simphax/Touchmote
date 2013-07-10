@@ -252,7 +252,11 @@ VOID Render(VOID)
 			//Animation
 			if(cursors[j].hidden)
 			{
-				if(abs(cursors[j].scaling - HIDDEN_SIZE) > 0.01)
+				if(cursors[j].scaling == HIDDEN_SIZE)
+				{
+
+				}
+				else if(abs(cursors[j].scaling - HIDDEN_SIZE) > 0.01)
 				{
 					float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC ) * 1000;
 					cursors[j].scaling = easeInOutQuint(diff,cursors[j].snapshot_scaling,HIDDEN_SIZE-cursors[j].snapshot_scaling,ANIMATION_DURATION);
@@ -264,7 +268,11 @@ VOID Render(VOID)
 			}
 			else if(cursors[j].pressed)
 			{
-				if(abs(cursors[j].scaling - PRESSED_SIZE) > 0.01)
+				if(cursors[j].scaling == PRESSED_SIZE)
+				{
+
+				}
+				else if(abs(cursors[j].scaling - PRESSED_SIZE) > 0.01)
 				{
 					float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC ) * 1000;
 					cursors[j].scaling = easeInOutQuint(diff,cursors[j].snapshot_scaling,PRESSED_SIZE-cursors[j].snapshot_scaling,ANIMATION_DURATION);
@@ -276,7 +284,11 @@ VOID Render(VOID)
 			}
 			else if(!cursors[j].pressed)
 			{
-				if(abs(cursors[j].scaling - NORMAL_SIZE) > 0.01)
+				if(cursors[j].scaling == NORMAL_SIZE)
+				{
+
+				}
+				else if(abs(cursors[j].scaling - NORMAL_SIZE) > 0.01)
 				{
 					float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC ) * 1000;
 					cursors[j].scaling = easeInOutQuint(diff,cursors[j].snapshot_scaling,NORMAL_SIZE-cursors[j].snapshot_scaling,ANIMATION_DURATION);
