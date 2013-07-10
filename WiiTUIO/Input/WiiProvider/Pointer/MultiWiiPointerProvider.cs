@@ -498,11 +498,14 @@ namespace WiiTUIO.Provider
 
             while (true)
             {
-                double wait = millisecondsForEachFrame - DateTime.Now.Subtract(lastFrame).TotalMilliseconds;
+                double delay = DateTime.Now.Subtract(lastFrame).TotalMilliseconds;
+                double wait = millisecondsForEachFrame - delay;
                 if (wait > 0)
                 {
                     Thread.Sleep((int)wait);
                 }
+
+                lastFrame = DateTime.Now;
 
                 if (bRunning)
                 {
@@ -566,7 +569,6 @@ namespace WiiTUIO.Provider
                     //Console.WriteLine("handle wiimote time : " + DateTime.Now.Subtract(now).TotalMilliseconds);
                 }
 
-                lastFrame = DateTime.Now;
             }
         }
 
