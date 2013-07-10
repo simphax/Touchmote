@@ -580,6 +580,8 @@ namespace WiiTUIO.Provider
 
             eventBuffer[((Wiimote)sender).HIDDevicePath] = e;
 
+            pWiimoteMap[((Wiimote)sender).HIDDevicePath].LastWiimoteEventTime = DateTime.Now;
+
         }
         #endregion
 
