@@ -418,7 +418,6 @@ namespace WiiTUIO.Provider
                     }
                 }
 
-                LastWiimoteEventTime = DateTime.Now;
                 if (significant)
                 {
                     this.LastSignificantWiimoteEventTime = DateTime.Now;
