@@ -21,27 +21,17 @@ namespace WiiTUIO.Provider
         private int SBPositionOffset;
 
         private double smoothedX, smoothedZ, smoothedRotation;
-        private Queue<double> accXhistory, accZhistory, rotationHistory;
         private int orientation;
 
         private int leftPoint = -1;
 
         private System.Drawing.Rectangle screenBounds;
 
-        SmoothingBuffer accelSmoothing;
-
         public ScreenPositionCalculator()
         {
             this.recalculateScreenBounds();
 
-            this.accelSmoothing = new SmoothingBuffer(Settings.Default.pointer_rotationSmoothing);
-
             SystemEvents.DisplaySettingsChanged +=SystemEvents_DisplaySettingsChanged;
-
-            accXhistory = new Queue<double>(Settings.Default.pointer_rotationSmoothing);
-            accZhistory = new Queue<double>(Settings.Default.pointer_rotationSmoothing);
-
-            rotationHistory = new Queue<double>(Settings.Default.pointer_rotationSmoothing);
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
