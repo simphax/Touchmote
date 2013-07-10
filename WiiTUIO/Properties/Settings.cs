@@ -203,14 +203,14 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _pointer_rotationSmoothing = 30;
-        public int pointer_rotationSmoothing
+        private int _pointer_FPS = 120;
+        public int pointer_FPS
         {
-            get { return _pointer_rotationSmoothing; }
+            get { return _pointer_FPS; }
             set
             {
-                _pointer_rotationSmoothing = value;
-                OnPropertyChanged("pointer_rotationSmoothing");
+                _pointer_FPS = value;
+                OnPropertyChanged("pointer_FPS");
             }
         }
 

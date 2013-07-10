@@ -104,11 +104,6 @@ namespace WiiTUIO.Provider
             wiimoteHandlerThread.IsBackground = true;
             wiimoteHandlerThread.Start();
 
-            Thread cursorRenderThread = new Thread(CursorRenderWorker);
-            cursorRenderThread.Priority = ThreadPriority.AboveNormal;
-            cursorRenderThread.IsBackground = true;
-            cursorRenderThread.Start();
-
             /*
             this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
             this.showPointer = Settings.Default.pointer_moveCursor;
@@ -494,24 +489,20 @@ namespace WiiTUIO.Provider
             
         }
 
-        private void CursorRenderWorker()
-        {
-            while (true)
-            {
-                while (!readyToRender)
-                {
-                    Thread.Sleep(1);
-                }
-                readyToRender = false;
-
-                D3DCursorWindow.Current.RefreshCursors();
-            }
-        }
 
         private void WiimoteHandlerWorker()
         {
+            
+            double millisecondsForEachFrame = 1000 / Settings.Default.pointer_FPS;
+            DateTime lastFrame = DateTime.Now;
+
             while (true)
             {
+                double wait = millisecondsForEachFrame - DateTime.Now.Subtract(lastFrame).TotalMilliseconds;
+                if (wait > 0)
+                {
+                    Thread.Sleep((int)wait);
+                }
 
                 if (bRunning)
                 {
@@ -559,7 +550,10 @@ namespace WiiTUIO.Provider
 
                         this.OnNewFrame(this, newFrame);
 
-                        readyToRender = true;
+                        if (Settings.Default.pointer_customCursor)
+                        {
+                            D3DCursorWindow.Current.RefreshCursors();
+                        }
 
                     }
                     catch (Exception ex)
@@ -571,7 +565,8 @@ namespace WiiTUIO.Provider
 
                     //Console.WriteLine("handle wiimote time : " + DateTime.Now.Subtract(now).TotalMilliseconds);
                 }
-                Thread.Sleep(5);
+
+                lastFrame = DateTime.Now;
             }
         }
 
