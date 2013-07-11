@@ -36,10 +36,10 @@ Credits
 WiimoteLib 1.7:  	http://wiimotelib.codeplex.com/<br />
 WiiTUIO project:	http://code.google.com/p/wiituio/<br />
 TouchInjector:	  http://touchinjector.codeplex.com/<br />
+Scarlet.Crush Xinput wrapper:   http://forums.pcsx2.net/Thread-XInput-Wrapper-for-DS3-and-Play-com-USB-Dual-DS2-Controller<br />
+WiiPair:  				http://www.richlynch.com/code/wiipair<br />
 EcoTUIOdriver:    https://github.com/ecologylab/EcoTUIODriver<br />
-HidLibrary:				https://github.com/mikeobrien/HidLibrary<br />
-WiiPair:					http://www.richlynch.com/code/wiipair<br />
-MultiTouchVista   http://multitouchvista.codeplex.com<br />
+MultiTouchVista:  http://multitouchvista.codeplex.com<br />
 
 Release History
 ==============
