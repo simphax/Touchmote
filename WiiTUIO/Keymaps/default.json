@@ -19,6 +19,9 @@
       "LWin",
       "Tab"
     ],
+	"AccelX": "",
+	"AccelY": "",
+	"AccelZ": "",
 	"Nunchuk.StickX": "360.StickLX",
 	"Nunchuk.StickY": "360.StickLY",
 	"Nunchuk.C": "360.TriggerL",
