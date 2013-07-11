@@ -60,7 +60,6 @@ namespace WiiTUIO.Provider
 
             PointF relativePosition = new PointF();
 
-            double rotation = 0;
             bool foundMidpoint = false;
 
             /*for(int i=0;i<irState.IRSensors.Count() && !foundMidpoint;i++)//IRSensor sensor in irState.IRSensors)
@@ -155,7 +154,7 @@ namespace WiiTUIO.Provider
                                 dx /= d;
                                 dy /= d;
 
-                                rotation = Math.Atan2(dy, dx);
+                                smoothedRotation = 0.5 * smoothedRotation + 0.5 * Math.Atan2(dy, dx);
 
                                 /*
                                 while (rotationHistory.Count >= Settings.Default.pointer_rotationSmoothing)
@@ -213,7 +212,7 @@ namespace WiiTUIO.Provider
                 relativePosition.X = relativePosition.X - 0.5F;
                 relativePosition.Y = relativePosition.Y - 0.5F;
 
-                relativePosition = this.rotatePoint(relativePosition, rotation);
+                relativePosition = this.rotatePoint(relativePosition, smoothedRotation);
 
                 relativePosition.X = relativePosition.X + 0.5F;
                 relativePosition.Y = relativePosition.Y + 0.5F;
@@ -242,7 +241,7 @@ namespace WiiTUIO.Provider
                 y = Util.ScreenHeight - 1;
             }
 
-            CursorPos result = new CursorPos(x,y,rotation);
+            CursorPos result = new CursorPos(x, y, smoothedRotation);
             return result;
         }
 
