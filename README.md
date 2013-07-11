@@ -43,6 +43,14 @@ MultiTouchVista   http://multitouchvista.codeplex.com<br />
 
 Release History
 ==============
+**v1.0 beta 9**<br />
+- Nunchuk and Classic Controller support.
+- XBox 360 controller emulation.
+- Change keymaps on the fly. Hold the Home button for 5 seconds to open the layout chooser.
+- Pointer will consider Wiimote rotation.
+- Better more responsive cursor.
+- Enabled "Minimize to tray" option.
+
 **v1.0 beta 8**<br />
 - Implemented custom cursors
 - New windowed UI
