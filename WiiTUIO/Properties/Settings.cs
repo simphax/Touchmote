@@ -203,7 +203,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _pointer_FPS = 60;
+        private int _pointer_FPS = 80;
         public int pointer_FPS
         {
             get { return _pointer_FPS; }
