@@ -145,5 +145,11 @@ namespace WiiTUIO
         {
             Settings.Default.pointer_customCursor = false;
         }
+
+        private void btnEditKeymaps_Click(object sender, RoutedEventArgs e)
+        {
+            KeymapConfigWindow.Instance.Owner = Window.GetWindow(this);
+            KeymapConfigWindow.Instance.Show();
+        }
     }
 }

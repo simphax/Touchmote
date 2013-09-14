@@ -207,6 +207,9 @@
     </Compile>
     <Compile Include="Input\WiiProvider\XinputReport.cs" />
     <Compile Include="Input\WiiProvider\XinputDevice.cs" />
+    <Compile Include="KeymapConfig\KeymapConfigWindow.xaml.cs">
+      <DependentUpon>KeymapConfigWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LayoutSelectionRow.xaml.cs">
       <DependentUpon>LayoutSelectionRow.xaml</DependentUpon>
     </Compile>
@@ -234,6 +237,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AppSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="KeymapConfig\KeymapConfigWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

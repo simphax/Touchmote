@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel x:Name="canvasSettings">
-        <Canvas Height="220">
+        <Canvas Height="256">
             <Button x:Name="btnAppSettingsBack" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Canvas.Left="10" Canvas.Top="10" Click="btnAppSettingsBack_Click">
                 <Rectangle Width="14" Height="14" Fill="Black" Opacity="0.8">
                     <Rectangle.OpacityMask>
@@ -38,6 +38,8 @@
             <CheckBox x:Name="cbMinimizeToTray" Content="Minimize to tray" Canvas.Left="125" Canvas.Top="131" FontFamily="Segoe UI Semilight" Checked="cbMinimizeToTray_Checked" Unchecked="cbMinimizeToTray_Unchecked" />
             <CheckBox x:Name="cbMinimizeOnStart" Content="Start minimized" Canvas.Left="125" Canvas.Top="154" FontFamily="Segoe UI Semilight" Checked="cbMinimizeOnStart_Checked" Unchecked="cbMinimizeOnStart_Unchecked" />
             <CheckBox x:Name="cbUseCustomCursor" Content="Use Touchmote cursor (changes on restart)" Canvas.Left="125" Canvas.Top="177" FontFamily="Segoe UI Semilight" Checked="cbUseCustomCursor_Checked" Unchecked="cbUseCustomCursor_Unchecked" />
+            <Button x:Name="btnEditKeymaps" Content="Controller Config" Canvas.Left="125" Canvas.Top="213" Width="135" Click="btnEditKeymaps_Click" Height="30"></Button>
+
         </Canvas>
         <StackPanel x:Name="providerSettingsContent" />
     </StackPanel>
