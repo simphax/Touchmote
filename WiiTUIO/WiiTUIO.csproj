@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{87CC8302-A614-490E-9100-1059AF5FE8FC}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WiiTUIO</RootNamespace>
     <AssemblyName>Touchmote</AssemblyName>
@@ -207,8 +207,13 @@
     </Compile>
     <Compile Include="Input\WiiProvider\XinputReport.cs" />
     <Compile Include="Input\WiiProvider\XinputDevice.cs" />
+    <Compile Include="KeymapConfig\Keymap.cs" />
     <Compile Include="KeymapConfig\KeymapConfigWindow.xaml.cs">
       <DependentUpon>KeymapConfigWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="KeymapConfig\KeymapDatabase.cs" />
+    <Compile Include="KeymapConfig\KeymapRow.xaml.cs">
+      <DependentUpon>KeymapRow.xaml</DependentUpon>
     </Compile>
     <Compile Include="LayoutSelectionRow.xaml.cs">
       <DependentUpon>LayoutSelectionRow.xaml</DependentUpon>
@@ -243,6 +248,10 @@
     <Page Include="KeymapConfig\KeymapConfigWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="KeymapConfig\KeymapRow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="LayoutSelectionRow.xaml">
       <SubType>Designer</SubType>

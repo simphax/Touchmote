@@ -137,6 +137,28 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private string _keymaps_path = @"Keymaps\";
+        public string keymaps_path
+        {
+            get { return _keymaps_path; }
+            set
+            {
+                _keymaps_path = value;
+                OnPropertyChanged("keymaps_path");
+            }
+        }
+
+        private string _keymaps_config = @"Keymaps.json";
+        public string keymaps_config
+        {
+            get { return _keymaps_config; }
+            set
+            {
+                _keymaps_config = value;
+                OnPropertyChanged("keymaps_config");
+            }
+        }
+
         private double _pointer_sensorBarPosCompensation = 0.30;
         public double pointer_sensorBarPosCompensation
         {

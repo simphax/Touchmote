@@ -3,15 +3,13 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-  Title="Touchmote" ResizeMode="CanMinimize"
-  Width="923" SizeToContent="Height" Height="598">
+  Title="Controller Configuration" ResizeMode="CanMinimize" SizeToContent="Width" Height="598">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/White.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
@@ -24,7 +22,31 @@
             
         </Controls:WindowCommands>
     </Controls:MetroWindow.WindowCommands>
-    <Grid>
-        
-    </Grid>
+    <StackPanel Orientation="Horizontal">
+        <ScrollViewer Width="240">
+            <StackPanel>
+                <Label>Layouts</Label>
+                <StackPanel Name="spLayoutList">
+                
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <ScrollViewer Width="420">
+            <StackPanel>
+                <Label>Output</Label>
+                <StackPanel Name="spConnections">
+
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <ScrollViewer Width="240">
+            <StackPanel>
+                <Label>Output</Label>
+                <ComboBox></ComboBox>
+                <StackPanel Name="spOutputList">
+
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </StackPanel>
 </Controls:MetroWindow>

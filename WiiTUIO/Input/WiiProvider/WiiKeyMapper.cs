@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using WiimoteLib;
+using WiiTUIO.Properties;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -64,8 +65,6 @@ namespace WiiTUIO.Provider
     public class WiiKeyMapper
     {
 
-        private string KEYMAPS_PATH = "Keymaps\\";
-        private string CONFIG_JSON_FILENAME = "Keymaps.json";
         private string DEFAULT_JSON_FILENAME = "default.json";
 
         public WiiKeyMap KeyMap;
@@ -121,7 +120,7 @@ namespace WiiTUIO.Provider
         {
             this.WiimoteID = wiimoteID;
 
-            System.IO.Directory.CreateDirectory(KEYMAPS_PATH);
+            System.IO.Directory.CreateDirectory(Settings.Default.keymaps_path);
             this.applicationsJson = this.createDefaultApplicationsJSON();
             this.defaultKeymapJson = this.createDefaultKeymapJSON();
 
@@ -257,9 +256,9 @@ namespace WiiTUIO.Provider
 
             JObject union = applicationList;
 
-            if (File.Exists(KEYMAPS_PATH + CONFIG_JSON_FILENAME))
+            if (File.Exists(Settings.Default.keymaps_path + Settings.Default.keymaps_config))
             {
-                StreamReader reader = File.OpenText(KEYMAPS_PATH + CONFIG_JSON_FILENAME);
+                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + Settings.Default.keymaps_config);
                 try
                 {
                     JObject existingConfig = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
@@ -269,11 +268,11 @@ namespace WiiTUIO.Provider
                 }
                 catch (Exception e) 
                 {
-                    throw new Exception(KEYMAPS_PATH + CONFIG_JSON_FILENAME + " is not valid JSON");
+                    throw new Exception(Settings.Default.keymaps_path + Settings.Default.keymaps_config + " is not valid JSON");
                 }
             }
 
-            File.WriteAllText(KEYMAPS_PATH + CONFIG_JSON_FILENAME, union.ToString());
+            File.WriteAllText(Settings.Default.keymaps_path + Settings.Default.keymaps_config, union.ToString());
             return union;
         }
 
@@ -341,9 +340,9 @@ namespace WiiTUIO.Provider
 
             union.Add(new JProperty("All", buttons));
 
-            if (File.Exists(KEYMAPS_PATH + DEFAULT_JSON_FILENAME))
+            if (File.Exists(Settings.Default.keymaps_path + Settings.Default.keymaps_config))
             {
-                StreamReader reader = File.OpenText(KEYMAPS_PATH + DEFAULT_JSON_FILENAME);
+                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME);
                 try
                 {
                     JObject existingConfig = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
@@ -353,10 +352,10 @@ namespace WiiTUIO.Provider
                 }
                 catch (Exception e)
                 {
-                    throw new Exception(KEYMAPS_PATH + DEFAULT_JSON_FILENAME + " is not valid JSON");
+                    throw new Exception(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME + " is not valid JSON");
                 }
             }
-            File.WriteAllText(KEYMAPS_PATH + DEFAULT_JSON_FILENAME, union.ToString());
+            File.WriteAllText(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME, union.ToString());
             return union;
         }
 
@@ -380,9 +379,9 @@ namespace WiiTUIO.Provider
 
             JObject union = (JObject)this.defaultKeymapJson.DeepClone();
 
-            if (File.Exists(KEYMAPS_PATH + filename))
+            if (File.Exists(Settings.Default.keymaps_path + filename))
             {
-                StreamReader reader = File.OpenText(KEYMAPS_PATH + filename);
+                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + filename);
                 try
                 {
                     JObject newKeymap = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
