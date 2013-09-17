@@ -10,6 +10,9 @@ namespace WiiTUIO
 {
     class KeymapDatabase
     {
+        private List<KeymapInput> allInputs;
+        private List<KeymapOutput> allOutputs;
+
         private static KeymapDatabase currentInstance;
         public static KeymapDatabase Current
         {
@@ -25,7 +28,24 @@ namespace WiiTUIO
 
         private KeymapDatabase()
         {
+            allInputs = new List<KeymapInput>();
+            allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "A", "A"));
+            allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "B", "B"));
+            allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "Home", "Home"));
+            allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "Left", "Left"));
 
+            allOutputs = new List<KeymapOutput>();
+            allOutputs.Add(new KeymapOutput(OutputType.TOUCH, "Touch Main", "touchmaster"));
+            allOutputs.Add(new KeymapOutput(OutputType.TOUCH, "Touch Slave", "touchslave"));
+            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Left", "left"));
+            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Right", "right"));
+            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Up", "up"));
+            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Down", "down"));
+            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Volume Up", "volume_up"));
+            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Volume Down", "volume_down"));
+            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "C", "vk_c"));
+            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Tab", "tab"));
+            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Left Win", "lwin"));
         }
 
         public List<Keymap> getAllKeymaps()
@@ -43,46 +63,113 @@ namespace WiiTUIO
             return list;
         }
 
-        public List<KeymapInput> getAvailableInputs()
+
+
+        public List<KeymapInput> getAvailableInputs(InputSource source)
         {
             List<KeymapInput> list = new List<KeymapInput>();
-            list.Add(new KeymapInput("A","A", false));
-            list.Add(new KeymapInput("B", "B", false));
-            list.Add(new KeymapInput("Home", "Home", false));
-            list.Add(new KeymapInput("Left", "Left", false));
-
+            foreach (KeymapInput input in allInputs)
+            {
+                if (input.Source == source)
+                {
+                    list.Add(input);
+                }
+            }
             return list;
         }
 
-        public List<KeymapOutput> getAvailableOutputs()
+        public List<KeymapOutput> getAvailableOutputs(OutputType type)
         {
             List<KeymapOutput> list = new List<KeymapOutput>();
-            list.Add(new KeymapOutput("Left Win", "LWin", false));
+            foreach (KeymapOutput output in allOutputs)
+            {
+                if (output.Type == type)
+                {
+                    list.Add(output);
+                }
+            }
             return list;
         }
+
+        public KeymapInput getInput(string key)
+        {
+            List<KeymapInput> list = this.allInputs;
+            foreach (KeymapInput input in list)
+            {
+                if (input.Key == key)
+                {
+                    return input;
+                }
+            }
+            return null;
+        }
+
+        public KeymapOutput getOutput(string key)
+        {
+            List<KeymapOutput> list = this.allOutputs;
+            foreach (KeymapOutput output in list)
+            {
+                if (output.Key == key)
+                {
+                    return output;
+                }
+            }
+            return null;
+        }
+    }
+
+    public enum InputSource
+    {
+        WIIMOTE,
+        NUNCHUK,
+        CLASSIC
     }
 
     public class KeymapInput
     {
         public string Name;
         public string Key;
+        public InputSource Source;
         public bool Continous;
 
-        public KeymapInput(string name, string key, bool continous)
+        public KeymapInput(InputSource source, string name, string key) : this(source, name,key,false)
         {
+
+        }
+
+        public KeymapInput(InputSource source, string name, string key, bool continous)
+        {
+            this.Source = source;
             this.Name = name;
             this.Key = key;
             this.Continous = continous;
         }
     }
+
+
+    public enum OutputType
+    {
+        TOUCH,
+        KEYBOARD,
+        MOUSE,
+        XINPUT
+    }
     public class KeymapOutput
     {
         public string Name;
         public string Key;
+        public OutputType Type;
         public bool Continous;
 
-        public KeymapOutput(string name, string key, bool continous)
+        public KeymapOutput(OutputType type, string name, string key)
+            : this(type, name, key, false)
         {
+
+        }
+
+        public KeymapOutput(OutputType type, string name, string key, bool continous)
+        {
+            this.Type = type;
             this.Name = name;
             this.Key = key;
             this.Continous = continous;

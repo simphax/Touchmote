@@ -10,7 +10,7 @@ using WiiTUIO.Properties;
 
 namespace WiiTUIO
 {
-    class Keymap
+    public class Keymap
     {
         public string Filename;
         public string Name;
@@ -45,9 +45,21 @@ namespace WiiTUIO
         //0 = all
         public string getConfigFor(int controllerId, string input)
         {
-            string key = ((JObject)this.jsonObj.GetValue("All")).GetValue(input).ToString();
-            return key;
+            JToken level1 = this.jsonObj.GetValue("All");
+            if (level1 != null && level1.Type == JTokenType.Object)
+            {
+                JToken level2 = ((JObject)level1).GetValue(input);
+                if (level2 != null)
+                {
+                    if (level2.Type == JTokenType.String)
+                    {
+                        return level2.ToString();
+                    }
+                }
+            }
+            return null;
         }
+
     }
 
     public class KeymapOutConfig

@@ -3,7 +3,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-  Title="Controller Configuration" ResizeMode="CanMinimize" SizeToContent="Width" Height="598">
+  Title="Controller Configuration" ResizeMode="CanResize" MinHeight="200" MaxWidth="900" MinWidth="900" Height="300">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,30 +23,33 @@
         </Controls:WindowCommands>
     </Controls:MetroWindow.WindowCommands>
     <StackPanel Orientation="Horizontal">
-        <ScrollViewer Width="240">
-            <StackPanel>
-                <Label>Layouts</Label>
+        <DockPanel Width="240">
+            <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Layouts</Label>
+            <ScrollViewer>
                 <StackPanel Name="spLayoutList">
-                
                 </StackPanel>
-            </StackPanel>
-        </ScrollViewer>
-        <ScrollViewer Width="420">
-            <StackPanel>
-                <Label>Output</Label>
+            </ScrollViewer>
+        </DockPanel>
+        <DockPanel Width="420">
+            <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Connections</Label>
+            <ScrollViewer>
                 <StackPanel Name="spConnections">
-
                 </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+        <DockPanel Width="240">
+            <StackPanel DockPanel.Dock="Top">
+                <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10">Output</Label>
+                <ComboBox FontFamily="Segoe UI Medium" FontSize="14" Padding="5">
+                    <ComboBoxItem IsSelected="True">Keyboard</ComboBoxItem>
+                    <ComboBoxItem>Mouse</ComboBoxItem>
+                </ComboBox>
+                <TextBox Text="Filter" FontFamily="Segoe UI Medium" FontSize="14" Padding="2,0"></TextBox>
             </StackPanel>
-        </ScrollViewer>
-        <ScrollViewer Width="240">
-            <StackPanel>
-                <Label>Output</Label>
-                <ComboBox></ComboBox>
+            <ScrollViewer>
                 <StackPanel Name="spOutputList">
-
                 </StackPanel>
-            </StackPanel>
-        </ScrollViewer>
+            </ScrollViewer>
+        </DockPanel>
     </StackPanel>
 </Controls:MetroWindow>

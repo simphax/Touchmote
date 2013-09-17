@@ -22,7 +22,6 @@ namespace WiiTUIO
     /// </summary>
     public partial class KeymapConfigWindow : MetroWindow
     {
-
         private static KeymapConfigWindow defaultInstance;
         public static KeymapConfigWindow Instance
         {
@@ -44,16 +43,39 @@ namespace WiiTUIO
 
             foreach (Keymap keymap in allKeymaps)
             {
-                KeymapRow row = new KeymapRow(keymap.Name, keymap.Filename);
+                KeymapRow row = new KeymapRow(keymap);
                 row.OnClick += Select_Keymap;
                 this.spLayoutList.Children.Add(row);
             }
 
+            List<KeymapOutput> allKeyboardOutputs = KeymapDatabase.Current.getAvailableOutputs(OutputType.KEYBOARD);
+
+            foreach (KeymapOutput output in allKeyboardOutputs)
+            {
+                KeymapOutputRow row = new KeymapOutputRow(output);
+                this.spOutputList.Children.Add(row);
+            }
+
         }
 
-        private void Select_Keymap(string obj)
+        private void Select_Keymap(Keymap keymap)
         {
-            
+            List<KeymapInput> allInputs = KeymapDatabase.Current.getAvailableInputs(InputSource.WIIMOTE);
+
+            this.spConnections.Children.Clear();
+
+            foreach (KeymapInput input in allInputs)
+            {
+                string config = keymap.getConfigFor(0, input.Key);
+                if (config != null)
+                {
+                    KeymapOutput output = KeymapDatabase.Current.getOutput(config.ToLower());
+                    if(output != null)
+                    {
+                        this.spConnections.Children.Add(new KeymapConnectionRow(input,output));
+                    }
+                }
+            }
         }
 
         /*

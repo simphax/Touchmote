@@ -19,28 +19,16 @@ namespace WiiTUIO
     /// <summary>
     /// Interaction logic for LayoutSelectionRow.xaml
     /// </summary>
-    public partial class KeymapRow : UserControl
+    public partial class KeymapOutputRow : UserControl
     {
-        private Keymap keymap;
+        private KeymapOutput output;
 
-        public Action<Keymap> OnClick; //filename
-
-        public KeymapRow(Keymap keymap)
+        public KeymapOutputRow(KeymapOutput output)
         {
             InitializeComponent();
-            this.keymap = keymap;
-            this.tbName.Text = keymap.getName();
+            this.output = output;
+            this.tbName.Text = output.Name;
         }
-
-        private void tbName_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (OnClick != null)
-            {
-                OnClick(this.keymap);
-            }
-        }
-
-
 
     }
 }

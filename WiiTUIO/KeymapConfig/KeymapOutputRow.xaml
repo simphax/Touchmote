@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="WiiTUIO.KeymapRow"
+﻿<UserControl x:Class="WiiTUIO.KeymapOutputRow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,6 +6,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="240">
     <Border Name="border" Background="#F20A0A0A" BorderThickness="0" BorderBrush="Red" Margin="5">
-    <TextBlock MouseUp="tbName_MouseUp" Name="tbName" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="White" Cursor="Hand" TextAlignment="Center" />
+    <TextBlock Name="tbName" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="White" Cursor="Hand" TextAlignment="Center" />
     </Border>
 </UserControl>
