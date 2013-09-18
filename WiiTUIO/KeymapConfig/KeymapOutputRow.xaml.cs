@@ -33,7 +33,7 @@ namespace WiiTUIO
             this.output = output;
             this.tbName.Text = output.Name;
 
-            
+            this.border.Background = new SolidColorBrush(KeymapColors.GetColor(output.Type));
             //this.adorner.Visibility = Visibility.Hidden;
 
         }
@@ -45,17 +45,17 @@ namespace WiiTUIO
             {
                 //if (this.adorner == null)
                 //{
-                    this.adorner = new TestAdorner(this);
+                    this.adorner = new TestAdorner(this.border);
                     this.adorner.IsHitTestVisible = false;
                 //}
                 //this.adorner.Visibility = Visibility.Visible;
-                Console.WriteLine("Start");
                 if (OnDragStart != null)
                 {
                     OnDragStart(this.adorner);
                 }
                 DataObject data = new DataObject();
                 data.SetData("KeymapOutput", this.output);
+                data.SetData("KeymapOutputRow", this);
                 DragDrop.DoDragDrop(border,
                                      data,
                                      DragDropEffects.Copy | DragDropEffects.Move);
@@ -75,7 +75,7 @@ namespace WiiTUIO
             if (this.adorner != null)
             {
                 Point curpos = MouseSimulator.GetCursorPosition();
-                Point point = this.PointFromScreen(curpos);
+                Point point = this.border.PointFromScreen(curpos);
                 this.adorner.SetPosition(point.X, point.Y);
             }
 
@@ -84,12 +84,41 @@ namespace WiiTUIO
             Mouse.SetCursor(cursor);
             e.Handled = true;
         }
+
+        public void DropAccepted(Border border)
+        {
+            Point pos1 = border.PointToScreen(new Point(0, 0));
+            Point pos = this.border.PointFromScreen(pos1);
+
+            Console.WriteLine(pos);
+            this.adorner.SetLockedPosition(pos.X, pos.Y);
+        }
+
+        public void DropRejected()
+        {
+            //this.border.Background = new SolidColorBrush(Colors.Red);
+        }
+
+        public void DropLost()
+        {
+            this.adorner.UnlockPosition();
+        }
+
+        public void DropDone()
+        {
+            this.adorner.UnlockPosition();
+        }
     }
 
     public class TestAdorner : Adorner
     {
         private Rect adornedElementRect;
         private double offsetx, offsety;
+
+        private double x, y;
+        private bool locked;
+
+
          // Be sure to call the base class constructor. 
         public TestAdorner(UIElement adornedElement)
         : base(adornedElement) 
@@ -103,26 +132,35 @@ namespace WiiTUIO
       }
 
 
-        private double x, y;
-
         public void SetPosition(double x, double y)
         {
-            this.x = x;
-            this.y = y;
-            this.InvalidateVisual();
+            if (!locked)
+            {
+                this.x = x - offsetx;
+                this.y = y - offsety;
+                this.InvalidateVisual();
+            }
+        }
+
+        public void SetLockedPosition(double x, double y)
+        {
+            this.SetPosition(x + offsetx, y + offsety);
+            this.locked = true;
+        }
+
+        public void UnlockPosition()
+        {
+            this.locked = false;
         }
 
         // A common way to implement an adorner's rendering behavior is to override the OnRender 
         // method, which is called by the layout system as part of a rendering pass. 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            adornedElementRect.X = this.x-offsetx;
-            adornedElementRect.Y = this.y-offsety;
-
+            adornedElementRect.X = this.x;
+            adornedElementRect.Y = this.y;
             VisualBrush vb = new VisualBrush(this.AdornedElement);
-            vb.Opacity = 0.5;
             drawingContext.DrawRectangle(vb, null, adornedElementRect);
-
         }
     }
 }

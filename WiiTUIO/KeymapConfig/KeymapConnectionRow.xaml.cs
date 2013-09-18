@@ -22,22 +22,28 @@ namespace WiiTUIO
     public partial class KeymapConnectionRow : UserControl
     {
         private KeymapInput input;
-        private KeymapOutput output;
+        private KeymapOutConfig config;
 
         public Action<bool> OnDrop;
 
-        public KeymapConnectionRow(KeymapInput input, KeymapOutput output)
+        public KeymapConnectionRow(KeymapInput input, KeymapOutConfig config)
         {
             InitializeComponent();
             this.input = input;
-            this.output = output;
+            this.config = config;
             this.connection_input_name.Text = input.Name;
-            this.connection_output_name.Text = output.Name;
+            this.connection_output_name.Text = config.Output.Name;
+            this.connection_output_border.BorderBrush = new SolidColorBrush(KeymapColors.GetColor(config.Output.Type));
+
+            if (config.Inherited)
+            {
+                this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.LightGray);
+            }
         }
 
         private void setOutput(KeymapOutput output)
         {
-            this.output = output;
+            this.config.Output = output;
             this.connection_output_name.Text = output.Name;
         }
 
@@ -48,8 +54,12 @@ namespace WiiTUIO
                 KeymapOutput newOutput = (KeymapOutput)e.Data.GetData("KeymapOutput");
                 if (this.input.canHandle(newOutput))
                 {
-                    this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.Black);
+                    this.connection_output_border.BorderBrush = new SolidColorBrush(KeymapColors.GetColor(newOutput.Type));
                     this.setOutput(newOutput);
+                }
+                if (e.Data.GetDataPresent("KeymapOutputRow"))
+                {
+                    ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropDone();
                 }
                 if (OnDrop != null)
                 {
@@ -62,12 +72,21 @@ namespace WiiTUIO
                 {
                     OnDrop(false);
                 }
+                if (e.Data.GetDataPresent("KeymapOutputRow"))
+                {
+                    ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropDone();
+                }
             }
         }
 
         private void connection_output_border_DragLeave(object sender, DragEventArgs e)
         {
-            this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.Black);
+            //this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.Orange);
+            //this.connection_output_border.Background = new SolidColorBrush(Colors.White);
+            if (e.Data.GetDataPresent("KeymapOutputRow"))
+            {
+                ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropLost();
+            }
         }
 
         private void connection_output_border_DragEnter(object sender, DragEventArgs e)
@@ -77,11 +96,19 @@ namespace WiiTUIO
                 KeymapOutput newOutput = (KeymapOutput)e.Data.GetData("KeymapOutput");
                 if (this.input.canHandle(newOutput))
                 {
-                    this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.Green);
+                    //this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.Orange);
+                    //this.connection_output_border.Background = new SolidColorBrush(Colors.Orange);
+                    if (e.Data.GetDataPresent("KeymapOutputRow"))
+                    {
+                        ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropAccepted(this.connection_output_border);
+                    }
                 }
                 else
                 {
-                    this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.Red);
+                    if (e.Data.GetDataPresent("KeymapOutputRow"))
+                    {
+                        ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropRejected();
+                    }
                 }
             }
         }

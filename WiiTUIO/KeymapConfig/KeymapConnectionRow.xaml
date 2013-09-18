@@ -9,7 +9,7 @@
         <Border Name="connection_input_border" Background="White" BorderThickness="3" BorderBrush="White" Margin="5,5,265,5">
             <TextBlock Name="connection_input_name" Text="Default" Margin="2" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Center" />
         </Border>
-        <Border Name="connection_output_border" Background="White" BorderThickness="3" BorderBrush="#F20A0A0A" Margin="261,5,5,5" AllowDrop="True" Drop="connection_output_border_Drop" DragEnter="connection_output_border_DragEnter" DragLeave="connection_output_border_DragLeave">
+        <Border Name="connection_output_border" Background="White" BorderThickness="3" BorderBrush="#F20A0A0A" Margin="261,5,5,5" AllowDrop="True" Drop="connection_output_border_Drop" DragEnter="connection_output_border_DragEnter" DragLeave="connection_output_border_DragLeave" CornerRadius="2">
             <TextBlock Name="connection_output_name" Text="Default" Margin="2" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Center" />
         </Border>
     </Grid>
