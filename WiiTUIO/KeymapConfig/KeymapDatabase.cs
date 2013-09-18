@@ -29,12 +29,14 @@ namespace WiiTUIO
         private KeymapDatabase()
         {
             allInputs = new List<KeymapInput>();
+            allInputs.Add(new KeymapInput(InputSource.IR, "Pointer", "Pointer"));
             allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "A", "A"));
             allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "B", "B"));
             allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "Home", "Home"));
             allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "Left", "Left"));
 
             allOutputs = new List<KeymapOutput>();
+            allOutputs.Add(new KeymapOutput(OutputType.TOUCH, "Touch Cursor", "touch", true));
             allOutputs.Add(new KeymapOutput(OutputType.TOUCH, "Touch Main", "touchmaster"));
             allOutputs.Add(new KeymapOutput(OutputType.TOUCH, "Touch Slave", "touchslave"));
             allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Left", "left"));
@@ -120,6 +122,7 @@ namespace WiiTUIO
 
     public enum InputSource
     {
+        IR,
         WIIMOTE,
         NUNCHUK,
         CLASSIC
@@ -127,10 +130,10 @@ namespace WiiTUIO
 
     public class KeymapInput
     {
-        public string Name;
-        public string Key;
-        public InputSource Source;
-        public bool Continous;
+        public string Name { get; private set; }
+        public string Key { get; private set; }
+        public InputSource Source { get; private set; }
+        public bool Continous { get; private set; }
 
         public KeymapInput(InputSource source, string name, string key) : this(source, name,key,false)
         {
@@ -144,6 +147,11 @@ namespace WiiTUIO
             this.Key = key;
             this.Continous = continous;
         }
+
+        public bool canHandle(KeymapOutput output)
+        {
+            return this.Continous == output.Continous;
+        }
     }
 
 
@@ -156,10 +164,10 @@ namespace WiiTUIO
     }
     public class KeymapOutput
     {
-        public string Name;
-        public string Key;
-        public OutputType Type;
-        public bool Continous;
+        public string Name { get; private set; }
+        public string Key { get; private set; }
+        public OutputType Type { get; private set; }
+        public bool Continous { get; private set; }
 
         public KeymapOutput(OutputType type, string name, string key)
             : this(type, name, key, false)

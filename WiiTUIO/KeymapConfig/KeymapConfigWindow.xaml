@@ -22,7 +22,7 @@
             
         </Controls:WindowCommands>
     </Controls:MetroWindow.WindowCommands>
-    <StackPanel Orientation="Horizontal">
+    <StackPanel Name="mainPanel" Orientation="Horizontal">
         <DockPanel Width="240">
             <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Layouts</Label>
             <ScrollViewer>
@@ -33,7 +33,13 @@
         <DockPanel Width="420">
             <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Connections</Label>
             <ScrollViewer>
-                <StackPanel Name="spConnections">
+                <StackPanel>
+                    <Label>Wiimote</Label>
+                    <StackPanel Name="spWiimoteConnections">
+                    </StackPanel>
+                    <Label>Nunchuk</Label>
+                    <StackPanel Name="spNunchukConnections">
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </DockPanel>

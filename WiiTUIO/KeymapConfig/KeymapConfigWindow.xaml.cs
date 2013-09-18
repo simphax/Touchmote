@@ -22,6 +22,8 @@ namespace WiiTUIO
     /// </summary>
     public partial class KeymapConfigWindow : MetroWindow
     {
+        private AdornerLayer adornerLayer;
+
         private static KeymapConfigWindow defaultInstance;
         public static KeymapConfigWindow Instance
         {
@@ -53,18 +55,38 @@ namespace WiiTUIO
             foreach (KeymapOutput output in allKeyboardOutputs)
             {
                 KeymapOutputRow row = new KeymapOutputRow(output);
+                row.OnDragStart += output_OnDragStart;
+                row.OnDragStop += output_OnDragStop;
                 this.spOutputList.Children.Add(row);
             }
 
         }
 
+        private void output_OnDragStop(Adorner obj)
+        {
+            this.adornerLayer.Remove(obj);
+        }
+
+        private void output_OnDragStart(Adorner obj)
+        {
+            if (this.adornerLayer == null)
+            {
+                this.adornerLayer = AdornerLayer.GetAdornerLayer(this.mainPanel);
+            }
+            if (!this.adornerLayer.GetChildObjects().Contains(obj))
+            {
+                this.adornerLayer.Add(obj);
+            }
+        }
+
+
         private void Select_Keymap(Keymap keymap)
         {
-            List<KeymapInput> allInputs = KeymapDatabase.Current.getAvailableInputs(InputSource.WIIMOTE);
+            List<KeymapInput> allWiimoteInputs = KeymapDatabase.Current.getAvailableInputs(InputSource.WIIMOTE);
 
-            this.spConnections.Children.Clear();
+            this.spWiimoteConnections.Children.Clear();
 
-            foreach (KeymapInput input in allInputs)
+            foreach (KeymapInput input in allWiimoteInputs)
             {
                 string config = keymap.getConfigFor(0, input.Key);
                 if (config != null)
@@ -72,7 +94,7 @@ namespace WiiTUIO
                     KeymapOutput output = KeymapDatabase.Current.getOutput(config.ToLower());
                     if(output != null)
                     {
-                        this.spConnections.Children.Add(new KeymapConnectionRow(input,output));
+                        this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, output));
                     }
                 }
             }
