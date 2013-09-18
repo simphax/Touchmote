@@ -29,37 +29,41 @@ namespace WiiTUIO
         private KeymapDatabase()
         {
             allInputs = new List<KeymapInput>();
-            allInputs.Add(new KeymapInput(InputSource.IR, "Pointer", "Pointer"));
-            allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "A", "A"));
-            allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "B", "B"));
-            allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "Home", "Home"));
-            allInputs.Add(new KeymapInput(InputSource.WIIMOTE, "Left", "Left"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "A", "A"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "B", "B"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Home", "Home"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Left", "Left"));
 
             allOutputs = new List<KeymapOutput>();
-            allOutputs.Add(new KeymapOutput(OutputType.TOUCH, "Touch Cursor", "touch", true));
-            allOutputs.Add(new KeymapOutput(OutputType.TOUCH, "Touch Main", "touchmaster"));
-            allOutputs.Add(new KeymapOutput(OutputType.TOUCH, "Touch Slave", "touchslave"));
-            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Left", "left"));
-            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Right", "right"));
-            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Up", "up"));
-            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Down", "down"));
-            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Volume Up", "volume_up"));
-            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Volume Down", "volume_down"));
-            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "C", "vk_c"));
-            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Tab", "tab"));
-            allOutputs.Add(new KeymapOutput(OutputType.KEYBOARD, "Left Win", "lwin"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor", "touch", true, true));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Main", "touchmaster"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Slave", "touchslave"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left", "left"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Right", "right"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Up", "up"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Down", "down"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Volume Up", "volume_up"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Volume Down", "volume_down"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "C", "vk_c"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Tab", "tab"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left Win", "lwin"));
         }
 
         public List<Keymap> getAllKeymaps()
         {
             List<Keymap> list = new List<Keymap>();
             string[] files = Directory.GetFiles(Settings.Default.keymaps_path,"*.json");
+
+            Keymap defaultKeymap = new Keymap(null,"default.json");
+            list.Add(defaultKeymap);
+
             foreach (string filepath in files)
             {
                 string filename = Path.GetFileName(filepath);
-                if (filename != Settings.Default.keymaps_config)
+                if (filename != Settings.Default.keymaps_config && filename != "default.json")
                 {
-                    list.Add(new Keymap(filename));
+                    list.Add(new Keymap(defaultKeymap,filename));
                 }
             }
             return list;
@@ -67,7 +71,7 @@ namespace WiiTUIO
 
 
 
-        public List<KeymapInput> getAvailableInputs(InputSource source)
+        public List<KeymapInput> getAvailableInputs(KeymapInputSource source)
         {
             List<KeymapInput> list = new List<KeymapInput>();
             foreach (KeymapInput input in allInputs)
@@ -80,7 +84,7 @@ namespace WiiTUIO
             return list;
         }
 
-        public List<KeymapOutput> getAvailableOutputs(OutputType type)
+        public List<KeymapOutput> getAvailableOutputs(KeymapOutputType type)
         {
             List<KeymapOutput> list = new List<KeymapOutput>();
             foreach (KeymapOutput output in allOutputs)
@@ -98,7 +102,7 @@ namespace WiiTUIO
             List<KeymapInput> list = this.allInputs;
             foreach (KeymapInput input in list)
             {
-                if (input.Key == key)
+                if (input.Key == key.ToLower())
                 {
                     return input;
                 }
@@ -111,7 +115,7 @@ namespace WiiTUIO
             List<KeymapOutput> list = this.allOutputs;
             foreach (KeymapOutput output in list)
             {
-                if (output.Key == key)
+                if (output.Key == key.ToLower())
                 {
                     return output;
                 }
@@ -120,7 +124,7 @@ namespace WiiTUIO
         }
     }
 
-    public enum InputSource
+    public enum KeymapInputSource
     {
         IR,
         WIIMOTE,
@@ -132,30 +136,33 @@ namespace WiiTUIO
     {
         public string Name { get; private set; }
         public string Key { get; private set; }
-        public InputSource Source { get; private set; }
+        public KeymapInputSource Source { get; private set; }
         public bool Continous { get; private set; }
+        public bool Cursor { get; private set; }
 
-        public KeymapInput(InputSource source, string name, string key) : this(source, name,key,false)
+        public KeymapInput(KeymapInputSource source, string name, string key)
+            : this(source, name, key, false, false)
         {
 
         }
 
-        public KeymapInput(InputSource source, string name, string key, bool continous)
+        public KeymapInput(KeymapInputSource source, string name, string key, bool continous, bool cursor)
         {
             this.Source = source;
             this.Name = name;
             this.Key = key;
             this.Continous = continous;
+            this.Cursor = cursor;
         }
 
         public bool canHandle(KeymapOutput output)
         {
-            return this.Continous == output.Continous;
+            return this.Continous == output.Continous || this.Cursor == output.Cursor;
         }
     }
 
 
-    public enum OutputType
+    public enum KeymapOutputType
     {
         TOUCH,
         KEYBOARD,
@@ -166,21 +173,23 @@ namespace WiiTUIO
     {
         public string Name { get; private set; }
         public string Key { get; private set; }
-        public OutputType Type { get; private set; }
+        public KeymapOutputType Type { get; private set; }
         public bool Continous { get; private set; }
+        public bool Cursor { get; private set; }
 
-        public KeymapOutput(OutputType type, string name, string key)
-            : this(type, name, key, false)
+        public KeymapOutput(KeymapOutputType type, string name, string key)
+            : this(type, name, key, false, false)
         {
 
         }
 
-        public KeymapOutput(OutputType type, string name, string key, bool continous)
+        public KeymapOutput(KeymapOutputType type, string name, string key, bool continous, bool cursor)
         {
             this.Type = type;
             this.Name = name;
             this.Key = key;
             this.Continous = continous;
+            this.Cursor = cursor;
         }
     }
 }

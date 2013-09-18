@@ -17,10 +17,13 @@ namespace WiiTUIO
         public bool DefaultKeymap;
         public bool InLayoutChooser;
 
+        public Keymap Parent;
+
         private JObject jsonObj;
 
-        public Keymap(string filename)
+        public Keymap(Keymap parent, string filename)
         {
+            this.Parent = parent;
             this.Filename = filename;
             if (File.Exists(Settings.Default.keymaps_path + filename))
             {
@@ -43,7 +46,7 @@ namespace WiiTUIO
         }
 
         //0 = all
-        public string getConfigFor(int controllerId, string input)
+        public KeymapOutConfig getConfigFor(int controllerId, string input)
         {
             JToken level1 = this.jsonObj.GetValue("All");
             if (level1 != null && level1.Type == JTokenType.Object)
@@ -53,11 +56,23 @@ namespace WiiTUIO
                 {
                     if (level2.Type == JTokenType.String)
                     {
-                        return level2.ToString();
+                        if (KeymapDatabase.Current.getOutput(level2.ToString().ToLower()) != null)
+                        {
+                            return new KeymapOutConfig(KeymapDatabase.Current.getOutput(level2.ToString().ToLower()), false);
+                        }
                     }
                 }
             }
-            return null;
+            if (this.Parent != null)
+            {
+                KeymapOutConfig result = this.Parent.getConfigFor(controllerId, input);
+                result.Inherited = true;
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
 
     }
@@ -66,5 +81,11 @@ namespace WiiTUIO
     {
         public bool Inherited;
         public KeymapOutput Output;
+
+        public KeymapOutConfig(KeymapOutput output, bool inherited)
+        {
+            this.Output = output;
+            this.Inherited = inherited;
+        }
     }
 }

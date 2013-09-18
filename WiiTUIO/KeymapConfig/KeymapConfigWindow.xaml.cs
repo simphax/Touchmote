@@ -50,7 +50,7 @@ namespace WiiTUIO
                 this.spLayoutList.Children.Add(row);
             }
 
-            List<KeymapOutput> allKeyboardOutputs = KeymapDatabase.Current.getAvailableOutputs(OutputType.KEYBOARD);
+            List<KeymapOutput> allKeyboardOutputs = KeymapDatabase.Current.getAvailableOutputs(KeymapOutputType.KEYBOARD);
 
             foreach (KeymapOutput output in allKeyboardOutputs)
             {
@@ -82,22 +82,39 @@ namespace WiiTUIO
 
         private void Select_Keymap(Keymap keymap)
         {
-            List<KeymapInput> allWiimoteInputs = KeymapDatabase.Current.getAvailableInputs(InputSource.WIIMOTE);
+            List<KeymapInput> allWiimoteInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.WIIMOTE);
 
             this.spWiimoteConnections.Children.Clear();
 
             foreach (KeymapInput input in allWiimoteInputs)
             {
-                string config = keymap.getConfigFor(0, input.Key);
+                KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
                 if (config != null)
                 {
-                    KeymapOutput output = KeymapDatabase.Current.getOutput(config.ToLower());
-                    if(output != null)
-                    {
-                        this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, output));
-                    }
+                    this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config));
                 }
             }
+            /*
+            List<KeymapInput> allNunchukInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.NUNCHUK);
+
+            this.spNunchukConnections.Children.Clear();
+
+            foreach (KeymapInput input in allNunchukInputs)
+            {
+                KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
+                this.spNunchukConnections.Children.Add(new KeymapConnectionRow(input, config));
+            }
+
+            List<KeymapInput> allClassicInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.CLASSIC);
+
+            this.spClassicConnections.Children.Clear();
+
+            foreach (KeymapInput input in allNunchukInputs)
+            {
+                KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
+                this.spClassicConnections.Children.Add(new KeymapConnectionRow(input, config));
+            }
+             * */
         }
 
         /*

@@ -34,11 +34,20 @@
             <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Connections</Label>
             <ScrollViewer>
                 <StackPanel>
+                    <StackPanel>
+                        <TextBox>Title</TextBox>
+                        <CheckBox>Available in Layout Chooser</CheckBox>
+                        <CheckBox>Enable automatically on application</CheckBox>
+                        <TextBox>Application Search</TextBox>
+                    </StackPanel>
                     <Label>Wiimote</Label>
                     <StackPanel Name="spWiimoteConnections">
                     </StackPanel>
                     <Label>Nunchuk</Label>
                     <StackPanel Name="spNunchukConnections">
+                    </StackPanel>
+                    <Label>Classic Controller</Label>
+                    <StackPanel Name="spClassicConnections">
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
@@ -46,11 +55,11 @@
         <DockPanel Width="240">
             <StackPanel DockPanel.Dock="Top">
                 <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10">Output</Label>
-                <ComboBox FontFamily="Segoe UI Medium" FontSize="14" Padding="5">
+                <ComboBox FontFamily="Segoe UI Semilight" FontSize="14" Padding="5">
                     <ComboBoxItem IsSelected="True">Keyboard</ComboBoxItem>
                     <ComboBoxItem>Mouse</ComboBoxItem>
                 </ComboBox>
-                <TextBox Text="Filter" FontFamily="Segoe UI Medium" FontSize="14" Padding="2,0"></TextBox>
+                <TextBox Text="Filter" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1"></TextBox>
             </StackPanel>
             <ScrollViewer>
                 <StackPanel Name="spOutputList">
