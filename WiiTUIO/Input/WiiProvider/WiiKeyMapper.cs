@@ -473,51 +473,51 @@ namespace WiiTUIO.Provider
                     this.KeyMap.executeButtonUp(NunchukButton.Z);
                 }
                 
-                 if (wiimoteState.NunchukState.JoyUp > -0.3 && !PressedButtons["Nunchuk.JoyUp"])
+                 if (wiimoteState.NunchukState.Y < -0.3 && !PressedButtons["Nunchuk.JoyUp"])
                 {
                     PressedButtons["Nunchuk.JoyUp"] = true;
                     significant = true;
                     this.KeyMap.executeButtonDown(NunchukButton.JoyUp);
                 }
-                else if (wiimoteState.NunchukState.JoyUp < -0.3 && PressedButtons["Nunchuk.JoyUp"])
+                else if (wiimoteState.NunchukState.Y > -0.3 && PressedButtons["Nunchuk.JoyUp"])
                 {
                     PressedButtons["Nunchuk.JoyUp"] = false;
                     significant = true;
                     this.KeyMap.executeButtonUp(NunchukButton.JoyUp);
                 }
                 
-                 if (wiimoteState.NunchukState.JoyDown > 0.3 && !PressedButtons["Nunchuk.JoyDown"])
+                 if (wiimoteState.NunchukState.Y > 0.3 && !PressedButtons["Nunchuk.JoyDown"])
                 {
                     PressedButtons["Nunchuk.JoyDown"] = true;
                     significant = true;
                     this.KeyMap.executeButtonDown(NunchukButton.JoyDown);
                 }
-                else if (wiimoteState.NunchukState.JoyDown < 0.3 && PressedButtons["Nunchuk.JoyDown"])
+                else if (wiimoteState.NunchukState.Y < 0.3 && PressedButtons["Nunchuk.JoyDown"])
                 {
                     PressedButtons["Nunchuk.JoyDown"] = false;
                     significant = true;
                     this.KeyMap.executeButtonUp(NunchukButton.JoyDown);
                 }
                 
-                if (wiimoteState.NunchukState.JoyLeft > -0.3 && !PressedButtons["Nunchuk.JoyLeft"])
+                if (wiimoteState.NunchukState.X < -0.3 && !PressedButtons["Nunchuk.JoyLeft"])
                 {
                     PressedButtons["Nunchuk.JoyLeft"] = true;
                     significant = true;
                     this.KeyMap.executeButtonDown(NunchukButton.JoyLeft);
                 }
-                else if (wiimoteState.NunchukState.JoyLeft < -0.3 && PressedButtons["Nunchuk.JoyLeft"])
+                else if (wiimoteState.NunchukState.X > -0.3 && PressedButtons["Nunchuk.JoyLeft"])
                 {
                     PressedButtons["Nunchuk.JoyLeft"] = false;
                     significant = true;
                     this.KeyMap.executeButtonUp(NunchukButton.JoyLeft);
                 }
-                if (wiimoteState.NunchukState.JoyRight > 0.3 && !PressedButtons["Nunchuk.JoyRight"])
+                if (wiimoteState.NunchukState.X > 0.3 && !PressedButtons["Nunchuk.JoyRight"])
                 {
                     PressedButtons["Nunchuk.JoyRight"] = true;
                     significant = true;
                     this.KeyMap.executeButtonDown(NunchukButton.JoyRight);
                 }
-                else if (wiimoteState.NunchukState.JoyRight < 0.3 && PressedButtons["Nunchuk.JoyRight"])
+                else if (wiimoteState.NunchukState.X < 0.3 && PressedButtons["Nunchuk.JoyRight"])
                 {
                     PressedButtons["Nunchuk.JoyRight"] = false;
                     significant = true;
