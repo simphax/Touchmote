@@ -50,18 +50,24 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left Win", "lwin"));
         }
 
+        public KeymapSettings getKeymapSettings()
+        {
+            return new KeymapSettings(Settings.Default.keymaps_config);
+        }
+
         public List<Keymap> getAllKeymaps()
         {
             List<Keymap> list = new List<Keymap>();
             string[] files = Directory.GetFiles(Settings.Default.keymaps_path, "*.json");
+            string defaultKeymapFilename = this.getKeymapSettings().getDefaultKeymap();
 
-            Keymap defaultKeymap = new Keymap(null, "default.json");
+            Keymap defaultKeymap = new Keymap(null, defaultKeymapFilename);
             list.Add(defaultKeymap);
 
             foreach (string filepath in files)
             {
                 string filename = Path.GetFileName(filepath);
-                if (filename != Settings.Default.keymaps_config && filename != "default.json")
+                if (filename != Settings.Default.keymaps_config && filename != defaultKeymapFilename)
                 {
                     list.Add(new Keymap(defaultKeymap, filename));
                 }

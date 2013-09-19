@@ -43,7 +43,7 @@ namespace WiiTUIO
 
             this.fillKeymapList();
             this.fillOutputList(KeymapOutputType.KEYBOARD);
-            this.selectKeymap(KeymapDatabase.Current.getKeymap("default.json"));
+            this.selectKeymap(KeymapDatabase.Current.getKeymap(KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap()));
         }
 
         private void fillKeymapList()

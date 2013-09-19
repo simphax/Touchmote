@@ -222,6 +222,7 @@
     <Compile Include="KeymapConfig\KeymapRow.xaml.cs">
       <DependentUpon>KeymapRow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="KeymapConfig\KeymapSettings.cs" />
     <Compile Include="LayoutSelectionRow.xaml.cs">
       <DependentUpon>LayoutSelectionRow.xaml</DependentUpon>
     </Compile>
