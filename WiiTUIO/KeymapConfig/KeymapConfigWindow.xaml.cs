@@ -23,6 +23,7 @@ namespace WiiTUIO
     public partial class KeymapConfigWindow : MetroWindow
     {
         private AdornerLayer adornerLayer;
+        private KeymapOutputType selectedOutput = KeymapOutputType.KEYBOARD;
 
         private static KeymapConfigWindow defaultInstance;
         public static KeymapConfigWindow Instance
@@ -41,8 +42,16 @@ namespace WiiTUIO
         {
             InitializeComponent();
 
+            this.tbKeymapTitle.Text = this.tbKeymapTitle.Tag.ToString();
+            this.tbKeymapTitle.Foreground = new SolidColorBrush(Colors.Gray);
+            this.tbKeymapAppSearch.Text = this.tbKeymapAppSearch.Tag.ToString();
+            this.tbKeymapAppSearch.Foreground = new SolidColorBrush(Colors.Gray);
+            this.tbOutputFilter.Text = this.tbOutputFilter.Tag.ToString();
+            this.tbOutputFilter.Foreground = new SolidColorBrush(Colors.Gray);
+
+
             this.fillKeymapList();
-            this.fillOutputList(KeymapOutputType.KEYBOARD);
+            this.fillOutputList(selectedOutput, null);
             this.selectKeymap(KeymapDatabase.Current.getKeymap(KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap()));
         }
 
@@ -136,35 +145,78 @@ namespace WiiTUIO
                 ComboBoxItem cbItem = (ComboBoxItem)cbOutput.SelectedItem;
                 if (cbItem == cbiKeyboard)
                 {
-                    this.fillOutputList(KeymapOutputType.KEYBOARD);
+                    this.selectedOutput = KeymapOutputType.KEYBOARD;
                 }
                 else if (cbItem == cbiTouch)
                 {
-                    this.fillOutputList(KeymapOutputType.TOUCH);
+                    this.selectedOutput = KeymapOutputType.TOUCH;
                 }
                 else if (cbItem == cbiMouse)
                 {
-                    this.fillOutputList(KeymapOutputType.MOUSE);
+                    this.selectedOutput = KeymapOutputType.MOUSE;
                 }
                 else if (cbItem == cbi360)
                 {
-                    this.fillOutputList(KeymapOutputType.XINPUT);
+                    this.selectedOutput = KeymapOutputType.XINPUT;
                 }
+                this.fillOutputList(this.selectedOutput,"");
             }
         }
 
 
-        private void fillOutputList(KeymapOutputType type)
+        private void fillOutputList(KeymapOutputType type, string filter)
         {
             this.spOutputList.Children.Clear();
-            List<KeymapOutput> allKeyboardOutputs = KeymapDatabase.Current.getAvailableOutputs(type);
+            List<KeymapOutput> allOutputs = KeymapDatabase.Current.getAvailableOutputs(type);
+            allOutputs.Sort(new KeymapOutputComparer());
 
-            foreach (KeymapOutput output in allKeyboardOutputs)
+            foreach (KeymapOutput output in allOutputs)
             {
-                KeymapOutputRow row = new KeymapOutputRow(output);
-                row.OnDragStart += output_OnDragStart;
-                row.OnDragStop += output_OnDragStop;
-                this.spOutputList.Children.Add(row);
+                if (filter == null || filter == "" || output.Name.ToLower().Contains(filter.ToLower()))
+                {
+                    KeymapOutputRow row = new KeymapOutputRow(output);
+                    row.OnDragStart += output_OnDragStart;
+                    row.OnDragStop += output_OnDragStop;
+                    this.spOutputList.Children.Add(row);
+                }
+            }
+        }
+
+        private void tbOutputFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (this.tbOutputFilter.Text == this.tbOutputFilter.Tag.ToString())
+            {
+                this.fillOutputList(selectedOutput, null);
+            }
+            else
+            {
+                this.fillOutputList(selectedOutput, this.tbOutputFilter.Text);
+            }
+        }
+
+        private void tb_placeholder_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox)
+            {
+                TextBox tb = (TextBox)sender;
+                if (tb.Text == tb.Tag.ToString())
+                {
+                    tb.Text = "";
+                    tb.Foreground = new SolidColorBrush(Colors.Black);
+                }
+            }
+        }
+
+        private void tb_placeholder_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox)
+            {
+                TextBox tb = (TextBox)sender;
+                if (tb.Text == "")
+                {
+                    tb.Text = tb.Tag.ToString();
+                    tb.Foreground = new SolidColorBrush(Colors.Gray);
+                }
             }
         }
 

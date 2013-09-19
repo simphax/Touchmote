@@ -17,9 +17,9 @@ namespace WiiTUIO
                 case KeymapOutputType.KEYBOARD:
                     return Colors.Orange;
                 case KeymapOutputType.TOUCH:
-                    return Colors.Red;
+                    return Colors.Purple;
                 case KeymapOutputType.MOUSE:
-                    return Colors.Orange;
+                    return Colors.OrangeRed;
                 case KeymapOutputType.XINPUT:
                     return Colors.Green;
                 default:

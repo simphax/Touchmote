@@ -29,11 +29,16 @@ namespace WiiTUIO
         private KeymapDatabase()
         {
             allInputs = new List<KeymapInput>();
-            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", true, true));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", false, true));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "A", "A"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "B", "B"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Home", "Home"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Left", "Left"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "C", "Nunchuk.C"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick X", "Nunchuk.StickX"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick X", "Classic.StickLX", true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Trigger Left", "Classic.TriggerL", true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Y", "Classic.Y"));
 
             allOutputs = new List<KeymapOutput>();
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor", "touch", false, true));
@@ -48,6 +53,13 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "C", "vk_c"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Tab", "tab"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left Win", "lwin"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Cursor", "mouse", false, true));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Left", "mouseleft"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Right", "mouseright"));
+
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "A", "360.a"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "B", "360.b"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick X", "360.sticklx", true, false));
         }
 
         public KeymapSettings getKeymapSettings()
@@ -208,6 +220,17 @@ namespace WiiTUIO
             this.Key = key;
             this.Continous = continous;
             this.Cursor = cursor;
+        }
+    }
+
+
+    public class KeymapOutputComparer : IComparer<KeymapOutput>
+    {
+        StringComparer comparer = StringComparer.CurrentCulture;
+
+        public int Compare(KeymapOutput x, KeymapOutput y)
+        {
+            return comparer.Compare(x.Name, y.Name);
         }
     }
 }

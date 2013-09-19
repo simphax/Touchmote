@@ -35,10 +35,10 @@
             <ScrollViewer>
                 <StackPanel>
                     <StackPanel>
-                        <TextBox>Title</TextBox>
+                        <TextBox Name="tbKeymapTitle" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Title"></TextBox>
                         <CheckBox>Available in Layout Chooser</CheckBox>
                         <CheckBox>Enable automatically on application</CheckBox>
-                        <TextBox>Application Search</TextBox>
+                        <TextBox Name="tbKeymapAppSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Application Search"></TextBox>
                     </StackPanel>
                     <Label>Wiimote</Label>
                     <StackPanel Name="spWiimoteConnections">
@@ -61,7 +61,7 @@
                     <ComboBoxItem Name="cbiTouch">Touch</ComboBoxItem>
                     <ComboBoxItem Name="cbi360">360 Controller</ComboBoxItem>
                 </ComboBox>
-                <TextBox Text="Filter" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1"></TextBox>
+                <TextBox Name="tbOutputFilter" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" TextChanged="tbOutputFilter_TextChanged" Tag="Filter" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1"></TextBox>
             </StackPanel>
             <ScrollViewer>
                 <StackPanel Name="spOutputList">

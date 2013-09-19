@@ -66,7 +66,10 @@ namespace WiiTUIO
             if (this.Parent != null)
             {
                 KeymapOutConfig result = this.Parent.getConfigFor(controllerId, input);
-                result.Inherited = true;
+                if (result != null)
+                {
+                    result.Inherited = true;
+                }
                 return result;
             }
             else
