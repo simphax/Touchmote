@@ -29,14 +29,14 @@ namespace WiiTUIO
         private KeymapDatabase()
         {
             allInputs = new List<KeymapInput>();
-            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", true, true));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "A", "A"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "B", "B"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Home", "Home"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Left", "Left"));
 
             allOutputs = new List<KeymapOutput>();
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor", "touch", true, true));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor", "touch", false, true));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Main", "touchmaster"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Slave", "touchslave"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left", "left"));

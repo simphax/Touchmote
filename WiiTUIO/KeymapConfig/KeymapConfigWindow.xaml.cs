@@ -78,9 +78,20 @@ namespace WiiTUIO
 
         private void selectKeymap(Keymap keymap)
         {
-            List<KeymapInput> allWiimoteInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.WIIMOTE);
+            List<KeymapInput> allIrInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.IR);
 
             this.spWiimoteConnections.Children.Clear();
+
+            foreach (KeymapInput input in allIrInputs)
+            {
+                KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
+                if (config != null)
+                {
+                    this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config));
+                }
+            }
+
+            List<KeymapInput> allWiimoteInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.WIIMOTE);
 
             foreach (KeymapInput input in allWiimoteInputs)
             {
