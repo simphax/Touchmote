@@ -3,7 +3,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-  Title="Controller Configuration" ResizeMode="CanResize" MinHeight="200" MaxWidth="900" MinWidth="900" Height="300">
+  Title="Controller Configuration" ResizeMode="CanResize" MinHeight="200" MaxWidth="900" MinWidth="900" Height="600">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -55,9 +55,11 @@
         <DockPanel Width="240">
             <StackPanel DockPanel.Dock="Top">
                 <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10">Output</Label>
-                <ComboBox FontFamily="Segoe UI Semilight" FontSize="14" Padding="5">
-                    <ComboBoxItem IsSelected="True">Keyboard</ComboBoxItem>
-                    <ComboBoxItem>Mouse</ComboBoxItem>
+                <ComboBox SelectionChanged="cbOutput_SelectionChanged" Name="cbOutput" FontFamily="Segoe UI Semilight" FontSize="14" Padding="5">
+                    <ComboBoxItem IsSelected="True" Name="cbiKeyboard">Keyboard</ComboBoxItem>
+                    <ComboBoxItem Name="cbiMouse">Mouse</ComboBoxItem>
+                    <ComboBoxItem Name="cbiTouch">Touch</ComboBoxItem>
+                    <ComboBoxItem Name="cbi360">360 Controller</ComboBoxItem>
                 </ComboBox>
                 <TextBox Text="Filter" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1"></TextBox>
             </StackPanel>

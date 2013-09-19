@@ -41,25 +41,21 @@ namespace WiiTUIO
         {
             InitializeComponent();
 
+            this.fillKeymapList();
+            this.fillOutputList(KeymapOutputType.KEYBOARD);
+            this.selectKeymap(KeymapDatabase.Current.getKeymap("default.json"));
+        }
+
+        private void fillKeymapList()
+        {
             List<Keymap> allKeymaps = KeymapDatabase.Current.getAllKeymaps();
 
             foreach (Keymap keymap in allKeymaps)
             {
                 KeymapRow row = new KeymapRow(keymap);
-                row.OnClick += Select_Keymap;
+                row.OnClick += selectKeymap;
                 this.spLayoutList.Children.Add(row);
             }
-
-            List<KeymapOutput> allKeyboardOutputs = KeymapDatabase.Current.getAvailableOutputs(KeymapOutputType.KEYBOARD);
-
-            foreach (KeymapOutput output in allKeyboardOutputs)
-            {
-                KeymapOutputRow row = new KeymapOutputRow(output);
-                row.OnDragStart += output_OnDragStart;
-                row.OnDragStop += output_OnDragStop;
-                this.spOutputList.Children.Add(row);
-            }
-
         }
 
         private void output_OnDragStop(Adorner obj)
@@ -80,7 +76,7 @@ namespace WiiTUIO
         }
 
 
-        private void Select_Keymap(Keymap keymap)
+        private void selectKeymap(Keymap keymap)
         {
             List<KeymapInput> allWiimoteInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.WIIMOTE);
 
@@ -94,7 +90,7 @@ namespace WiiTUIO
                     this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config));
                 }
             }
-            /*
+            
             List<KeymapInput> allNunchukInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.NUNCHUK);
 
             this.spNunchukConnections.Children.Clear();
@@ -102,7 +98,10 @@ namespace WiiTUIO
             foreach (KeymapInput input in allNunchukInputs)
             {
                 KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
-                this.spNunchukConnections.Children.Add(new KeymapConnectionRow(input, config));
+                if (config != null)
+                {
+                    this.spNunchukConnections.Children.Add(new KeymapConnectionRow(input, config));
+                }
             }
 
             List<KeymapInput> allClassicInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.CLASSIC);
@@ -112,9 +111,50 @@ namespace WiiTUIO
             foreach (KeymapInput input in allNunchukInputs)
             {
                 KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
-                this.spClassicConnections.Children.Add(new KeymapConnectionRow(input, config));
+                if (config != null)
+                {
+                    this.spClassicConnections.Children.Add(new KeymapConnectionRow(input, config));
+                }
             }
-             * */
+        }
+
+        private void cbOutput_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cbOutput.SelectedItem != null && ((ComboBoxItem)cbOutput.SelectedItem).Content != null)
+            {
+                ComboBoxItem cbItem = (ComboBoxItem)cbOutput.SelectedItem;
+                if (cbItem == cbiKeyboard)
+                {
+                    this.fillOutputList(KeymapOutputType.KEYBOARD);
+                }
+                else if (cbItem == cbiTouch)
+                {
+                    this.fillOutputList(KeymapOutputType.TOUCH);
+                }
+                else if (cbItem == cbiMouse)
+                {
+                    this.fillOutputList(KeymapOutputType.MOUSE);
+                }
+                else if (cbItem == cbi360)
+                {
+                    this.fillOutputList(KeymapOutputType.XINPUT);
+                }
+            }
+        }
+
+
+        private void fillOutputList(KeymapOutputType type)
+        {
+            this.spOutputList.Children.Clear();
+            List<KeymapOutput> allKeyboardOutputs = KeymapDatabase.Current.getAvailableOutputs(type);
+
+            foreach (KeymapOutput output in allKeyboardOutputs)
+            {
+                KeymapOutputRow row = new KeymapOutputRow(output);
+                row.OnDragStart += output_OnDragStart;
+                row.OnDragStop += output_OnDragStop;
+                this.spOutputList.Children.Add(row);
+            }
         }
 
         /*

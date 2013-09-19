@@ -53,9 +53,9 @@ namespace WiiTUIO
         public List<Keymap> getAllKeymaps()
         {
             List<Keymap> list = new List<Keymap>();
-            string[] files = Directory.GetFiles(Settings.Default.keymaps_path,"*.json");
+            string[] files = Directory.GetFiles(Settings.Default.keymaps_path, "*.json");
 
-            Keymap defaultKeymap = new Keymap(null,"default.json");
+            Keymap defaultKeymap = new Keymap(null, "default.json");
             list.Add(defaultKeymap);
 
             foreach (string filepath in files)
@@ -63,13 +63,25 @@ namespace WiiTUIO
                 string filename = Path.GetFileName(filepath);
                 if (filename != Settings.Default.keymaps_config && filename != "default.json")
                 {
-                    list.Add(new Keymap(defaultKeymap,filename));
+                    list.Add(new Keymap(defaultKeymap, filename));
                 }
             }
             return list;
         }
 
+        public Keymap getKeymap(string filename)
+        {
+            List<Keymap> list = this.getAllKeymaps();
 
+            foreach (Keymap keymap in list)
+            {
+                if (keymap.Filename == filename)
+                {
+                    return keymap;
+                }
+            }
+            return null;
+        }
 
         public List<KeymapInput> getAvailableInputs(KeymapInputSource source)
         {
