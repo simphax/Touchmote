@@ -28,7 +28,7 @@ namespace WiiTUIO
 
         public Action<Keymap> OnClick; //filename
 
-        public KeymapRow(Keymap keymap, bool active)
+        public KeymapRow(Keymap keymap, bool active, bool defaultk)
         {
             InitializeComponent();
             this.keymap = keymap;
@@ -43,6 +43,11 @@ namespace WiiTUIO
                 this.border.MouseUp += border_MouseUp;
                 this.border.Cursor = Cursors.Hand;
             }
+            if (defaultk)
+            {
+                this.tbDefault.Visibility = Visibility.Visible;
+            }
+
         }
 
         private void border_MouseUp(object sender, MouseButtonEventArgs e)

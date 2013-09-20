@@ -38,7 +38,10 @@
             <ScrollViewer>
                 <StackPanel>
                     <StackPanel>
-                        <TextBox Name="tbKeymapTitle" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Title" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="6"></TextBox>
+                        <Grid>
+                            <TextBox HorizontalAlignment="Left" Name="tbKeymapTitle" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Title" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="6" Width="223"></TextBox>
+                                <TextBlock Name="tbDelete" Cursor="Hand" MouseUp="tbDelete_MouseUp" Foreground="Red" FontFamily="Segoe UI Semilight" FontSize="12" Margin="349,10,6,10" TextAlignment="Center" TextDecorations="Underline">Delete</TextBlock>
+                        </Grid>
                         <CheckBox Name="cbLayoutChooser" FontFamily="Segoe UI Semilight" Margin="6">Available in Layout Chooser</CheckBox>
                         <CheckBox Name="cbApplicationSearch" FontFamily="Segoe UI Semilight" Margin="6">Enable automatically on application</CheckBox>
                         <TextBox Name="tbApplicationSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Application Search" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="6"></TextBox>

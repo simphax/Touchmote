@@ -169,6 +169,16 @@ namespace WiiTUIO
             }
             return null;
         }
+
+        public bool deleteKeymap(Keymap keymap)
+        {
+            if (keymap.Filename == this.getKeymapSettings().getDefaultKeymap())
+            {
+                return false;
+            }
+            File.Delete(Settings.Default.keymaps_path + keymap.Filename);
+            return true;
+        }
     }
 
     public enum KeymapInputSource

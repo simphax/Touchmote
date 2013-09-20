@@ -84,7 +84,8 @@ namespace WiiTUIO
             foreach (Keymap keymap in allKeymaps)
             {
                 bool active = this.currentKeymap.Filename == keymap.Filename;
-                KeymapRow row = new KeymapRow(keymap,active);
+                bool defaultk = keymap.Filename == KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap();
+                KeymapRow row = new KeymapRow(keymap,active,defaultk);
                 row.OnClick += selectKeymap;
                 this.spLayoutList.Children.Add(row);
             }
@@ -423,6 +424,17 @@ namespace WiiTUIO
                 if (tbApplicationSearch.Text != "" && tbApplicationSearch.Text != tbApplicationSearch.Tag.ToString())
                 {
                     KeymapDatabase.Current.getKeymapSettings().setSearchStringFor(this.currentKeymap, tbApplicationSearch.Text);
+                }
+            }
+        }
+
+        private void tbDelete_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (MessageBoxResult.Yes == MessageBox.Show("This will pernamently delete the file " + this.currentKeymap.Filename + ", are you sure?", "Delete keymap confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning))
+            {
+                if (KeymapDatabase.Current.deleteKeymap(this.currentKeymap))
+                {
+                    this.selectKeymap(KeymapDatabase.Current.getDefaultKeymap());
                 }
             }
         }
