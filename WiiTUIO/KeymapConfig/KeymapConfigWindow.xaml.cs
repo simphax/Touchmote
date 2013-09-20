@@ -88,6 +88,7 @@ namespace WiiTUIO
         private void selectKeymap(Keymap keymap)
         {
             List<KeymapInput> allIrInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.IR);
+            bool defaultKeymap = keymap.Filename == KeymapDatabase.Current.getDefaultKeymap().Filename;
 
             this.spWiimoteConnections.Children.Clear();
 
@@ -96,7 +97,7 @@ namespace WiiTUIO
                 KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
                 if (config != null)
                 {
-                    this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config));
+                    this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
                 }
             }
 
@@ -107,7 +108,7 @@ namespace WiiTUIO
                 KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
                 if (config != null)
                 {
-                    this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config));
+                    this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
                 }
             }
             
@@ -120,7 +121,7 @@ namespace WiiTUIO
                 KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
                 if (config != null)
                 {
-                    this.spNunchukConnections.Children.Add(new KeymapConnectionRow(input, config));
+                    this.spNunchukConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
                 }
             }
 
@@ -133,7 +134,7 @@ namespace WiiTUIO
                 KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
                 if (config != null)
                 {
-                    this.spClassicConnections.Children.Add(new KeymapConnectionRow(input, config));
+                    this.spClassicConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
                 }
             }
         }

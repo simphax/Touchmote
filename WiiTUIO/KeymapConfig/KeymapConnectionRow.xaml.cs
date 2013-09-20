@@ -24,7 +24,7 @@ namespace WiiTUIO
         private KeymapInput input;
         private KeymapOutConfig config;
 
-        public KeymapConnectionRow(KeymapInput input, KeymapOutConfig config)
+        public KeymapConnectionRow(KeymapInput input, KeymapOutConfig config, bool fromDefault)
         {
             InitializeComponent();
             this.input = input;
@@ -36,6 +36,11 @@ namespace WiiTUIO
             if (config.Inherited)
             {
                 this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.LightGray);
+            }
+
+            if (fromDefault)
+            {
+                this.rClear.Visibility = Visibility.Hidden;
             }
         }
 
@@ -101,6 +106,15 @@ namespace WiiTUIO
                     }
                 }
             }
+        }
+
+        private void rClear_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Keymap defaultKeymap = KeymapDatabase.Current.getDefaultKeymap();
+            this.config.Output = defaultKeymap.getConfigFor(0,this.input.Key).Output;
+            this.config.Inherited = true;
+            this.connection_output_name.Text = config.Output.Name;
+            this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.LightGray);
         }
 
     }

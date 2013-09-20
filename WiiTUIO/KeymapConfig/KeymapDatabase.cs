@@ -103,6 +103,21 @@ namespace WiiTUIO
             return null;
         }
 
+        public Keymap getDefaultKeymap()
+        {
+            List<Keymap> list = this.getAllKeymaps();
+            KeymapSettings settings = this.getKeymapSettings();
+
+            foreach (Keymap keymap in list)
+            {
+                if (keymap.Filename == settings.getDefaultKeymap())
+                {
+                    return keymap;
+                }
+            }
+            return null;
+        }
+
         public List<KeymapInput> getAvailableInputs(KeymapInputSource source)
         {
             List<KeymapInput> list = new List<KeymapInput>();
