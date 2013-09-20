@@ -24,30 +24,40 @@ namespace WiiTUIO
         private KeymapInput input;
         private KeymapOutConfig config;
 
+        private bool fromDefault;
+
         public KeymapConnectionRow(KeymapInput input, KeymapOutConfig config, bool fromDefault)
         {
             InitializeComponent();
             this.input = input;
             this.config = config;
+            this.fromDefault = fromDefault;
+
             this.connection_input_name.Text = input.Name;
-            this.connection_output_name.Text = config.Output.Name;
-            this.connection_output_border.BorderBrush = new SolidColorBrush(KeymapColors.GetColor(config.Output.Type));
 
-            if (config.Inherited)
-            {
-                this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.LightGray);
-            }
-
-            if (fromDefault)
-            {
-                this.rClear.Visibility = Visibility.Hidden;
-            }
+            this.SetConfig(config);
         }
 
         public void SetConfig(KeymapOutConfig config)
         {
             this.config = config;
             this.connection_output_name.Text = config.Output.Name;
+
+            if (config.Inherited)
+            {
+                this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.LightGray);
+                this.rClear.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                this.connection_output_border.BorderBrush = new SolidColorBrush(KeymapColors.GetColor(config.Output.Type));
+                this.rClear.Visibility = Visibility.Visible;
+            }
+
+            if (fromDefault)
+            {
+                this.rClear.Visibility = Visibility.Hidden;
+            }
         }
 
         private void connection_output_border_Drop(object sender, DragEventArgs e)
@@ -57,7 +67,6 @@ namespace WiiTUIO
                 KeymapOutput newOutput = (KeymapOutput)e.Data.GetData("KeymapOutput");
                 if (this.input.canHandle(newOutput))
                 {
-                    this.connection_output_border.BorderBrush = new SolidColorBrush(KeymapColors.GetColor(newOutput.Type));
                     this.SetConfig(new KeymapOutConfig(newOutput,false));
                 }
                 if (e.Data.GetDataPresent("KeymapOutputRow"))
@@ -76,8 +85,6 @@ namespace WiiTUIO
 
         private void connection_output_border_DragLeave(object sender, DragEventArgs e)
         {
-            //this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.Orange);
-            //this.connection_output_border.Background = new SolidColorBrush(Colors.White);
             if (e.Data.GetDataPresent("KeymapOutputRow"))
             {
                 ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropLost();
@@ -91,8 +98,6 @@ namespace WiiTUIO
                 KeymapOutput newOutput = (KeymapOutput)e.Data.GetData("KeymapOutput");
                 if (this.input.canHandle(newOutput))
                 {
-                    //this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.Orange);
-                    //this.connection_output_border.Background = new SolidColorBrush(Colors.Orange);
                     if (e.Data.GetDataPresent("KeymapOutputRow"))
                     {
                         ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropAccepted(this.connection_output_border);
@@ -113,6 +118,8 @@ namespace WiiTUIO
             Keymap defaultKeymap = KeymapDatabase.Current.getDefaultKeymap();
             this.config.Output = defaultKeymap.getConfigFor(0,this.input.Key).Output;
             this.config.Inherited = true;
+            this.SetConfig(this.config);
+
             this.connection_output_name.Text = config.Output.Name;
             this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.LightGray);
         }
