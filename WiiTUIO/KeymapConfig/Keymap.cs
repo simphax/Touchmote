@@ -45,6 +45,41 @@ namespace WiiTUIO
             return this.Name;
         }
 
+        public void setConfigFor(int controllerId, KeymapInput input, KeymapOutConfig config)
+        {
+            string key;
+            if (controllerId == 0)
+            {
+                key = "All";
+            }
+            else
+            {
+                key = "" + controllerId;
+            }
+
+            {
+                JToken level1 = this.jsonObj.GetValue(key);
+                if (level1 == null || level1.Type != JTokenType.Object)
+                {
+                    jsonObj.Add(key,new JObject());
+                }
+                level1 = this.jsonObj.GetValue(key);
+                JToken level2 = ((JObject)level1).GetValue(input.Key);
+                if (level2 == null)
+                {
+                    ((JObject)level1).Add(input.Key, config.Output.Key);
+                }
+                else
+                {
+                    ((JObject)level1).Remove(input.Key);
+                    ((JObject)level1).Add(input.Key, config.Output.Key);
+                }
+                jsonObj.Remove(key);
+                jsonObj.Add(key, level1);
+            }
+            File.WriteAllText(Settings.Default.keymaps_path + this.Filename, this.jsonObj.ToString());
+        }
+
         //0 = all
         public KeymapOutConfig getConfigFor(int controllerId, string input)
         {

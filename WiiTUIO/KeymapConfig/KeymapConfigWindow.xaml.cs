@@ -113,7 +113,9 @@ namespace WiiTUIO
                 KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
                 if (config != null)
                 {
-                    this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
+                    KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
+                    row.OnConfigChanged += connectionRow_OnConfigChanged;
+                    this.spWiimoteConnections.Children.Add(row);
                 }
             }
 
@@ -124,7 +126,9 @@ namespace WiiTUIO
                 KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
                 if (config != null)
                 {
-                    this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
+                    KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
+                    row.OnConfigChanged += connectionRow_OnConfigChanged;
+                    this.spWiimoteConnections.Children.Add(row);
                 }
             }
 
@@ -137,7 +141,9 @@ namespace WiiTUIO
                 KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
                 if (config != null)
                 {
-                    this.spNunchukConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
+                    KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
+                    row.OnConfigChanged += connectionRow_OnConfigChanged;
+                    this.spWiimoteConnections.Children.Add(row);
                 }
             }
 
@@ -150,9 +156,16 @@ namespace WiiTUIO
                 KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
                 if (config != null)
                 {
-                    this.spClassicConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
+                    KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
+                    row.OnConfigChanged += connectionRow_OnConfigChanged;
+                    this.spWiimoteConnections.Children.Add(row);
                 }
             }
+        }
+
+        private void connectionRow_OnConfigChanged(KeymapInput input, KeymapOutConfig config)
+        {
+            this.currentKeymap.setConfigFor(this.selectedWiimote, input, config);
         }
 
         private void cbOutput_SelectionChanged(object sender, SelectionChangedEventArgs e)

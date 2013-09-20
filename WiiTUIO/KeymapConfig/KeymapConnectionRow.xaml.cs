@@ -24,6 +24,8 @@ namespace WiiTUIO
         private KeymapInput input;
         private KeymapOutConfig config;
 
+        public Action<KeymapInput, KeymapOutConfig> OnConfigChanged;
+
         private bool fromDefault;
 
         public KeymapConnectionRow(KeymapInput input, KeymapOutConfig config, bool fromDefault)
@@ -57,6 +59,11 @@ namespace WiiTUIO
             if (fromDefault)
             {
                 this.rClear.Visibility = Visibility.Hidden;
+            }
+
+            if (OnConfigChanged != null)
+            {
+                OnConfigChanged(this.input,this.config);
             }
         }
 
