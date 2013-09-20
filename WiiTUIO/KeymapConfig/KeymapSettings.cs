@@ -32,6 +32,206 @@ namespace WiiTUIO
             return this.jsonObj.GetValue("Default").ToString();
         }
 
+        public void addToLayoutChooser(Keymap keymap)
+        {
+            if (this.isInLayoutChooser(keymap))
+            {
+                return;
+            }
+
+            JToken level1 = this.jsonObj.GetValue("LayoutChooser");
+            if (level1 == null)
+            {
+                this.jsonObj.Add("LayoutChooser",new JArray());
+            }
+            level1 = this.jsonObj.GetValue("LayoutChooser");
+            JArray array = (JArray)level1;
+
+            JObject newObj = new JObject();
+            newObj.Add("Title", keymap.getName());
+            newObj.Add("Keymap", keymap.Filename);
+            array.Add(newObj);
+
+            this.jsonObj.Remove("LayoutChooser");
+            this.jsonObj.Add("LayoutChooser",array);
+
+            save();
+        }
+
+        public void removeFromLayoutChooser(Keymap keymap)
+        {
+            if (!this.isInLayoutChooser(keymap))
+            {
+                return;
+            }
+
+            JToken level1 = this.jsonObj.GetValue("LayoutChooser");
+            if (level1 != null && level1.Type == JTokenType.Array)
+            {
+                JArray array = (JArray)level1;
+
+                foreach (JToken token in array)
+                {
+                    if (token.Type == JTokenType.Object)
+                    {
+                        string filename = ((JObject)token).GetValue("Keymap").ToString();
+
+                        if (filename == keymap.Filename)
+                        {
+                            token.Remove();
+
+                            this.jsonObj.Remove("LayoutChooser");
+                            this.jsonObj.Add("LayoutChooser",array);
+
+                            save();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void addToApplicationSearch(Keymap keymap, string search)
+        {
+            if (this.isInApplicationSearch(keymap))
+            {
+                return;
+            }
+
+            JToken level1 = this.jsonObj.GetValue("Applications");
+            if (level1 == null)
+            {
+                this.jsonObj.Add("Applications", new JArray());
+            }
+            level1 = this.jsonObj.GetValue("Applications");
+            JArray array = (JArray)level1;
+
+            JObject newObj = new JObject();
+            newObj.Add("Search", search);
+            newObj.Add("Keymap", keymap.Filename);
+            array.Add(newObj);
+
+            this.jsonObj.Remove("Applications");
+            this.jsonObj.Add("Applications", array);
+
+            save();
+        }
+
+        public void removeFromApplicationSearch(Keymap keymap)
+        {
+            if (!this.isInApplicationSearch(keymap))
+            {
+                return;
+            }
+
+            JToken level1 = this.jsonObj.GetValue("Applications");
+            if (level1 != null && level1.Type == JTokenType.Array)
+            {
+                JArray array = (JArray)level1;
+
+                foreach (JToken token in array)
+                {
+                    if (token.Type == JTokenType.Object)
+                    {
+                        string filename = ((JObject)token).GetValue("Keymap").ToString();
+
+                        if (filename == keymap.Filename)
+                        {
+                            token.Remove();
+
+                            this.jsonObj.Remove("Applications");
+                            this.jsonObj.Add("Applications", array);
+
+                            save();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void save()
+        {
+            File.WriteAllText(Settings.Default.keymaps_path + this.Filename, this.jsonObj.ToString());
+        }
+
+        public bool isInLayoutChooser(Keymap keymap)
+        {
+            List<LayoutChooserSetting> allKeymaps = this.getLayoutChooserSettings();
+
+            foreach (LayoutChooserSetting setting in allKeymaps)
+            {
+                if (setting.Keymap == keymap.Filename)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool isInApplicationSearch(Keymap keymap)
+        {
+            List<ApplicationSearchSetting> allKeymaps = this.getApplicationSearchSettings();
+
+            foreach (ApplicationSearchSetting setting in allKeymaps)
+            {
+                if (setting.Keymap == keymap.Filename)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public string getSearchStringFor(Keymap keymap)
+        {
+            List<ApplicationSearchSetting> allKeymaps = this.getApplicationSearchSettings();
+
+            foreach (ApplicationSearchSetting setting in allKeymaps)
+            {
+                if (setting.Keymap == keymap.Filename)
+                {
+                    return setting.Search;
+                }
+            }
+            return null;
+        }
+
+        public void setSearchStringFor(Keymap keymap, string search)
+        {
+            if (!isInApplicationSearch(keymap))
+            {
+                return;
+            }
+
+            JToken level1 = this.jsonObj.GetValue("Applications");
+            if (level1 != null && level1.Type == JTokenType.Array)
+            {
+                JArray array = (JArray)level1;
+
+                foreach (JToken token in array)
+                {
+                    if (token.Type == JTokenType.Object)
+                    {
+                        string filename = ((JObject)token).GetValue("Keymap").ToString();
+                        if (filename == keymap.Filename)
+                        {
+                            ((JObject)token).Remove("Search");
+                            ((JObject)token).Add("Search",search);
+
+                            this.jsonObj.Remove("Applications");
+                            this.jsonObj.Add("Applications", array);
+
+                            save();
+
+                            return;
+                        }
+                    }
+                }
+
+            }
+        }
+
         public List<LayoutChooserSetting> getLayoutChooserSettings()
         {
             List<LayoutChooserSetting> result = new List<LayoutChooserSetting>();

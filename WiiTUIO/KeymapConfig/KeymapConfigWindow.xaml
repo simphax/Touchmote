@@ -36,9 +36,9 @@
                 <StackPanel>
                     <StackPanel>
                         <TextBox Name="tbKeymapTitle" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Title"></TextBox>
-                        <CheckBox>Available in Layout Chooser</CheckBox>
-                        <CheckBox>Enable automatically on application</CheckBox>
-                        <TextBox Name="tbKeymapAppSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Application Search"></TextBox>
+                        <CheckBox Name="cbLayoutChooser">Available in Layout Chooser</CheckBox>
+                        <CheckBox Name="cbApplicationSearch">Enable automatically on application</CheckBox>
+                        <TextBox Name="tbApplicationSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Application Search"></TextBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" >
                         <Button Name="btnAll" Click="btnAll_Click">All</Button>

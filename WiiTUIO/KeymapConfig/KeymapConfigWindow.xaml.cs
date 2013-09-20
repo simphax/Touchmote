@@ -46,8 +46,8 @@ namespace WiiTUIO
 
             this.tbKeymapTitle.Text = this.tbKeymapTitle.Tag.ToString();
             this.tbKeymapTitle.Foreground = new SolidColorBrush(Colors.Gray);
-            this.tbKeymapAppSearch.Text = this.tbKeymapAppSearch.Tag.ToString();
-            this.tbKeymapAppSearch.Foreground = new SolidColorBrush(Colors.Gray);
+            this.tbApplicationSearch.Text = this.tbApplicationSearch.Tag.ToString();
+            this.tbApplicationSearch.Foreground = new SolidColorBrush(Colors.Gray);
             this.tbOutputFilter.Text = this.tbOutputFilter.Tag.ToString();
             this.tbOutputFilter.Foreground = new SolidColorBrush(Colors.Gray);
 
@@ -60,9 +60,17 @@ namespace WiiTUIO
             this.tbKeymapTitle.LostFocus += tbKeymapTitle_LostFocus;
             this.tbKeymapTitle.KeyUp += tbKeymapTitle_KeyUp;
             this.tbKeymapTitle.Foreground = new SolidColorBrush(Colors.Black);
+
+            this.tbApplicationSearch.LostFocus += tbApplicationSearch_LostFocus;
+            this.tbApplicationSearch.KeyUp += tbApplicationSearch_KeyUp;
+
+            this.cbLayoutChooser.Checked += cbLayoutChooser_Checked;
+            this.cbLayoutChooser.Unchecked += cbLayoutChooser_Unchecked;
+
+            this.cbApplicationSearch.Checked += cbApplicationSearch_Checked;
+            this.cbApplicationSearch.Unchecked += cbApplicationSearch_Unchecked;
+
         }
-
-
 
         private void fillKeymapList()
         {
@@ -105,6 +113,19 @@ namespace WiiTUIO
             this.currentKeymap = keymap;
 
             this.tbKeymapTitle.Text = keymap.getName();
+            string searchstring = KeymapDatabase.Current.getKeymapSettings().getSearchStringFor(this.currentKeymap);
+            if (searchstring != null && searchstring != "")
+            {
+                this.tbApplicationSearch.Text = searchstring;
+                this.tbApplicationSearch.Foreground = new SolidColorBrush(Colors.Black);
+            }
+            else
+            {
+                this.tbApplicationSearch.Text = this.tbApplicationSearch.Tag.ToString();
+                this.tbApplicationSearch.Foreground = new SolidColorBrush(Colors.Gray);
+            }
+            this.cbApplicationSearch.IsChecked = KeymapDatabase.Current.getKeymapSettings().isInApplicationSearch(this.currentKeymap);
+            this.cbLayoutChooser.IsChecked = KeymapDatabase.Current.getKeymapSettings().isInLayoutChooser(this.currentKeymap);
 
             this.fillConnectionLists(keymap, 0);
         }
@@ -331,6 +352,46 @@ namespace WiiTUIO
             btn3.IsEnabled = true;
             btn4.IsEnabled = false;
             this.selectWiimoteNumber(4);
+        }
+
+        private void cbLayoutChooser_Checked(object sender, RoutedEventArgs e)
+        {
+            KeymapDatabase.Current.getKeymapSettings().addToLayoutChooser(this.currentKeymap);
+        }
+
+        private void cbLayoutChooser_Unchecked(object sender, RoutedEventArgs e)
+        {
+            KeymapDatabase.Current.getKeymapSettings().removeFromLayoutChooser(this.currentKeymap);
+        }
+
+
+        private void cbApplicationSearch_Checked(object sender, RoutedEventArgs e)
+        {
+            KeymapDatabase.Current.getKeymapSettings().addToApplicationSearch(this.currentKeymap,this.tbApplicationSearch.Text);
+        }
+
+        private void cbApplicationSearch_Unchecked(object sender, RoutedEventArgs e)
+        {
+            KeymapDatabase.Current.getKeymapSettings().removeFromApplicationSearch(this.currentKeymap);
+        }
+
+        private void tbApplicationSearch_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tbApplicationSearch.Text != "" && tbApplicationSearch.Text != tbApplicationSearch.Tag.ToString())
+            {
+                KeymapDatabase.Current.getKeymapSettings().setSearchStringFor(this.currentKeymap, tbApplicationSearch.Text);
+            }
+        }
+
+        void tbApplicationSearch_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                if (tbApplicationSearch.Text != "" && tbApplicationSearch.Text != tbApplicationSearch.Tag.ToString())
+                {
+                    KeymapDatabase.Current.getKeymapSettings().setSearchStringFor(this.currentKeymap, tbApplicationSearch.Text);
+                }
+            }
         }
 
         /*
