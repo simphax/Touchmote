@@ -23,16 +23,29 @@ namespace WiiTUIO
     {
         private Keymap keymap;
 
+        private SolidColorBrush defaultBrush = new SolidColorBrush(Color.FromRgb(46, 46, 46));
+        private SolidColorBrush highlightBrush = new SolidColorBrush(Color.FromRgb(65, 177, 225));
+
         public Action<Keymap> OnClick; //filename
 
-        public KeymapRow(Keymap keymap)
+        public KeymapRow(Keymap keymap, bool active)
         {
             InitializeComponent();
             this.keymap = keymap;
             this.tbName.Text = keymap.getName();
+
+            if (active)
+            {
+                this.border.Background = highlightBrush;
+            }
+            else
+            {
+                this.border.MouseUp += border_MouseUp;
+                this.border.Cursor = Cursors.Hand;
+            }
         }
 
-        private void tbName_MouseUp(object sender, MouseButtonEventArgs e)
+        private void border_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (OnClick != null)
             {

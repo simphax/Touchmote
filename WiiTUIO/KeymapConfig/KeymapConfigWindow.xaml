@@ -19,49 +19,63 @@
     </Window.Resources>
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
-            
+
         </Controls:WindowCommands>
     </Controls:MetroWindow.WindowCommands>
     <StackPanel Name="mainPanel" Orientation="Horizontal">
         <DockPanel Width="240">
             <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Layouts</Label>
             <ScrollViewer>
-                <StackPanel Name="spLayoutList">
+                <StackPanel>
+
+                    <StackPanel Name="spLayoutList">
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </DockPanel>
         <DockPanel Width="420">
-            <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Connections</Label>
+            <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Edit Layout</Label>
             <ScrollViewer>
                 <StackPanel>
                     <StackPanel>
-                        <TextBox Name="tbKeymapTitle" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Title"></TextBox>
-                        <CheckBox Name="cbLayoutChooser">Available in Layout Chooser</CheckBox>
-                        <CheckBox Name="cbApplicationSearch">Enable automatically on application</CheckBox>
-                        <TextBox Name="tbApplicationSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Application Search"></TextBox>
+                        <TextBox Name="tbKeymapTitle" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Title" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="6"></TextBox>
+                        <CheckBox Name="cbLayoutChooser" FontFamily="Segoe UI Semilight" Margin="6">Available in Layout Chooser</CheckBox>
+                        <CheckBox Name="cbApplicationSearch" FontFamily="Segoe UI Semilight" Margin="6">Enable automatically on application</CheckBox>
+                        <TextBox Name="tbApplicationSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Application Search" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="6"></TextBox>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
-                        <Button Name="btnAll" Click="btnAll_Click">All</Button>
-                        <Button Name="btn1" Click="btn1_Click">1</Button>
-                        <Button Name="btn2" Click="btn2_Click">2</Button>
-                        <Button Name="btn3" Click="btn3_Click">3</Button>
-                        <Button Name="btn4" Click="btn4_Click">4</Button>
+                    <Border BorderBrush="#FFCBCBCB" BorderThickness="0,0,0,1" Margin="6"></Border>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                        <Border Name="btnAllBorder" Background="#FF2E2E2E" CornerRadius="2" Margin="2">
+                            <Button Cursor="Hand" Name="btnAll" Click="btnAll_Click" Background="{x:Null}" Foreground="White" Padding="8,0" Height="27">All</Button>
+                        </Border>
+                        <Border Name="btn1Border" Background="#FF2E2E2E" CornerRadius="2" Margin="2">
+                            <Button Cursor="Hand" Name="btn1" Click="btn1_Click" Background="{x:Null}" Foreground="White" Padding="8,0" Height="27">1</Button>
+                        </Border>
+                        <Border Name="btn2Border" Background="#FF2E2E2E" CornerRadius="2" Margin="2">
+                            <Button Cursor="Hand" Name="btn2" Click="btn2_Click" Background="{x:Null}" Foreground="White" Padding="8,0" Height="27">2</Button>
+                        </Border>
+                        <Border Name="btn3Border" Background="#FF2E2E2E" CornerRadius="2" Margin="2">
+                            <Button Cursor="Hand" Name="btn3" Click="btn3_Click" Background="{x:Null}" Foreground="White" Padding="8,0" Height="27">3</Button>
+                        </Border>
+                        <Border Name="btn4Border" Background="#FF2E2E2E" CornerRadius="2" Margin="2">
+                            <Button Cursor="Hand" Name="btn4" Click="btn4_Click" Background="{x:Null}" Foreground="White" Padding="8,0" Height="27">4</Button>
+                        </Border>
                     </StackPanel>
-                    <Label>Wiimote</Label>
+                    <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10">Wiimote</Label>
                     <StackPanel Name="spWiimoteConnections">
                     </StackPanel>
-                    <Label>Nunchuk</Label>
+                    <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10">Nunchuk</Label>
                     <StackPanel Name="spNunchukConnections">
                     </StackPanel>
-                    <Label>Classic Controller</Label>
+                    <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10">Classic Controller</Label>
                     <StackPanel Name="spClassicConnections">
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </DockPanel>
         <DockPanel Width="240">
-            <StackPanel DockPanel.Dock="Top">
-                <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10">Output</Label>
+            <StackPanel DockPanel.Dock="Top" Margin="10">
+                <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10">Outputs</Label>
                 <ComboBox SelectionChanged="cbOutput_SelectionChanged" Name="cbOutput" FontFamily="Segoe UI Semilight" FontSize="14" Padding="5">
                     <ComboBoxItem IsSelected="True" Name="cbiKeyboard">Keyboard</ComboBoxItem>
                     <ComboBoxItem Name="cbiMouse">Mouse</ComboBoxItem>
