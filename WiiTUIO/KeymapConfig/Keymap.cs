@@ -48,21 +48,43 @@ namespace WiiTUIO
         //0 = all
         public KeymapOutConfig getConfigFor(int controllerId, string input)
         {
-            JToken level1 = this.jsonObj.GetValue("All");
-            if (level1 != null && level1.Type == JTokenType.Object)
+            if (controllerId > 0)
             {
-                JToken level2 = ((JObject)level1).GetValue(input);
-                if (level2 != null)
+                JToken level1 = this.jsonObj.GetValue("" + controllerId);
+                if (level1 != null && level1.Type == JTokenType.Object)
                 {
-                    if (level2.Type == JTokenType.String)
+                    JToken level2 = ((JObject)level1).GetValue(input);
+                    if (level2 != null)
                     {
-                        if (KeymapDatabase.Current.getOutput(level2.ToString().ToLower()) != null)
+                        if (level2.Type == JTokenType.String)
                         {
-                            return new KeymapOutConfig(KeymapDatabase.Current.getOutput(level2.ToString().ToLower()), false);
+                            if (KeymapDatabase.Current.getOutput(level2.ToString().ToLower()) != null)
+                            {
+                                return new KeymapOutConfig(KeymapDatabase.Current.getOutput(level2.ToString().ToLower()), false);
+                            }
                         }
                     }
                 }
             }
+            {
+                //No controller-specific keymapping was found so we search for the "All" settings
+                JToken level1 = this.jsonObj.GetValue("All");
+                if (level1 != null && level1.Type == JTokenType.Object)
+                {
+                    JToken level2 = ((JObject)level1).GetValue(input);
+                    if (level2 != null)
+                    {
+                        if (level2.Type == JTokenType.String)
+                        {
+                            if (KeymapDatabase.Current.getOutput(level2.ToString().ToLower()) != null)
+                            {
+                                return new KeymapOutConfig(KeymapDatabase.Current.getOutput(level2.ToString().ToLower()), controllerId > 0);
+                            }
+                        }
+                    }
+                }
+            }
+            //If we can not find any setting in the All group, search for it in the default keymap
             if (this.Parent != null)
             {
                 KeymapOutConfig result = this.Parent.getConfigFor(controllerId, input);
@@ -74,6 +96,7 @@ namespace WiiTUIO
             }
             else
             {
+                //This will only happen if we request a input string that is not defined in the default keymap.
                 return null;
             }
         }

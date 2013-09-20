@@ -24,6 +24,8 @@ namespace WiiTUIO
     {
         private AdornerLayer adornerLayer;
         private KeymapOutputType selectedOutput = KeymapOutputType.KEYBOARD;
+        private int selectedWiimote = 0;
+        private Keymap currentKeymap;
 
         private static KeymapConfigWindow defaultInstance;
         public static KeymapConfigWindow Instance
@@ -53,6 +55,7 @@ namespace WiiTUIO
             this.fillKeymapList();
             this.fillOutputList(selectedOutput, null);
             this.selectKeymap(KeymapDatabase.Current.getKeymap(KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap()));
+            this.btnAll.IsEnabled = false;
         }
 
         private void fillKeymapList()
@@ -84,17 +87,30 @@ namespace WiiTUIO
             }
         }
 
+        private void selectWiimoteNumber(int number)
+        {
+            this.selectedWiimote = number;
+            this.fillConnectionLists(currentKeymap, number);
+        }
+
 
         private void selectKeymap(Keymap keymap)
         {
-            List<KeymapInput> allIrInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.IR);
-            bool defaultKeymap = keymap.Filename == KeymapDatabase.Current.getDefaultKeymap().Filename;
+            this.currentKeymap = keymap;
 
+            this.fillConnectionLists(keymap, 0);
+        }
+
+        private void fillConnectionLists(Keymap keymap, int wiimote)
+        {
             this.spWiimoteConnections.Children.Clear();
 
+            bool defaultKeymap = keymap.Filename == KeymapDatabase.Current.getDefaultKeymap().Filename;
+
+            List<KeymapInput> allIrInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.IR);
             foreach (KeymapInput input in allIrInputs)
             {
-                KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
+                KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
                 if (config != null)
                 {
                     this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
@@ -105,20 +121,20 @@ namespace WiiTUIO
 
             foreach (KeymapInput input in allWiimoteInputs)
             {
-                KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
+                KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
                 if (config != null)
                 {
                     this.spWiimoteConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
                 }
             }
-            
+
             List<KeymapInput> allNunchukInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.NUNCHUK);
 
             this.spNunchukConnections.Children.Clear();
 
             foreach (KeymapInput input in allNunchukInputs)
             {
-                KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
+                KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
                 if (config != null)
                 {
                     this.spNunchukConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
@@ -131,7 +147,7 @@ namespace WiiTUIO
 
             foreach (KeymapInput input in allNunchukInputs)
             {
-                KeymapOutConfig config = keymap.getConfigFor(0, input.Key);
+                KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
                 if (config != null)
                 {
                     this.spClassicConnections.Children.Add(new KeymapConnectionRow(input, config, defaultKeymap));
@@ -223,6 +239,56 @@ namespace WiiTUIO
                     tb.Foreground = new SolidColorBrush(Colors.Gray);
                 }
             }
+        }
+
+        private void btnAll_Click(object sender, RoutedEventArgs e)
+        {
+            btnAll.IsEnabled = false;
+            btn1.IsEnabled = true;
+            btn2.IsEnabled = true;
+            btn3.IsEnabled = true;
+            btn4.IsEnabled = true;
+            this.selectWiimoteNumber(0);
+        }
+
+        private void btn1_Click(object sender, RoutedEventArgs e)
+        {
+            btnAll.IsEnabled = true;
+            btn1.IsEnabled = false;
+            btn2.IsEnabled = true;
+            btn3.IsEnabled = true;
+            btn4.IsEnabled = true;
+            this.selectWiimoteNumber(1);
+        }
+
+        private void btn2_Click(object sender, RoutedEventArgs e)
+        {
+            btnAll.IsEnabled = true;
+            btn1.IsEnabled = true;
+            btn2.IsEnabled = false;
+            btn3.IsEnabled = true;
+            btn4.IsEnabled = true;
+            this.selectWiimoteNumber(2);
+        }
+
+        private void btn3_Click(object sender, RoutedEventArgs e)
+        {
+            btnAll.IsEnabled = true;
+            btn1.IsEnabled = true;
+            btn2.IsEnabled = true;
+            btn3.IsEnabled = false;
+            btn4.IsEnabled = true;
+            this.selectWiimoteNumber(3);
+        }
+
+        private void btn4_Click(object sender, RoutedEventArgs e)
+        {
+            btnAll.IsEnabled = true;
+            btn1.IsEnabled = true;
+            btn2.IsEnabled = true;
+            btn3.IsEnabled = true;
+            btn4.IsEnabled = false;
+            this.selectWiimoteNumber(4);
         }
 
         /*

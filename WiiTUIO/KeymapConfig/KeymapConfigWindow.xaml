@@ -40,6 +40,13 @@
                         <CheckBox>Enable automatically on application</CheckBox>
                         <TextBox Name="tbKeymapAppSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Application Search"></TextBox>
                     </StackPanel>
+                    <StackPanel Orientation="Horizontal" >
+                        <Button Name="btnAll" Click="btnAll_Click">All</Button>
+                        <Button Name="btn1" Click="btn1_Click">1</Button>
+                        <Button Name="btn2" Click="btn2_Click">2</Button>
+                        <Button Name="btn3" Click="btn3_Click">3</Button>
+                        <Button Name="btn4" Click="btn4_Click">4</Button>
+                    </StackPanel>
                     <Label>Wiimote</Label>
                     <StackPanel Name="spWiimoteConnections">
                     </StackPanel>
