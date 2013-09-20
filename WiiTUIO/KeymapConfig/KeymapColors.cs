@@ -22,6 +22,8 @@ namespace WiiTUIO
                     return Colors.OrangeRed;
                 case KeymapOutputType.XINPUT:
                     return Colors.Green;
+                case KeymapOutputType.DISABLE:
+                    return Colors.Black;
                 default:
                     return Colors.Black;
             }

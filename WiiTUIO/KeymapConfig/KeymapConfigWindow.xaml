@@ -60,6 +60,7 @@
                     <ComboBoxItem Name="cbiMouse">Mouse</ComboBoxItem>
                     <ComboBoxItem Name="cbiTouch">Touch</ComboBoxItem>
                     <ComboBoxItem Name="cbi360">360 Controller</ComboBoxItem>
+                    <ComboBoxItem Name="cbiOther">Other</ComboBoxItem>
                 </ComboBox>
                 <TextBox Name="tbOutputFilter" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" TextChanged="tbOutputFilter_TextChanged" Tag="Filter" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1"></TextBox>
             </StackPanel>

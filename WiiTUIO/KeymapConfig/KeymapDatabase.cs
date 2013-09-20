@@ -60,6 +60,8 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "A", "360.a"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "B", "360.b"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick X", "360.sticklx", true, false));
+
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.DISABLE, "Disable", "disable"));
         }
 
         public KeymapSettings getKeymapSettings()
@@ -187,7 +189,7 @@ namespace WiiTUIO
 
         public bool canHandle(KeymapOutput output)
         {
-            return this.Continous == output.Continous || this.Cursor == output.Cursor;
+            return (this.Continous == output.Continous && this.Cursor == output.Cursor) || output.Type == KeymapOutputType.DISABLE;
         }
     }
 
@@ -197,7 +199,8 @@ namespace WiiTUIO
         TOUCH,
         KEYBOARD,
         MOUSE,
-        XINPUT
+        XINPUT,
+        DISABLE
     }
     public class KeymapOutput
     {

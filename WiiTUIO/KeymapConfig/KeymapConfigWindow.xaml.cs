@@ -159,6 +159,10 @@ namespace WiiTUIO
                 {
                     this.selectedOutput = KeymapOutputType.XINPUT;
                 }
+                else if (cbItem == cbiOther)
+                {
+                    this.selectedOutput = KeymapOutputType.DISABLE;
+                }
                 this.fillOutputList(this.selectedOutput,"");
             }
         }
