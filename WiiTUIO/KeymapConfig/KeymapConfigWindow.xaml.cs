@@ -56,12 +56,18 @@ namespace WiiTUIO
             this.fillOutputList(selectedOutput, null);
             this.selectKeymap(KeymapDatabase.Current.getKeymap(KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap()));
             this.btnAll.IsEnabled = false;
+            
+            this.tbKeymapTitle.LostFocus += tbKeymapTitle_LostFocus;
+            this.tbKeymapTitle.KeyUp += tbKeymapTitle_KeyUp;
+            this.tbKeymapTitle.Foreground = new SolidColorBrush(Colors.Black);
         }
+
+
 
         private void fillKeymapList()
         {
             List<Keymap> allKeymaps = KeymapDatabase.Current.getAllKeymaps();
-
+            this.spLayoutList.Children.Clear();
             foreach (Keymap keymap in allKeymaps)
             {
                 KeymapRow row = new KeymapRow(keymap);
@@ -97,6 +103,8 @@ namespace WiiTUIO
         private void selectKeymap(Keymap keymap)
         {
             this.currentKeymap = keymap;
+
+            this.tbKeymapTitle.Text = keymap.getName();
 
             this.fillConnectionLists(keymap, 0);
         }
@@ -250,6 +258,27 @@ namespace WiiTUIO
                 {
                     tb.Text = tb.Tag.ToString();
                     tb.Foreground = new SolidColorBrush(Colors.Gray);
+                }
+            }
+        }
+
+        private void tbKeymapTitle_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tbKeymapTitle.Text != "" && tbKeymapTitle.Text != tbKeymapTitle.Tag.ToString())
+            {
+                this.currentKeymap.setName(this.tbKeymapTitle.Text);
+                this.fillKeymapList();
+            }
+        }
+
+        void tbKeymapTitle_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                if (tbKeymapTitle.Text != "" && tbKeymapTitle.Text != tbKeymapTitle.Tag.ToString())
+                {
+                    this.currentKeymap.setName(this.tbKeymapTitle.Text);
+                    this.fillKeymapList();
                 }
             }
         }

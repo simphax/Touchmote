@@ -13,9 +13,6 @@ namespace WiiTUIO
     public class Keymap
     {
         public string Filename;
-        public string Name;
-        public bool DefaultKeymap;
-        public bool InLayoutChooser;
 
         public Keymap Parent;
 
@@ -30,8 +27,12 @@ namespace WiiTUIO
                 StreamReader reader = File.OpenText(Settings.Default.keymaps_path + filename);
                 this.jsonObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
                 reader.Close();
-
-                this.Name = this.jsonObj.GetValue("Title").ToString();
+            }
+            else
+            {
+                this.jsonObj = new JObject();
+                this.jsonObj.Add("Title", "New Keymap");
+                save();
             }
         }
 
@@ -42,7 +43,19 @@ namespace WiiTUIO
 
         public string getName()
         {
-            return this.Name;
+            return this.jsonObj.GetValue("Title").ToString();
+        }
+
+        public void setName(string name)
+        {
+            this.jsonObj.Remove("Title");
+            this.jsonObj.Add("Title", name);
+            save();
+        }
+
+        private void save()
+        {
+            File.WriteAllText(Settings.Default.keymaps_path + this.Filename, this.jsonObj.ToString());
         }
 
         public void setConfigFor(int controllerId, KeymapInput input, KeymapOutConfig config)
@@ -77,7 +90,7 @@ namespace WiiTUIO
                 jsonObj.Remove(key);
                 jsonObj.Add(key, level1);
             }
-            File.WriteAllText(Settings.Default.keymaps_path + this.Filename, this.jsonObj.ToString());
+            save();
         }
 
         //0 = all
