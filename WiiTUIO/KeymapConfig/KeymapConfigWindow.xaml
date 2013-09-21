@@ -27,9 +27,17 @@
             <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Layouts</Label>
             <ScrollViewer>
                 <StackPanel>
-
                     <StackPanel Name="spLayoutList">
                     </StackPanel>
+                    <Grid>
+                        <Border Name="bAddKeymap" MouseUp="bAddKeymap_MouseUp" Cursor="Hand" Width="180" Background="#FFEAEAEA" BorderThickness="0" BorderBrush="#FF2E2E2E" Margin="5" CornerRadius="2">
+                            <Rectangle Name="rClear" Width="14" Height="14" Fill="#FF2E2E2E" Margin="5">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Visual="{StaticResource appbar_add}" Stretch="Fill" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Border>
+                    </Grid>
                 </StackPanel>
             </ScrollViewer>
         </DockPanel>
@@ -43,8 +51,8 @@
                                 <TextBlock Name="tbDelete" Cursor="Hand" MouseUp="tbDelete_MouseUp" Foreground="Red" FontFamily="Segoe UI Semilight" FontSize="12" Margin="349,10,6,10" TextAlignment="Center" TextDecorations="Underline">Delete</TextBlock>
                         </Grid>
                         <CheckBox Name="cbLayoutChooser" FontFamily="Segoe UI Semilight" Margin="6">Available in Layout Chooser</CheckBox>
-                        <CheckBox Name="cbApplicationSearch" FontFamily="Segoe UI Semilight" Margin="6">Enable automatically on application</CheckBox>
-                        <TextBox Name="tbApplicationSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Application Search" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="6"></TextBox>
+                        <CheckBox Name="cbApplicationSearch" FontFamily="Segoe UI Semilight" Margin="6,6,6,2">Automatically load with app</CheckBox>
+                        <TextBox Name="tbApplicationSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Search string (process name or window title, e.g. example.exe)" FontFamily="Segoe UI Semilight" FontSize="12" Padding="2,1" Margin="6,0,6,6"></TextBox>
                     </StackPanel>
                     <Border BorderBrush="#FFCBCBCB" BorderThickness="0,0,0,1" Margin="6"></Border>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
@@ -86,7 +94,7 @@
                     <ComboBoxItem Name="cbi360">360 Controller</ComboBoxItem>
                     <ComboBoxItem Name="cbiOther">Other</ComboBoxItem>
                 </ComboBox>
-                <TextBox Name="tbOutputFilter" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" TextChanged="tbOutputFilter_TextChanged" Tag="Filter" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1"></TextBox>
+                <TextBox Name="tbOutputFilter" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" TextChanged="tbOutputFilter_TextChanged" Tag="Filter" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="0,8,0,0"></TextBox>
             </StackPanel>
             <ScrollViewer>
                 <StackPanel Name="spOutputList">

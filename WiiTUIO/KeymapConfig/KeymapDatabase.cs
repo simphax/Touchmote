@@ -179,6 +179,34 @@ namespace WiiTUIO
             File.Delete(Settings.Default.keymaps_path + keymap.Filename);
             return true;
         }
+
+        public Keymap createNewKeymap()
+        {
+            List<Keymap> list = new List<Keymap>();
+            string[] files = Directory.GetFiles(Settings.Default.keymaps_path, "*.json");
+
+            string suggestedFilename = "z_custom.json";
+
+            bool recheck = false;
+
+            int iterations = 0;
+
+            do
+            {
+                recheck = false;
+                foreach (string filepath in files)
+                {
+                    string filename = Path.GetFileName(filepath);
+                    if (suggestedFilename == filename)
+                    {
+                        suggestedFilename = "z_custom_" + (++iterations) + ".json";
+                        recheck = true;
+                    }
+                }
+            } while (recheck);
+
+            return new Keymap(this.getDefaultKeymap(), suggestedFilename);
+        }
     }
 
     public enum KeymapInputSource

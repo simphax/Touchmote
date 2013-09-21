@@ -134,6 +134,8 @@ namespace WiiTUIO
             this.cbApplicationSearch.IsChecked = KeymapDatabase.Current.getKeymapSettings().isInApplicationSearch(this.currentKeymap);
             this.cbLayoutChooser.IsChecked = KeymapDatabase.Current.getKeymapSettings().isInLayoutChooser(this.currentKeymap);
 
+            this.tbDelete.Visibility = this.currentKeymap.Filename == KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap() ? Visibility.Hidden : Visibility.Visible;
+
             this.fillConnectionLists(keymap, 0);
 
             this.fillKeymapList();
@@ -437,6 +439,12 @@ namespace WiiTUIO
                     this.selectKeymap(KeymapDatabase.Current.getDefaultKeymap());
                 }
             }
+        }
+
+        private void bAddKeymap_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Keymap newKeymap = KeymapDatabase.Current.createNewKeymap();
+            selectKeymap(newKeymap);
         }
 
         /*
