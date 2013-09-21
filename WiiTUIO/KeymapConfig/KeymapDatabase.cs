@@ -180,6 +180,8 @@ namespace WiiTUIO
             {
                 return false;
             }
+            this.getKeymapSettings().removeFromLayoutChooser(keymap);
+            this.getKeymapSettings().removeFromApplicationSearch(keymap);
             File.Delete(Settings.Default.keymaps_path + keymap.Filename);
             return true;
         }
@@ -255,9 +257,9 @@ namespace WiiTUIO
     {
         ALL, //Only used for search
         TOUCH,
-        KEYBOARD,
         MOUSE,
         XINPUT,
+        KEYBOARD,
         DISABLE
     }
     public class KeymapOutput

@@ -11,25 +11,9 @@
     {
       "Title": "Steering Wheel",
       "Keymap": "steeringwheel.json"
-    },
-	{
-      "Title": "Shooter",
-      "Keymap": "fps.json"
     }
   ],
   "Applications": [
-    {
-      "Search": "supercratebox.exe",
-      "Keymap": "supercratebox.json"
-    },
-    {
-      "Search": "Super Smash Land",
-      "Keymap": "supersmashland.json"
-    },
-    {
-      "Search": "iw3",
-      "Keymap": "fps.json"
-    }
   ],
   "Default": "default.json"
 }

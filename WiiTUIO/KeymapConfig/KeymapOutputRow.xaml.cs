@@ -124,7 +124,7 @@ namespace WiiTUIO
         : base(adornedElement) 
       {
           //adornedElementRect = new Rect(adornedElement.DesiredSize);
-          adornedElementRect = new Rect(0,0,142,28);
+          adornedElementRect = new Rect(0,0,142,30);
           Point curpos = MouseSimulator.GetCursorPosition();
           Point point = adornedElement.PointFromScreen(curpos);
           offsetx = point.X;

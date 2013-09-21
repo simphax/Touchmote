@@ -16,12 +16,19 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Border Name="connection_input_border" Background="White" BorderThickness="3" BorderBrush="White" Margin="5,5,265,5">
-            <TextBlock Name="connection_input_name" Text="Default" Margin="2" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Center" />
+
+        <Rectangle Width="200" Height="6" Fill="#FFEEEEEE"></Rectangle>
+        <!--Rectangle Width="4" Height="28" Margin="172,0,210,0" Fill="#FFEEEEEE"></Rectangle-->
+        <Ellipse Width="18" Height="18" Margin="172,0,210,0" Fill="#FFEEEEEE"></Ellipse>
+        <!--Ellipse Width="12" Height="12" Margin="172,0,210,0" Fill="White"></Ellipse-->
+        <Border Name="connection_input_border" Background="#FFEEEEEE" BorderThickness="0" BorderBrush="White" Margin="5,5,265,5" CornerRadius="2">
+            <TextBlock Name="connection_input_name" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Center" />
         </Border>
-        <Border Name="connection_output_border" Background="White" BorderThickness="3" BorderBrush="#F20A0A0A" Margin="226,5,40,5" AllowDrop="True" Drop="connection_output_border_Drop" DragEnter="connection_output_border_DragEnter" DragLeave="connection_output_border_DragLeave" CornerRadius="2">
-            <TextBlock Name="connection_output_name" Text="Default" Margin="2" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Center" />
+        <Border Background="White" Margin="226,5,40,5"></Border>
+        <Border Name="connection_output_border" Background="Black" BorderThickness="0" BorderBrush="#F20A0A0A" Margin="226,5,40,5" AllowDrop="True" Drop="connection_output_border_Drop" DragEnter="connection_output_border_DragEnter" DragLeave="connection_output_border_DragLeave" CornerRadius="2">
+            <TextBlock Name="connection_output_name" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="White" TextAlignment="Center" />
         </Border>
+        
         <!--Rectangle Width="30" Height="30" StrokeThickness="3" RadiusY="2" RadiusX="2" Stroke="Gray" Margin="360,0,0,0" /-->
         <Rectangle Name="rClear" Cursor="Hand" MouseUp="rClear_MouseUp"  Width="14" Height="14" Margin="360,0,0,0" Fill="Gray">
                 <Rectangle.OpacityMask>

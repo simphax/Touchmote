@@ -183,7 +183,7 @@ namespace WiiTUIO
                 {
                     KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
                     row.OnConfigChanged += connectionRow_OnConfigChanged;
-                    this.spWiimoteConnections.Children.Add(row);
+                    this.spNunchukConnections.Children.Add(row);
                 }
             }
 
@@ -191,14 +191,14 @@ namespace WiiTUIO
 
             this.spClassicConnections.Children.Clear();
 
-            foreach (KeymapInput input in allNunchukInputs)
+            foreach (KeymapInput input in allClassicInputs)
             {
                 KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
                 if (config != null)
                 {
                     KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
                     row.OnConfigChanged += connectionRow_OnConfigChanged;
-                    this.spWiimoteConnections.Children.Add(row);
+                    this.spClassicConnections.Children.Add(row);
                 }
             }
         }

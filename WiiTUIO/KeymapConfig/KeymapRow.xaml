@@ -9,6 +9,6 @@
         <Border Width="180" Name="border" Background="#FF2E2E2E" BorderThickness="0" BorderBrush="Red" Margin="5" CornerRadius="2">
         <TextBlock Name="tbName" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="White" TextAlignment="Left" />
         </Border>
-        <TextBlock Name="tbDefault" Text="default" Margin="175,13,31,11" FontSize="10" FontFamily="Segoe UI Semilight" Foreground="White" TextAlignment="Left" TextDecorations="{x:Null}" Visibility="Hidden" />
+        <TextBlock Name="tbDefault" Text="default" Margin="158,13,39,11" FontSize="10" FontFamily="Segoe UI Semilight" Foreground="White" TextAlignment="Left" TextDecorations="{x:Null}" Visibility="Hidden" />
     </Grid>
 </UserControl>

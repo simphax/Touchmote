@@ -45,17 +45,20 @@
             <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Edit Layout</Label>
             <ScrollViewer>
                 <StackPanel>
-                    <StackPanel>
+                    <StackPanel Margin="4">
                         <Grid>
                             <TextBox HorizontalAlignment="Left" Name="tbKeymapTitle" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Title" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="6" Width="223"></TextBox>
                                 <TextBlock Name="tbDelete" Cursor="Hand" MouseUp="tbDelete_MouseUp" Foreground="Red" FontFamily="Segoe UI Semilight" FontSize="12" Margin="349,10,6,10" TextAlignment="Center" TextDecorations="Underline">Delete</TextBlock>
                         </Grid>
                         <CheckBox Name="cbLayoutChooser" FontFamily="Segoe UI Semilight" Margin="6">Available in Layout Chooser</CheckBox>
-                        <CheckBox Name="cbApplicationSearch" FontFamily="Segoe UI Semilight" Margin="6,6,6,2">Automatically load with app</CheckBox>
-                        <TextBox Name="tbApplicationSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Search string (process name or window title, e.g. example.exe)" FontFamily="Segoe UI Semilight" FontSize="12" Padding="2,1" Margin="6,0,6,6"></TextBox>
+                        <DockPanel>
+                            <CheckBox Name="cbApplicationSearch" FontFamily="Segoe UI Semilight" Margin="6,6,6,2">Hook to application</CheckBox>
+                            <TextBox Name="tbApplicationSearch" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" Tag="Search string (process name or window title, e.g. example.exe)" FontFamily="Segoe UI Semilight" FontSize="12" Padding="2,1" Margin="6,3,6,6"></TextBox>
+                        </DockPanel>
                     </StackPanel>
                     <Border BorderBrush="#FFCBCBCB" BorderThickness="0,0,0,1" Margin="6"></Border>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
+                        <Label FontFamily="Segoe UI Semilight" FontSize="13" Margin="20,2,2,2">Controllers</Label>
                         <Border Name="btnAllBorder" Background="#FF2E2E2E" CornerRadius="2" Margin="2">
                             <Button Cursor="Hand" Name="btnAll" Click="btnAll_Click" Background="{x:Null}" Foreground="White" Padding="8,0" Height="27">All</Button>
                         </Border>

@@ -47,12 +47,14 @@ namespace WiiTUIO
 
             if (config.Inherited)
             {
-                this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.LightGray);
+                Color color = KeymapColors.GetColor(config.Output.Type);
+                color.A = 60;
+                this.connection_output_border.Background = new SolidColorBrush(color);
                 this.rClear.Visibility = Visibility.Hidden;
             }
             else
             {
-                this.connection_output_border.BorderBrush = new SolidColorBrush(KeymapColors.GetColor(config.Output.Type));
+                this.connection_output_border.Background = new SolidColorBrush(KeymapColors.GetColor(config.Output.Type));
                 this.rClear.Visibility = Visibility.Visible;
             }
 
