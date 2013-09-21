@@ -23,7 +23,7 @@ namespace WiiTUIO
     public partial class KeymapConfigWindow : MetroWindow
     {
         private AdornerLayer adornerLayer;
-        private KeymapOutputType selectedOutput = KeymapOutputType.KEYBOARD;
+        private KeymapOutputType selectedOutput = KeymapOutputType.ALL;
         private int selectedWiimote = 0;
         private Keymap currentKeymap;
 
@@ -213,7 +213,11 @@ namespace WiiTUIO
             if (cbOutput.SelectedItem != null && ((ComboBoxItem)cbOutput.SelectedItem).Content != null)
             {
                 ComboBoxItem cbItem = (ComboBoxItem)cbOutput.SelectedItem;
-                if (cbItem == cbiKeyboard)
+                if (cbItem == cbiAll)
+                {
+                    this.selectedOutput = KeymapOutputType.ALL;
+                }
+                else if (cbItem == cbiKeyboard)
                 {
                     this.selectedOutput = KeymapOutputType.KEYBOARD;
                 }
@@ -236,7 +240,6 @@ namespace WiiTUIO
                 this.fillOutputList(this.selectedOutput,"");
             }
         }
-
 
         private void fillOutputList(KeymapOutputType type, string filter)
         {

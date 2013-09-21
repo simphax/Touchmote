@@ -88,7 +88,8 @@
             <StackPanel DockPanel.Dock="Top" Margin="10">
                 <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10">Outputs</Label>
                 <ComboBox SelectionChanged="cbOutput_SelectionChanged" Name="cbOutput" FontFamily="Segoe UI Semilight" FontSize="14" Padding="5">
-                    <ComboBoxItem IsSelected="True" Name="cbiKeyboard">Keyboard</ComboBoxItem>
+                    <ComboBoxItem IsSelected="True" Name="cbiAll">All</ComboBoxItem>
+                    <ComboBoxItem Name="cbiKeyboard">Keyboard</ComboBoxItem>
                     <ComboBoxItem Name="cbiMouse">Mouse</ComboBoxItem>
                     <ComboBoxItem Name="cbiTouch">Touch</ComboBoxItem>
                     <ComboBoxItem Name="cbi360">360 Controller</ComboBoxItem>

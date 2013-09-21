@@ -133,6 +133,10 @@ namespace WiiTUIO
 
         public List<KeymapOutput> getAvailableOutputs(KeymapOutputType type)
         {
+            if (type == KeymapOutputType.ALL)
+            {
+                return allOutputs;
+            }
             List<KeymapOutput> list = new List<KeymapOutput>();
             foreach (KeymapOutput output in allOutputs)
             {
@@ -249,6 +253,7 @@ namespace WiiTUIO
 
     public enum KeymapOutputType
     {
+        ALL, //Only used for search
         TOUCH,
         KEYBOARD,
         MOUSE,
@@ -286,7 +291,11 @@ namespace WiiTUIO
 
         public int Compare(KeymapOutput x, KeymapOutput y)
         {
-            return comparer.Compare(x.Name, y.Name);
+            if (x.Type - y.Type == 0)
+            {
+                return comparer.Compare(x.Name, y.Name);
+            }
+            return x.Type - y.Type;
         }
     }
 }
