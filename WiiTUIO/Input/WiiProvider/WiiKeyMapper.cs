@@ -198,6 +198,8 @@ namespace WiiTUIO.Provider
             this.KeyMap.OnButtonUp += keyMap_onButtonUp;
             this.KeyMap.OnConfigChanged += keyMap_onConfigChanged;
             this.KeyMap.OnRumble += keyMap_onRumble;
+
+            this.SendConfigChangedEvt();
         }
 
         private JObject loadApplicationsJSON()

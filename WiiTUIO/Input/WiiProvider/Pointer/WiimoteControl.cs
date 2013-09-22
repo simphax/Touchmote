@@ -120,13 +120,14 @@ namespace WiiTUIO.Provider
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
         {
-            currentKeymap = evt.Filename;
             if (firstConfig)
             {
+                currentKeymap = evt.Filename;
                 firstConfig = false;
             }
-            else
+            else if(evt.Filename != currentKeymap)
             {
+                currentKeymap = evt.Filename;
                 OverlayWindow.Current.ShowNotice("Layout for Wiimote " + this.Status.ID + " changed to \"" + evt.Name + "\"", this.Status.ID);
             }
             if (evt.Pointer.ToLower() == "touch")
