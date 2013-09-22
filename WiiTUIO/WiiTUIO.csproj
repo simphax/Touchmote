@@ -207,9 +207,12 @@
     </Compile>
     <Compile Include="Input\WiiProvider\XinputReport.cs" />
     <Compile Include="Input\WiiProvider\XinputDevice.cs" />
-    <Compile Include="KeymapConfig\KeymapColors.cs" />
     <Compile Include="KeymapConfig\KeymapOutputRow.xaml.cs">
       <DependentUpon>KeymapOutputRow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="KeymapConfig\KeymapColors.cs" />
+    <Compile Include="KeymapConfig\KeymapOutputItem.xaml.cs">
+      <DependentUpon>KeymapOutputItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="KeymapConfig\KeymapConnectionRow.xaml.cs">
       <DependentUpon>KeymapConnectionRow.xaml</DependentUpon>
@@ -254,6 +257,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="KeymapConfig\KeymapOutputRow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="KeymapConfig\KeymapOutputItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

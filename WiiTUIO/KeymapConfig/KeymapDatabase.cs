@@ -10,6 +10,8 @@ namespace WiiTUIO
 {
     class KeymapDatabase
     {
+        public string DisableKey { get; private set; }
+
         private List<KeymapInput> allInputs;
         private List<KeymapOutput> allOutputs;
 
@@ -28,12 +30,16 @@ namespace WiiTUIO
 
         private KeymapDatabase()
         {
+            this.DisableKey = "disable";
+
             allInputs = new List<KeymapInput>();
             allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", false, true));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "A", "A"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "B", "B"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Home", "Home"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Left", "Left"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "One", "One"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Two", "Two"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "C", "Nunchuk.C"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick X", "Nunchuk.StickX"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick X", "Classic.StickLX", true, false));
@@ -41,7 +47,7 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Y", "Classic.Y"));
 
             allOutputs = new List<KeymapOutput>();
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor", "touch", false, true));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor", "touch", false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Main", "touchmaster"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Slave", "touchslave"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left", "left"));
@@ -53,15 +59,15 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "C", "vk_c"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Tab", "tab"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left Win", "lwin"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Cursor", "mouse", false, true));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Cursor", "mouse", false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Left", "mouseleft"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Right", "mouseright"));
 
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "A", "360.a"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "B", "360.b"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick X", "360.sticklx", true, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick X", "360.sticklx", true, false, false));
 
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.DISABLE, "Disable", "disable"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.DISABLE, "Disable", this.DisableKey));
         }
 
         public KeymapSettings getKeymapSettings()
@@ -174,6 +180,11 @@ namespace WiiTUIO
             return null;
         }
 
+        public KeymapOutput getDisableOutput()
+        {
+            return this.getAvailableOutputs(KeymapOutputType.DISABLE).First();
+        }
+
         public bool deleteKeymap(Keymap keymap)
         {
             if (keymap.Filename == this.getKeymapSettings().getDefaultKeymap())
@@ -269,20 +280,26 @@ namespace WiiTUIO
         public KeymapOutputType Type { get; private set; }
         public bool Continous { get; private set; }
         public bool Cursor { get; private set; }
+        public bool Stackable { get; private set; }
 
         public KeymapOutput(KeymapOutputType type, string name, string key)
-            : this(type, name, key, false, false)
+            : this(type, name, key, false, false, true)
         {
 
         }
 
-        public KeymapOutput(KeymapOutputType type, string name, string key, bool continous, bool cursor)
+        public KeymapOutput(KeymapOutputType type, string name, string key, bool continous, bool cursor, bool stackable)
         {
             this.Type = type;
             this.Name = name;
             this.Key = key;
             this.Continous = continous;
             this.Cursor = cursor;
+        }
+
+        public bool canStack(KeymapOutput other)
+        {
+            return this.Stackable && other.Stackable;
         }
     }
 

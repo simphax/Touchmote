@@ -54,10 +54,6 @@ namespace WiiTUIO
             this.tbOutputFilter.Text = this.tbOutputFilter.Tag.ToString();
             this.tbOutputFilter.Foreground = new SolidColorBrush(Colors.Gray);
 
-
-            this.fillOutputList(selectedOutput, null);
-            this.selectKeymap(KeymapDatabase.Current.getKeymap(KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap()));
-            this.fillKeymapList();
             
             this.btnAll.IsEnabled = false;
             btnAllBorder.Background = highlightBrush;
@@ -77,9 +73,26 @@ namespace WiiTUIO
 
         }
 
-        private void fillKeymapList()
+        protected override void OnInitialized(EventArgs e)
         {
+            base.OnInitialized(e);
+
+            this.fillOutputList(selectedOutput, null);
+
             List<Keymap> allKeymaps = KeymapDatabase.Current.getAllKeymaps();
+            foreach (Keymap keymap in allKeymaps)
+            {
+                if (keymap.Filename == KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap())
+                {
+                    this.selectKeymap(keymap);
+                }
+            }
+            this.fillKeymapList(allKeymaps);
+
+        }
+
+        private void fillKeymapList(List<Keymap> allKeymaps)
+        {
             this.spLayoutList.Children.Clear();
             foreach (Keymap keymap in allKeymaps)
             {
@@ -138,69 +151,38 @@ namespace WiiTUIO
 
             this.fillConnectionLists(keymap, 0);
 
-            this.fillKeymapList();
+            this.fillKeymapList(KeymapDatabase.Current.getAllKeymaps());
+        }
+
+        private void appendConnectionList(List<KeymapInput> list, Keymap keymap, int wiimote, bool defaultKeymap, Panel container)
+        {
+            foreach (KeymapInput input in list)
+            {
+                KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
+                if (config != null)
+                {
+                    KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
+                    row.OnConfigChanged += connectionRow_OnConfigChanged;
+                    row.OnDragStart += output_OnDragStart;
+                    row.OnDragStop += output_OnDragStop;
+                    container.Children.Add(row);
+                }
+            }
         }
 
         private void fillConnectionLists(Keymap keymap, int wiimote)
         {
+            bool defaultKeymap = wiimote == 0 && keymap.Filename == KeymapDatabase.Current.getDefaultKeymap().Filename;
+
             this.spWiimoteConnections.Children.Clear();
-
-            bool defaultKeymap = keymap.Filename == KeymapDatabase.Current.getDefaultKeymap().Filename;
-
-            List<KeymapInput> allIrInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.IR);
-            foreach (KeymapInput input in allIrInputs)
-            {
-                KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
-                if (config != null)
-                {
-                    KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
-                    row.OnConfigChanged += connectionRow_OnConfigChanged;
-                    this.spWiimoteConnections.Children.Add(row);
-                }
-            }
-
-            List<KeymapInput> allWiimoteInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.WIIMOTE);
-
-            foreach (KeymapInput input in allWiimoteInputs)
-            {
-                KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
-                if (config != null)
-                {
-                    KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
-                    row.OnConfigChanged += connectionRow_OnConfigChanged;
-                    this.spWiimoteConnections.Children.Add(row);
-                }
-            }
-
-            List<KeymapInput> allNunchukInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.NUNCHUK);
-
             this.spNunchukConnections.Children.Clear();
-
-            foreach (KeymapInput input in allNunchukInputs)
-            {
-                KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
-                if (config != null)
-                {
-                    KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
-                    row.OnConfigChanged += connectionRow_OnConfigChanged;
-                    this.spNunchukConnections.Children.Add(row);
-                }
-            }
-
-            List<KeymapInput> allClassicInputs = KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.CLASSIC);
-
             this.spClassicConnections.Children.Clear();
 
-            foreach (KeymapInput input in allClassicInputs)
-            {
-                KeymapOutConfig config = keymap.getConfigFor(wiimote, input.Key);
-                if (config != null)
-                {
-                    KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
-                    row.OnConfigChanged += connectionRow_OnConfigChanged;
-                    this.spClassicConnections.Children.Add(row);
-                }
-            }
+            this.appendConnectionList(KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.IR), keymap, wiimote, defaultKeymap, this.spWiimoteConnections);
+            this.appendConnectionList(KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.WIIMOTE), keymap, wiimote, defaultKeymap, this.spWiimoteConnections);
+            this.appendConnectionList(KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.NUNCHUK), keymap, wiimote, defaultKeymap, this.spNunchukConnections);
+            this.appendConnectionList(KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.CLASSIC), keymap, wiimote, defaultKeymap, this.spClassicConnections);
+
         }
 
         private void connectionRow_OnConfigChanged(KeymapInput input, KeymapOutConfig config)
@@ -302,7 +284,7 @@ namespace WiiTUIO
             if (tbKeymapTitle.Text != "" && tbKeymapTitle.Text != tbKeymapTitle.Tag.ToString())
             {
                 this.currentKeymap.setName(this.tbKeymapTitle.Text);
-                this.fillKeymapList();
+                this.fillKeymapList(KeymapDatabase.Current.getAllKeymaps());
             }
         }
 
@@ -313,7 +295,7 @@ namespace WiiTUIO
                 if (tbKeymapTitle.Text != "" && tbKeymapTitle.Text != tbKeymapTitle.Tag.ToString())
                 {
                     this.currentKeymap.setName(this.tbKeymapTitle.Text);
-                    this.fillKeymapList();
+                    this.fillKeymapList(KeymapDatabase.Current.getAllKeymaps());
                 }
             }
         }
@@ -450,12 +432,10 @@ namespace WiiTUIO
             selectKeymap(newKeymap);
         }
 
-        /*
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
             this.Visibility = System.Windows.Visibility.Collapsed;
         }
-        */
     }
 }

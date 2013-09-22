@@ -19,21 +19,29 @@
 
         <Rectangle Width="200" Height="6" Fill="#FFEEEEEE"></Rectangle>
         <!--Rectangle Width="4" Height="28" Margin="172,0,210,0" Fill="#FFEEEEEE"></Rectangle-->
-        <Ellipse Width="18" Height="18" Margin="172,0,210,0" Fill="#FFEEEEEE"></Ellipse>
+        <Ellipse Width="18" Height="18" Margin="0,0,70,0" Fill="#FFEEEEEE" RenderTransformOrigin="-0.444,0.611"></Ellipse>
         <!--Ellipse Width="12" Height="12" Margin="172,0,210,0" Fill="White"></Ellipse-->
         <Border Name="connection_input_border" Background="#FFEEEEEE" BorderThickness="0" BorderBrush="White" Margin="5,5,265,5" CornerRadius="2">
-            <TextBlock Name="connection_input_name" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Center" />
+            <TextBlock Name="connection_input_name" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Center" VerticalAlignment="Center" />
         </Border>
-        <Border Background="White" Margin="226,5,40,5"></Border>
-        <Border Name="connection_output_border" Background="Black" BorderThickness="0" BorderBrush="#F20A0A0A" Margin="226,5,40,5" AllowDrop="True" Drop="connection_output_border_Drop" DragEnter="connection_output_border_DragEnter" DragLeave="connection_output_border_DragLeave" CornerRadius="2">
+        <Border Background="White" Margin="196,5,70,5"></Border>
+        <StackPanel Margin="196,5,70,5" Name="connection_output_stack">
+
+        </StackPanel>
+        <!--Border Name="connection_output_border" Background="Black" BorderThickness="0" BorderBrush="#F20A0A0A" Margin="226,5,40,5" AllowDrop="True" Drop="connection_output_border_Drop" DragEnter="connection_output_border_DragEnter" DragLeave="connection_output_border_DragLeave" CornerRadius="2">
             <TextBlock Name="connection_output_name" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="White" TextAlignment="Center" />
-        </Border>
+        </Border-->
         
         <!--Rectangle Width="30" Height="30" StrokeThickness="3" RadiusY="2" RadiusX="2" Stroke="Gray" Margin="360,0,0,0" /-->
-        <Rectangle Name="rClear" Cursor="Hand" MouseUp="rClear_MouseUp"  Width="14" Height="14" Margin="360,0,0,0" Fill="Gray">
-                <Rectangle.OpacityMask>
-                    <VisualBrush Visual="{StaticResource appbar_close}" Stretch="Fill" />
-                </Rectangle.OpacityMask>
+        <Rectangle Name="rAdd" Cursor="Hand" MouseUp="rAdd_MouseUp"  Width="14" Height="14" Margin="0,0,40,13" Fill="Gray" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Rectangle.OpacityMask>
+                <VisualBrush Visual="{StaticResource appbar_add}" Stretch="Fill" />
+            </Rectangle.OpacityMask>
+        </Rectangle>
+        <Rectangle Name="rClear" Cursor="Hand" MouseUp="rClear_MouseUp"  Width="11" Height="11" Margin="0,0,13,14" Fill="Gray" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Rectangle.OpacityMask>
+                <VisualBrush Visual="{StaticResource appbar_close}" Stretch="Fill" />
+            </Rectangle.OpacityMask>
         </Rectangle>
     </Grid>
 </UserControl>

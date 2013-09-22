@@ -78,15 +78,25 @@ namespace WiiTUIO
                 }
                 level1 = this.jsonObj.GetValue(key);
                 JToken level2 = ((JObject)level1).GetValue(input.Key);
-                if (level2 == null)
-                {
-                    ((JObject)level1).Add(input.Key, config.Output.Key);
-                }
-                else
+                if (level2 != null)
                 {
                     ((JObject)level1).Remove(input.Key);
-                    ((JObject)level1).Add(input.Key, config.Output.Key);
                 }
+
+                if (config.Stack.Count > 1)
+                {
+                    JArray array = new JArray();
+                    foreach(KeymapOutput output in config.Stack)
+                    {
+                        array.Add(output.Key);
+                    }
+                    ((JObject)level1).Add(input.Key, array);
+                }
+                else if (config.Stack.Count == 1)
+                {
+                    ((JObject)level1).Add(input.Key, config.Stack.First().Key);
+                }
+
                 jsonObj.Remove(key);
                 jsonObj.Add(key, level1);
             }
@@ -96,43 +106,58 @@ namespace WiiTUIO
         //0 = all
         public KeymapOutConfig getConfigFor(int controllerId, string input)
         {
+            string key;
             if (controllerId > 0)
             {
-                JToken level1 = this.jsonObj.GetValue("" + controllerId);
-                if (level1 != null && level1.Type == JTokenType.Object)
-                {
-                    JToken level2 = ((JObject)level1).GetValue(input);
-                    if (level2 != null)
-                    {
-                        if (level2.Type == JTokenType.String)
-                        {
-                            if (KeymapDatabase.Current.getOutput(level2.ToString().ToLower()) != null)
-                            {
-                                return new KeymapOutConfig(KeymapDatabase.Current.getOutput(level2.ToString().ToLower()), false);
-                            }
-                        }
-                    }
-                }
+                key = "" + controllerId;
             }
+            else
             {
-                //No controller-specific keymapping was found so we search for the "All" settings
-                JToken level1 = this.jsonObj.GetValue("All");
-                if (level1 != null && level1.Type == JTokenType.Object)
+                key = "All";
+            }
+
+            JToken level1 = this.jsonObj.GetValue(key);
+            if (level1 != null && level1.Type == JTokenType.Object)
+            {
+                JToken level2 = ((JObject)level1).GetValue(input);
+                if (level2 != null)
                 {
-                    JToken level2 = ((JObject)level1).GetValue(input);
-                    if (level2 != null)
+                    if (level2.Type == JTokenType.String)
                     {
-                        if (level2.Type == JTokenType.String)
+                        if (KeymapDatabase.Current.getOutput(level2.ToString().ToLower()) != null)
                         {
-                            if (KeymapDatabase.Current.getOutput(level2.ToString().ToLower()) != null)
+                            return new KeymapOutConfig(KeymapDatabase.Current.getOutput(level2.ToString().ToLower()), false);
+                        }
+                    }
+                    else if (level2.Type == JTokenType.Array)
+                    {
+                        JArray array = (JArray)level2;
+                        List<KeymapOutput> result = new List<KeymapOutput>();
+                        foreach (JValue value in array)
+                        {
+                            if (KeymapDatabase.Current.getOutput(value.ToString().ToLower()) != null)
                             {
-                                return new KeymapOutConfig(KeymapDatabase.Current.getOutput(level2.ToString().ToLower()), controllerId > 0);
+                                result.Add(KeymapDatabase.Current.getOutput(value.ToString().ToLower()));
                             }
+                        }
+                        if (result.Count == array.Count)
+                        {
+                            return new KeymapOutConfig(result, false);
                         }
                     }
                 }
             }
-            //If we can not find any setting in the All group, search for it in the default keymap
+            if(controllerId > 0)
+            {
+                //If we are searching for controller-specific keymaps we can inherit from the "All" setting.
+                KeymapOutConfig result = this.getConfigFor(0, input);
+                if (result != null)
+                {
+                    result.Inherited = true;
+                }
+                return result;
+            }
+            //If we can not find any setting in the All group, search for inherit from the default keymap
             if (this.Parent != null)
             {
                 KeymapOutConfig result = this.Parent.getConfigFor(controllerId, input);
@@ -144,7 +169,7 @@ namespace WiiTUIO
             }
             else
             {
-                //This will only happen if we request a input string that is not defined in the default keymap.
+                //This will happen if we request a input string that is not defined in this nor the default keymap.
                 return null;
             }
         }
@@ -154,12 +179,24 @@ namespace WiiTUIO
     public class KeymapOutConfig
     {
         public bool Inherited;
-        public KeymapOutput Output;
+        public List<KeymapOutput> Stack;
 
         public KeymapOutConfig(KeymapOutput output, bool inherited)
         {
-            this.Output = output;
+            this.Stack = new List<KeymapOutput>();
+            this.Stack.Add(output);
             this.Inherited = inherited;
+        }
+
+        public KeymapOutConfig(List<KeymapOutput> output, bool inherited)
+        {
+            this.Stack = output;
+            this.Inherited = inherited;
+        }
+
+        public void addOutput(KeymapOutput output)
+        {
+            this.Stack.Add(output);
         }
     }
 }

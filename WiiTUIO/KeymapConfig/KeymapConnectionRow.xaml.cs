@@ -24,6 +24,8 @@ namespace WiiTUIO
         private KeymapInput input;
         private KeymapOutConfig config;
 
+        public Action<Adorner> OnDragStart;
+        public Action<Adorner> OnDragStop;
         public Action<KeymapInput, KeymapOutConfig> OnConfigChanged;
 
         private bool fromDefault;
@@ -43,8 +45,33 @@ namespace WiiTUIO
         public void SetConfig(KeymapOutConfig config)
         {
             this.config = config;
-            this.connection_output_name.Text = config.Output.Name;
+            //this.connection_output_name.Text = config.Output.Name;
+            this.connection_output_stack.Children.Clear();
 
+            for(int i=0; i<config.Stack.Count; i++)
+            {
+                KeymapOutput output = config.Stack[i];
+                KeymapOutputItem item = new KeymapOutputItem(output);
+                item.AllowDrop = true;
+                item.OnDragStart += item_OnDragStart;
+                item.OnDragStop += item_OnDragStop;
+                item.Drop += output_Drop;
+                item.DragEnter += output_DragEnter;
+                item.DragLeave += output_DragLeave;
+                item.Tag = i;
+                this.connection_output_stack.Children.Add(item);
+            }
+
+            if (config.Inherited)
+            {
+                this.connection_output_stack.Opacity = 0.6;
+            }
+            else
+            {
+                this.connection_output_stack.Opacity = 1.0;
+            }
+
+            /*
             if (config.Inherited)
             {
                 Color color = KeymapColors.GetColor(config.Output.Type);
@@ -57,11 +84,11 @@ namespace WiiTUIO
                 this.connection_output_border.Background = new SolidColorBrush(KeymapColors.GetColor(config.Output.Type));
                 this.rClear.Visibility = Visibility.Visible;
             }
-
-            if (fromDefault)
+            */
+            /*if (fromDefault)
             {
                 this.rClear.Visibility = Visibility.Hidden;
-            }
+            }*/
 
             if (OnConfigChanged != null)
             {
@@ -69,54 +96,103 @@ namespace WiiTUIO
             }
         }
 
-        private void connection_output_border_Drop(object sender, DragEventArgs e)
+        private void item_OnDragStop(Adorner adorner)
         {
-            if (e.Data.GetDataPresent("KeymapOutput"))
+            if (OnDragStop != null)
             {
-                KeymapOutput newOutput = (KeymapOutput)e.Data.GetData("KeymapOutput");
-                if (this.input.canHandle(newOutput))
-                {
-                    this.SetConfig(new KeymapOutConfig(newOutput,false));
-                }
-                if (e.Data.GetDataPresent("KeymapOutputRow"))
-                {
-                    ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropDone();
-                }
-            }
-            else
-            {
-                if (e.Data.GetDataPresent("KeymapOutputRow"))
-                {
-                    ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropDone();
-                }
+                OnDragStop(adorner);
             }
         }
 
-        private void connection_output_border_DragLeave(object sender, DragEventArgs e)
+        private void item_OnDragStart(Adorner adorner)
         {
-            if (e.Data.GetDataPresent("KeymapOutputRow"))
+            if (OnDragStart != null)
             {
-                ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropLost();
+                OnDragStart(adorner);
             }
         }
 
-        private void connection_output_border_DragEnter(object sender, DragEventArgs e)
+        private void output_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent("KeymapOutput"))
+            if (!this.connection_output_stack.Children.Contains(((KeymapOutputItem)e.Data.GetData("KeymapOutputItem"))))
             {
-                KeymapOutput newOutput = (KeymapOutput)e.Data.GetData("KeymapOutput");
-                if (this.input.canHandle(newOutput))
+                if (e.Data.GetDataPresent("KeymapOutput"))
                 {
-                    if (e.Data.GetDataPresent("KeymapOutputRow"))
+                    KeymapOutput newOutput = (KeymapOutput)e.Data.GetData("KeymapOutput");
+                    if (this.input.canHandle(newOutput))
                     {
-                        ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropAccepted(this.connection_output_border);
+                        if (this.config.Inherited)
+                        {
+                            this.SetConfig(new KeymapOutConfig(newOutput, false));
+                        }
+                        else
+                        {
+                            if (sender is FrameworkElement && (sender as FrameworkElement).Tag is int)
+                            {
+                                this.config.Stack[(int)(sender as FrameworkElement).Tag] = newOutput;
+                                this.config.Inherited = false;
+                                this.SetConfig(this.config);
+                            }
+                        }
+                    }
+                    if (e.Data.GetDataPresent("KeymapOutputItem"))
+                    {
+                        ((KeymapOutputItem)e.Data.GetData("KeymapOutputItem")).DropDone();
                     }
                 }
                 else
                 {
-                    if (e.Data.GetDataPresent("KeymapOutputRow"))
+                    if (e.Data.GetDataPresent("KeymapOutputItem"))
                     {
-                        ((KeymapOutputRow)e.Data.GetData("KeymapOutputRow")).DropRejected();
+                        ((KeymapOutputItem)e.Data.GetData("KeymapOutputItem")).DropDone();
+                    }
+                }
+            }
+        }
+
+        private void output_DragLeave(object sender, DragEventArgs e)
+        {
+            if (!this.connection_output_stack.Children.Contains(((KeymapOutputItem)e.Data.GetData("KeymapOutputItem"))))
+            {
+                if (e.Data.GetDataPresent("KeymapOutputItem"))
+                {
+                    ((KeymapOutputItem)e.Data.GetData("KeymapOutputItem")).DropLost();
+                }
+            }
+        }
+
+        private void output_DragEnter(object sender, DragEventArgs e)
+        {
+            if (!this.connection_output_stack.Children.Contains(((KeymapOutputItem)e.Data.GetData("KeymapOutputItem"))))
+            {
+                if (e.Data.GetDataPresent("KeymapOutput"))
+                {
+                    KeymapOutput newOutput = (KeymapOutput)e.Data.GetData("KeymapOutput");
+                    if (this.input.canHandle(newOutput))
+                    {
+                        if (e.Data.GetDataPresent("KeymapOutputItem"))
+                        {
+                            UIElement target;
+                            if (this.config.Inherited)
+                            {
+                                target = this.connection_output_stack;
+                            }
+                            else
+                            {
+                                target = sender as UIElement;
+                            }
+                            ((KeymapOutputItem)e.Data.GetData("KeymapOutputItem")).DropAccepted(target);
+                        }
+                    }
+                    else
+                    {
+                        if (e.Data.GetDataPresent("KeymapOutputItem"))
+                        {
+                            if (!this.connection_output_stack.Children.Contains(((KeymapOutputItem)e.Data.GetData("KeymapOutputItem"))))
+                            {
+                                ((KeymapOutputItem)e.Data.GetData("KeymapOutputItem")).DropRejected();
+                            }
+                        }
                     }
                 }
             }
@@ -124,13 +200,31 @@ namespace WiiTUIO
 
         private void rClear_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            Keymap defaultKeymap = KeymapDatabase.Current.getDefaultKeymap();
-            this.config.Output = defaultKeymap.getConfigFor(0,this.input.Key).Output;
-            this.config.Inherited = true;
-            this.SetConfig(this.config);
+            if (this.config.Stack.Count == 1)
+            {
+                if (this.fromDefault)
+                {
+                    this.SetConfig(new KeymapOutConfig(KeymapDatabase.Current.getDisableOutput(), false));
+                }
+                else
+                {
+                    Keymap defaultKeymap = KeymapDatabase.Current.getDefaultKeymap();
+                    this.config.Stack = defaultKeymap.getConfigFor(0, this.input.Key).Stack;
+                    this.config.Inherited = true;
+                    this.SetConfig(this.config);
+                }
+            }
+            else if(this.config.Stack.Count > 1)
+            {
+                this.config.Stack.RemoveAt(this.config.Stack.Count - 1);
+                this.SetConfig(this.config);
+            }
+        }
 
-            this.connection_output_name.Text = config.Output.Name;
-            this.connection_output_border.BorderBrush = new SolidColorBrush(Colors.LightGray);
+        private void rAdd_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            this.config.addOutput(KeymapDatabase.Current.getDisableOutput());
+            this.SetConfig(this.config);
         }
 
     }
