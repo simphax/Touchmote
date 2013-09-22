@@ -38,6 +38,20 @@ namespace WiiTUIO
             this.fromDefault = fromDefault;
 
             this.connection_input_name.Text = input.Name;
+            if (input.Continous)
+            {
+                this.stickBlup.Visibility = Visibility.Visible;
+                this.rAdd.Visibility = Visibility.Collapsed;
+            }
+            else if (input.Cursor)
+            {
+                this.cursorBlup.Visibility = Visibility.Visible;
+                this.rAdd.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                this.buttonBlup.Visibility = Visibility.Visible;
+            }
 
             this.SetConfig(config);
         }
@@ -65,10 +79,14 @@ namespace WiiTUIO
             if (config.Inherited)
             {
                 this.connection_output_stack.Opacity = 0.6;
+                this.rAdd.Visibility = Visibility.Hidden;
+                this.rClear.Visibility = Visibility.Hidden;
             }
             else
             {
                 this.connection_output_stack.Opacity = 1.0;
+                this.rAdd.Visibility = Visibility.Visible;
+                this.rClear.Visibility = Visibility.Visible;
             }
 
             /*

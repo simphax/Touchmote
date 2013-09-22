@@ -18,9 +18,19 @@
     <Grid>
 
         <Rectangle Width="200" Height="6" Fill="#FFEEEEEE"></Rectangle>
-        <!--Rectangle Width="4" Height="28" Margin="172,0,210,0" Fill="#FFEEEEEE"></Rectangle-->
-        <Ellipse Width="18" Height="18" Margin="0,0,70,0" Fill="#FFEEEEEE" RenderTransformOrigin="-0.444,0.611"></Ellipse>
-        <!--Ellipse Width="12" Height="12" Margin="172,0,210,0" Fill="White"></Ellipse-->
+        <Grid Name="buttonBlup" Visibility="Collapsed">
+            <Ellipse Width="18" Height="18" Margin="0,0,70,0" Fill="#FFEEEEEE"></Ellipse>
+        </Grid>
+        <Grid Name="stickBlup" Visibility="Collapsed">
+            <Ellipse Width="18" Height="18" Margin="0,0,70,0" Fill="#FFEEEEEE"></Ellipse>
+            <Ellipse Width="12" Height="12" Margin="0,0,70,0" Fill="White"></Ellipse>
+            <Ellipse Width="8" Height="8" Margin="0,0,70,0" Fill="#FFEEEEEE"></Ellipse>
+        </Grid>
+        <Grid Name="cursorBlup" Visibility="Collapsed">
+            <Rectangle Width="4" Height="28" Margin="0,0,70,0" Fill="#FFEEEEEE"></Rectangle>
+            <Ellipse Width="18" Height="18" Margin="0,0,70,0" Fill="#FFEEEEEE"></Ellipse>
+            <Ellipse Width="12" Height="12" Margin="0,0,70,0" Fill="White"></Ellipse>
+        </Grid>
         <Border Name="connection_input_border" Background="#FFEEEEEE" BorderThickness="0" BorderBrush="White" Margin="5,5,265,5" CornerRadius="2">
             <TextBlock Name="connection_input_name" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Center" VerticalAlignment="Center" />
         </Border>
