@@ -538,6 +538,14 @@ namespace WiiTUIO
             buttons.Add(new JProperty("Classic.StickLY", "360.StickLY"));
             buttons.Add(new JProperty("Classic.StickRX", "360.StickRX"));
             buttons.Add(new JProperty("Classic.StickRY", "360.StickRY"));
+            buttons.Add(new JProperty("Classic.StickLUp", "disable"));
+            buttons.Add(new JProperty("Classic.StickLDown", "disable"));
+            buttons.Add(new JProperty("Classic.StickLLeft", "disable"));
+            buttons.Add(new JProperty("Classic.StickLRight", "disable"));
+            buttons.Add(new JProperty("Classic.StickRUp", "disable"));
+            buttons.Add(new JProperty("Classic.StickRDown", "disable"));
+            buttons.Add(new JProperty("Classic.StickRLeft", "disable"));
+            buttons.Add(new JProperty("Classic.StickRRight", "disable"));
             buttons.Add(new JProperty("Classic.Minus", "360.Back"));
             buttons.Add(new JProperty("Classic.Plus", "360.Start"));
             buttons.Add(new JProperty("Classic.Home", "360.Guide"));
