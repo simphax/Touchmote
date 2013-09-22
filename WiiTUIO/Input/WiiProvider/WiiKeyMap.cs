@@ -465,28 +465,28 @@ namespace WiiTUIO.Provider
                 case "bumperr":
                     this.XinputReport.BumperR = false;
                     break;
-                case "stickrx+":
+                case "stickrright":
                     this.XinputReport.StickRX = 0.5;
                     break;
-                case "stickry+":
+                case "stickrup":
                     this.XinputReport.StickRY = 0.5;
                     break;
-                case "sticklx+":
+                case "sticklright":
                     this.XinputReport.StickLX = 0.5;
                     break;
-                case "stickly+":
+                case "sticklup":
                     this.XinputReport.StickLY = 0.5;
                     break;
-                case "stickrx-":
+                case "stickrleft":
                     this.XinputReport.StickRX = 0.5;
                     break;
-                case "stickry-":
+                case "stickrdown":
                     this.XinputReport.StickRY = 0.5;
                     break;
-                case "sticklx-":
+                case "sticklleft":
                     this.XinputReport.StickLX = 0.5;
                     break;
-                case "stickly-":
+                case "stickldown":
                     this.XinputReport.StickLY = 0.5;
                     break;
             }
@@ -547,28 +547,28 @@ namespace WiiTUIO.Provider
                 case "bumperr":
                     this.XinputReport.BumperR = true;
                     break;
-                case "stickrx+":
+                case "stickrright":
                     this.XinputReport.StickRX = 1.0;
                     break;
-                case "stickry+":
+                case "stickrup":
                     this.XinputReport.StickRY = 0.0;
                     break;
-                case "sticklx+":
+                case "sticklright":
                     this.XinputReport.StickLX = 1.0;
                     break;
-                case "stickly+":
+                case "sticklup":
                     this.XinputReport.StickLY = 0.0;
                     break;
-                case "stickrx-":
+                case "stickrleft":
                     this.XinputReport.StickRX = 0.0;
                     break;
-                case "stickry-":
+                case "stickrdown":
                     this.XinputReport.StickRY = 1.0;
                     break;
-                case "sticklx-":
+                case "sticklleft":
                     this.XinputReport.StickLX = 0.0;
                     break;
-                case "stickly-":
+                case "stickldown":
                     this.XinputReport.StickLY = 1.0;
                     break;
             }

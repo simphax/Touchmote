@@ -57,10 +57,10 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Z", "Nunchuk.Z"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick X", "Nunchuk.StickX", true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Y", "Nunchuk.StickY", true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Up", "Nunchuk.StickY+"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Down", "Nunchuk.StickY-"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Left", "Nunchuk.StickX-"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Right", "Nunchuk.StickX+"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Up", "Nunchuk.StickUp"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Down", "Nunchuk.StickDown"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Left", "Nunchuk.StickLeft"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Right", "Nunchuk.StickRight"));
 
 
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left", "Classic.Left"));
@@ -72,14 +72,14 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick X", "Classic.StickRX", true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Y", "Classic.StickRY", true, false));
 
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Left", "Classic.StickLX-"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Right", "Classic.StickLX+"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Up", "Classic.StickLY+"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Down", "Classic.StickLY-"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Left", "Classic.StickRX-"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Right", "Classic.StickRX+"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Up", "Classic.StickRY+"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Down", "Classic.StickRY-"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Left", "Classic.StickLLeft"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Right", "Classic.StickLRight"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Up", "Classic.StickLUp"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Down", "Classic.StickLDown"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Left", "Classic.StickRLeft"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Right", "Classic.StickRRight"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Up", "Classic.StickRUp"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Down", "Classic.StickRDown"));
 
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Minus", "Classic.Minus"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Plus", "Classic.Plus"));
@@ -523,6 +523,10 @@ namespace WiiTUIO
 
             buttons.Add(new JProperty("Nunchuk.StickX", "360.StickLX"));
             buttons.Add(new JProperty("Nunchuk.StickY", "360.StickLY"));
+            buttons.Add(new JProperty("Nunchuk.StickUp", "disable"));
+            buttons.Add(new JProperty("Nunchuk.StickDown", "disable"));
+            buttons.Add(new JProperty("Nunchuk.StickLeft", "disable"));
+            buttons.Add(new JProperty("Nunchuk.StickRight", "disable"));
             buttons.Add(new JProperty("Nunchuk.C", "360.TriggerL"));
             buttons.Add(new JProperty("Nunchuk.Z", "360.TriggerR"));
 
