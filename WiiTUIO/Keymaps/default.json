@@ -19,9 +19,9 @@
       "LWin",
       "Tab"
     ],
-	"AccelX": "",
-	"AccelY": "",
-	"AccelZ": "",
+	"AccelX": "disable",
+	"AccelY": "disable",
+	"AccelZ": "disable",
 	"Nunchuk.StickX": "360.StickLX",
 	"Nunchuk.StickY": "360.StickLY",
 	"Nunchuk.C": "360.TriggerL",
@@ -43,8 +43,8 @@
 	"Classic.B": "360.B",
 	"Classic.TriggerL": "360.TriggerL",
 	"Classic.TriggerR": "360.TriggerR",
-	"Classic.L": "",
-	"Classic.R": "",
+	"Classic.L": "disable",
+	"Classic.R": "disable",
 	"Classic.ZL": "360.BumperL",
 	"Classic.ZR": "360.BumperR"
   }
