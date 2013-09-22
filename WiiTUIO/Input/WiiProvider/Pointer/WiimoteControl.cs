@@ -79,10 +79,10 @@ namespace WiiTUIO.Provider
             this.duoTouch = new DuoTouch(this.screenBounds, Properties.Settings.Default.pointer_positionSmoothing, touchStartID);
             this.keyMapper = new WiiKeyMapper(id);
 
-            this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
-            this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
-            this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
-            this.keyMapper.KeyMap.OnRumble += WiiKeyMap_OnRumble;
+            this.keyMapper.OnButtonDown += WiiButton_Down;
+            this.keyMapper.OnButtonUp += WiiButton_Up;
+            this.keyMapper.OnConfigChanged += WiiKeyMap_ConfigChanged;
+            this.keyMapper.OnRumble += WiiKeyMap_OnRumble;
 
             this.inputSimulator = new InputSimulator();
             this.screenPositionCalculator = new ScreenPositionCalculator();
@@ -99,7 +99,7 @@ namespace WiiTUIO.Provider
                 D3DCursorWindow.Current.AddCursor(masterCursor);
                 D3DCursorWindow.Current.AddCursor(slaveCursor);
 
-                this.keyMapper.KeyMap.SendConfigChangedEvt();
+                this.keyMapper.SendConfigChangedEvt();
             }
 
 

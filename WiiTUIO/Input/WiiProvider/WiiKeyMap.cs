@@ -379,8 +379,10 @@ namespace WiiTUIO.Provider
                     }
 
                 }
-
-                OnButtonDown(new WiiButtonEvent(key.ToString(), button, handled));
+                if (OnButtonDown != null)
+                {
+                    OnButtonDown(new WiiButtonEvent(key.ToString(), button, handled));
+                }
             }
         }
 

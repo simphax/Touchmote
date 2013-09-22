@@ -211,10 +211,10 @@ namespace WiiTUIO.Provider
 
             this.keyMapper = new WiiKeyMapper(1);
 
-            this.keyMapper.KeyMap.OnButtonDown += WiiButton_Down;
-            this.keyMapper.KeyMap.OnButtonUp += WiiButton_Up;
-            this.keyMapper.KeyMap.OnConfigChanged += WiiKeyMap_ConfigChanged;
-            this.keyMapper.KeyMap.SendConfigChangedEvt();
+            this.keyMapper.OnButtonDown += WiiButton_Down;
+            this.keyMapper.OnButtonUp += WiiButton_Up;
+            this.keyMapper.OnConfigChanged += WiiKeyMap_ConfigChanged;
+            this.keyMapper.SendConfigChangedEvt();
 
             this.inputSimulator = new InputSimulator();
 

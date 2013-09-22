@@ -22,6 +22,8 @@ namespace WiiTUIO
     /// </summary>
     public partial class KeymapConfigWindow : MetroWindow
     {
+        public Action OnConfigChanged;
+
         private AdornerLayer adornerLayer;
         private KeymapOutputType selectedOutput = KeymapOutputType.ALL;
         private int selectedWiimote = 0;
@@ -188,6 +190,10 @@ namespace WiiTUIO
         private void connectionRow_OnConfigChanged(KeymapInput input, KeymapOutConfig config)
         {
             this.currentKeymap.setConfigFor(this.selectedWiimote, input, config);
+            if (OnConfigChanged != null)
+            {
+                OnConfigChanged();
+            }
         }
 
         private void cbOutput_SelectionChanged(object sender, SelectionChangedEventArgs e)

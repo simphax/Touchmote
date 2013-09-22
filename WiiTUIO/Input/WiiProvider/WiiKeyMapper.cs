@@ -64,12 +64,16 @@ namespace WiiTUIO.Provider
 
     public class WiiKeyMapper
     {
+        public Action<WiiButtonEvent> OnButtonUp;
+        public Action<WiiButtonEvent> OnButtonDown;
+        public Action<WiiKeyMapConfigChangedEvent> OnConfigChanged;
+        public Action<bool> OnRumble;
 
         private string DEFAULT_JSON_FILENAME = "default.json";
 
-        public WiiKeyMap KeyMap;
+        private WiiKeyMap KeyMap;
 
-        public Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
+        private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
         {
             {"A",false},
             {"B",false},
@@ -120,11 +124,27 @@ namespace WiiTUIO.Provider
         {
             this.WiimoteID = wiimoteID;
 
-            System.IO.Directory.CreateDirectory(Settings.Default.keymaps_path);
-            this.applicationsJson = this.createDefaultApplicationsJSON();
-            this.defaultKeymapJson = this.createDefaultKeymapJSON();
+            this.initialize();
 
-            this.defaultName =  this.defaultKeymapJson.GetValue("Title").ToString();
+            this.processMonitor = SystemProcessMonitor.Default;
+            this.processMonitor.ProcessChanged += processChanged;
+            this.processMonitor.Start();
+
+            homeButtonTimer = new Timer();
+            homeButtonTimer.Interval = 1000;
+            homeButtonTimer.AutoReset = true;
+            homeButtonTimer.Elapsed += homeButtonTimer_Elapsed;
+
+            KeymapConfigWindow.Instance.OnConfigChanged += keymapConfigWindow_OnConfigChanged;
+        }
+
+        private void initialize()
+        {
+            System.IO.Directory.CreateDirectory(Settings.Default.keymaps_path);
+            this.applicationsJson = this.loadApplicationsJSON();
+            this.defaultKeymapJson = this.loadDefaultKeymapJSON();
+
+            this.defaultName = this.defaultKeymapJson.GetValue("Title").ToString();
             this.fallbackName = this.defaultName;
             this.fallbackFile = DEFAULT_JSON_FILENAME;
 
@@ -144,16 +164,54 @@ namespace WiiTUIO.Provider
             this.defaultKeymapJson = commonKeymap;
             this.fallbackKeymapJson = commonKeymap;
 
-            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson, this.fallbackName, this.fallbackFile, new XinputDevice(XinputBus.Default, wiimoteID), new XinputReport(wiimoteID));
+            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson, this.fallbackName, this.fallbackFile, new XinputDevice(XinputBus.Default, this.WiimoteID), new XinputReport(this.WiimoteID));
+            this.KeyMap.OnButtonDown += keyMap_onButtonDown;
+            this.KeyMap.OnButtonUp += keyMap_onButtonUp;
+            this.KeyMap.OnConfigChanged += keyMap_onConfigChanged;
+            this.KeyMap.OnRumble += keyMap_onRumble;
+        }
 
-            this.processMonitor = SystemProcessMonitor.Default;
-            this.processMonitor.ProcessChanged += processChanged;
-            this.processMonitor.Start();
+        private JObject loadApplicationsJSON()
+        {
+            JObject result = null;
+            if (File.Exists(Settings.Default.keymaps_path + Settings.Default.keymaps_config))
+            {
+                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + Settings.Default.keymaps_config);
+                try
+                {
+                    result = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                    reader.Close();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(Settings.Default.keymaps_path + Settings.Default.keymaps_config + " is not valid JSON");
+                }
+            }
+            return result;
+        }
 
-            homeButtonTimer = new Timer();
-            homeButtonTimer.Interval = 1000;
-            homeButtonTimer.AutoReset = true;
-            homeButtonTimer.Elapsed += homeButtonTimer_Elapsed;
+        private JObject loadDefaultKeymapJSON()
+        {
+            JObject result = null;
+            if (File.Exists(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME))
+            {
+                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME);
+                try
+                {
+                    result = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                    reader.Close();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME + " is not valid JSON");
+                }
+            }
+            return result;
+        }
+
+        private void keymapConfigWindow_OnConfigChanged()
+        {
+            this.initialize();
         }
 
         public void Teardown()
@@ -229,134 +287,39 @@ namespace WiiTUIO.Provider
 
         private void keyMap_onButtonUp(WiiButtonEvent evt)
         {
-            
+            if (this.OnButtonUp != null)
+            {
+                this.OnButtonUp(evt);
+            }
         }
 
         private void keyMap_onButtonDown(WiiButtonEvent evt)
         {
-            
+            if (this.OnButtonDown != null)
+            {
+                this.OnButtonDown(evt);
+            }
         }
 
-        private JObject createDefaultApplicationsJSON()
+        private void keyMap_onConfigChanged(WiiKeyMapConfigChangedEvent evt)
         {
-            JArray layouts = new JArray();
-            layouts.Add(new JObject(
-                new JProperty("Name","Default"),
-                new JProperty("Keymap",DEFAULT_JSON_FILENAME)
-            ));
-
-            JArray applications = new JArray();
-
-            JObject applicationList =
-                new JObject(
-                    new JProperty("LayoutChooser", layouts),
-                    new JProperty("Applications", applications),
-                    new JProperty("Default", DEFAULT_JSON_FILENAME)
-                );
-
-            JObject union = applicationList;
-
-            if (File.Exists(Settings.Default.keymaps_path + Settings.Default.keymaps_config))
+            if (this.OnConfigChanged != null)
             {
-                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + Settings.Default.keymaps_config);
-                try
-                {
-                    JObject existingConfig = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-                    reader.Close();
-
-                    MergeJSON(union, existingConfig);
-                }
-                catch (Exception e) 
-                {
-                    throw new Exception(Settings.Default.keymaps_path + Settings.Default.keymaps_config + " is not valid JSON");
-                }
+                this.OnConfigChanged(evt);
             }
-
-            File.WriteAllText(Settings.Default.keymaps_path + Settings.Default.keymaps_config, union.ToString());
-            return union;
         }
 
-        private JObject createDefaultKeymapJSON()
+        private void keyMap_onRumble(bool rumble)
         {
-            JObject buttons = new JObject();
-
-            buttons.Add(new JProperty("Pointer", "Touch"));
-
-            buttons.Add(new JProperty("A", "TouchMaster"));
-
-            buttons.Add(new JProperty("B", "TouchSlave"));
-
-            buttons.Add(new JProperty("Home", "LWin"));
-
-            buttons.Add(new JProperty("Left", "Left"));
-            buttons.Add(new JProperty("Right", "Right"));
-            buttons.Add(new JProperty("Up", "Up"));
-            buttons.Add(new JProperty("Down", "Down"));
-
-            buttons.Add(new JProperty("Plus", "Volume_Up"));
-
-            buttons.Add(new JProperty("Minus", "Volume_Down"));
-
-            JArray buttonOne = new JArray();
-            buttonOne.Add(new JValue("LWin"));
-            buttonOne.Add(new JValue("VK_C"));
-            buttons.Add(new JProperty("One", buttonOne));
-
-            JArray buttonTwo = new JArray();
-            buttonTwo.Add(new JValue("LWin"));
-            buttonTwo.Add(new JValue("Tab"));
-            buttons.Add(new JProperty("Two", buttonTwo));
-
-            buttons.Add(new JProperty("Nunchuk.StickX", "360.StickLX"));
-            buttons.Add(new JProperty("Nunchuk.StickY", "360.StickLY"));
-            buttons.Add(new JProperty("Nunchuk.C", "360.TriggerL"));
-            buttons.Add(new JProperty("Nunchuk.Z", "360.TriggerR"));
-
-            buttons.Add(new JProperty("Classic.Left", "360.Left"));
-            buttons.Add(new JProperty("Classic.Right", "360.Right"));
-            buttons.Add(new JProperty("Classic.Up", "360.Up"));
-            buttons.Add(new JProperty("Classic.Down", "360.Down"));
-            buttons.Add(new JProperty("Classic.StickLX", "360.StickLX"));
-            buttons.Add(new JProperty("Classic.StickLY", "360.StickLY"));
-            buttons.Add(new JProperty("Classic.StickRX", "360.StickRX"));
-            buttons.Add(new JProperty("Classic.StickRY", "360.StickRY"));
-            buttons.Add(new JProperty("Classic.Minus", "360.Back"));
-            buttons.Add(new JProperty("Classic.Plus", "360.Start"));
-            buttons.Add(new JProperty("Classic.Home", "360.Guide"));
-            buttons.Add(new JProperty("Classic.Y", "360.Y"));
-            buttons.Add(new JProperty("Classic.X", "360.X"));
-            buttons.Add(new JProperty("Classic.A", "360.A"));
-            buttons.Add(new JProperty("Classic.B", "360.B"));
-            buttons.Add(new JProperty("Classic.TriggerL", "360.TriggerL"));
-            buttons.Add(new JProperty("Classic.TriggerR", "360.TriggerR"));
-            buttons.Add(new JProperty("Classic.L", "360.L"));
-            buttons.Add(new JProperty("Classic.R", "360.R"));
-            buttons.Add(new JProperty("Classic.ZL", "360.BumperL"));
-            buttons.Add(new JProperty("Classic.ZR", "360.BumperR"));
-
-            JObject union = new JObject();
-
-            union.Add(new JProperty("Title", "Default"));
-
-            union.Add(new JProperty("All", buttons));
-
-            if (File.Exists(Settings.Default.keymaps_path + Settings.Default.keymaps_config))
+            if (this.OnRumble != null)
             {
-                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME);
-                try
-                {
-                    JObject existingConfig = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-                    reader.Close();
-
-                    MergeJSON(union, existingConfig);
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME + " is not valid JSON");
-                }
+                this.OnRumble(rumble);
             }
-            File.WriteAllText(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME, union.ToString());
-            return union;
+        }
+
+        public void SendConfigChangedEvt()
+        {
+            this.KeyMap.SendConfigChangedEvt();
         }
 
         private static void MergeJSON(JObject receiver, JObject donor)

@@ -90,6 +90,10 @@ namespace WiiTUIO
 
         public async void Initialize()
         {
+
+            KeymapConfigWindow.Instance.Hide();
+            KeymapDatabase.Current.CreateDefaultFiles();
+
             this.mainPanel.Visibility = Visibility.Visible;
             this.canvasSettings.Visibility = Visibility.Collapsed;
             this.canvasAbout.Visibility = Visibility.Collapsed;
@@ -152,6 +156,7 @@ namespace WiiTUIO
             this.canvasAbout.Children.Add(aboutpanel);
 
             Loaded += MainWindow_Loaded;
+
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)

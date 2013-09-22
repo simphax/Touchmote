@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +16,8 @@ namespace WiiTUIO
 
         private List<KeymapInput> allInputs;
         private List<KeymapOutput> allOutputs;
+
+        private string DEFAULT_JSON_FILENAME = "default.json";
 
         private static KeymapDatabase currentInstance;
         public static KeymapDatabase Current
@@ -69,6 +73,7 @@ namespace WiiTUIO
 
             allOutputs.Add(new KeymapOutput(KeymapOutputType.DISABLE, "Disable", this.DisableKey));
         }
+
 
         public KeymapSettings getKeymapSettings()
         {
@@ -223,6 +228,149 @@ namespace WiiTUIO
             } while (recheck);
 
             return new Keymap(this.getDefaultKeymap(), suggestedFilename);
+        }
+
+
+
+        public void CreateDefaultFiles()
+        {
+            this.createDefaultApplicationsJSON();
+            this.createDefaultKeymapJSON();
+        }
+
+        private static void MergeJSON(JObject receiver, JObject donor)
+        {
+            foreach (var property in donor)
+            {
+                JObject receiverValue = receiver[property.Key] as JObject;
+                JObject donorValue = property.Value as JObject;
+                if (receiverValue != null && donorValue != null)
+                    MergeJSON(receiverValue, donorValue);
+                else
+                    receiver[property.Key] = property.Value;
+            }
+        }
+
+        private JObject createDefaultApplicationsJSON()
+        {
+            JArray layouts = new JArray();
+            layouts.Add(new JObject(
+                new JProperty("Name", "Default"),
+                new JProperty("Keymap", DEFAULT_JSON_FILENAME)
+            ));
+
+            JArray applications = new JArray();
+
+            JObject applicationList =
+                new JObject(
+                    new JProperty("LayoutChooser", layouts),
+                    new JProperty("Applications", applications),
+                    new JProperty("Default", DEFAULT_JSON_FILENAME)
+                );
+
+            JObject union = applicationList;
+
+            if (File.Exists(Settings.Default.keymaps_path + Settings.Default.keymaps_config))
+            {
+                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + Settings.Default.keymaps_config);
+                try
+                {
+                    JObject existingConfig = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                    reader.Close();
+
+                    MergeJSON(union, existingConfig);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(Settings.Default.keymaps_path + Settings.Default.keymaps_config + " is not valid JSON");
+                }
+            }
+
+            File.WriteAllText(Settings.Default.keymaps_path + Settings.Default.keymaps_config, union.ToString());
+            return union;
+        }
+
+        private JObject createDefaultKeymapJSON()
+        {
+            JObject buttons = new JObject();
+
+            buttons.Add(new JProperty("Pointer", "Touch"));
+
+            buttons.Add(new JProperty("A", "TouchMaster"));
+
+            buttons.Add(new JProperty("B", "TouchSlave"));
+
+            buttons.Add(new JProperty("Home", "LWin"));
+
+            buttons.Add(new JProperty("Left", "Left"));
+            buttons.Add(new JProperty("Right", "Right"));
+            buttons.Add(new JProperty("Up", "Up"));
+            buttons.Add(new JProperty("Down", "Down"));
+
+            buttons.Add(new JProperty("Plus", "Volume_Up"));
+
+            buttons.Add(new JProperty("Minus", "Volume_Down"));
+
+            JArray buttonOne = new JArray();
+            buttonOne.Add(new JValue("LWin"));
+            buttonOne.Add(new JValue("VK_C"));
+            buttons.Add(new JProperty("One", buttonOne));
+
+            JArray buttonTwo = new JArray();
+            buttonTwo.Add(new JValue("LWin"));
+            buttonTwo.Add(new JValue("Tab"));
+            buttons.Add(new JProperty("Two", buttonTwo));
+
+            buttons.Add(new JProperty("Nunchuk.StickX", "360.StickLX"));
+            buttons.Add(new JProperty("Nunchuk.StickY", "360.StickLY"));
+            buttons.Add(new JProperty("Nunchuk.C", "360.TriggerL"));
+            buttons.Add(new JProperty("Nunchuk.Z", "360.TriggerR"));
+
+            buttons.Add(new JProperty("Classic.Left", "360.Left"));
+            buttons.Add(new JProperty("Classic.Right", "360.Right"));
+            buttons.Add(new JProperty("Classic.Up", "360.Up"));
+            buttons.Add(new JProperty("Classic.Down", "360.Down"));
+            buttons.Add(new JProperty("Classic.StickLX", "360.StickLX"));
+            buttons.Add(new JProperty("Classic.StickLY", "360.StickLY"));
+            buttons.Add(new JProperty("Classic.StickRX", "360.StickRX"));
+            buttons.Add(new JProperty("Classic.StickRY", "360.StickRY"));
+            buttons.Add(new JProperty("Classic.Minus", "360.Back"));
+            buttons.Add(new JProperty("Classic.Plus", "360.Start"));
+            buttons.Add(new JProperty("Classic.Home", "360.Guide"));
+            buttons.Add(new JProperty("Classic.Y", "360.Y"));
+            buttons.Add(new JProperty("Classic.X", "360.X"));
+            buttons.Add(new JProperty("Classic.A", "360.A"));
+            buttons.Add(new JProperty("Classic.B", "360.B"));
+            buttons.Add(new JProperty("Classic.TriggerL", "360.TriggerL"));
+            buttons.Add(new JProperty("Classic.TriggerR", "360.TriggerR"));
+            buttons.Add(new JProperty("Classic.L", "360.L"));
+            buttons.Add(new JProperty("Classic.R", "360.R"));
+            buttons.Add(new JProperty("Classic.ZL", "360.BumperL"));
+            buttons.Add(new JProperty("Classic.ZR", "360.BumperR"));
+
+            JObject union = new JObject();
+
+            union.Add(new JProperty("Title", "Default"));
+
+            union.Add(new JProperty("All", buttons));
+
+            if (File.Exists(Settings.Default.keymaps_path + Settings.Default.keymaps_config))
+            {
+                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME);
+                try
+                {
+                    JObject existingConfig = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                    reader.Close();
+
+                    MergeJSON(union, existingConfig);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME + " is not valid JSON");
+                }
+            }
+            File.WriteAllText(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME, union.ToString());
+            return union;
         }
     }
 
