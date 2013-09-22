@@ -148,7 +148,6 @@ namespace WiiTUIO
 
         private void btnEditKeymaps_Click(object sender, RoutedEventArgs e)
         {
-            KeymapConfigWindow.Instance.Owner = Window.GetWindow(this);
             KeymapConfigWindow.Instance.Show();
         }
     }

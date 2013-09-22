@@ -85,13 +85,13 @@ namespace WiiTUIO
 
             // Load from the XAML.
             InitializeComponent();
-            this.Initialize();
         }
 
-        public async void Initialize()
+        protected override void OnInitialized(EventArgs e)
         {
+ 	        base.OnInitialized(e);
 
-            KeymapConfigWindow.Instance.Hide();
+            KeymapConfigWindow.Instance.Visibility = System.Windows.Visibility.Collapsed;
             KeymapDatabase.Current.CreateDefaultFiles();
 
             this.mainPanel.Visibility = Visibility.Visible;
@@ -165,6 +165,9 @@ namespace WiiTUIO
             {
                 MinimizeToTray.Enable(this, Settings.Default.minimizeOnStart);
             }
+
+
+            KeymapConfigWindow.Instance.Owner = this;
         }
 
         private void windowsShutdownEvent(object sender, SessionEndingCancelEventArgs e)
