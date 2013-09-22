@@ -43,6 +43,10 @@ MultiTouchVista:  http://multitouchvista.codeplex.com<br />
 
 Release History
 ==============
+**v1.0 beta 10**<br />
+- Added visual keymap editor.
+- Experimental Windows 7 support.
+
 **v1.0 beta 9**<br />
 - Nunchuk and Classic Controller support.
 - XBox 360 controller emulation.
