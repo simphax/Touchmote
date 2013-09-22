@@ -178,86 +178,92 @@ namespace WiiTUIO.Provider
 
         private void WiiButton_Up(WiiButtonEvent evt)
         {
-            if (evt.Action.ToLower() == "nextlayout" && !evt.Handled)
+            foreach (string action in evt.Actions)
             {
-                IEnumerable<JObject> layoutList = this.keyMapper.GetLayoutList();
-                int curpos = 0;
-                int foundpos = 0;
-                foreach (JObject obj in layoutList)
+                if (action.ToLower() == "nextlayout" && !evt.Handled)
                 {
-                    JToken token = obj.GetValue("Keymap");
-                    if (token != null)
+                    IEnumerable<JObject> layoutList = this.keyMapper.GetLayoutList();
+                    int curpos = 0;
+                    int foundpos = 0;
+                    foreach (JObject obj in layoutList)
                     {
-                        if(token.ToString() == this.currentKeymap)
+                        JToken token = obj.GetValue("Keymap");
+                        if (token != null)
                         {
-                            foundpos = curpos;
+                            if (token.ToString() == this.currentKeymap)
+                            {
+                                foundpos = curpos;
+                            }
+                        }
+                        curpos++;
+                    }
+                    JObject nextLayout = layoutList.ElementAt(++foundpos % (layoutList.Count() - 1));
+                    if (nextLayout.GetValue("Keymap") != null)
+                    {
+                        this.keyMapper.SetFallbackKeymap(nextLayout.GetValue("Keymap").ToString());
+                        evt.Handled = true;
+                    }
+                }
+                if (action.ToLower() == "pointertoggle" && !evt.Handled)
+                {
+                    this.showPointer = this.showPointer ? false : true;
+                    if (this.showPointer)
+                    {
+                        this.duoTouch.enableHover();
+                        if (this.usingCursors() && !mouseMode)
+                        {
+                            this.masterCursor.Show();
                         }
                     }
-                    curpos++;
-                }
-                JObject nextLayout = layoutList.ElementAt(++foundpos % (layoutList.Count()-1));
-                if (nextLayout.GetValue("Keymap") != null)
-                {
-                    this.keyMapper.SetFallbackKeymap(nextLayout.GetValue("Keymap").ToString());
-                    evt.Handled = true;
-                }
-            }
-            if (evt.Action.ToLower() == "pointertoggle" && !evt.Handled)
-            {
-                this.showPointer = this.showPointer ? false : true;
-                if (this.showPointer)
-                {
-                    this.duoTouch.enableHover();
-                    if (this.usingCursors() && !mouseMode)
+                    else
                     {
-                        this.masterCursor.Show();
+                        this.duoTouch.disableHover();
+                        if (this.usingCursors())
+                        {
+                            this.masterCursor.Hide();
+                            this.slaveCursor.Hide();
+                        }
                     }
                 }
-                else
+                if (action.ToLower() == "touchmaster" && !evt.Handled)
                 {
-                    this.duoTouch.disableHover();
                     if (this.usingCursors())
                     {
-                        this.masterCursor.Hide();
-                        this.slaveCursor.Hide();
+                        this.masterCursor.SetReleased();
                     }
+                    touchDownMaster = false;
                 }
-            }
-            if (evt.Action.ToLower() == "touchmaster" && !evt.Handled)
-            {
-                if (this.usingCursors())
+                if (action.ToLower() == "touchslave" && !evt.Handled)
                 {
-                    this.masterCursor.SetReleased();
+                    if (this.usingCursors())
+                    {
+                        this.slaveCursor.SetReleased();
+                    }
+                    touchDownSlave = false;
                 }
-                touchDownMaster = false;
-            }
-            if (evt.Action.ToLower() == "touchslave" && !evt.Handled)
-            {
-                if (this.usingCursors())
-                {
-                    this.slaveCursor.SetReleased();
-                }
-                touchDownSlave = false;
             }
         }
 
         private void WiiButton_Down(WiiButtonEvent evt)
         {
-            if (evt.Action.ToLower() == "touchmaster" && !evt.Handled)
+            foreach (string action in evt.Actions)
             {
-                if (this.usingCursors())
+                if (action.ToLower() == "touchmaster" && !evt.Handled)
                 {
-                    this.masterCursor.SetPressed();
+                    if (this.usingCursors())
+                    {
+                        this.masterCursor.SetPressed();
+                    }
+                    touchDownMaster = true;
                 }
-                touchDownMaster = true;
-            }
-            if (evt.Action.ToLower() == "touchslave" && !evt.Handled)
-            {
-                if (this.usingCursors())
+                if (action.ToLower() == "touchslave" && !evt.Handled)
                 {
-                    this.slaveCursor.SetPressed();
+                    if (this.usingCursors())
+                    {
+                        this.slaveCursor.SetPressed();
+                    }
+                    touchDownSlave = true;
                 }
-                touchDownSlave = true;
             }
         }
 

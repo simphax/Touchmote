@@ -251,37 +251,43 @@ namespace WiiTUIO.Provider
 
         private void WiiButton_Up(WiiButtonEvent evt)
         {
-            if (evt.Action.ToLower() == "pointertoggle" && !evt.Handled)
+            foreach (string action in evt.Actions)
             {
-                this.showPointer = this.showPointer ? false : true;
-                if (this.showPointer)
+                if (action.ToLower() == "pointertoggle" && !evt.Handled)
                 {
-                    this.duoTouch.enableHover();
+                    this.showPointer = this.showPointer ? false : true;
+                    if (this.showPointer)
+                    {
+                        this.duoTouch.enableHover();
+                    }
+                    else
+                    {
+                        this.duoTouch.disableHover();
+                    }
                 }
-                else
+                if (action.ToLower() == "touchmaster" && !evt.Handled)
                 {
-                    this.duoTouch.disableHover();
+                    touchDownMaster = false;
                 }
-            }
-            if (evt.Action.ToLower() == "touchmaster" && !evt.Handled)
-            {
-                touchDownMaster = false;
-            }
-            if (evt.Action.ToLower() == "touchslave" && !evt.Handled)
-            {
-                touchDownSlave = false;
+                if (action.ToLower() == "touchslave" && !evt.Handled)
+                {
+                    touchDownSlave = false;
+                }
             }
         }
 
         private void WiiButton_Down(WiiButtonEvent evt)
         {
-            if (evt.Action.ToLower() == "touchmaster" && !evt.Handled)
+            foreach (string action in evt.Actions)
             {
-                touchDownMaster = true;
-            }
-            if (evt.Action.ToLower() == "touchslave" && !evt.Handled)
-            {
-                touchDownSlave = true;
+                if (action.ToLower() == "touchmaster" && !evt.Handled)
+                {
+                    touchDownMaster = true;
+                }
+                if (action.ToLower() == "touchslave" && !evt.Handled)
+                {
+                    touchDownSlave = true;
+                }
             }
         }
 

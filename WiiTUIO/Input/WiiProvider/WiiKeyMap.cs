@@ -230,64 +230,71 @@ namespace WiiTUIO.Provider
         public void executeButtonUp(string button)
         {
             bool handled = false;
-
+            List<string> keyList = new List<string>();
             JToken token = this.jsonObj.GetValue(button);
 
             if (token != null)
             {
-                JArray array;
                 if (token.Type == JTokenType.Array)
                 {
-                    array = (JArray)token;
-                    array.Reverse();
+                    JArray array = (JArray)token;
+                    foreach (JToken keyToken in array)
+                    {
+                        keyList.Add(keyToken.ToString());
+                    }
+                    keyList.Reverse();
                 }
                 else
                 {
-                    array = new JArray();
-                    array.Add(token);
+                    keyList.Add(token.ToString());
                 }
-                foreach (JToken keyToken in array)
+                foreach (string key in keyList)
                 {
-                    string key = keyToken.ToString();
-
-                    if (key.Length > 4 && key.ToLower().Substring(0, 4).Equals("360."))
-                    {
-                        this.xinputButtonUp(key.ToLower().Substring(4));
-                        handled = true;
-                    }
-                    else if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToUpper())) //Enum.Parse does the opposite...
-                    {
-                        this.inputSimulator.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
-                        handled = true;
-                    }
-                    else if (Enum.IsDefined(typeof(MouseCode), key.ToUpper()))
-                    {
-                        MouseCode mouseCode = (MouseCode)Enum.Parse(typeof(MouseCode), key.ToString(), true);
-                        switch (mouseCode)
-                        {
-                            case MouseCode.MOUSELEFT:
-                                this.inputSimulator.Mouse.LeftButtonUp();
-                                handled = true;
-                                break;
-                            case MouseCode.MOUSERIGHT:
-                                this.inputSimulator.Mouse.RightButtonUp();
-                                handled = true;
-                                break;
-                        }
-                    }
-                    else if (!supportedSpecialCodes.ToLower().Contains(key.ToLower())) //If we can not find any valid key code, just treat it as a string to type :P (Good if the user writes X instead of VK_X)
-                    {
-                        this.inputSimulator.Keyboard.TextEntry(key);
-                    }
-
-                    if (OnButtonUp != null)
-                    {
-                        OnButtonUp(new WiiButtonEvent(key, button, handled));
-                    }
+                    handled = this.executeKeyUp(key);
                 }
 
             }
 
+            if (OnButtonUp != null)
+            {
+                OnButtonUp(new WiiButtonEvent(keyList, button, handled));
+            }
+        }
+
+        private bool executeKeyUp(string key)
+        {
+            bool handled = false;
+
+            if (key.Length > 4 && key.ToLower().Substring(0, 4).Equals("360."))
+            {
+                this.xinputButtonUp(key.ToLower().Substring(4));
+                handled = true;
+            }
+            else if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToUpper())) //Enum.Parse does the opposite...
+            {
+                this.inputSimulator.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key.ToString(), true));
+                handled = true;
+            }
+            else if (Enum.IsDefined(typeof(MouseCode), key.ToUpper()))
+            {
+                MouseCode mouseCode = (MouseCode)Enum.Parse(typeof(MouseCode), key.ToString(), true);
+                switch (mouseCode)
+                {
+                    case MouseCode.MOUSELEFT:
+                        this.inputSimulator.Mouse.LeftButtonUp();
+                        handled = true;
+                        break;
+                    case MouseCode.MOUSERIGHT:
+                        this.inputSimulator.Mouse.RightButtonUp();
+                        handled = true;
+                        break;
+                }
+            }
+            else if (!supportedSpecialCodes.ToLower().Contains(key.ToLower())) //If we can not find any valid key code, just treat it as a string to type :P (Good if the user writes X instead of VK_X)
+            {
+                this.inputSimulator.Keyboard.TextEntry(key);
+            }
+            return handled;
         }
 
         public void executeButtonDown(WiimoteButton button)
@@ -308,11 +315,10 @@ namespace WiiTUIO.Provider
         public void executeButtonDown(string button)
         {
             bool handled = false;
-
+            List<string> keyList = new List<string>();
             JToken token = this.jsonObj.GetValue(button);
             if (token != null)
             {
-                List<string> keyList = new List<string>();
                 if (token.Type == JTokenType.Array)
                 {
                     JArray array = (JArray)token;
@@ -331,43 +337,52 @@ namespace WiiTUIO.Provider
                 {
                     if (handledKeys.Contains(key))
                     {
-                        this.executeButtonUp(button);
+                        this.executeKeyUp(key);
                     }
                     handledKeys.Add(key);
-                    if (key.Length > 4 && key.ToLower().Substring(0, 4).Equals("360."))
-                    {
-                        this.xinputButtonDown(key.ToLower().Substring(4));
-                        handled = true;
-                    }
-                    else if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToUpper()))
-                    {
-                        VirtualKeyCode theKeyCode = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key, true);
-                        this.inputSimulator.Keyboard.KeyDown(theKeyCode);
-                        handled = true;
-                    }
-                    else if (Enum.IsDefined(typeof(MouseCode), key.ToUpper()))
-                    {
-                        MouseCode mouseCode = (MouseCode)Enum.Parse(typeof(MouseCode), key, true);
-                        switch (mouseCode)
-                        {
-                            case MouseCode.MOUSELEFT:
-                                this.inputSimulator.Mouse.LeftButtonDown();
-                                handled = true;
-                                break;
-                            case MouseCode.MOUSERIGHT:
-                                this.inputSimulator.Mouse.RightButtonDown();
-                                handled = true;
-                                break;
-                        }
 
-                    }
-
-                    if (OnButtonDown != null)
-                    {
-                        OnButtonDown(new WiiButtonEvent(key, button, handled));
-                    }
+                    handled = this.executeKeyDown(key);
                 }
             }
+
+            if (OnButtonDown != null)
+            {
+                OnButtonDown(new WiiButtonEvent(keyList, button, handled));
+            }
+        }
+
+        private bool executeKeyDown(string key)
+        {
+            bool handled = false;
+            if (key.Length > 4 && key.ToLower().Substring(0, 4).Equals("360."))
+            {
+                this.xinputButtonDown(key.ToLower().Substring(4));
+                handled = true;
+            }
+            else if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToUpper()))
+            {
+                VirtualKeyCode theKeyCode = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key, true);
+                this.inputSimulator.Keyboard.KeyDown(theKeyCode);
+                handled = true;
+            }
+            else if (Enum.IsDefined(typeof(MouseCode), key.ToUpper()))
+            {
+                MouseCode mouseCode = (MouseCode)Enum.Parse(typeof(MouseCode), key, true);
+                switch (mouseCode)
+                {
+                    case MouseCode.MOUSELEFT:
+                        this.inputSimulator.Mouse.LeftButtonDown();
+                        handled = true;
+                        break;
+                    case MouseCode.MOUSERIGHT:
+                        this.inputSimulator.Mouse.RightButtonDown();
+                        handled = true;
+                        break;
+                }
+
+            }
+
+            return handled;
         }
 
         public void xinputUpdateAnalog(string handle, double value)
@@ -562,13 +577,13 @@ namespace WiiTUIO.Provider
 
     public class WiiButtonEvent
     {
-        public bool Handled = false;
-        public string Action = "";
+        public bool Handled;
+        public List<string> Actions;
         public string Button;
 
-        public WiiButtonEvent(string action, string button, bool handled = false)
+        public WiiButtonEvent(List<string> actions, string button, bool handled = false)
         {
-            this.Action = action;
+            this.Actions = actions;
             this.Button = button;
             this.Handled = handled;
         }
