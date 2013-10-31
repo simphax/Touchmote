@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WiiTUIO.Provider
+namespace WiiTUIO.Output.Handlers.Xinput
 {
     public partial class XinputBus : BusDevice
     {

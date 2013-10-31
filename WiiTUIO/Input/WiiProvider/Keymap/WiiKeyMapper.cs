@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using WiimoteLib;
+using WiiTUIO.Output.Handlers;
 using WiiTUIO.Properties;
 using WindowsInput;
 using WindowsInput.Native;
@@ -149,9 +150,12 @@ namespace WiiTUIO.Provider
         public int WiimoteID;
         private bool hideOverlayOnUp = false;
 
-        public WiiKeyMapper(int wiimoteID)
+        private HandlerFactory handlerFactory;
+
+        public WiiKeyMapper(int wiimoteID, HandlerFactory handlerFactory)
         {
             this.WiimoteID = wiimoteID;
+            this.handlerFactory = handlerFactory;
 
             this.initialize();
 
@@ -193,7 +197,7 @@ namespace WiiTUIO.Provider
             this.defaultKeymapJson = commonKeymap;
             this.fallbackKeymapJson = commonKeymap;
 
-            this.KeyMap = new WiiKeyMap(this.defaultKeymapJson, this.fallbackName, this.fallbackFile, new XinputDevice(XinputBus.Default, this.WiimoteID), new XinputReport(this.WiimoteID));
+            this.KeyMap = new WiiKeyMap(this.WiimoteID, this.defaultKeymapJson, this.fallbackName, this.fallbackFile, handlerFactory.getAllButtonHandlers());
             this.KeyMap.OnButtonDown += keyMap_onButtonDown;
             this.KeyMap.OnButtonUp += keyMap_onButtonUp;
             this.KeyMap.OnConfigChanged += keyMap_onConfigChanged;
@@ -247,7 +251,7 @@ namespace WiiTUIO.Provider
 
         public void Teardown()
         {
-            this.KeyMap.XinputDevice.Remove();
+            //this.KeyMap.XinputDevice.Remove();
             this.processMonitor.ProcessChanged -= processChanged;
         }
 
@@ -691,7 +695,7 @@ namespace WiiTUIO.Provider
                 }
             }
 
-            this.KeyMap.XinputDevice.Update(this.KeyMap.XinputReport);
+            //this.KeyMap.XinputDevice.Update(this.KeyMap.XinputReport);
 
             return significant;
         }

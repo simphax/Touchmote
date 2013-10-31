@@ -59,10 +59,10 @@ namespace WiiTUIO.Input
             {
                 case InputType.MULTIPOINTER:
                     return new MultiWiiPointerProvider();
-                case InputType.POINTER:
-                    return new WiiPointerProvider();
-                case InputType.PEN:
-                    return new WiiProvider();
+                //case InputType.POINTER:
+                //    return new WiiPointerProvider();
+                //case InputType.PEN:
+                //    return new WiiProvider();
                 default:
                     return null;
             }

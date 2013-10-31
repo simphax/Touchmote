@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using WiimoteLib;
+using WiiTUIO.Output.Handlers;
 using WiiTUIO.Properties;
 using WindowsInput;
 
@@ -65,6 +66,8 @@ namespace WiiTUIO.Provider
 
         private string currentKeymap;
 
+        private HandlerFactory handlerFactory;
+
         public WiimoteControl(int id, Wiimote wiimote)
         {
             this.Wiimote = wiimote;
@@ -75,9 +78,11 @@ namespace WiiTUIO.Provider
 
             this.screenBounds = Util.ScreenBounds;
 
+            this.handlerFactory = new HandlerFactory();
+
             ulong touchStartID = (ulong)(id - 1) * 4 + 1; //This'll make sure the touch point IDs won't be the same. DuoTouch uses a span of 4 IDs.
             this.duoTouch = new DuoTouch(this.screenBounds, Properties.Settings.Default.pointer_positionSmoothing, touchStartID);
-            this.keyMapper = new WiiKeyMapper(id);
+            this.keyMapper = new WiiKeyMapper(id,handlerFactory);
 
             this.keyMapper.OnButtonDown += WiiButton_Down;
             this.keyMapper.OnButtonUp += WiiButton_Up;

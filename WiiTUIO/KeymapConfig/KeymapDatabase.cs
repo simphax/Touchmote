@@ -103,6 +103,8 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Cursor", "mouse", false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Left", "mouseleft"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Right", "mouseright"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse X", "mouse", true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Y", "mouse", true, false, false));
             //allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Middle", "mbutton"));
             //allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Extra 1", "xbutton1"));
             //allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Extra 2", "xbutton2"));
