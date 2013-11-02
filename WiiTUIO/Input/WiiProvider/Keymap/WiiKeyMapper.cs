@@ -150,12 +150,16 @@ namespace WiiTUIO.Provider
         public int WiimoteID;
         private bool hideOverlayOnUp = false;
 
-        private HandlerFactory handlerFactory;
+        private List<IButtonHandler> buttonHandlers;
 
         public WiiKeyMapper(int wiimoteID, HandlerFactory handlerFactory)
         {
             this.WiimoteID = wiimoteID;
-            this.handlerFactory = handlerFactory;
+            this.buttonHandlers = handlerFactory.getButtonHandlers(this.WiimoteID);
+            foreach (IButtonHandler handler in buttonHandlers)
+            {
+                handler.connect();
+            }
 
             this.initialize();
 
@@ -197,7 +201,7 @@ namespace WiiTUIO.Provider
             this.defaultKeymapJson = commonKeymap;
             this.fallbackKeymapJson = commonKeymap;
 
-            this.KeyMap = new WiiKeyMap(this.WiimoteID, this.defaultKeymapJson, this.fallbackName, this.fallbackFile, handlerFactory.getAllButtonHandlers());
+            this.KeyMap = new WiiKeyMap(this.WiimoteID, this.defaultKeymapJson, this.fallbackName, this.fallbackFile, this.buttonHandlers);
             this.KeyMap.OnButtonDown += keyMap_onButtonDown;
             this.KeyMap.OnButtonUp += keyMap_onButtonUp;
             this.KeyMap.OnConfigChanged += keyMap_onConfigChanged;
@@ -251,7 +255,10 @@ namespace WiiTUIO.Provider
 
         public void Teardown()
         {
-            //this.KeyMap.XinputDevice.Remove();
+            foreach (IButtonHandler handler in buttonHandlers)
+            {
+                handler.disconnect();
+            }
             this.processMonitor.ProcessChanged -= processChanged;
         }
 
@@ -420,6 +427,8 @@ namespace WiiTUIO.Provider
         {
             ButtonState buttonState = wiimoteState.ButtonState;
             bool significant = false;
+
+            this.KeyMap.startUpdate();
 
             this.KeyMap.updateAccelerometer(wiimoteState.AccelState);
 
@@ -695,7 +704,7 @@ namespace WiiTUIO.Provider
                 }
             }
 
-            //this.KeyMap.XinputDevice.Update(this.KeyMap.XinputReport);
+            this.KeyMap.endUpdate();
 
             return significant;
         }

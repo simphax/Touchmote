@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace WiiTUIO.Output.Handlers
 {
-    interface IStickHandler : IOutputHandler
+    public interface IOutputHandler
     {
+        bool connect();
+        bool disconnect();
 
-        bool setStateX(string key, double x);
-        bool setStateY(string key, double y);
-
+        bool startUpdate();
+        bool endUpdate();
     }
 }

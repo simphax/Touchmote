@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace WiiTUIO.Output.Handlers
 {
-    interface ICursorHandler
+    interface ICursorHandler : IOutputHandler
     {
 
-        bool updateState(long id, double x, double y);
+        bool setState(double x, double y);
 
     }
 }

@@ -198,6 +198,8 @@
     <Compile Include="Autostart.cs" />
     <Compile Include="Output\Handlers\HandlerFactory.cs" />
     <Compile Include="Output\Handlers\ICursorHandler.cs" />
+    <Compile Include="Output\Handlers\IOutputHandler.cs" />
+    <Compile Include="Output\Handlers\IRumbleFeedback.cs" />
     <Compile Include="Output\Handlers\IStickHandler.cs" />
     <Compile Include="Input\WiiProvider\CursorColor.cs" />
     <Compile Include="Output\Handlers\IButtonHandler.cs" />
@@ -483,8 +485,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
-cd "C:\Program Files\Touchmote"
-"C:\Program Files (x86)\Windows Kits\8.0\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.verisign.com/scripts/timestamp.dll Touchmote.exe</PostBuildEvent>
+cd "C:\Program Files\Touchmote"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

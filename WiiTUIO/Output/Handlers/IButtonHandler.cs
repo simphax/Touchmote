@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace WiiTUIO.Output.Handlers
 {
-    public interface IButtonHandler
+    public interface IButtonHandler : IOutputHandler
     {
-
-        bool handleButtonDown(long id, string key);
-        bool handleButtonUp(long id, string key);
+        //Return true if it has been handled
+        bool setButtonDown(string key);
+        bool setButtonUp(string key);
 
     }
 }
