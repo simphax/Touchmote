@@ -20,6 +20,7 @@ namespace WiiTUIO.Output.Handlers
         {
             List<IOutputHandler> all = new List<IOutputHandler>();
             all.Add(new KeyboardHandler());
+            all.Add(new MouseHandler());
             all.Add(new XinputHandler(id));
             return all;
         }
