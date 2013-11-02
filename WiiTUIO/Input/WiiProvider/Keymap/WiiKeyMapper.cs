@@ -150,13 +150,13 @@ namespace WiiTUIO.Provider
         public int WiimoteID;
         private bool hideOverlayOnUp = false;
 
-        private List<IButtonHandler> buttonHandlers;
+        private List<IOutputHandler> outputHandlers;
 
         public WiiKeyMapper(int wiimoteID, HandlerFactory handlerFactory)
         {
             this.WiimoteID = wiimoteID;
-            this.buttonHandlers = handlerFactory.getButtonHandlers(this.WiimoteID);
-            foreach (IButtonHandler handler in buttonHandlers)
+            this.outputHandlers = handlerFactory.getOutputHandlers(this.WiimoteID);
+            foreach (IOutputHandler handler in outputHandlers)
             {
                 handler.connect();
             }
@@ -201,7 +201,7 @@ namespace WiiTUIO.Provider
             this.defaultKeymapJson = commonKeymap;
             this.fallbackKeymapJson = commonKeymap;
 
-            this.KeyMap = new WiiKeyMap(this.WiimoteID, this.defaultKeymapJson, this.fallbackName, this.fallbackFile, this.buttonHandlers);
+            this.KeyMap = new WiiKeyMap(this.WiimoteID, this.defaultKeymapJson, this.fallbackName, this.fallbackFile, this.outputHandlers);
             this.KeyMap.OnButtonDown += keyMap_onButtonDown;
             this.KeyMap.OnButtonUp += keyMap_onButtonUp;
             this.KeyMap.OnConfigChanged += keyMap_onConfigChanged;
@@ -255,7 +255,7 @@ namespace WiiTUIO.Provider
 
         public void Teardown()
         {
-            foreach (IButtonHandler handler in buttonHandlers)
+            foreach (IOutputHandler handler in outputHandlers)
             {
                 handler.disconnect();
             }
@@ -428,7 +428,10 @@ namespace WiiTUIO.Provider
             ButtonState buttonState = wiimoteState.ButtonState;
             bool significant = false;
 
-            this.KeyMap.startUpdate();
+            foreach (IOutputHandler handler in outputHandlers)
+            {
+                handler.startUpdate();
+            }
 
             this.KeyMap.updateAccelerometer(wiimoteState.AccelState);
 
@@ -704,7 +707,10 @@ namespace WiiTUIO.Provider
                 }
             }
 
-            this.KeyMap.endUpdate();
+            foreach (IOutputHandler handler in outputHandlers)
+            {
+                handler.endUpdate();
+            }
 
             return significant;
         }

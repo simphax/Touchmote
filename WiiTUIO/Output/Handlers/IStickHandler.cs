@@ -9,8 +9,7 @@ namespace WiiTUIO.Output.Handlers
     interface IStickHandler : IOutputHandler
     {
 
-        bool setStateX(string key, double x);
-        bool setStateY(string key, double y);
+        bool setValue(string key, double value);
 
     }
 }
