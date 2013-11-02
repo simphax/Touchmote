@@ -716,10 +716,4 @@ namespace WiiTUIO.Provider
         }
     }
 
-    public enum MouseCode
-    {
-        MOUSELEFT,
-        MOUSERIGHT
-    }
-
 }

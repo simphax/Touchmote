@@ -209,6 +209,7 @@
     <Compile Include="Input\WiiProvider\Pointer\D3DCursorWindow.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiimoteStatus.cs" />
     <Compile Include="Input\WiiProvider\Keymap\WiiKeyMap.cs" />
+    <Compile Include="Output\Handlers\MouseHandler.cs" />
     <Compile Include="Output\Handlers\Xinput\XinputBus.cs">
       <SubType>Component</SubType>
     </Compile>
