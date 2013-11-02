@@ -18,12 +18,16 @@ namespace WiiTUIO.Output.Handlers.Xinput
         {
             this.bus = bus;
             this.ID = ID;
-            bus.Plugin(ID);
         }
 
-        public void Remove()
+        public bool Connect()
         {
-            bus.Unplug(ID);
+            return bus.Plugin(ID);
+        }
+
+        public bool Remove()
+        {
+            return bus.Unplug(ID);
         }
 
         public bool Update(XinputReport reportobj)

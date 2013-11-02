@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace WiiTUIO.Output.Handlers
 {
-    interface IStickHandler : IOutputHandler
+    public interface IRumbleFeedback
     {
-
-        bool setStateX(string key, double x);
-        bool setStateY(string key, double y);
-
+        Action<Byte, Byte> OnRumble { get; set; }
     }
 }

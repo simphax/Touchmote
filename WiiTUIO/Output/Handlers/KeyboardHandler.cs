@@ -17,7 +17,7 @@ namespace WiiTUIO.Output.Handlers
             this.inputSimulator = new InputSimulator();
         }
 
-        public bool handleButtonDown(long id, string key)
+        public bool setButtonDown(string key)
         {
             if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToUpper()))
             {
@@ -28,7 +28,7 @@ namespace WiiTUIO.Output.Handlers
             return false;
         }
 
-        public bool handleButtonUp(long id, string key)
+        public bool setButtonUp(string key)
         {
             if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToUpper()))
             {
@@ -37,6 +37,26 @@ namespace WiiTUIO.Output.Handlers
                 return true;
             }
             return false;
+        }
+
+        public bool connect()
+        {
+            return true;
+        }
+
+        public bool disconnect()
+        {
+            return true;
+        }
+
+        public bool startUpdate()
+        {
+            return true;
+        }
+
+        public bool endUpdate()
+        {
+            return true;
         }
     }
 }

@@ -28,9 +28,6 @@ namespace WiiTUIO.Provider
 
         private InputSimulator inputSimulator;
 
-        //public XinputDevice XinputDevice;
-        //public XinputReport XinputReport;
-
         private List<IButtonHandler> buttonHandlers;
 
         public DateTime HomeButtonDown = DateTime.Now;
@@ -48,11 +45,24 @@ namespace WiiTUIO.Provider
             this.jsonObj = jsonObj;
 
             this.inputSimulator = new InputSimulator();
-            //this.XinputDevice = xinput;
-            //this.XinputReport = xinputReport;
-            //xinput.OnRumble += Xinput_OnRumble;
 
             this.buttonHandlers = buttonHandlers;
+        }
+
+        public void startUpdate()
+        {
+            foreach (IButtonHandler handler in buttonHandlers)
+            {
+                handler.startUpdate();
+            }
+        }
+
+        public void endUpdate()
+        {
+            foreach (IButtonHandler handler in buttonHandlers)
+            {
+                handler.endUpdate();
+            }
         }
 
         public void SetConfig(JObject newConfig, string name, string filename)
@@ -273,7 +283,7 @@ namespace WiiTUIO.Provider
         {
             foreach (IButtonHandler handler in buttonHandlers)
             {
-                if (handler.handleButtonUp(this.id, key))
+                if (handler.setButtonUp(key))
                 {
                     return true;
                 }
@@ -371,7 +381,7 @@ namespace WiiTUIO.Provider
         {
             foreach (IButtonHandler handler in buttonHandlers)
             {
-                if (handler.handleButtonDown(this.id, key))
+                if (handler.setButtonDown(key))
                 {
                     return true;
                 }
@@ -434,171 +444,8 @@ namespace WiiTUIO.Provider
         //            break;
         //    }
         //}
-
-        //public void xinputButtonUp(string button)
-        //{
-        //    switch (button)
-        //    {
-        //        case "triggerr":
-        //            this.XinputReport.TriggerR = 0.0;
-        //            break;
-        //        case "triggerl":
-        //            this.XinputReport.TriggerL = 0.0;
-        //            break;
-        //        case "a":
-        //            this.XinputReport.A = false;
-        //            break;
-        //        case "b":
-        //            this.XinputReport.B = false;
-        //            break;
-        //        case "x":
-        //            this.XinputReport.X = false;
-        //            break;
-        //        case "y":
-        //            this.XinputReport.Y = false;
-        //            break;
-        //        case "back":
-        //            this.XinputReport.Back = false;
-        //            break;
-        //        case "start":
-        //            this.XinputReport.Start = false;
-        //            break;
-        //        case "stickpressl":
-        //            this.XinputReport.StickPressL = false;
-        //            break;
-        //        case "stickpressr":
-        //            this.XinputReport.StickPressR = false;
-        //            break;
-        //        case "up":
-        //            this.XinputReport.Up = false;
-        //            break;
-        //        case "down":
-        //            this.XinputReport.Down = false;
-        //            break;
-        //        case "right":
-        //            this.XinputReport.Right = false;
-        //            break;
-        //        case "left":
-        //            this.XinputReport.Left = false;
-        //            break;
-        //        case "guide":
-        //            this.XinputReport.Guide = false;
-        //            break;
-        //        case "bumperl":
-        //            this.XinputReport.BumperL = false;
-        //            break;
-        //        case "bumperr":
-        //            this.XinputReport.BumperR = false;
-        //            break;
-        //        case "stickrright":
-        //            this.XinputReport.StickRX = 0.5;
-        //            break;
-        //        case "stickrup":
-        //            this.XinputReport.StickRY = 0.5;
-        //            break;
-        //        case "sticklright":
-        //            this.XinputReport.StickLX = 0.5;
-        //            break;
-        //        case "sticklup":
-        //            this.XinputReport.StickLY = 0.5;
-        //            break;
-        //        case "stickrleft":
-        //            this.XinputReport.StickRX = 0.5;
-        //            break;
-        //        case "stickrdown":
-        //            this.XinputReport.StickRY = 0.5;
-        //            break;
-        //        case "sticklleft":
-        //            this.XinputReport.StickLX = 0.5;
-        //            break;
-        //        case "stickldown":
-        //            this.XinputReport.StickLY = 0.5;
-        //            break;
-        //    }
-        //}
-
-        //public void xinputButtonDown(string button)
-        //{
-        //    switch (button)
-        //    {
-        //        case "triggerr":
-        //            this.XinputReport.TriggerR = 1.0;
-        //            break;
-        //        case "triggerl":
-        //            this.XinputReport.TriggerL = 1.0;
-        //            break;
-        //        case "a":
-        //            this.XinputReport.A = true;
-        //            break;
-        //        case "b":
-        //            this.XinputReport.B = true;
-        //            break;
-        //        case "x":
-        //            this.XinputReport.X = true;
-        //            break;
-        //        case "y":
-        //            this.XinputReport.Y = true;
-        //            break;
-        //        case "back":
-        //            this.XinputReport.Back = true;
-        //            break;
-        //        case "start":
-        //            this.XinputReport.Start = true;
-        //            break;
-        //        case "stickpressl":
-        //            this.XinputReport.StickPressL = true;
-        //            break;
-        //        case "stickpressr":
-        //            this.XinputReport.StickPressR = true;
-        //            break;
-        //        case "up":
-        //            this.XinputReport.Up = true;
-        //            break;
-        //        case "down":
-        //            this.XinputReport.Down = true;
-        //            break;
-        //        case "right":
-        //            this.XinputReport.Right = true;
-        //            break;
-        //        case "left":
-        //            this.XinputReport.Left = true;
-        //            break;
-        //        case "guide":
-        //            this.XinputReport.Guide = true;
-        //            break;
-        //        case "bumperl":
-        //            this.XinputReport.BumperL = true;
-        //            break;
-        //        case "bumperr":
-        //            this.XinputReport.BumperR = true;
-        //            break;
-        //        case "stickrright":
-        //            this.XinputReport.StickRX = 1.0;
-        //            break;
-        //        case "stickrup":
-        //            this.XinputReport.StickRY = 0.0;
-        //            break;
-        //        case "sticklright":
-        //            this.XinputReport.StickLX = 1.0;
-        //            break;
-        //        case "sticklup":
-        //            this.XinputReport.StickLY = 0.0;
-        //            break;
-        //        case "stickrleft":
-        //            this.XinputReport.StickRX = 0.0;
-        //            break;
-        //        case "stickrdown":
-        //            this.XinputReport.StickRY = 1.0;
-        //            break;
-        //        case "sticklleft":
-        //            this.XinputReport.StickLX = 0.0;
-        //            break;
-        //        case "stickldown":
-        //            this.XinputReport.StickLY = 1.0;
-        //            break;
-        //    }
-        //}
-    }
+    
+}
 
     public class WiiButtonEvent
     {
