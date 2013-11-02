@@ -28,7 +28,7 @@ namespace WiiTUIO.Provider
 
         private InputSimulator inputSimulator;
 
-        private List<IButtonHandler> buttonHandlers;
+        private List<IOutputHandler> outputHandlers;
 
         public DateTime HomeButtonDown = DateTime.Now;
 
@@ -37,7 +37,7 @@ namespace WiiTUIO.Provider
 
         private long id;
 
-        public WiiKeyMap(long id, JObject jsonObj, string configName, string configFilename, List<IButtonHandler> buttonHandlers)
+        public WiiKeyMap(long id, JObject jsonObj, string configName, string configFilename, List<IOutputHandler> outputHandlers)
         {
             this.id = id;
             this.Name = configName;
@@ -46,23 +46,7 @@ namespace WiiTUIO.Provider
 
             this.inputSimulator = new InputSimulator();
 
-            this.buttonHandlers = buttonHandlers;
-        }
-
-        public void startUpdate()
-        {
-            foreach (IButtonHandler handler in buttonHandlers)
-            {
-                handler.startUpdate();
-            }
-        }
-
-        public void endUpdate()
-        {
-            foreach (IButtonHandler handler in buttonHandlers)
-            {
-                handler.endUpdate();
-            }
+            this.outputHandlers = outputHandlers;
         }
 
         public void SetConfig(JObject newConfig, string name, string filename)
@@ -107,21 +91,15 @@ namespace WiiTUIO.Provider
             {
                 string handle = key.ToString().ToLower();
 
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
-                {
-                    //this.xinputUpdateAnalog(handle.Substring(4), accelState.Values.X * -0.5 + 0.5);
-                }
+                updateStickHandlers(handle, accelState.Values.X * -0.5 + 0.5);
+
             }
 
             key = this.jsonObj.GetValue("AccelY");
             if (key != null)
             {
                 string handle = key.ToString().ToLower();
-
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
-                {
-                    //this.xinputUpdateAnalog(handle.Substring(4), accelState.Values.Y * -0.5 + 0.5);
-                }
+                updateStickHandlers(handle, accelState.Values.Y * -0.5 + 0.5);
             }
 
             key = this.jsonObj.GetValue("AccelZ");
@@ -129,10 +107,6 @@ namespace WiiTUIO.Provider
             {
                 string handle = key.ToString().ToLower();
 
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
-                {
-                    //this.xinputUpdateAnalog(handle.Substring(4), accelState.Values.Z * -0.5 + 0.5);
-                }
             }
         }
 
@@ -142,22 +116,14 @@ namespace WiiTUIO.Provider
             if (key != null)
             {
                 string handle = key.ToString().ToLower();
-
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
-                {
-                    //this.xinputUpdateAnalog(handle.Substring(4), nunchuk.Joystick.X + 0.5);
-                }
+                updateStickHandlers(handle, nunchuk.Joystick.X * -0.5 + 0.5);
             }
 
             key = this.jsonObj.GetValue("Nunchuk.StickY");
             if (key != null)
             {
                 string handle = key.ToString().ToLower();
-
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
-                {
-                    //this.xinputUpdateAnalog(handle.Substring(4), nunchuk.Joystick.Y + 0.5);
-                }
+                updateStickHandlers(handle, nunchuk.Joystick.Y * -0.5 + 0.5);
             }
         }
 
@@ -167,67 +133,59 @@ namespace WiiTUIO.Provider
             if (key != null)
             {
                 string handle = key.ToString().ToLower();
-
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
-                {
-                    //this.xinputUpdateAnalog(handle.Substring(4), classic.JoystickL.X + 0.5);
-                }
+                updateStickHandlers(handle, classic.JoystickL.X + 0.5);
             }
 
             key = this.jsonObj.GetValue("Classic.StickLY");
             if (key != null)
             {
                 string handle = key.ToString().ToLower();
-
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
-                {
-                    //this.xinputUpdateAnalog(handle.Substring(4), classic.JoystickL.Y + 0.5);
-                }
+                updateStickHandlers(handle, classic.JoystickL.Y + 0.5);
             }
 
             key = this.jsonObj.GetValue("Classic.StickRX");
             if (key != null)
             {
                 string handle = key.ToString().ToLower();
-
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
-                {
-                    //this.xinputUpdateAnalog(handle.Substring(4), classic.JoystickR.X + 0.5);
-                }
+                updateStickHandlers(handle, classic.JoystickR.X + 0.5);
             }
 
             key = this.jsonObj.GetValue("Classic.StickRY");
             if (key != null)
             {
                 string handle = key.ToString().ToLower();
-
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
-                {
-                    //this.xinputUpdateAnalog(handle.Substring(4), classic.JoystickR.Y + 0.5);
-                }
+                updateStickHandlers(handle, classic.JoystickR.Y + 0.5);
             }
 
             key = this.jsonObj.GetValue("Classic.TriggerL");
             if (key != null)
             {
                 string handle = key.ToString().ToLower();
-
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
-                {
-                    //this.xinputUpdateAnalog(handle.Substring(4), classic.TriggerL);
-                }
+                updateStickHandlers(handle, classic.TriggerL);
             }
 
             key = this.jsonObj.GetValue("Classic.TriggerR");
             if (key != null)
             {
                 string handle = key.ToString().ToLower();
+                updateStickHandlers(handle, classic.TriggerR);
+            }
+        }
 
-                if (handle.Length > 4 && handle.Substring(0, 4).Equals("360."))
+        private bool updateStickHandlers(string key, double value)
+        {
+            foreach (IOutputHandler handler in outputHandlers)
+            {
+                IStickHandler stickHandler = handler as IStickHandler;
+                if (stickHandler != null)
                 {
-                    //this.xinputUpdateAnalog(handle.Substring(4), classic.TriggerR);
+                    if (stickHandler.setValue(key, value))
+                    {
+                        return true; // we will break for the first accepting handler
+                    }
                 }
             }
+            return false;
         }
 
         public void executeButtonUp(WiimoteButton button)
@@ -281,7 +239,7 @@ namespace WiiTUIO.Provider
 
         private bool executeKeyUp(string key)
         {
-            foreach (IButtonHandler handler in buttonHandlers)
+            foreach (IButtonHandler handler in outputHandlers)
             {
                 if (handler.setButtonUp(key))
                 {
@@ -379,7 +337,7 @@ namespace WiiTUIO.Provider
 
         private bool executeKeyDown(string key)
         {
-            foreach (IButtonHandler handler in buttonHandlers)
+            foreach (IButtonHandler handler in outputHandlers)
             {
                 if (handler.setButtonDown(key))
                 {
@@ -419,31 +377,6 @@ namespace WiiTUIO.Provider
 
             //return handled;
         }
-
-        //public void xinputUpdateAnalog(string handle, double value)
-        //{
-        //    switch (handle)
-        //    {
-        //        case "sticklx":
-        //            XinputReport.StickLX = value;
-        //            break;
-        //        case "stickly":
-        //            XinputReport.StickLY = value;
-        //            break;
-        //        case "stickrx":
-        //            XinputReport.StickRX = value;
-        //            break;
-        //        case "stickry":
-        //            XinputReport.StickRY = value;
-        //            break;
-        //        case "triggerr":
-        //            this.XinputReport.TriggerR = value;
-        //            break;
-        //        case "triggerl":
-        //            this.XinputReport.TriggerL = value;
-        //            break;
-        //    }
-        //}
     
 }
 

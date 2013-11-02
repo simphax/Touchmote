@@ -9,31 +9,31 @@ namespace WiiTUIO.Output.Handlers
 {
     public class HandlerFactory
     {
-        private Dictionary<long, List<IButtonHandler>> buttonHandlers;
+        private Dictionary<long, List<IOutputHandler>> outputHandlers;
 
         public HandlerFactory()
         {
-            buttonHandlers = new Dictionary<long, List<IButtonHandler>>();
+            outputHandlers = new Dictionary<long, List<IOutputHandler>>();
         }
 
-        private List<IButtonHandler> createButtonHandlers(long id)
+        private List<IOutputHandler> createOutputHandlers(long id)
         {
-            List<IButtonHandler> all = new List<IButtonHandler>();
+            List<IOutputHandler> all = new List<IOutputHandler>();
             all.Add(new KeyboardHandler());
             all.Add(new XinputHandler(id));
             return all;
         }
 
-        public List<IButtonHandler> getButtonHandlers(long id)
+        public List<IOutputHandler> getOutputHandlers(long id)
         {
-            List<IButtonHandler> handlerList;
-            if (buttonHandlers.TryGetValue(id, out handlerList))
+            List<IOutputHandler> handlerList;
+            if (outputHandlers.TryGetValue(id, out handlerList))
             {
                 return handlerList;
             }
             else
             {
-                handlerList = this.createButtonHandlers(id);
+                handlerList = this.createOutputHandlers(id);
                 return handlerList;
             }
         }
