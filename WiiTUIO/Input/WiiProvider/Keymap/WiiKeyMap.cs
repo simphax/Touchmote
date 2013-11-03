@@ -409,19 +409,6 @@ namespace WiiTUIO.Provider
             {
                 updateStickHandlers(outConfig, classic.TriggerR);
             }
-            //key = this.jsonObj.GetValue("Classic.TriggerL");
-            //if (key != null)
-            //{
-            //    string handle = key.ToString().ToLower();
-            //    updateStickHandlers(handle, classic.TriggerL);
-            //}
-
-            //key = this.jsonObj.GetValue("Classic.TriggerR");
-            //if (key != null)
-            //{
-            //    string handle = key.ToString().ToLower();
-            //    updateStickHandlers(handle, classic.TriggerR);
-            //}
         }
 
         private bool updateStickHandlers(KeymapOutConfig outConfig, double value)
@@ -435,13 +422,13 @@ namespace WiiTUIO.Provider
                     {
                         if (output.Continous)
                         {
-                            //Add the scaling from the config but never go outside 0-1
+                            //Set value to 0 if it's within deadzone
+                            value = value < outConfig.Deadzone ? 0 : value;
+                            //Add the scaling from the config
                             value = value * outConfig.Scale;
-                            value = value > 1 ? 1 : value;
-                            value = value < 0 ? 0 : value;
-                            if (stickHandler.setValue(output.Key.ToString().ToLower(), value))
+                            if (stickHandler.setValue(output.Key.ToLower(), value))
                             {
-                                return true; // we will break for the first accepting handler
+                                break; // we will break for the first accepting handler, for each output key
                             }
                         }
                     }

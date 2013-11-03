@@ -234,8 +234,11 @@ namespace WiiTUIO.Output.Handlers.Xinput
         {
             if (key.Length > 4 && key.ToLower().Substring(0, 4).Equals(PREFIX))
             {
-                string handle = key.ToLower().Substring(4);
-                switch (handle)
+                key = key.ToLower().Substring(4);
+                //Make sure value is in range 0-1
+                value = value > 1 ? 1 : value;
+                value = value < 0 ? 0 : value;
+                switch (key)
                 {
                     case "sticklright":
                         report.StickLX = 0.5 + (value * 0.5);
@@ -256,7 +259,7 @@ namespace WiiTUIO.Output.Handlers.Xinput
                         report.TriggerL = value;
                         break;
                     default:
-                        return false; //No valid handle was found
+                        return false; //No valid key was found
                 }
                 return true;
             }

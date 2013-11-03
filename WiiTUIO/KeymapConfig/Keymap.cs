@@ -99,7 +99,7 @@ namespace WiiTUIO
                     outputs = config.Stack.First().Key;
                 }
 
-                if (config.Scale != Settings.Default.defaultContinousScale || config.Threshold != Settings.Default.defaultContinousPressThreshold)
+                if (config.Scale != Settings.Default.defaultContinousScale || config.Threshold != Settings.Default.defaultContinousPressThreshold || config.Deadzone != Settings.Default.defaultContinousDeadzone)
                 {
                     JObject settings = new JObject();
                     if (config.Scale != Settings.Default.defaultContinousScale)
@@ -109,6 +109,10 @@ namespace WiiTUIO
                     if (config.Threshold != Settings.Default.defaultContinousPressThreshold)
                     {
                         settings.Add("threshold", config.Threshold);
+                    }
+                    if (config.Deadzone != Settings.Default.defaultContinousDeadzone)
+                    {
+                        settings.Add("deadzone", config.Threshold);
                     }
                     settings.Add("output", outputs);
                     outputs = settings;
@@ -205,6 +209,11 @@ namespace WiiTUIO
                                 {
                                     outconfig.Threshold = Double.Parse(((JObject)level2).GetValue("threshold").ToString());
                                 }
+
+                                if (((JObject)level2).GetValue("deadzone") != null && ((JObject)level2).GetValue("deadzone").Type == JTokenType.Float)
+                                {
+                                    outconfig.Deadzone = Double.Parse(((JObject)level2).GetValue("deadzone").ToString());
+                                }
                                 return outconfig;
                             }
                         }
@@ -246,6 +255,7 @@ namespace WiiTUIO
         public bool Inherited;
         public double Scale = Settings.Default.defaultContinousScale;
         public double Threshold = Settings.Default.defaultContinousPressThreshold;
+        public double Deadzone = Settings.Default.defaultContinousDeadzone;
         public List<KeymapOutput> Stack;
 
         public KeymapOutConfig(KeymapOutput output, bool inherited)
