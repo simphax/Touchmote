@@ -22,12 +22,24 @@
 	"AccelX": "disable",
 	"AccelY": "disable",
 	"AccelZ": "disable",
-	"Nunchuk.StickX": "360.StickLX",
-	"Nunchuk.StickY": "360.StickLY",
-	"Nunchuk.StickUp": "disable",
-	"Nunchuk.StickDown": "disable",
-	"Nunchuk.StickLeft": "disable",
-	"Nunchuk.StickRight": "disable",
+    "Nunchuk.StickUp": {
+      "scale": 2.0,
+      "threshold": 0.1,
+      "output": [
+		"360.StickLUp",
+        "360.B"
+      ]
+    },
+    "Nunchuk.StickDown": {
+      "scale": 2.0,
+      "threshold": 0.9,
+      "output": [
+		"360.StickLDown",
+        "360.A"
+      ]
+    },
+	"Nunchuk.StickLeft": "360.StickLLeft",
+	"Nunchuk.StickRight": "360.StickLRight",
 	"Nunchuk.C": "360.TriggerL",
 	"Nunchuk.Z": "360.TriggerR",
 	"Classic.Left": "360.Left",

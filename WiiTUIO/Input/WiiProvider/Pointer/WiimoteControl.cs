@@ -188,12 +188,12 @@ namespace WiiTUIO.Provider
             {
                 if (action.ToLower() == "nextlayout" && !evt.Handled)
                 {
-                    IEnumerable<JObject> layoutList = this.keyMapper.GetLayoutList();
+                    List<LayoutChooserSetting> layoutList = this.keyMapper.GetLayoutList();
                     int curpos = 0;
                     int foundpos = 0;
-                    foreach (JObject obj in layoutList)
+                    foreach (LayoutChooserSetting setting in layoutList)
                     {
-                        JToken token = obj.GetValue("Keymap");
+                        JToken token = setting.Keymap;
                         if (token != null)
                         {
                             if (token.ToString() == this.currentKeymap)
@@ -203,10 +203,10 @@ namespace WiiTUIO.Provider
                         }
                         curpos++;
                     }
-                    JObject nextLayout = layoutList.ElementAt(++foundpos % (layoutList.Count() - 1));
-                    if (nextLayout.GetValue("Keymap") != null)
+                    LayoutChooserSetting nextLayout = layoutList.ElementAt(++foundpos % (layoutList.Count() - 1));
+                    if (nextLayout.Keymap != null)
                     {
-                        this.keyMapper.SetFallbackKeymap(nextLayout.GetValue("Keymap").ToString());
+                        this.keyMapper.SetFallbackKeymap(nextLayout.Keymap);
                         evt.Handled = true;
                     }
                 }
@@ -442,7 +442,6 @@ namespace WiiTUIO.Provider
             }
             //this.BatteryState = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
             
-
             // Release mutual exclusion.
             WiimoteMutex.ReleaseMutex();
             return significant;

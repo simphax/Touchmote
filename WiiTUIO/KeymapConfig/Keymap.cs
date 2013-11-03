@@ -83,6 +83,8 @@ namespace WiiTUIO
                     ((JObject)level1).Remove(input.Key);
                 }
 
+                JToken outputs = null;
+
                 if (config.Stack.Count > 1)
                 {
                     JArray array = new JArray();
@@ -90,12 +92,29 @@ namespace WiiTUIO
                     {
                         array.Add(output.Key);
                     }
-                    ((JObject)level1).Add(input.Key, array);
+                    outputs = array;
                 }
                 else if (config.Stack.Count == 1)
                 {
-                    ((JObject)level1).Add(input.Key, config.Stack.First().Key);
+                    outputs = config.Stack.First().Key;
                 }
+
+                if (config.Scale != Settings.Default.defaultContinousScale || config.Threshold != Settings.Default.defaultContinousPressThreshold)
+                {
+                    JObject settings = new JObject();
+                    if (config.Scale != Settings.Default.defaultContinousScale)
+                    {
+                        settings.Add("scale", config.Scale);
+                    }
+                    if (config.Threshold != Settings.Default.defaultContinousPressThreshold)
+                    {
+                        settings.Add("threshold", config.Threshold);
+                    }
+                    settings.Add("output", outputs);
+                    outputs = settings;
+                }
+
+                ((JObject)level1).Add(input.Key, outputs);
 
                 jsonObj.Remove(key);
                 jsonObj.Add(key, level1);
@@ -145,6 +164,52 @@ namespace WiiTUIO
                             return new KeymapOutConfig(result, false);
                         }
                     }
+                    else if (level2.Type == JTokenType.Object)
+                    {
+                        JToken level3 = ((JObject)level2).GetValue("output");
+                        if (level3 != null)
+                        {
+                            KeymapOutConfig outconfig = null;
+                            if (level3.Type == JTokenType.String)
+                            {
+                                if (KeymapDatabase.Current.getOutput(level3.ToString().ToLower()) != null)
+                                {
+                                    outconfig = new KeymapOutConfig(KeymapDatabase.Current.getOutput(level3.ToString().ToLower()), false);
+                                }
+                            }
+                            else if (level3.Type == JTokenType.Array)
+                            {
+                                JArray array = (JArray)level3;
+                                List<KeymapOutput> result = new List<KeymapOutput>();
+                                foreach (JValue value in array)
+                                {
+                                    if (KeymapDatabase.Current.getOutput(value.ToString().ToLower()) != null)
+                                    {
+                                        result.Add(KeymapDatabase.Current.getOutput(value.ToString().ToLower()));
+                                    }
+                                }
+                                if (result.Count == array.Count)
+                                {
+                                    outconfig = new KeymapOutConfig(result, false);
+                                }
+                            }
+
+                            if (outconfig != null)
+                            {
+                                if (((JObject)level2).GetValue("scale") != null && ((JObject)level2).GetValue("scale").Type == JTokenType.Float)
+                                {
+                                    outconfig.Scale = Double.Parse(((JObject)level2).GetValue("scale").ToString());
+                                }
+
+                                if (((JObject)level2).GetValue("threshold") != null && ((JObject)level2).GetValue("threshold").Type == JTokenType.Float)
+                                {
+                                    outconfig.Threshold = Double.Parse(((JObject)level2).GetValue("threshold").ToString());
+                                }
+                                return outconfig;
+                            }
+                        }
+
+                    }
                 }
             }
             if(controllerId > 0)
@@ -179,6 +244,8 @@ namespace WiiTUIO
     public class KeymapOutConfig
     {
         public bool Inherited;
+        public double Scale = Settings.Default.defaultContinousScale;
+        public double Threshold = Settings.Default.defaultContinousPressThreshold;
         public List<KeymapOutput> Stack;
 
         public KeymapOutConfig(KeymapOutput output, bool inherited)

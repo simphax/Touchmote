@@ -37,7 +37,7 @@ namespace WiiTUIO
             this.DisableKey = "disable";
 
             allInputs = new List<KeymapInput>();
-            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", false, true));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", false, false, true));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "A", "A"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "B", "B"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Home", "Home"));
@@ -49,28 +49,26 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Minus", "Minus"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "One", "One"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Two", "Two"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X", "AccelX", true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y", "AccelY", true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z", "AccelZ", true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X", "AccelX", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y", "AccelY", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z", "AccelZ", false, true, false));
 
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "C", "Nunchuk.C"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Z", "Nunchuk.Z"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick X", "Nunchuk.StickX", true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Y", "Nunchuk.StickY", true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Up", "Nunchuk.StickUp"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Down", "Nunchuk.StickDown"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Left", "Nunchuk.StickLeft"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Right", "Nunchuk.StickRight"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Up", "Nunchuk.StickUp", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Down", "Nunchuk.StickDown", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Left", "Nunchuk.StickLeft", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Right", "Nunchuk.StickRight", true, true, false));
 
 
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left", "Classic.Left"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right", "Classic.Right"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Up", "Classic.Up"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Down", "Classic.Down"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick X", "Classic.StickLX", true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Y", "Classic.StickLY", true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick X", "Classic.StickRX", true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Y", "Classic.StickRY", true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick X", "Classic.StickLX", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Y", "Classic.StickLY", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick X", "Classic.StickRX", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Y", "Classic.StickRY", false, true, false));
 
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Left", "Classic.StickLLeft"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Right", "Classic.StickLRight"));
@@ -88,23 +86,23 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "X", "Classic.X"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "A", "Classic.A"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "B", "Classic.B"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Trigger", "Classic.TriggerL", true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Trigger", "Classic.TriggerR", true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Trigger", "Classic.TriggerL", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Trigger", "Classic.TriggerR", false, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Trigger Push", "Classic.L"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Trigger Push", "Classic.R"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "ZL", "Classic.ZL"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "ZR", "Classic.ZR"));
 
             allOutputs = new List<KeymapOutput>();
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor", "touch", false, true, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor", "touch", false, false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Main", "touchmaster"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Slave", "touchslave"));
 
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Cursor", "mouse", false, true, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Cursor", "mouse", false,false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Left", "mouseleft"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Right", "mouseright"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse X", "mouse", true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Y", "mouse", true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse X", "mouse", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Y", "mouse", false, true, false, false));
             //allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Middle", "mbutton"));
             //allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Extra 1", "xbutton1"));
             //allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Extra 2", "xbutton2"));
@@ -254,22 +252,20 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Back", "360.back"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Start", "360.start"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Guide", "360.guide"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick X", "360.sticklx", true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Y", "360.stickly", true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick X", "360.stickrx", true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Y", "360.stickry", true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Up", "360.stickly+"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Down", "360.stickly-"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Left", "360.sticklx-"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Right", "360.sticklx+"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Up", "360.stickry+"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Down", "360.stickry-"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Left", "360.stickrx-"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Right", "360.stickrx+"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Trigger", "360.triggerl", true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Trigger", "360.triggerr", true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Trigger Press", "360.triggerl"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Trigger Press", "360.triggerr"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick X", "360.sticklx", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Y", "360.stickly", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick X", "360.stickrx", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Y", "360.stickry", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Up", "360.sticklup", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Down", "360.stickldown", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Left", "360.sticklleft", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Right", "360.sticklright", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Up", "360.stickrup", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Down", "360.stickrdown", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Left", "360.stickrleft", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Right", "360.stickrright", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Trigger", "360.triggerl", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Trigger", "360.triggerr", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Bumper", "360.bumperl"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Bumper", "360.bumperr"));
 
@@ -331,6 +327,11 @@ namespace WiiTUIO
             return null;
         }
 
+        public List<KeymapInput> getAvailableInputs()
+        {
+            return allInputs;
+        }
+
         public List<KeymapInput> getAvailableInputs(KeymapInputSource source)
         {
             List<KeymapInput> list = new List<KeymapInput>();
@@ -342,6 +343,11 @@ namespace WiiTUIO
                 }
             }
             return list;
+        }
+
+        public List<KeymapOutput> getAvailableOutputs()
+        {
+            return allOutputs;
         }
 
         public List<KeymapOutput> getAvailableOutputs(KeymapOutputType type)
@@ -366,7 +372,7 @@ namespace WiiTUIO
             List<KeymapInput> list = this.allInputs;
             foreach (KeymapInput input in list)
             {
-                if (input.Key == key.ToLower())
+                if (input.Key.ToLower() == key.ToLower())
                 {
                     return input;
                 }
@@ -379,7 +385,7 @@ namespace WiiTUIO
             List<KeymapOutput> list = this.allOutputs;
             foreach (KeymapOutput output in list)
             {
-                if (output.Key == key.ToLower())
+                if (output.Key.ToLower() == key.ToLower())
                 {
                     return output;
                 }
@@ -523,8 +529,8 @@ namespace WiiTUIO
             buttonTwo.Add(new JValue("Tab"));
             buttons.Add(new JProperty("Two", buttonTwo));
 
-            buttons.Add(new JProperty("Nunchuk.StickX", "360.StickLX"));
-            buttons.Add(new JProperty("Nunchuk.StickY", "360.StickLY"));
+            //buttons.Add(new JProperty("Nunchuk.StickX", "360.StickLX"));
+            //buttons.Add(new JProperty("Nunchuk.StickY", "360.StickLY"));
             buttons.Add(new JProperty("Nunchuk.StickUp", "disable"));
             buttons.Add(new JProperty("Nunchuk.StickDown", "disable"));
             buttons.Add(new JProperty("Nunchuk.StickLeft", "disable"));
@@ -601,34 +607,36 @@ namespace WiiTUIO
         public string Name { get; private set; }
         public string Key { get; private set; }
         public KeymapInputSource Source { get; private set; }
+        public bool Button { get; private set; }
         public bool Continous { get; private set; }
         public bool Cursor { get; private set; }
 
         public KeymapInput(KeymapInputSource source, string name, string key)
-            : this(source, name, key, false, false)
+            : this(source, name, key, true, false, false)
         {
 
         }
 
-        public KeymapInput(KeymapInputSource source, string name, string key, bool continous, bool cursor)
+        public KeymapInput(KeymapInputSource source, string name, string key, bool button, bool continous, bool cursor)
         {
             this.Source = source;
             this.Name = name;
             this.Key = key;
+            this.Button = button;
             this.Continous = continous;
             this.Cursor = cursor;
         }
 
         public bool canHandle(KeymapOutput output)
         {
-            return (this.Continous == output.Continous && this.Cursor == output.Cursor) || output.Type == KeymapOutputType.DISABLE;
+            return ((this.Button == output.Button || this.Continous == output.Continous) && this.Cursor == output.Cursor) || output.Type == KeymapOutputType.DISABLE;
         }
     }
 
 
     public enum KeymapOutputType
     {
-        ALL, //Only used for search
+        ALL, //Only used in search
         TOUCH,
         MOUSE,
         XINPUT,
@@ -640,21 +648,23 @@ namespace WiiTUIO
         public string Name { get; private set; }
         public string Key { get; private set; }
         public KeymapOutputType Type { get; private set; }
+        public bool Button { get; private set; }
         public bool Continous { get; private set; }
         public bool Cursor { get; private set; }
         public bool Stackable { get; private set; }
 
         public KeymapOutput(KeymapOutputType type, string name, string key)
-            : this(type, name, key, false, false, true)
+            : this(type, name, key, true, false, false, true)
         {
 
         }
 
-        public KeymapOutput(KeymapOutputType type, string name, string key, bool continous, bool cursor, bool stackable)
+        public KeymapOutput(KeymapOutputType type, string name, string key, bool button, bool continous, bool cursor, bool stackable)
         {
             this.Type = type;
             this.Name = name;
             this.Key = key;
+            this.Button = button;
             this.Continous = continous;
             this.Cursor = cursor;
         }

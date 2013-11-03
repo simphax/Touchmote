@@ -115,6 +115,28 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private double _defaultContinousScale = 1.0;
+        public double defaultContinousScale
+        {
+            get { return _defaultContinousScale; }
+            set
+            {
+                _defaultContinousScale = value;
+                OnPropertyChanged("defaultContinousScale");
+            }
+        }
+
+        private double _defaultContinousPressThreshold = 0.8;
+        public double defaultContinousPressThreshold
+        {
+            get { return _defaultContinousPressThreshold; }
+            set
+            {
+                _defaultContinousPressThreshold = value;
+                OnPropertyChanged("defaultContinousPressThreshold");
+            }
+        }
+
         private string _tuio_IP = "127.0.0.1";
         public string tuio_IP
         {
