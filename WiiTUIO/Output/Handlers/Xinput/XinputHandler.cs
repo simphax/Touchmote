@@ -237,17 +237,17 @@ namespace WiiTUIO.Output.Handlers.Xinput
                 string handle = key.ToLower().Substring(4);
                 switch (handle)
                 {
-                    case "sticklx":
-                        report.StickLX = value;
+                    case "sticklright":
+                        report.StickLX = 0.5 + (value * 0.5);
                         break;
-                    case "stickly":
-                        report.StickLY = value;
+                    case "sticklleft":
+                        report.StickLX = 0.5 - (value * 0.5);
                         break;
-                    case "stickrx":
-                        report.StickRX = value;
+                    case "sticklup":
+                        report.StickLY = 0.5 + (value * 0.5);
                         break;
-                    case "stickry":
-                        report.StickRY = value;
+                    case "stickldown":
+                        report.StickLY = 0.5 - (value * 0.5);
                         break;
                     case "triggerr":
                         report.TriggerR = value;

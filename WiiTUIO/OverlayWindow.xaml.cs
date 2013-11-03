@@ -111,10 +111,10 @@ namespace WiiTUIO
                     this.title.Text = "Choose a layout for Wiimote " + keyMapper.WiimoteID;
 
                     this.layoutList.Children.Clear();
-                    foreach (JObject config in this.keyMapper.GetLayoutList())
+                    foreach (LayoutChooserSetting config in this.keyMapper.GetLayoutList())
                     {
-                        string name = config.GetValue("Title").ToString();
-                        string filename = config.GetValue("Keymap").ToString();
+                        string name = config.Title;
+                        string filename = config.Keymap;
                         LayoutSelectionRow row = new LayoutSelectionRow(name, filename, bordercolor);
                         row.OnClick += Select_Layout;
                         this.layoutList.Children.Add(row);

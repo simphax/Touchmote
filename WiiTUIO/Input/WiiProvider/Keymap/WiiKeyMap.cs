@@ -14,12 +14,8 @@ namespace WiiTUIO.Provider
 {
     public class WiiKeyMap
     {
-        private JObject jsonObj;
-
-        public JObject JsonObj
-        {
-            get { return this.jsonObj; }
-        }
+        private Dictionary<string, KeymapOutConfig> config;
+        private Keymap keymap;
 
         public Action<WiiButtonEvent> OnButtonUp;
         public Action<WiiButtonEvent> OnButtonDown;
@@ -32,43 +28,56 @@ namespace WiiTUIO.Provider
 
         public DateTime HomeButtonDown = DateTime.Now;
 
-        public string Name;
-        public string Filename;
-
         private long id;
 
-        public WiiKeyMap(long id, JObject jsonObj, string configName, string configFilename, List<IOutputHandler> outputHandlers)
+        private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
+        {
+            {"Nunchuk.StickUp",false},
+            {"Nunchuk.StickDown",false},
+            {"Nunchuk.StickLeft",false},
+            {"Nunchuk.StickRight",false}
+        };
+
+        public WiiKeyMap(long id, Keymap keymap, List<IOutputHandler> outputHandlers)
         {
             this.id = id;
-            this.Name = configName;
-            this.Filename = configFilename;
-            this.jsonObj = jsonObj;
+
+            this.SetKeymap(keymap);
 
             this.inputSimulator = new InputSimulator();
 
             this.outputHandlers = outputHandlers;
         }
 
-        public void SetConfig(JObject newConfig, string name, string filename)
+        public void SetKeymap(Keymap keymap)
         {
-            if (this.jsonObj != newConfig && this.Filename != filename)
+            if (this.keymap == null || this.keymap.Equals(keymap))
             {
-                this.jsonObj = newConfig;
-                this.Name = name;
-                this.Filename = filename;
-                string pointer = this.jsonObj.GetValue("Pointer").ToString();
-                if (this.OnConfigChanged != null)
+                this.config = new Dictionary<string, KeymapOutConfig>();
+
+                foreach (KeymapInput input in KeymapDatabase.Current.getAvailableInputs())
                 {
-                    this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(name,filename,pointer));
+                    KeymapOutConfig outConfig = keymap.getConfigFor((int)id, input.Key);
+                    if (outConfig != null)
+                    {
+                        this.config.Add(input.Key, outConfig);
+                    }
+                }
+
+                KeymapOutConfig pointerConfig;
+                if (this.config.TryGetValue("Pointer", out pointerConfig) && this.OnConfigChanged != null)
+                {
+                    this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(keymap.getName(),keymap.getFilename(),pointerConfig.Stack.First().Key));
                 }
             }
         }
 
         public void SendConfigChangedEvt()
         {
-            if (this.OnConfigChanged != null)
+            KeymapOutConfig pointerConfig;
+            if (this.keymap != null && this.config.TryGetValue("Pointer", out pointerConfig) && this.OnConfigChanged != null)
             {
-                this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(this.Name, this.Filename, this.jsonObj.GetValue("Pointer").ToString()));
+                this.OnConfigChanged(new WiiKeyMapConfigChangedEvent(keymap.getName(), keymap.getFilename(), pointerConfig.Stack.First().Key));
             }
         }
 
@@ -85,103 +94,184 @@ namespace WiiTUIO.Provider
 
         internal void updateAccelerometer(AccelState accelState)
         {
+            KeymapOutConfig outConfig;
 
-            JToken key = this.jsonObj.GetValue("AccelX");
-            if (key != null)
+            if (this.config.TryGetValue("AccelX", out outConfig))
             {
-                string handle = key.ToString().ToLower();
-
-                updateStickHandlers(handle, accelState.Values.X * -0.5 + 0.5);
-
+                updateStickHandlers(outConfig, accelState.Values.X * -0.5 + 0.5);
             }
-
-            key = this.jsonObj.GetValue("AccelY");
-            if (key != null)
+            if (this.config.TryGetValue("AccelY", out outConfig))
             {
-                string handle = key.ToString().ToLower();
-                updateStickHandlers(handle, accelState.Values.Y * -0.5 + 0.5);
+                updateStickHandlers(outConfig, accelState.Values.Y * -0.5 + 0.5);
             }
-
-            key = this.jsonObj.GetValue("AccelZ");
-            if (key != null)
+            if (this.config.TryGetValue("AccelZ", out outConfig))
             {
-                string handle = key.ToString().ToLower();
-
+                updateStickHandlers(outConfig, accelState.Values.Z * -0.5 + 0.5);
             }
         }
 
         public void updateNunchuk(NunchukState nunchuk)
         {
-            JToken key = this.jsonObj.GetValue("Nunchuk.StickX");
-            if (key != null)
+            KeymapOutConfig outConfig;
+
+            if (this.config.TryGetValue("Nunchuk.StickRight", out outConfig))
             {
-                string handle = key.ToString().ToLower();
-                updateStickHandlers(handle, nunchuk.Joystick.X * -0.5 + 0.5);
+                if (nunchuk.Joystick.X > 0)
+                {
+                    updateStickHandlers(outConfig, nunchuk.Joystick.X * 2);
+                }
+                else if (nunchuk.Joystick.X == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (nunchuk.Joystick.X * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickRight"])
+                {
+                    PressedButtons["Nunchuk.StickRight"] = true;
+                    this.executeButtonDown("Nunchuk.StickRight");
+                }
+                else if (nunchuk.Joystick.X * 2 < outConfig.Threshold && PressedButtons["Nunchuk.StickRight"])
+                {
+                    PressedButtons["Nunchuk.StickRight"] = false;
+                    this.executeButtonUp("Nunchuk.StickRight");
+                }
             }
 
-            key = this.jsonObj.GetValue("Nunchuk.StickY");
-            if (key != null)
+            if (this.config.TryGetValue("Nunchuk.StickLeft", out outConfig))
             {
-                string handle = key.ToString().ToLower();
-                updateStickHandlers(handle, nunchuk.Joystick.Y * -0.5 + 0.5);
+                if (nunchuk.Joystick.X < 0)
+                {
+                    updateStickHandlers(outConfig, nunchuk.Joystick.X * -2);
+                }
+                else if (nunchuk.Joystick.X == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (nunchuk.Joystick.X * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickLeft"])
+                {
+                    PressedButtons["Nunchuk.StickLeft"] = true;
+                    this.executeButtonDown("Nunchuk.StickLeft");
+                }
+                else if (nunchuk.Joystick.X * -2 < outConfig.Threshold && PressedButtons["Nunchuk.StickLeft"])
+                {
+                    PressedButtons["Nunchuk.StickLeft"] = false;
+                    this.executeButtonUp("Nunchuk.StickLeft");
+                }
             }
+            if (this.config.TryGetValue("Nunchuk.StickUp", out outConfig))
+            {
+                if (nunchuk.Joystick.Y > 0)
+                {
+                    updateStickHandlers(outConfig, nunchuk.Joystick.Y * 2);
+                }
+                else if (nunchuk.Joystick.Y == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (nunchuk.Joystick.Y * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickUp"])
+                {
+                    PressedButtons["Nunchuk.StickUp"] = true;
+                    this.executeButtonDown("Nunchuk.StickUp");
+                }
+                else if (nunchuk.Joystick.Y * 2 < outConfig.Threshold && PressedButtons["Nunchuk.StickUp"])
+                {
+                    PressedButtons["Nunchuk.StickUp"] = false;
+                    this.executeButtonUp("Nunchuk.StickUp");
+                }
+
+            }
+            if (this.config.TryGetValue("Nunchuk.StickDown", out outConfig))
+            {
+                if (nunchuk.Joystick.Y < 0)
+                {
+                    updateStickHandlers(outConfig, nunchuk.Joystick.Y * -2);
+                }
+                else if (nunchuk.Joystick.Y == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (nunchuk.Joystick.Y * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickDown"])
+                {
+                    PressedButtons["Nunchuk.StickDown"] = true;
+                    this.executeButtonDown("Nunchuk.StickDown");
+                }
+                else if (nunchuk.Joystick.Y * -2 < outConfig.Threshold && PressedButtons["Nunchuk.StickDown"])
+                {
+                    PressedButtons["Nunchuk.StickDown"] = false;
+                    this.executeButtonUp("Nunchuk.StickDown");
+                }
+            }
+
         }
 
         public void updateClassicController(ClassicControllerState classic)
         {
-            JToken key = this.jsonObj.GetValue("Classic.StickLX");
-            if (key != null)
-            {
-                string handle = key.ToString().ToLower();
-                updateStickHandlers(handle, classic.JoystickL.X + 0.5);
-            }
+            //JToken key = this.jsonObj.GetValue("Classic.StickLX");
+            //if (key != null)
+            //{
+            //    string handle = key.ToString().ToLower();
+            //    updateStickHandlers(handle, classic.JoystickL.X + 0.5);
+            //}
 
-            key = this.jsonObj.GetValue("Classic.StickLY");
-            if (key != null)
-            {
-                string handle = key.ToString().ToLower();
-                updateStickHandlers(handle, classic.JoystickL.Y + 0.5);
-            }
+            //key = this.jsonObj.GetValue("Classic.StickLY");
+            //if (key != null)
+            //{
+            //    string handle = key.ToString().ToLower();
+            //    updateStickHandlers(handle, classic.JoystickL.Y + 0.5);
+            //}
 
-            key = this.jsonObj.GetValue("Classic.StickRX");
-            if (key != null)
-            {
-                string handle = key.ToString().ToLower();
-                updateStickHandlers(handle, classic.JoystickR.X + 0.5);
-            }
+            //key = this.jsonObj.GetValue("Classic.StickRX");
+            //if (key != null)
+            //{
+            //    string handle = key.ToString().ToLower();
+            //    updateStickHandlers(handle, classic.JoystickR.X + 0.5);
+            //}
 
-            key = this.jsonObj.GetValue("Classic.StickRY");
-            if (key != null)
-            {
-                string handle = key.ToString().ToLower();
-                updateStickHandlers(handle, classic.JoystickR.Y + 0.5);
-            }
+            //key = this.jsonObj.GetValue("Classic.StickRY");
+            //if (key != null)
+            //{
+            //    string handle = key.ToString().ToLower();
+            //    updateStickHandlers(handle, classic.JoystickR.Y + 0.5);
+            //}
 
-            key = this.jsonObj.GetValue("Classic.TriggerL");
-            if (key != null)
-            {
-                string handle = key.ToString().ToLower();
-                updateStickHandlers(handle, classic.TriggerL);
-            }
+            //key = this.jsonObj.GetValue("Classic.TriggerL");
+            //if (key != null)
+            //{
+            //    string handle = key.ToString().ToLower();
+            //    updateStickHandlers(handle, classic.TriggerL);
+            //}
 
-            key = this.jsonObj.GetValue("Classic.TriggerR");
-            if (key != null)
-            {
-                string handle = key.ToString().ToLower();
-                updateStickHandlers(handle, classic.TriggerR);
-            }
+            //key = this.jsonObj.GetValue("Classic.TriggerR");
+            //if (key != null)
+            //{
+            //    string handle = key.ToString().ToLower();
+            //    updateStickHandlers(handle, classic.TriggerR);
+            //}
         }
 
-        private bool updateStickHandlers(string key, double value)
+        private bool updateStickHandlers(KeymapOutConfig outConfig, double value)
         {
             foreach (IOutputHandler handler in outputHandlers)
             {
                 IStickHandler stickHandler = handler as IStickHandler;
                 if (stickHandler != null)
                 {
-                    if (stickHandler.setValue(key, value))
+                    foreach(KeymapOutput output in outConfig.Stack)
                     {
-                        return true; // we will break for the first accepting handler
+                        if (output.Continous)
+                        {
+                            //Add the scaling from the config but never go outside 0-1
+                            value = value * outConfig.Scale;
+                            value = value > 1 ? 1 : value;
+                            value = value < 0 ? 0 : value;
+                            if (stickHandler.setValue(output.Key.ToString().ToLower(), value))
+                            {
+                                return true; // we will break for the first accepting handler
+                            }
+                        }
                     }
                 }
             }
@@ -206,27 +296,21 @@ namespace WiiTUIO.Provider
         public void executeButtonUp(string button)
         {
             bool handled = false;
-            List<string> keyList = new List<string>();
-            JToken token = this.jsonObj.GetValue(button);
 
-            if (token != null)
+            List<string> keyList = new List<string>();
+            KeymapOutConfig outConfig;
+
+            if (this.config.TryGetValue(button, out outConfig))
             {
-                if (token.Type == JTokenType.Array)
+                List<KeymapOutput> stack = new List<KeymapOutput>(outConfig.Stack);
+                stack.Reverse();
+                foreach (KeymapOutput output in stack)
                 {
-                    JArray array = (JArray)token;
-                    foreach (JToken keyToken in array)
+                    keyList.Add(output.Key);
+                    if (!(output.Continous && KeymapDatabase.Current.getInput(button).Continous)) //Exclude the case when a stick is connected to a stick. It should not trigger the press action.
                     {
-                        keyList.Add(keyToken.ToString());
+                        handled |= this.executeKeyUp(output.Key);
                     }
-                    keyList.Reverse();
-                }
-                else
-                {
-                    keyList.Add(token.ToString());
-                }
-                foreach (string key in keyList)
-                {
-                    handled = this.executeKeyUp(key);
                 }
 
             }
@@ -272,32 +356,26 @@ namespace WiiTUIO.Provider
         {
             bool handled = false;
             List<string> keyList = new List<string>();
-            JToken token = this.jsonObj.GetValue(button);
-            if (token != null)
+            KeymapOutConfig outConfig;
+            if (this.config.TryGetValue(button, out outConfig) && outConfig != null)
             {
-                if (token.Type == JTokenType.Array)
-                {
-                    JArray array = (JArray)token;
-                    foreach (JToken keyToken in array)
-                    {
-                        keyList.Add(keyToken.ToString());
-                    }
-                }
-                else
-                {
-                    keyList.Add(token.ToString());
-                }
-
                 HashSet<string> handledKeys = new HashSet<string>();
-                foreach (string key in keyList)
+                List<KeymapOutput> stack = new List<KeymapOutput>(outConfig.Stack);
+                stack.Reverse();
+                foreach (KeymapOutput output in stack)
                 {
-                    if (handledKeys.Contains(key))
-                    {
-                        this.executeKeyUp(key);
-                    }
-                    handledKeys.Add(key);
+                    keyList.Add(output.Key);
 
-                    handled = this.executeKeyDown(key);
+                    if (!(output.Continous && KeymapDatabase.Current.getInput(button).Continous)) //Exclude the case when a continous output is connected to a continous output. It should not trigger the button action.
+                    {
+                        if (handledKeys.Contains(output.Key)) //Repeat a button that has already been pressed
+                        {
+                            this.executeKeyUp(output.Key);
+                        }
+                        handledKeys.Add(output.Key);
+                    }
+
+                    handled |= this.executeKeyDown(output.Key);
                 }
             }
 

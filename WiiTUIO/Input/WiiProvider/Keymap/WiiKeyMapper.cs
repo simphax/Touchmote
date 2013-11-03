@@ -87,8 +87,6 @@ namespace WiiTUIO.Provider
         public Action<WiiKeyMapConfigChangedEvent> OnConfigChanged;
         public Action<bool> OnRumble;
 
-        private string DEFAULT_JSON_FILENAME = "default.json";
-
         private WiiKeyMap KeyMap;
 
         private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
@@ -137,15 +135,10 @@ namespace WiiTUIO.Provider
 
         private SystemProcessMonitor processMonitor;
 
-        private JObject applicationsJson;
-        private JObject defaultKeymapJson; //Always default.json
-        private JObject fallbackKeymapJson; //Decided by the layout chooser
+        private Keymap defaultKeymap; //Always default.json
+        private Keymap fallbackKeymap; //Decided by the layout chooser
 
         private Timer homeButtonTimer;
-
-        private string defaultName;
-        private string fallbackName;
-        private string fallbackFile;
 
         public int WiimoteID;
         private bool hideOverlayOnUp = false;
@@ -177,31 +170,14 @@ namespace WiiTUIO.Provider
 
         private void initialize()
         {
-            System.IO.Directory.CreateDirectory(Settings.Default.keymaps_path);
-            this.applicationsJson = this.loadApplicationsJSON();
-            this.defaultKeymapJson = this.loadDefaultKeymapJSON();
-
-            this.defaultName = this.defaultKeymapJson.GetValue("Title").ToString();
-            this.fallbackName = this.defaultName;
-            this.fallbackFile = DEFAULT_JSON_FILENAME;
+            this.defaultKeymap = KeymapDatabase.Current.getDefaultKeymap();
 
             JObject specificKeymap = new JObject();
             JObject commonKeymap = new JObject();
 
-            if (this.defaultKeymapJson.GetValue(this.WiimoteID.ToString()) != null)
-            {
-                specificKeymap = (JObject)this.defaultKeymapJson.GetValue(this.WiimoteID.ToString());
-            }
-            if (this.defaultKeymapJson.GetValue("All") != null)
-            {
-                commonKeymap = (JObject)this.defaultKeymapJson.GetValue("All");
-            }
+            this.fallbackKeymap = defaultKeymap;
 
-            MergeJSON(commonKeymap, specificKeymap);
-            this.defaultKeymapJson = commonKeymap;
-            this.fallbackKeymapJson = commonKeymap;
-
-            this.KeyMap = new WiiKeyMap(this.WiimoteID, this.defaultKeymapJson, this.fallbackName, this.fallbackFile, this.outputHandlers);
+            this.KeyMap = new WiiKeyMap(this.WiimoteID, this.defaultKeymap, this.outputHandlers);
             this.KeyMap.OnButtonDown += keyMap_onButtonDown;
             this.KeyMap.OnButtonUp += keyMap_onButtonUp;
             this.KeyMap.OnConfigChanged += keyMap_onConfigChanged;
@@ -229,25 +205,6 @@ namespace WiiTUIO.Provider
             return result;
         }
 
-        private JObject loadDefaultKeymapJSON()
-        {
-            JObject result = null;
-            if (File.Exists(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME))
-            {
-                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME);
-                try
-                {
-                    result = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-                    reader.Close();
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(Settings.Default.keymaps_path + DEFAULT_JSON_FILENAME + " is not valid JSON");
-                }
-            }
-            return result;
-        }
-
         private void keymapConfigWindow_OnConfigChanged()
         {
             this.initialize();
@@ -262,34 +219,31 @@ namespace WiiTUIO.Provider
             this.processMonitor.ProcessChanged -= processChanged;
         }
 
-        public IEnumerable<JObject> GetLayoutList()
+        public List<LayoutChooserSetting> GetLayoutList()
         {
-            return this.applicationsJson.GetValue("LayoutChooser").Children<JObject>();
+            return KeymapDatabase.Current.getKeymapSettings().getLayoutChooserSettings();
         }
 
         public void SetFallbackKeymap(string filename)
         {
-            this.loadKeyMap(filename);
-            this.fallbackKeymapJson = this.KeyMap.JsonObj;
-            this.fallbackName = this.KeyMap.Name;
-            this.fallbackFile = this.KeyMap.Filename;
+            this.fallbackKeymap = this.loadKeyMap(filename);
         }
 
         public void SwitchToDefault()
         {
-            this.KeyMap.SetConfig(this.defaultKeymapJson, this.defaultName, DEFAULT_JSON_FILENAME); //Switch to fallback even if we did not choose anything in the chooser.
+            this.KeyMap.SetKeymap(this.defaultKeymap); //Switch to fallback even if we did not choose anything in the chooser.
         }
 
         public void SwitchToFallback()
         {
-            this.KeyMap.SetConfig(this.fallbackKeymapJson, this.fallbackName, this.fallbackFile); //Switch to fallback even if we did not choose anything in the chooser.
+            this.KeyMap.SetKeymap(this.fallbackKeymap); //Switch to fallback even if we did not choose anything in the chooser.
         }
 
         void homeButtonTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (this.PressedButtons["Home"])
             {
-                this.KeyMap.SetConfig(this.defaultKeymapJson, "Default", DEFAULT_JSON_FILENAME);
+                this.KeyMap.SetKeymap(this.defaultKeymap);
                 OverlayWindow.Current.ShowLayoutOverlay(this);
                 this.PressedButtons["Home"] = true;
             }
@@ -303,21 +257,21 @@ namespace WiiTUIO.Provider
 
                 bool keymapFound = false;
 
-                IEnumerable<JObject> applicationConfigurations = this.applicationsJson.GetValue("Applications").Children<JObject>();
-                foreach (JObject configuration in applicationConfigurations)
+                List<ApplicationSearchSetting> applicationConfigurations = KeymapDatabase.Current.getKeymapSettings().getApplicationSearchSettings();
+                foreach (ApplicationSearchSetting searchSetting in applicationConfigurations)
                 {
-                    string search = configuration.GetValue("Search").ToString();
+                    string search = searchSetting.Search;
 
                     if (appStringToMatch.ToLower().Replace(" ", "").Contains(search.ToLower().Replace(" ", "")))
                     {
-                        this.loadKeyMap(configuration.GetValue("Keymap").ToString());
+                        this.loadKeyMap(searchSetting.Keymap);
                         keymapFound = true;
                     }
                     
                 }
                 if (!keymapFound)
                 {
-                    this.KeyMap.SetConfig(this.fallbackKeymapJson,this.fallbackName,this.fallbackFile);
+                    this.KeyMap.SetKeymap(this.fallbackKeymap);
                 }
 
             }
@@ -377,50 +331,16 @@ namespace WiiTUIO.Provider
             }
         }
 
-        public void loadKeyMap(string filename)
+        public Keymap loadKeyMap(string filename)
         {
+            Keymap keymap = KeymapDatabase.Current.getKeymap(filename);
 
-            string name = "";
-
-            JObject union = (JObject)this.defaultKeymapJson.DeepClone();
-
-            if (File.Exists(Settings.Default.keymaps_path + filename))
-            {
-                StreamReader reader = File.OpenText(Settings.Default.keymaps_path + filename);
-                try
-                {
-                    JObject newKeymap = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-                    reader.Close();
-
-                    name = newKeymap.GetValue("Title").ToString();
-
-                    JObject specificKeymap = new JObject();
-                    JObject commonKeymap = new JObject();
-
-                    if (newKeymap.GetValue(this.WiimoteID.ToString()) != null)
-                    {
-                        specificKeymap = (JObject)newKeymap.GetValue(this.WiimoteID.ToString());
-                    }
-                    if (newKeymap.GetValue("All") != null)
-                    {
-                        commonKeymap = (JObject)newKeymap.GetValue("All");
-                    }
-
-                    MergeJSON(commonKeymap, specificKeymap);
-
-                    MergeJSON(union, commonKeymap);
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(filename + " is not valid JSON");
-                }
-            }
-
-            this.KeyMap.SetConfig(union, name, filename);
+            this.KeyMap.SetKeymap(keymap);
 
             this.processWiimoteState(new WiimoteState()); //Sets all buttons to "not pressed"
 
             Console.WriteLine("Loaded new keymap " + filename);
+            return keymap;
         }
 
         public bool processWiimoteState(WiimoteState wiimoteState) //Returns true if anything has changed from last report.
@@ -465,56 +385,7 @@ namespace WiiTUIO.Provider
                     this.KeyMap.executeButtonUp(NunchukButton.Z);
                 }
 
-                if (wiimoteState.NunchukState.Joystick.Y > 0.3 && !PressedButtons["Nunchuk.StickUp"])
-                {
-                    PressedButtons["Nunchuk.StickUp"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(NunchukButton.StickUp);
-                }
-                 else if (wiimoteState.NunchukState.Joystick.Y < 0.3 && PressedButtons["Nunchuk.StickUp"])
-                {
-                    PressedButtons["Nunchuk.StickUp"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(NunchukButton.StickUp);
-                }
-
-                 if (wiimoteState.NunchukState.Joystick.Y < -0.3 && !PressedButtons["Nunchuk.StickDown"])
-                {
-                    PressedButtons["Nunchuk.StickDown"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(NunchukButton.StickDown);
-                }
-                 else if (wiimoteState.NunchukState.Joystick.Y > -0.3 && PressedButtons["Nunchuk.StickDown"])
-                {
-                    PressedButtons["Nunchuk.StickDown"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(NunchukButton.StickDown);
-                }
-
-                 if (wiimoteState.NunchukState.Joystick.X < -0.3 && !PressedButtons["Nunchuk.StickLeft"])
-                {
-                    PressedButtons["Nunchuk.StickLeft"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(NunchukButton.StickLeft);
-                }
-                else if (wiimoteState.NunchukState.Joystick.X > -0.3 && PressedButtons["Nunchuk.StickLeft"])
-                {
-                    PressedButtons["Nunchuk.StickLeft"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(NunchukButton.StickLeft);
-                }
-                if (wiimoteState.NunchukState.Joystick.X > 0.3 && !PressedButtons["Nunchuk.StickRight"])
-                {
-                    PressedButtons["Nunchuk.StickRight"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(NunchukButton.StickRight);
-                }
-                else if (wiimoteState.NunchukState.Joystick.X < 0.3 && PressedButtons["Nunchuk.StickRight"])
-                {
-                    PressedButtons["Nunchuk.StickRight"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(NunchukButton.StickRight);
-                }
+                
                 
             }
 
