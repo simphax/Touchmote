@@ -23,29 +23,24 @@
 	"AccelY": "disable",
 	"AccelZ": "disable",
     "Nunchuk.StickUp": {
-		"scale": 2.0,
-		"deadzone": 0.6,
 		"output": [
 			"360.StickLUp",
 			"MouseY+"
 		]
 	},
     "Nunchuk.StickDown": {
-		"scale": 2.0,
 		"output": [
 			"360.StickLDown",
 			"MouseY-"
 		]
 	},
     "Nunchuk.StickLeft": {
-		"scale": 1.0,
 		"output": [
 			"360.StickLLeft",
 			"MouseX-"
 		]
 	},
     "Nunchuk.StickRight": {
-		"scale": 1.0,
 		"output": [
 			"360.StickLRight",
 			"MouseX+"

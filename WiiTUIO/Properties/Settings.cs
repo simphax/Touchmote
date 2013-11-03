@@ -137,7 +137,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _defaultContinousDeadzone = 0.0;
+        private double _defaultContinousDeadzone = 0.01;
         public double defaultContinousDeadzone
         {
             get { return _defaultContinousDeadzone; }
