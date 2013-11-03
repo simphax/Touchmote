@@ -8,7 +8,7 @@ using WindowsInput.Native;
 
 namespace WiiTUIO.Output.Handlers
 {
-    public class MouseHandler : IButtonHandler
+    public class MouseHandler : IButtonHandler, IStickHandler
     {
         private InputSimulator inputSimulator;
 
@@ -57,6 +57,29 @@ namespace WiiTUIO.Output.Handlers
                 return true;
             }
             return false;
+        }
+
+        public bool setValue(string key, double value)
+        {
+            key = key.ToLower();
+            switch (key)
+            {
+                case "mousey+":
+                    this.inputSimulator.Mouse.MoveMouseBy(0, (int)(-30 * value + 0.5));
+                    break;
+                case "mousey-":
+                    this.inputSimulator.Mouse.MoveMouseBy(0, (int)(30 * value + 0.5));
+                    break;
+                case "mousex+":
+                    this.inputSimulator.Mouse.MoveMouseBy((int)(30 * value + 0.5), 0);
+                    break;
+                case "mousex-":
+                    this.inputSimulator.Mouse.MoveMouseBy((int)(-30 * value + 0.5), 0);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
         }
 
         public bool connect()

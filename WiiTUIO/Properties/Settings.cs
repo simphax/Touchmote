@@ -137,6 +137,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private double _defaultContinousDeadzone = 0.0;
+        public double defaultContinousDeadzone
+        {
+            get { return _defaultContinousDeadzone; }
+            set
+            {
+                _defaultContinousDeadzone = value;
+                OnPropertyChanged("defaultContinousDeadzone");
+            }
+        }
+
         private string _tuio_IP = "127.0.0.1";
         public string tuio_IP
         {
