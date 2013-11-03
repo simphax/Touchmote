@@ -104,10 +104,6 @@ namespace WiiTUIO.Provider
             {"Two",false},
             {"Nunchuk.C",false},
             {"Nunchuk.Z",false},
-            {"Nunchuk.StickUp",false},
-            {"Nunchuk.StickDown",false},
-            {"Nunchuk.StickLeft",false},
-            {"Nunchuk.StickRight",false},
             {"Classic.A",false},
             {"Classic.B",false},
             {"Classic.X",false},
@@ -122,15 +118,7 @@ namespace WiiTUIO.Provider
             {"Classic.L",false},
             {"Classic.R",false},
             {"Classic.ZL",false},
-            {"Classic.ZR",false},
-            {"Classic.StickLUp",false},
-            {"Classic.StickLDown",false},
-            {"Classic.StickLLeft",false},
-            {"Classic.StickLRight",false},
-            {"Classic.StickRUp",false},
-            {"Classic.StickRDown",false},
-            {"Classic.StickRLeft",false},
-            {"Classic.StickRRight",false}
+            {"Classic.ZR",false}
         };
 
         private SystemProcessMonitor processMonitor;
@@ -423,106 +411,6 @@ namespace WiiTUIO.Provider
                         significant = true;
                         this.KeyMap.executeButtonUp(buttonName);
                     }
-                }
-                if (wiimoteState.ClassicControllerState.JoystickL.Y > 0.3 && !PressedButtons["Classic.StickLUp"])
-                {
-                    PressedButtons["Classic.StickLUp"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(ClassicControllerButton.StickLUp);
-                }
-                else if (wiimoteState.ClassicControllerState.JoystickL.Y < 0.3 && PressedButtons["Classic.StickLUp"])
-                {
-                    PressedButtons["Classic.StickLUp"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(ClassicControllerButton.StickLUp);
-                }
-
-                if (wiimoteState.ClassicControllerState.JoystickL.Y < -0.3 && !PressedButtons["Classic.StickLDown"])
-                {
-                    PressedButtons["Classic.StickLDown"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(ClassicControllerButton.StickLDown);
-                }
-                else if (wiimoteState.ClassicControllerState.JoystickL.Y > -0.3 && PressedButtons["Classic.StickLDown"])
-                {
-                    PressedButtons["Classic.StickLDown"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(ClassicControllerButton.StickLDown);
-                }
-
-                if (wiimoteState.ClassicControllerState.JoystickL.X < -0.3 && !PressedButtons["Classic.StickLLeft"])
-                {
-                    PressedButtons["Classic.StickLLeft"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(ClassicControllerButton.StickLLeft);
-                }
-                else if (wiimoteState.ClassicControllerState.JoystickL.X > -0.3 && PressedButtons["Classic.StickLLeft"])
-                {
-                    PressedButtons["Classic.StickLLeft"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(ClassicControllerButton.StickLLeft);
-                }
-                if (wiimoteState.ClassicControllerState.JoystickL.X > 0.3 && !PressedButtons["Classic.StickLRight"])
-                {
-                    PressedButtons["Classic.StickLRight"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(ClassicControllerButton.StickLRight);
-                }
-                else if (wiimoteState.ClassicControllerState.JoystickL.X < 0.3 && PressedButtons["Classic.StickLRight"])
-                {
-                    PressedButtons["Classic.StickLRight"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(ClassicControllerButton.StickLRight);
-                }
-                if (wiimoteState.ClassicControllerState.JoystickL.Y > 0.3 && !PressedButtons["Classic.StickLUp"])
-                {
-                    PressedButtons["Classic.StickRUp"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(ClassicControllerButton.StickRUp);
-                }
-                else if (wiimoteState.ClassicControllerState.JoystickL.Y < 0.3 && PressedButtons["Classic.StickRUp"])
-                {
-                    PressedButtons["Classic.StickRUp"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(ClassicControllerButton.StickRUp);
-                }
-
-                if (wiimoteState.ClassicControllerState.JoystickL.Y < -0.3 && !PressedButtons["Classic.StickRDown"])
-                {
-                    PressedButtons["Classic.StickRDown"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(ClassicControllerButton.StickRDown);
-                }
-                else if (wiimoteState.ClassicControllerState.JoystickL.Y > -0.3 && PressedButtons["Classic.StickRDown"])
-                {
-                    PressedButtons["Classic.StickRDown"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(ClassicControllerButton.StickRDown);
-                }
-
-                if (wiimoteState.ClassicControllerState.JoystickL.X < -0.3 && !PressedButtons["Classic.StickRLeft"])
-                {
-                    PressedButtons["Classic.StickRLeft"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(ClassicControllerButton.StickRLeft);
-                }
-                else if (wiimoteState.ClassicControllerState.JoystickL.X > -0.3 && PressedButtons["Classic.StickRLeft"])
-                {
-                    PressedButtons["Classic.StickRLeft"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(ClassicControllerButton.StickRLeft);
-                }
-                if (wiimoteState.ClassicControllerState.JoystickL.X > 0.3 && !PressedButtons["Classic.StickRRight"])
-                {
-                    PressedButtons["Classic.StickRRight"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(ClassicControllerButton.StickRRight);
-                }
-                else if (wiimoteState.ClassicControllerState.JoystickL.X < 0.3 && PressedButtons["Classic.StickRRight"])
-                {
-                    PressedButtons["Classic.StickRRight"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(ClassicControllerButton.StickRRight);
                 }
             }
 

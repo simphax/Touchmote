@@ -22,22 +22,8 @@
 	"AccelX": "disable",
 	"AccelY": "disable",
 	"AccelZ": "disable",
-    "Nunchuk.StickUp": {
-      "scale": 2.0,
-      "threshold": 0.1,
-      "output": [
-		"360.StickLUp",
-        "360.B"
-      ]
-    },
-    "Nunchuk.StickDown": {
-      "scale": 2.0,
-      "threshold": 0.9,
-      "output": [
-		"360.StickLDown",
-        "360.A"
-      ]
-    },
+    "Nunchuk.StickUp": "360.StickLUp",
+    "Nunchuk.StickDown": "360.StickLDown",
 	"Nunchuk.StickLeft": "360.StickLLeft",
 	"Nunchuk.StickRight": "360.StickLRight",
 	"Nunchuk.C": "360.TriggerL",
@@ -46,18 +32,14 @@
 	"Classic.Right": "360.Right",
 	"Classic.Up": "360.Up",
 	"Classic.Down": "360.Down",
-	"Classic.StickLX": "360.StickLX",
-	"Classic.StickLY": "360.StickLY",
-	"Classic.StickRX": "360.StickRX",
-	"Classic.StickRY": "360.StickRY",
-	"Classic.StickLUp": "disable",
-	"Classic.StickLDown": "disable",
-	"Classic.StickLLeft": "disable",
-	"Classic.StickLRight": "disable",
-	"Classic.StickRUp": "disable",
-	"Classic.StickRDown": "disable",
-	"Classic.StickRLeft": "disable",
-	"Classic.StickRRight": "disable",
+	"Classic.StickLUp": "360.StickLUp",
+	"Classic.StickLDown": "360.StickLDown",
+	"Classic.StickLLeft": "360.StickLLeft",
+	"Classic.StickLRight": "360.StickLRight",
+	"Classic.StickRUp": "360.StickRUp",
+	"Classic.StickRDown": "360.StickRDown",
+	"Classic.StickRLeft": "360.StickRLeft",
+	"Classic.StickRRight": "360.StickRRight",
 	"Classic.Minus": "360.Back",
 	"Classic.Plus": "360.Start",
 	"Classic.Home": "360.Guide",

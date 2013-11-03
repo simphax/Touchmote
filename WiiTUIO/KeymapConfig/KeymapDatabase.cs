@@ -529,12 +529,10 @@ namespace WiiTUIO
             buttonTwo.Add(new JValue("Tab"));
             buttons.Add(new JProperty("Two", buttonTwo));
 
-            //buttons.Add(new JProperty("Nunchuk.StickX", "360.StickLX"));
-            //buttons.Add(new JProperty("Nunchuk.StickY", "360.StickLY"));
-            buttons.Add(new JProperty("Nunchuk.StickUp", "disable"));
-            buttons.Add(new JProperty("Nunchuk.StickDown", "disable"));
-            buttons.Add(new JProperty("Nunchuk.StickLeft", "disable"));
-            buttons.Add(new JProperty("Nunchuk.StickRight", "disable"));
+            buttons.Add(new JProperty("Nunchuk.StickUp", "360.StickLUp"));
+            buttons.Add(new JProperty("Nunchuk.StickDown", "360.StickLDown"));
+            buttons.Add(new JProperty("Nunchuk.StickLeft", "360.StickLLeft"));
+            buttons.Add(new JProperty("Nunchuk.StickRight", "360.StickLRight"));
             buttons.Add(new JProperty("Nunchuk.C", "360.TriggerL"));
             buttons.Add(new JProperty("Nunchuk.Z", "360.TriggerR"));
 
@@ -542,18 +540,14 @@ namespace WiiTUIO
             buttons.Add(new JProperty("Classic.Right", "360.Right"));
             buttons.Add(new JProperty("Classic.Up", "360.Up"));
             buttons.Add(new JProperty("Classic.Down", "360.Down"));
-            buttons.Add(new JProperty("Classic.StickLX", "360.StickLX"));
-            buttons.Add(new JProperty("Classic.StickLY", "360.StickLY"));
-            buttons.Add(new JProperty("Classic.StickRX", "360.StickRX"));
-            buttons.Add(new JProperty("Classic.StickRY", "360.StickRY"));
-            buttons.Add(new JProperty("Classic.StickLUp", "disable"));
-            buttons.Add(new JProperty("Classic.StickLDown", "disable"));
-            buttons.Add(new JProperty("Classic.StickLLeft", "disable"));
-            buttons.Add(new JProperty("Classic.StickLRight", "disable"));
-            buttons.Add(new JProperty("Classic.StickRUp", "disable"));
-            buttons.Add(new JProperty("Classic.StickRDown", "disable"));
-            buttons.Add(new JProperty("Classic.StickRLeft", "disable"));
-            buttons.Add(new JProperty("Classic.StickRRight", "disable"));
+            buttons.Add(new JProperty("Classic.StickLUp", "360.StickLUp"));
+            buttons.Add(new JProperty("Classic.StickLDown", "360.StickLDown"));
+            buttons.Add(new JProperty("Classic.StickLLeft", "360.StickLLeft"));
+            buttons.Add(new JProperty("Classic.StickLRight", "360.StickLRight"));
+            buttons.Add(new JProperty("Classic.StickRUp", "360.StickRUp"));
+            buttons.Add(new JProperty("Classic.StickRDown", "360.StickRDown"));
+            buttons.Add(new JProperty("Classic.StickRLeft", "360.StickRLeft"));
+            buttons.Add(new JProperty("Classic.StickRRight", "360.StickRRight"));
             buttons.Add(new JProperty("Classic.Minus", "360.Back"));
             buttons.Add(new JProperty("Classic.Plus", "360.Start"));
             buttons.Add(new JProperty("Classic.Home", "360.Guide"));

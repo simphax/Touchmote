@@ -35,7 +35,15 @@ namespace WiiTUIO.Provider
             {"Nunchuk.StickUp",false},
             {"Nunchuk.StickDown",false},
             {"Nunchuk.StickLeft",false},
-            {"Nunchuk.StickRight",false}
+            {"Nunchuk.StickRight",false},
+            {"Classic.StickLUp",false},
+            {"Classic.StickLDown",false},
+            {"Classic.StickLLeft",false},
+            {"Classic.StickLRight",false},
+            {"Classic.StickRUp",false},
+            {"Classic.StickRDown",false},
+            {"Classic.StickRLeft",false},
+            {"Classic.StickRRight",false}
         };
 
         public WiiKeyMap(long id, Keymap keymap, List<IOutputHandler> outputHandlers)
@@ -209,34 +217,198 @@ namespace WiiTUIO.Provider
 
         public void updateClassicController(ClassicControllerState classic)
         {
-            //JToken key = this.jsonObj.GetValue("Classic.StickLX");
-            //if (key != null)
-            //{
-            //    string handle = key.ToString().ToLower();
-            //    updateStickHandlers(handle, classic.JoystickL.X + 0.5);
-            //}
+            KeymapOutConfig outConfig;
 
-            //key = this.jsonObj.GetValue("Classic.StickLY");
-            //if (key != null)
-            //{
-            //    string handle = key.ToString().ToLower();
-            //    updateStickHandlers(handle, classic.JoystickL.Y + 0.5);
-            //}
+            if (this.config.TryGetValue("Classic.StickLRight", out outConfig))
+            {
+                if (classic.JoystickL.X > 0)
+                {
+                    updateStickHandlers(outConfig, classic.JoystickL.X * 2);
+                }
+                else if (classic.JoystickL.X == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
 
-            //key = this.jsonObj.GetValue("Classic.StickRX");
-            //if (key != null)
-            //{
-            //    string handle = key.ToString().ToLower();
-            //    updateStickHandlers(handle, classic.JoystickR.X + 0.5);
-            //}
+                if (classic.JoystickL.X * 2 > outConfig.Threshold && !PressedButtons["Classic.StickLRight"])
+                {
+                    PressedButtons["Classic.StickLRight"] = true;
+                    this.executeButtonDown("Classic.StickLRight");
+                }
+                else if (classic.JoystickL.X * 2 < outConfig.Threshold && PressedButtons["Classic.StickLRight"])
+                {
+                    PressedButtons["Classic.StickLRight"] = false;
+                    this.executeButtonUp("Classic.StickLRight");
+                }
+            }
+            if (this.config.TryGetValue("Classic.StickLLeft", out outConfig))
+            {
+                if (classic.JoystickL.X < 0)
+                {
+                    updateStickHandlers(outConfig, classic.JoystickL.X * -2);
+                }
+                else if (classic.JoystickL.X == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
 
-            //key = this.jsonObj.GetValue("Classic.StickRY");
-            //if (key != null)
-            //{
-            //    string handle = key.ToString().ToLower();
-            //    updateStickHandlers(handle, classic.JoystickR.Y + 0.5);
-            //}
+                if (classic.JoystickL.X * -2 > outConfig.Threshold && !PressedButtons["Classic.StickLLeft"])
+                {
+                    PressedButtons["Classic.StickLLeft"] = true;
+                    this.executeButtonDown("Classic.StickLLeft");
+                }
+                else if (classic.JoystickL.X * -2 < outConfig.Threshold && PressedButtons["Classic.StickLLeft"])
+                {
+                    PressedButtons["Classic.StickLLeft"] = false;
+                    this.executeButtonUp("Classic.StickLLeft");
+                }
+            }
+            if (this.config.TryGetValue("Classic.StickLUp", out outConfig))
+            {
+                if (classic.JoystickL.Y > 0)
+                {
+                    updateStickHandlers(outConfig, classic.JoystickL.Y * 2);
+                }
+                else if (classic.JoystickL.Y == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
 
+                if (classic.JoystickL.Y * 2 > outConfig.Threshold && !PressedButtons["Classic.StickLUp"])
+                {
+                    PressedButtons["Classic.StickLUp"] = true;
+                    this.executeButtonDown("Classic.StickLUp");
+                }
+                else if (classic.JoystickL.Y * 2 < outConfig.Threshold && PressedButtons["Classic.StickLUp"])
+                {
+                    PressedButtons["Classic.StickLUp"] = false;
+                    this.executeButtonUp("Classic.StickLUp");
+                }
+
+            }
+            if (this.config.TryGetValue("Classic.StickLDown", out outConfig))
+            {
+                if (classic.JoystickL.Y < 0)
+                {
+                    updateStickHandlers(outConfig, classic.JoystickL.Y * -2);
+                }
+                else if (classic.JoystickL.Y == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (classic.JoystickL.Y * -2 > outConfig.Threshold && !PressedButtons["Classic.StickLDown"])
+                {
+                    PressedButtons["Classic.StickLDown"] = true;
+                    this.executeButtonDown("Classic.StickLDown");
+                }
+                else if (classic.JoystickL.Y * -2 < outConfig.Threshold && PressedButtons["Classic.StickLDown"])
+                {
+                    PressedButtons["Classic.StickLDown"] = false;
+                    this.executeButtonUp("Classic.StickLDown");
+                }
+            }
+
+
+
+            if (this.config.TryGetValue("Classic.StickRRight", out outConfig))
+            {
+                if (classic.JoystickR.X > 0)
+                {
+                    updateStickHandlers(outConfig, classic.JoystickR.X * 2);
+                }
+                else if (classic.JoystickR.X == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (classic.JoystickR.X * 2 > outConfig.Threshold && !PressedButtons["Classic.StickRRight"])
+                {
+                    PressedButtons["Classic.StickRRight"] = true;
+                    this.executeButtonDown("Classic.StickRRight");
+                }
+                else if (classic.JoystickR.X * 2 < outConfig.Threshold && PressedButtons["Classic.StickRRight"])
+                {
+                    PressedButtons["Classic.StickRRight"] = false;
+                    this.executeButtonUp("Classic.StickRRight");
+                }
+            }
+            if (this.config.TryGetValue("Classic.StickRLeft", out outConfig))
+            {
+                if (classic.JoystickR.X < 0)
+                {
+                    updateStickHandlers(outConfig, classic.JoystickR.X * -2);
+                }
+                else if (classic.JoystickR.X == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (classic.JoystickR.X * -2 > outConfig.Threshold && !PressedButtons["Classic.StickRLeft"])
+                {
+                    PressedButtons["Classic.StickRLeft"] = true;
+                    this.executeButtonDown("Classic.StickRLeft");
+                }
+                else if (classic.JoystickR.X * -2 < outConfig.Threshold && PressedButtons["Classic.StickRLeft"])
+                {
+                    PressedButtons["Classic.StickRLeft"] = false;
+                    this.executeButtonUp("Classic.StickRLeft");
+                }
+            }
+            if (this.config.TryGetValue("Classic.StickRUp", out outConfig))
+            {
+                if (classic.JoystickR.Y > 0)
+                {
+                    updateStickHandlers(outConfig, classic.JoystickR.Y * 2);
+                }
+                else if (classic.JoystickR.Y == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (classic.JoystickR.Y * 2 > outConfig.Threshold && !PressedButtons["Classic.StickRUp"])
+                {
+                    PressedButtons["Classic.StickRUp"] = true;
+                    this.executeButtonDown("Classic.StickRUp");
+                }
+                else if (classic.JoystickR.Y * 2 < outConfig.Threshold && PressedButtons["Classic.StickRUp"])
+                {
+                    PressedButtons["Classic.StickRUp"] = false;
+                    this.executeButtonUp("Classic.StickRUp");
+                }
+
+            }
+            if (this.config.TryGetValue("Classic.StickRDown", out outConfig))
+            {
+                if (classic.JoystickR.Y < 0)
+                {
+                    updateStickHandlers(outConfig, classic.JoystickR.Y * -2);
+                }
+                else if (classic.JoystickR.Y == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (classic.JoystickR.Y * -2 > outConfig.Threshold && !PressedButtons["Classic.StickRDown"])
+                {
+                    PressedButtons["Classic.StickRDown"] = true;
+                    this.executeButtonDown("Classic.StickRDown");
+                }
+                else if (classic.JoystickR.Y * -2 < outConfig.Threshold && PressedButtons["Classic.StickRDown"])
+                {
+                    PressedButtons["Classic.StickRDown"] = false;
+                    this.executeButtonUp("Classic.StickRDown");
+                }
+            }
+
+            if (this.config.TryGetValue("Classic.TriggerL", out outConfig))
+            {
+                updateStickHandlers(outConfig, classic.TriggerL);
+            }
+            if (this.config.TryGetValue("Classic.TriggerR", out outConfig))
+            {
+                updateStickHandlers(outConfig, classic.TriggerR);
+            }
             //key = this.jsonObj.GetValue("Classic.TriggerL");
             //if (key != null)
             //{
