@@ -67,8 +67,11 @@ namespace WiiTUIO.Output.Handlers
         {
             if (key.ToLower().Equals("mouse"))
             {
-                this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * cursorPos.X) / this.screenBounds.Width, (65535 * cursorPos.Y) / this.screenBounds.Height);
-                return true;
+                if (!cursorPos.OutOfReach)
+                {
+                    this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * cursorPos.X) / this.screenBounds.Width, (65535 * cursorPos.Y) / this.screenBounds.Height);
+                    return true;
+                }
             }
             return false;
         }
