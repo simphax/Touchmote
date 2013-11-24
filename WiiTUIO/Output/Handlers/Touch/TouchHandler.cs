@@ -246,6 +246,21 @@ namespace WiiTUIO.Output.Handlers.Touch
 
         public bool setValue(string key, double value)
         {
+            bool alternativeMode = true;
+
+            if (alternativeMode)
+            {
+                return alternativeStickCursor(key, value);
+            }
+            else
+            {
+                return normalStickCursor(key, value);
+            }
+        }
+
+        private bool normalStickCursor(string key, double value)
+        {
+
             int step = (int)(30 * value + 0.5);
             CursorPos fromPos;
             if (positionToPush != null)
@@ -282,6 +297,50 @@ namespace WiiTUIO.Output.Handlers.Touch
             }
             return false;
         }
+
+        private bool alternativeStickCursor(string key, double value)
+        {
+            value = value * 1.4; //We give it a default upscale so we can reach the edges of the screen.
+            CursorPos fromPos;
+            if (positionToPush != null)
+            {
+                fromPos = positionToPush;
+            }
+            else
+            {
+                fromPos = lastCursorPos;
+            }
+            if (key.ToLower().Equals("touchx-"))
+            {
+                int x = (int)((this.duoTouch.screenBounds.Width / 2) - value * (this.duoTouch.screenBounds.Width / 2) + 0.5);
+                x = x < 0 ? 0 : x;
+                positionToPush = new CursorPos(x, fromPos.Y, 0);
+                return true;
+            }
+            else if (key.ToLower().Equals("touchx+"))
+            {
+                int x = (int)((this.duoTouch.screenBounds.Width / 2) + value * (this.duoTouch.screenBounds.Width / 2) + 0.5);
+                x = x > this.duoTouch.screenBounds.Width - 1 ? this.duoTouch.screenBounds.Width - 1 : x;
+                positionToPush = new CursorPos(x, fromPos.Y, 0);
+                return true;
+            }
+            else if (key.ToLower().Equals("touchy-"))
+            {
+                int y = (int)((this.duoTouch.screenBounds.Height / 2) + value * (this.duoTouch.screenBounds.Height / 2) + 0.5);
+                y = y > this.duoTouch.screenBounds.Height - 1 ? this.duoTouch.screenBounds.Height - 1 : y;
+                positionToPush = new CursorPos(fromPos.X, y, 0);
+                return true;
+            }
+            else if (key.ToLower().Equals("touchy+"))
+            {
+                int y = (int)((this.duoTouch.screenBounds.Height / 2) - value * (this.duoTouch.screenBounds.Height / 2) + 0.5);
+                y = y < 0 ? 0 : y;
+                positionToPush = new CursorPos(fromPos.X, y, 0);
+                return true;
+            }
+            return false;
+        }
+
 
         private bool usingCursors()
         {
