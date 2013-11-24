@@ -25,6 +25,8 @@ namespace WiiTUIO.Provider
 
         private int leftPoint = -1;
 
+        private CursorPos lastPos;
+
         private System.Drawing.Rectangle screenBounds;
 
         public ScreenPositionCalculator()
@@ -32,6 +34,8 @@ namespace WiiTUIO.Provider
             this.recalculateScreenBounds();
 
             SystemEvents.DisplaySettingsChanged +=SystemEvents_DisplaySettingsChanged;
+
+            lastPos = new CursorPos(0, 0, 0);
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
@@ -51,12 +55,12 @@ namespace WiiTUIO.Provider
             SBPositionOffset = (int)(screenBounds.Width * Settings.Default.pointer_sensorBarPosCompensation);
         }
 
-        public CursorPos CalculateCursorPos(WiimoteChangedEventArgs args)
+        public CursorPos CalculateCursorPos(WiimoteState wiimoteState)
         {
             int x;
             int y;
 
-            IRState irState = args.WiimoteState.IRState;
+            IRState irState = wiimoteState.IRState;
 
             PointF relativePosition = new PointF();
 
@@ -113,8 +117,8 @@ namespace WiiTUIO.Provider
                                 smoothedZ /= accZhistory.Count;
                                 */
 
-                                smoothedX = smoothedX * 0.9 + args.WiimoteState.AccelState.RawValues.X * 0.1;
-                                smoothedZ = smoothedZ * 0.9 + args.WiimoteState.AccelState.RawValues.Z * 0.1;
+                                smoothedX = smoothedX * 0.9 + wiimoteState.AccelState.RawValues.X * 0.1;
+                                smoothedZ = smoothedZ * 0.9 + wiimoteState.AccelState.RawValues.Z * 0.1;
 
                                 double absx = Math.Abs(smoothedX - 128), absz = Math.Abs(smoothedZ - 128);
 
@@ -154,7 +158,7 @@ namespace WiiTUIO.Provider
                                 dx /= d;
                                 dy /= d;
 
-                                smoothedRotation = 0.5 * smoothedRotation + 0.5 * Math.Atan2(dy, dx);
+                                smoothedRotation = 0.7 * smoothedRotation + 0.3 * Math.Atan2(dy, dx);
 
                                 /*
                                 while (rotationHistory.Count >= Settings.Default.pointer_rotationSmoothing)
@@ -182,9 +186,9 @@ namespace WiiTUIO.Provider
 
             if (!foundMidpoint)
             {
-                leftPoint = -1;
-                CursorPos err = new CursorPos(-1,-1,0);
-                
+                CursorPos err = lastPos;
+                err.OutOfReach = true;
+
                 return err;
             }
 
@@ -242,6 +246,7 @@ namespace WiiTUIO.Provider
             }
 
             CursorPos result = new CursorPos(x, y, smoothedRotation);
+            lastPos = result;
             return result;
         }
 

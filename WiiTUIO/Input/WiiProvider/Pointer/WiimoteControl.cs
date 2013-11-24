@@ -294,18 +294,6 @@ namespace WiiTUIO.Provider
 
                 this.Status.Battery = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
 
-                bool pointerOutOfReach = false;
-
-                CursorPos newpoint = lastpoint;
-
-                newpoint = screenPositionCalculator.CalculateCursorPos(e);
-
-                if (newpoint.X < 0 || newpoint.Y < 0)
-                {
-                    newpoint = lastpoint;
-                    pointerOutOfReach = true;
-                }
-
                 WiimoteState ws = e.WiimoteState;
                 if (keyMapper.processWiimoteState(ws))
                 {
@@ -313,7 +301,7 @@ namespace WiiTUIO.Provider
                     this.lastWiimoteState = ws;
                 }
 
-
+                /*
                 if (!pointerOutOfReach)
                 {
                     if (this.usingCursors() && !mouseMode && showPointer)
@@ -429,6 +417,7 @@ namespace WiiTUIO.Provider
                         this.masterCursor.SetPosition(new System.Windows.Point(lastpoint.X, lastpoint.Y));
                     }
                 }
+                */
 
                 if (significant)
                 {

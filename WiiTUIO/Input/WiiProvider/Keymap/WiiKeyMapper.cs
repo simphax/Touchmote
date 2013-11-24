@@ -133,6 +133,8 @@ namespace WiiTUIO.Provider
 
         private List<IOutputHandler> outputHandlers;
 
+        private ScreenPositionCalculator screenPositionCalculator;
+
         public WiiKeyMapper(int wiimoteID, HandlerFactory handlerFactory)
         {
             this.WiimoteID = wiimoteID;
@@ -152,6 +154,8 @@ namespace WiiTUIO.Provider
             homeButtonTimer.Interval = 1000;
             homeButtonTimer.AutoReset = true;
             homeButtonTimer.Elapsed += homeButtonTimer_Elapsed;
+
+            this.screenPositionCalculator = new ScreenPositionCalculator();
 
             KeymapConfigWindow.Instance.OnConfigChanged += keymapConfigWindow_OnConfigChanged;
         }
@@ -341,6 +345,12 @@ namespace WiiTUIO.Provider
                 handler.startUpdate();
             }
 
+            CursorPos cursorPos = this.screenPositionCalculator.CalculateCursorPos(wiimoteState);
+
+            if (!cursorPos.OutOfReach)
+            {
+                this.KeyMap.updateCursorPosition(cursorPos);
+            }
             this.KeyMap.updateAccelerometer(wiimoteState.AccelState);
 
             if(wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.Nunchuk)

@@ -100,7 +100,33 @@ namespace WiiTUIO.Provider
 
         private string supportedSpecialCodes = "PointerToggle TouchMaster TouchSlave NextLayout disable";
 
-        internal void updateAccelerometer(AccelState accelState)
+        public void updateCursorPosition(CursorPos cursorPosition)
+        {
+            KeymapOutConfig outConfig;
+
+            if (this.config.TryGetValue("Pointer", out outConfig))
+            {
+                foreach (IOutputHandler handler in outputHandlers)
+                {
+                    ICursorHandler cursorHandler = handler as ICursorHandler;
+                    if (cursorHandler != null)
+                    {
+                        foreach (KeymapOutput output in outConfig.Stack) //Will normally be only one output config
+                        {
+                            if (output.Cursor)
+                            {
+                                if (cursorHandler.setPosition(output.Key,cursorPosition))
+                                {
+                                    break; // we will break for the first accepting handler, for each output key
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void updateAccelerometer(AccelState accelState)
         {
             KeymapOutConfig outConfig;
 

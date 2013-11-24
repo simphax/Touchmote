@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WiiTUIO.Provider;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -62,11 +63,11 @@ namespace WiiTUIO.Output.Handlers
             return false;
         }
 
-        public bool setPosition(string key, double x, double y)
+        public bool setPosition(string key, CursorPos cursorPos)
         {
             if (key.ToLower().Equals("mouse"))
             {
-                this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * x) / this.screenBounds.Width, (65535 * y) / this.screenBounds.Height);
+                this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * cursorPos.X) / this.screenBounds.Width, (65535 * cursorPos.Y) / this.screenBounds.Height);
                 return true;
             }
             return false;
