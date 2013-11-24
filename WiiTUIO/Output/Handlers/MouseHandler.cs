@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Native;
 
 namespace WiiTUIO.Output.Handlers
 {
-    public class MouseHandler : IButtonHandler, IStickHandler
+    public class MouseHandler : IButtonHandler, IStickHandler, ICursorHandler
     {
         private InputSimulator inputSimulator;
+        private System.Drawing.Rectangle screenBounds;
 
         public MouseHandler()
         {
+            this.screenBounds = Screen.PrimaryScreen.Bounds;
             this.inputSimulator = new InputSimulator();
         }
 
@@ -54,6 +57,16 @@ namespace WiiTUIO.Output.Handlers
                     default:
                         return false;
                 }
+                return true;
+            }
+            return false;
+        }
+
+        public bool setPosition(string key, double x, double y)
+        {
+            if (key.ToLower().Equals("mouse"))
+            {
+                this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * x) / this.screenBounds.Width, (65535 * y) / this.screenBounds.Height);
                 return true;
             }
             return false;

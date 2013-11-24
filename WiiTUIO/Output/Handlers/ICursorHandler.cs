@@ -9,7 +9,7 @@ namespace WiiTUIO.Output.Handlers
     interface ICursorHandler : IOutputHandler
     {
 
-        bool setState(double x, double y);
+        bool setPosition(string key, double x, double y);
 
     }
 }
