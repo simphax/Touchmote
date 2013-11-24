@@ -246,7 +246,7 @@ namespace WiiTUIO.Output.Handlers.Touch
 
         public bool setValue(string key, double value)
         {
-            bool alternativeMode = true;
+            bool alternativeMode = Settings.Default.alternativeStickToCursorMapping;
 
             if (alternativeMode)
             {
