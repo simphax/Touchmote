@@ -148,6 +148,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private bool _alternativeStickToCursorMapping = false;
+        public bool alternativeStickToCursorMapping
+        {
+            get { return _alternativeStickToCursorMapping; }
+            set
+            {
+                _alternativeStickToCursorMapping = value;
+                OnPropertyChanged("alternativeStickToCursorMapping");
+            }
+        }
+
         private string _tuio_IP = "127.0.0.1";
         public string tuio_IP
         {
