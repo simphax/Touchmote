@@ -12,11 +12,13 @@ using WiiTUIO.Provider;
 
 namespace WiiTUIO.Output.Handlers.Touch
 {
-    class TouchHandler : IButtonHandler, ICursorHandler
+    class TouchHandler : IButtonHandler, ICursorHandler, IStickHandler
     {
 
         IProviderHandler handler;
         DuoTouch duoTouch;
+        CursorPos lastCursorPos;
+        CursorPos positionToPush;
 
         private bool touchDownMaster = false;
         private bool touchDownSlave = false;
@@ -33,98 +35,105 @@ namespace WiiTUIO.Output.Handlers.Touch
             this.handler = handler;
             ulong touchStartID = (ulong)(id - 1) * 4 + 1;//This'll make sure the touch point IDs won't be the same. DuoTouch uses a span of 4 IDs.
             this.duoTouch = new DuoTouch(Screen.PrimaryScreen.Bounds, Settings.Default.pointer_positionSmoothing, touchStartID);
+            this.lastCursorPos = new CursorPos(0, 0, 0);
         }
 
         public bool setPosition(string key, Provider.CursorPos cursorPos)
         {
             if (key.ToLower().Equals("touch"))
             {
-                if(!cursorPos.OutOfReach)
+                positionToPush = cursorPos;
+                return true;
+            }
+            return false;
+        }
+
+        private void setPosition(Provider.CursorPos cursorPos)
+        {
+            if (!cursorPos.OutOfReach)
+            {
+                Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
+                // Store the state.
+
+                if (this.usingCursors())
                 {
-                    Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
-                    // Store the state.
+                    this.masterCursor.Show();
+                }
+                //significant = true;
+                if (this.touchDownMaster)
+                {
+                    duoTouch.setContactMaster();
+                }
+                else
+                {
+                    duoTouch.releaseContactMaster();
+                }
 
+                duoTouch.setMasterPosition(new System.Windows.Point(cursorPos.X, cursorPos.Y));
+
+                if (this.touchDownSlave)
+                {
                     if (this.usingCursors())
                     {
-                        this.masterCursor.Show();
+                        this.slaveCursor.Show();
                     }
-                    //significant = true;
-                    if (this.touchDownMaster)
-                    {
-                        duoTouch.setContactMaster();
-                    }
-                    else
-                    {
-                        duoTouch.releaseContactMaster();
-                    }
-
-                    duoTouch.setMasterPosition(new System.Windows.Point(cursorPos.X, cursorPos.Y));
-
-                    if (this.touchDownSlave)
-                    {
-                        if (this.usingCursors())
-                        {
-                            this.slaveCursor.Show();
-                        }
-                        duoTouch.setSlavePosition(new System.Windows.Point(cursorPos.X, cursorPos.Y));
-                        duoTouch.setContactSlave();
-                    }
-                    else
-                    {
-                        duoTouch.releaseContactSlave();
-                        if (this.usingCursors())
-                        {
-                            this.slaveCursor.Hide();
-                        }
-                    }
-
-                    //lastpoint = newpoint;
-
-                    lFrame = duoTouch.getFrame();
+                    duoTouch.setSlavePosition(new System.Windows.Point(cursorPos.X, cursorPos.Y));
+                    duoTouch.setContactSlave();
+                }
+                else
+                {
+                    duoTouch.releaseContactSlave();
                     if (this.usingCursors())
                     {
-                        WiiContact master = null;
-                        WiiContact slave = null;
-                        foreach (WiiContact contact in lFrame)
-                        {
-                            this.handler.queueContact(contact);
-
-                            if (master == null)
-                            {
-                                master = contact;
-                            }
-                            else if (master.Priority > contact.Priority)
-                            {
-                                slave = master;
-                                master = contact;
-                            }
-                            else
-                            {
-                                slave = contact;
-                            }
-                        }
-                        if (master != null)
-                        {
-                            this.masterCursor.SetPosition(master.Position);
-                            this.masterCursor.SetRotation(cursorPos.Rotation);
-                        }
-                        if (slave != null)
-                        {
-                            this.slaveCursor.SetPosition(slave.Position);
-                            this.slaveCursor.SetRotation(cursorPos.Rotation);
-                        }
+                        this.slaveCursor.Hide();
                     }
                 }
-                else //pointer out of reach
+
+                lastCursorPos = cursorPos;
+
+                lFrame = duoTouch.getFrame();
+                if (this.usingCursors())
                 {
-                    if (this.usingCursors())
+                    WiiContact master = null;
+                    WiiContact slave = null;
+                    foreach (WiiContact contact in lFrame)
                     {
-                        this.masterCursor.Hide();
-                        this.masterCursor.SetPosition(new System.Windows.Point(cursorPos.X, cursorPos.Y));
+                        this.handler.queueContact(contact);
+
+                        if (master == null)
+                        {
+                            master = contact;
+                        }
+                        else if (master.Priority > contact.Priority)
+                        {
+                            slave = master;
+                            master = contact;
+                        }
+                        else
+                        {
+                            slave = contact;
+                        }
+                    }
+                    if (master != null)
+                    {
+                        this.masterCursor.SetPosition(master.Position);
+                        this.masterCursor.SetRotation(cursorPos.Rotation);
+                    }
+                    if (slave != null)
+                    {
+                        this.slaveCursor.SetPosition(slave.Position);
+                        this.slaveCursor.SetRotation(cursorPos.Rotation);
                     }
                 }
             }
-            return false;
+            else //pointer out of reach
+            {
+                if (this.usingCursors())
+                {
+                    this.masterCursor.Hide();
+                    this.masterCursor.SetPosition(new System.Windows.Point(cursorPos.X, cursorPos.Y));
+                }
+            }
         }
 
         public bool setButtonDown(string key)
@@ -225,9 +234,54 @@ namespace WiiTUIO.Output.Handlers.Touch
 
         public bool endUpdate()
         {
+            if (positionToPush != null)
+            {
+
+                this.setPosition(positionToPush);
+
+                positionToPush = null;
+            }
             return true;
         }
 
+        public bool setValue(string key, double value)
+        {
+            int step = (int)(30 * value + 0.5);
+            CursorPos fromPos;
+            if (positionToPush != null)
+            {
+                fromPos = positionToPush;
+            }
+            else
+            {
+                fromPos = lastCursorPos;
+            }
+            if (key.ToLower().Equals("touchx-"))
+            {
+                int x = fromPos.X - step < 0 ? 0 : fromPos.X - step;
+                positionToPush = new CursorPos(x, fromPos.Y, 0);
+                return true;
+            }
+            else if (key.ToLower().Equals("touchx+"))
+            {
+                int x = fromPos.X + step > this.duoTouch.screenBounds.Width - 1 ? this.duoTouch.screenBounds.Width - 1 : fromPos.X + step;
+                positionToPush = new CursorPos(x, fromPos.Y, 0);
+                return true;
+            }
+            else if (key.ToLower().Equals("touchy-"))
+            {
+                int y = fromPos.Y + step > this.duoTouch.screenBounds.Height - 1 ? this.duoTouch.screenBounds.Height - 1 : fromPos.Y + step;
+                positionToPush = new CursorPos(fromPos.X, y, 0);
+                return true;
+            }
+            else if (key.ToLower().Equals("touchy+"))
+            {
+                int y = fromPos.Y - step < 0 ? 0 : fromPos.Y - step;
+                positionToPush = new CursorPos(fromPos.X, y, 0);
+                return true;
+            }
+            return false;
+        }
 
         private bool usingCursors()
         {

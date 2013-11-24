@@ -1,7 +1,7 @@
 {
   "Title": "Default",
   "All": {
-    "Pointer": "Touch",
+    "Pointer": "disable",
     "A": "TouchMaster",
     "B": "TouchSlave",
     "Home": "LWin",
@@ -25,25 +25,25 @@
     "Nunchuk.StickUp": {
 		"output": [
 			"360.StickLUp",
-			"MouseY+"
+			"TouchY+"
 		]
 	},
     "Nunchuk.StickDown": {
 		"output": [
 			"360.StickLDown",
-			"MouseY-"
+			"TouchY-"
 		]
 	},
     "Nunchuk.StickLeft": {
 		"output": [
 			"360.StickLLeft",
-			"MouseX-"
+			"TouchX-"
 		]
 	},
     "Nunchuk.StickRight": {
 		"output": [
 			"360.StickLRight",
-			"MouseX+"
+			"TouchX+"
 		]
 	},
 
