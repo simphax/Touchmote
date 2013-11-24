@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WiiTUIO.Provider
+namespace WiiTUIO.Output.Handlers.Touch
 {
     public class D3DCursorWindow
     {

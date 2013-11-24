@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WiiTUIO.Output.Handlers.Touch;
 using WiiTUIO.Provider;
 
 namespace WiiTUIO

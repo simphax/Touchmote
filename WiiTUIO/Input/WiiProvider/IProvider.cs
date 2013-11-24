@@ -18,7 +18,5 @@ namespace WiiTUIO.Provider
         void start();
         void stop();
 
-        //static UserControl getSettingsControl();
-
     }
 }

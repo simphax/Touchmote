@@ -14,10 +14,10 @@ namespace WiiTUIO.Output
 
         void connect();
 
-        void processEventFrame(FrameEventArgs e);
+        void processEventFrame();
 
         void disconnect();
 
-        void showSettingsWindow();
+        void queueContact(WiiContact contact);
     }
 }

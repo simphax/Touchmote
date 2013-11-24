@@ -27,6 +27,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using MahApps.Metro.Controls;
 using System.Windows.Interop;
+using WiiTUIO.Output.Handlers.Touch;
 
 namespace WiiTUIO
 {
@@ -133,7 +134,7 @@ namespace WiiTUIO
 
             // Create the providers.
             this.createProvider();
-            this.createProviderHandler();
+            //this.createProviderHandler();
 
             if (Settings.Default.pairOnStart)
             {
@@ -272,7 +273,7 @@ namespace WiiTUIO
         {
             this.stopWiiPair();
             this.disconnectProvider();
-            this.disconnectProviderHandler();
+            //this.disconnectProviderHandler();
         }
 
 
@@ -304,7 +305,7 @@ namespace WiiTUIO
                 this.animateExpand(child);
                 statusStackMutex.ReleaseMutex();
 
-                connectProviderHandler();
+                //connectProviderHandler();
 
             }), null);
 
@@ -344,7 +345,7 @@ namespace WiiTUIO
                 {
                     this.bConnected = false;
 
-                    disconnectProviderHandler();
+                    //disconnectProviderHandler();
                 }
 
             }), null);
@@ -352,7 +353,7 @@ namespace WiiTUIO
 
 
         private Mutex pCommunicationMutex = new Mutex();
-
+        /*
         /// <summary>
         /// This is called when the WiiProvider has a new set of input to send.
         /// </summary>
@@ -374,7 +375,7 @@ namespace WiiTUIO
                 }),System.Windows.Threading.DispatcherPriority.Send,null);
             }
         }
-
+        */
         /// <summary>
         /// This is called when the battery state changes.
         /// </summary>
@@ -497,6 +498,7 @@ namespace WiiTUIO
 
         #region Create and Die
 
+        /*
         /// <summary>
         /// Create the link to the Windows 7 HID driver.
         /// </summary>
@@ -507,7 +509,7 @@ namespace WiiTUIO
             {
                 // Close any open connections.
                 disconnectProviderHandler();
-
+                
                 // Reconnect with the new API.
                 this.pProviderHandler = OutputFactory.createProviderHandler(Settings.Default.output);
                 this.pProviderHandler.OnConnect += pProviderHandler_OnConnect;
@@ -530,7 +532,7 @@ namespace WiiTUIO
                 return false;
             }
         }
-
+        
         void pProviderHandler_OnDisconnect()
         {
             providerHandlerConnected = false;
@@ -540,7 +542,8 @@ namespace WiiTUIO
         {
             providerHandlerConnected = true;
         }
-
+        */
+        /*
         /// <summary>
         /// Create the link to the Windows 7 HID driver.
         /// </summary>
@@ -567,7 +570,7 @@ namespace WiiTUIO
                 return false;
             }
         }
-
+        
         /// <summary>
         /// Destroy the link to the Windows 7 HID driver.
         /// </summary>
@@ -582,7 +585,7 @@ namespace WiiTUIO
                 this.pProviderHandler.disconnect();
             }
         }
-
+        */
         #endregion
 
 
@@ -641,7 +644,7 @@ namespace WiiTUIO
             {
                 // Connect a Wiimote, hook events then start.
                 this.pWiiProvider = InputFactory.createInputProvider(Settings.Default.input);
-                this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
+                //this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
                 this.pWiiProvider.OnStatusUpdate += new Action<WiimoteStatus>(pWiiProvider_OnStatusUpdate);
                 this.pWiiProvider.OnConnect += new Action<int,int>(pWiiProvider_OnConnect);
                 this.pWiiProvider.OnDisconnect += new Action<int,int>(pWiiProvider_OnDisconnect);
@@ -689,7 +692,7 @@ namespace WiiTUIO
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
-
+        /*
         private void btnOutputSettings_Click(object sender, RoutedEventArgs e)
         {
             if (this.pProviderHandler != null)
@@ -697,7 +700,7 @@ namespace WiiTUIO
                 this.pProviderHandler.showSettingsWindow();
             }
         }
-
+        */
         private void PairWiimotes_Click(object sender, RoutedEventArgs e)
         {
             //this.disableMainControls();
