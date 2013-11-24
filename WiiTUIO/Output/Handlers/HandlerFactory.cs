@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WiiTUIO.Output.Handlers.Touch;
 using WiiTUIO.Output.Handlers.Xinput;
 
 namespace WiiTUIO.Output.Handlers
@@ -22,6 +23,7 @@ namespace WiiTUIO.Output.Handlers
             all.Add(new KeyboardHandler());
             all.Add(new MouseHandler());
             all.Add(new XinputHandler(id));
+            all.Add(new TouchHandler(OutputFactory.getCurrentProviderHandler(),id));
             return all;
         }
 

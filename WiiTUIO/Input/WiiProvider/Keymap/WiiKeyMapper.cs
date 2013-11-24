@@ -347,10 +347,7 @@ namespace WiiTUIO.Provider
 
             CursorPos cursorPos = this.screenPositionCalculator.CalculateCursorPos(wiimoteState);
 
-            if (!cursorPos.OutOfReach)
-            {
-                this.KeyMap.updateCursorPosition(cursorPos);
-            }
+            this.KeyMap.updateCursorPosition(cursorPos);
             this.KeyMap.updateAccelerometer(wiimoteState.AccelState);
 
             if(wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.Nunchuk)

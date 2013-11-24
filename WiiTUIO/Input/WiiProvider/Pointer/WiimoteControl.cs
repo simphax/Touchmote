@@ -18,54 +18,19 @@ namespace WiiTUIO.Provider
 {
     class WiimoteControl
     {
-        public FrameEventArgs LastFrameEvent;
-        public Queue<FrameEventArgs> FrameQueue = new Queue<FrameEventArgs>(1);
         public DateTime LastWiimoteEventTime = DateTime.Now; //Last time recieved an update
         public DateTime LastSignificantWiimoteEventTime = DateTime.Now; //Last time when updated the cursor or button config. Used for power saving features.
-        //public bool InPowerSave = false;
 
         public Wiimote Wiimote;
-
         public WiimoteStatus Status;
 
         /// <summary>
         /// Used to obtain mutual exlusion over Wiimote updates.
         /// </summary>
         public Mutex WiimoteMutex = new Mutex();
-
-        private InputSimulator inputSimulator;
-
-        private ScreenPositionCalculator screenPositionCalculator;
-
-        private DuoTouch duoTouch;
-
         private WiiKeyMapper keyMapper;
-
-        private bool touchDownMaster = false;
-
-        private bool touchDownSlave = false;
-
-        private bool useCustomCursor = false;
-
-        private bool showPointer = true;
-
-        private bool mouseMode = false;
-
-        private bool gamingMouse = false;
-
         private bool firstConfig = true;
-
-        private CursorPos lastpoint;
-
-        private System.Drawing.Rectangle screenBounds;
-
-        private WiimoteState lastWiimoteState;
-
-        private D3DCursor masterCursor;
-        private D3DCursor slaveCursor;
-
         private string currentKeymap;
-
         private HandlerFactory handlerFactory;
 
         public WiimoteControl(int id, Wiimote wiimote)
@@ -74,40 +39,14 @@ namespace WiiTUIO.Provider
             this.Status = new WiimoteStatus();
             this.Status.ID = id;
 
-            lastpoint = new CursorPos(0,0,0);
-
-            this.screenBounds = Util.ScreenBounds;
-
             this.handlerFactory = new HandlerFactory();
 
-            ulong touchStartID = (ulong)(id - 1) * 4 + 1; //This'll make sure the touch point IDs won't be the same. DuoTouch uses a span of 4 IDs.
-            this.duoTouch = new DuoTouch(this.screenBounds, Properties.Settings.Default.pointer_positionSmoothing, touchStartID);
             this.keyMapper = new WiiKeyMapper(id,handlerFactory);
 
             this.keyMapper.OnButtonDown += WiiButton_Down;
             this.keyMapper.OnButtonUp += WiiButton_Up;
             this.keyMapper.OnConfigChanged += WiiKeyMap_ConfigChanged;
             this.keyMapper.OnRumble += WiiKeyMap_OnRumble;
-
-            this.inputSimulator = new InputSimulator();
-            this.screenPositionCalculator = new ScreenPositionCalculator();
-            this.useCustomCursor = Settings.Default.pointer_customCursor;
-            if (this.useCustomCursor)
-            {
-                Color myColor = CursorColor.getColor(this.Status.ID);
-                this.masterCursor = new D3DCursor((this.Status.ID-1)*2,myColor);
-                this.slaveCursor = new D3DCursor((this.Status.ID-1)*2+1,myColor);
-
-                masterCursor.Hide();
-                slaveCursor.Hide();
-
-                D3DCursorWindow.Current.AddCursor(masterCursor);
-                D3DCursorWindow.Current.AddCursor(slaveCursor);
-
-                this.keyMapper.SendConfigChangedEvt();
-            }
-
-
         }
 
         private void WiiKeyMap_OnRumble(bool rumble)
@@ -118,10 +57,6 @@ namespace WiiTUIO.Provider
             WiimoteMutex.ReleaseMutex();
         }
 
-        private bool usingCursors()
-        {
-            return this.useCustomCursor && this.masterCursor != null && this.slaveCursor != null;
-        }
 
         private void WiiKeyMap_ConfigChanged(WiiKeyMapConfigChangedEvent evt)
         {
@@ -135,6 +70,7 @@ namespace WiiTUIO.Provider
                 currentKeymap = evt.Filename;
                 OverlayWindow.Current.ShowNotice("Layout for Wiimote " + this.Status.ID + " changed to \"" + evt.Name + "\"", this.Status.ID);
             }
+            /*
             if (evt.Pointer.ToLower() == "touch")
             {
                 this.showPointer = true;
@@ -180,10 +116,12 @@ namespace WiiTUIO.Provider
                     this.slaveCursor.Hide();
                 }
             }
+            */
         }
 
         private void WiiButton_Up(WiiButtonEvent evt)
         {
+            /*
             foreach (string action in evt.Actions)
             {
                 if (action.ToLower() == "nextlayout" && !evt.Handled)
@@ -231,50 +169,14 @@ namespace WiiTUIO.Provider
                         }
                     }
                 }
-                if (action.ToLower() == "touchmaster" && !evt.Handled)
-                {
-                    if (this.usingCursors())
-                    {
-                        this.masterCursor.SetReleased();
-                    }
-                    touchDownMaster = false;
-                }
-                if (action.ToLower() == "touchslave" && !evt.Handled)
-                {
-                    if (this.usingCursors())
-                    {
-                        this.slaveCursor.SetReleased();
-                    }
-                    touchDownSlave = false;
-                }
             }
+            */
         }
 
         private void WiiButton_Down(WiiButtonEvent evt)
         {
-            foreach (string action in evt.Actions)
-            {
-                if (action.ToLower() == "touchmaster" && !evt.Handled)
-                {
-                    if (this.usingCursors())
-                    {
-                        this.masterCursor.SetPressed();
-                    }
-                    touchDownMaster = true;
-                }
-                if (action.ToLower() == "touchslave" && !evt.Handled)
-                {
-                    if (this.usingCursors())
-                    {
-                        this.slaveCursor.SetPressed();
-                    }
-                    touchDownSlave = true;
-                }
-            }
         }
 
-        double deltaXBuffer = 0.0;
-        double deltaYBuffer = 0.0;
 
         public bool handleWiimoteChanged(object sender, WiimoteChangedEventArgs e)
         {
@@ -285,139 +187,10 @@ namespace WiiTUIO.Provider
 
             try
             {
-                this.screenBounds = Util.ScreenBounds;
-                this.duoTouch.screenBounds = Util.ScreenBounds;
-
-                Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
-                // Store the state.
-                WiimoteState pState = e.WiimoteState;
-
-                this.Status.Battery = (pState.Battery > 0xc8 ? 0xc8 : (int)pState.Battery);
-
                 WiimoteState ws = e.WiimoteState;
-                if (keyMapper.processWiimoteState(ws))
-                {
-                    significant = true;
-                    this.lastWiimoteState = ws;
-                }
+                this.Status.Battery = (ws.Battery > 0xc8 ? 0xc8 : (int)ws.Battery);
 
-                /*
-                if (!pointerOutOfReach)
-                {
-                    if (this.usingCursors() && !mouseMode && showPointer)
-                    {
-                        this.masterCursor.Show();
-                    }
-                    significant = true;
-                    if (this.touchDownMaster)
-                    {
-                        duoTouch.setContactMaster();
-                    }
-                    else
-                    {
-                        duoTouch.releaseContactMaster();
-                    }
-
-                    duoTouch.setMasterPosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-
-                    if (this.touchDownSlave)
-                    {
-                        if (this.usingCursors() && !mouseMode && showPointer)
-                        {
-                            this.slaveCursor.Show();
-                        }
-                        duoTouch.setSlavePosition(new System.Windows.Point(newpoint.X, newpoint.Y));
-                        duoTouch.setContactSlave();
-                    }
-                    else
-                    {
-                        duoTouch.releaseContactSlave();
-                        if (this.usingCursors() && !mouseMode)
-                        {
-                            this.slaveCursor.Hide();
-                        }
-                    }
-
-                    lastpoint = newpoint;
-
-                    lFrame = duoTouch.getFrame();
-                    if (this.usingCursors() && !mouseMode)
-                    {
-                        WiiContact master = null;
-                        WiiContact slave = null;
-                        foreach (WiiContact contact in lFrame)
-                        {
-                            if (master == null)
-                            {
-                                master = contact;
-                            }
-                            else if (master.Priority > contact.Priority)
-                            {
-                                slave = master;
-                                master = contact;
-                            }
-                            else
-                            {
-                                slave = contact;
-                            }
-                        }
-                        if(master != null)
-                        {
-                            this.masterCursor.SetPosition(master.Position);
-                            this.masterCursor.SetRotation(newpoint.Rotation);
-                        }
-                        if(slave != null)
-                        {
-                            this.slaveCursor.SetPosition(slave.Position);
-                            this.slaveCursor.SetRotation(newpoint.Rotation);
-                        }
-                    }
-
-                    FrameEventArgs pFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), lFrame);
-
-                    this.FrameQueue.Enqueue(pFrame);
-                    this.LastFrameEvent = pFrame;
-
-                    if (mouseMode && !this.touchDownMaster && !this.touchDownSlave && this.showPointer) //Mouse mode
-                    {
-                        if (gamingMouse)
-                        {
-                            double deltaX = (newpoint.X - ((double)this.screenBounds.Width / 2.0)) / (double)this.screenBounds.Width;
-                            double deltaY = (newpoint.Y - ((double)this.screenBounds.Height / 2.0)) / (double)this.screenBounds.Height;
-                            deltaX = Math.Sign(deltaX) * deltaX * deltaX * 50;
-                            deltaY = Math.Sign(deltaY) * deltaY * deltaY * 50 * ((double)this.screenBounds.Width / (double)this.screenBounds.Height);
-                            deltaXBuffer += deltaX % 1;
-                            deltaYBuffer += deltaY % 1;
-                            int roundDeltaX = (int)deltaX;
-                            int roundDeltaY = (int)deltaY;
-                            if (deltaXBuffer > 1 || deltaXBuffer < -1)
-                            {
-                                roundDeltaX += Math.Sign(deltaXBuffer);
-                                deltaXBuffer -= Math.Sign(deltaXBuffer);
-                            }
-                            if (deltaYBuffer > 1 || deltaYBuffer < -1)
-                            {
-                                roundDeltaY += Math.Sign(deltaYBuffer);
-                                deltaYBuffer -= Math.Sign(deltaYBuffer);
-                            }
-                            this.inputSimulator.Mouse.MoveMouseBy(roundDeltaX, roundDeltaY);
-                        }
-                        else
-                        {
-                            this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * newpoint.X) / this.screenBounds.Width, (65535 * newpoint.Y) / this.screenBounds.Height);
-                        }
-                        MouseSimulator.WakeCursor();
-                    }
-                }
-                else //pointer out of reach
-                {
-                    if (this.usingCursors() && !mouseMode)
-                    {
-                        this.masterCursor.Hide();
-                        this.masterCursor.SetPosition(new System.Windows.Point(lastpoint.X, lastpoint.Y));
-                    }
-                }
-                */
+                significant = keyMapper.processWiimoteState(ws);
 
                 if (significant)
                 {
@@ -439,11 +212,6 @@ namespace WiiTUIO.Provider
         public void Teardown()
         {
             this.keyMapper.Teardown();
-            App.Current.Dispatcher.BeginInvoke(new Action(delegate()
-            {
-                D3DCursorWindow.Current.RemoveCursor(this.masterCursor);
-                D3DCursorWindow.Current.RemoveCursor(this.slaveCursor);
-            }), null);
         }
     }
 }

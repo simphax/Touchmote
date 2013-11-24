@@ -4,8 +4,9 @@ using System.Windows;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WiiTUIO.Provider;
 
-namespace WiiTUIO.Provider
+namespace WiiTUIO.Output.Handlers.Touch
 {
     class DuoTouch
     {

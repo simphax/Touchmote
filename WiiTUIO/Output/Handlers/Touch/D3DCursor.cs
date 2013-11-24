@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace WiiTUIO.Provider
+namespace WiiTUIO.Output.Handlers.Touch
 {
     public class D3DCursor
     {

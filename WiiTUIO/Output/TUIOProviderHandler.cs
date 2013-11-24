@@ -103,5 +103,16 @@ namespace WiiTUIO.Output
         {
             this.settingsWindow.Show();
         }
+
+
+        public void processEventFrame()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void queueContact(WiiContact contact)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -184,5 +184,16 @@ namespace WiiTUIO.Output
 
         #endregion
 
+
+
+        public void processEventFrame()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void queueContact(Provider.WiiContact contact)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

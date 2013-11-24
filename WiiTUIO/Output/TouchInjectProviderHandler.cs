@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,6 +14,9 @@ namespace WiiTUIO.Output
 {
     class TouchInjectProviderHandler : IProviderHandler
     {
+        
+        private Queue<WiiContact> contactQueue;
+
         public event Action OnConnect;
 
         public event Action OnDisconnect;
@@ -30,6 +34,8 @@ namespace WiiTUIO.Output
             }
 
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+
+            contactQueue = new Queue<WiiContact>();
         }
 
         public void connect()
@@ -44,13 +50,16 @@ namespace WiiTUIO.Output
             Launcher.Launch("", "ResetTouchInjection.exe", "", null);
         }
 
-        public void processEventFrame(Provider.FrameEventArgs e)
+        public void processEventFrame()
         {
             touchscreenMutex.WaitOne();
             List<PointerTouchInfo> toFire = new List<PointerTouchInfo>();
 
-            foreach (WiiContact contact in e.Contacts)
+            ulong timestamp = (ulong)Stopwatch.GetTimestamp();
+            WiiContact contact;
+            while (contactQueue.Count > 0)
             {
+                contact = contactQueue.Dequeue();
                 if (Settings.Default.pointer_customCursor && (contact.Type == ContactType.Hover || contact.Type == ContactType.EndFromHover))
                 {
                     //If we are using the custom cursor and it's more than 1 touchpoints, we skip the hovering because otherwise it's not working with edge guestures for example.
@@ -73,7 +82,7 @@ namespace WiiTUIO.Output
                     touch.PointerInfo.PtPixelLocation.X = (int)contact.Position.X;
                     touch.PointerInfo.PtPixelLocation.Y = (int)contact.Position.Y;
                     touch.PointerInfo.PointerId = (uint)contact.ID;
-                    touch.PointerInfo.PerformanceCount = e.Timestamp;
+                    touch.PointerInfo.PerformanceCount = timestamp;
 
                     if (type == ContactType.Start)
                         touch.PointerInfo.PointerFlags = PointerFlags.DOWN | PointerFlags.INRANGE | PointerFlags.INCONTACT;
@@ -107,9 +116,9 @@ namespace WiiTUIO.Output
             OnDisconnect();
         }
 
-        public void showSettingsWindow()
+        public void queueContact(WiiContact contact)
         {
-            
+            contactQueue.Enqueue(contact);
         }
     }
 }

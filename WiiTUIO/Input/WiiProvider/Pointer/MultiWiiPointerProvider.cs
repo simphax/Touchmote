@@ -12,6 +12,8 @@ using WindowsInput;
 using WiiTUIO.Properties;
 using System.Windows.Controls;
 using System.Threading;
+using WiiTUIO.Output.Handlers.Touch;
+using WiiTUIO.Output;
 
 namespace WiiTUIO.Provider
 {
@@ -48,7 +50,6 @@ namespace WiiTUIO.Provider
         private WiimoteCollection pWC;
 
         private bool readyToRender = false;
-
 
         private EventHandler<WiimoteChangedEventArgs> wiimoteChangedEventHandler;
         private EventHandler<WiimoteExtensionChangedEventArgs> wiimoteExtensionChangedEventHandler;
@@ -533,6 +534,7 @@ namespace WiiTUIO.Provider
                                     this.OnStatusUpdate(control.Status);
                                 }
 
+                                /*
                                 if (control.FrameQueue.Count > 0)
                                 {
                                     FrameEventArgs frame = control.FrameQueue.Dequeue();
@@ -546,12 +548,15 @@ namespace WiiTUIO.Provider
                                         }
                                     }
                                 }
+                                */
                             }
                         }
 
-                        FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
+                        //FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
 
-                        this.OnNewFrame(this, newFrame);
+                        //this.OnNewFrame(this, newFrame);
+
+                        OutputFactory.getCurrentProviderHandler().processEventFrame();
 
                         if (Settings.Default.pointer_customCursor)
                         {

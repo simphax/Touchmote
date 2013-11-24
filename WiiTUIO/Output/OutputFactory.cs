@@ -2,12 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using WiiTUIO.Properties;
 using WiiTUIO.WinTouch;
 
 namespace WiiTUIO.Output
 {
     class OutputFactory
     {
+
+        private static IProviderHandler current;
+
+        public static IProviderHandler getCurrentProviderHandler()
+        {
+            if (current == null)
+            {
+                current = createProviderHandler(Settings.Default.output);
+            }
+            return current;
+        }
 
         public enum OutputType
         {
@@ -18,7 +30,7 @@ namespace WiiTUIO.Output
             DRAW
         }
 
-        public static string getType(OutputType type)
+        private static string getType(OutputType type)
         {
             switch (type)
             {
@@ -37,7 +49,7 @@ namespace WiiTUIO.Output
             }
         }
 
-        public static OutputType getType(string name)
+        private static OutputType getType(string name)
         {
             if (name == "touch")
             {
@@ -62,12 +74,12 @@ namespace WiiTUIO.Output
             return OutputType.TOUCH; //Default to touch
         }
 
-        public static IProviderHandler createProviderHandler(string name)
+        private static IProviderHandler createProviderHandler(string name)
         {
             return createProviderHandler(getType(name));
         }
 
-        public static IProviderHandler createProviderHandler(OutputType type)
+        private static IProviderHandler createProviderHandler(OutputType type)
         {
             switch (type)
             {

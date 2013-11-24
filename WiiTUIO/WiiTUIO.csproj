@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{87CC8302-A614-490E-9100-1059AF5FE8FC}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WiiTUIO</RootNamespace>
     <AssemblyName>Touchmote</AssemblyName>
@@ -201,15 +201,16 @@
     <Compile Include="Output\Handlers\IOutputHandler.cs" />
     <Compile Include="Output\Handlers\IRumbleFeedback.cs" />
     <Compile Include="Output\Handlers\IStickHandler.cs" />
-    <Compile Include="Input\WiiProvider\CursorColor.cs" />
+    <Compile Include="Output\Handlers\Touch\CursorColor.cs" />
     <Compile Include="Output\Handlers\IButtonHandler.cs" />
     <Compile Include="Output\Handlers\KeyboardHandler.cs" />
     <Compile Include="Input\WiiProvider\Pointer\CursorPos.cs" />
-    <Compile Include="Input\WiiProvider\Pointer\D3DCursor.cs" />
-    <Compile Include="Input\WiiProvider\Pointer\D3DCursorWindow.cs" />
+    <Compile Include="Output\Handlers\Touch\D3DCursor.cs" />
+    <Compile Include="Output\Handlers\Touch\D3DCursorWindow.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiimoteStatus.cs" />
     <Compile Include="Input\WiiProvider\Keymap\WiiKeyMap.cs" />
     <Compile Include="Output\Handlers\MouseHandler.cs" />
+    <Compile Include="Output\Handlers\Touch\TouchHandler.cs" />
     <Compile Include="Output\Handlers\Xinput\XinputBus.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -305,16 +306,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainTrayWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainTrayWindow.xaml.cs">
-      <DependentUpon>MainTrayWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Input\WiiProvider\Settings\WiiPointerProviderSettings.xaml">
       <SubType>Designer</SubType>
@@ -347,7 +341,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\InputFactory.cs" />
-    <Compile Include="Input\WiiProvider\Pointer\DuoTouch.cs" />
+    <Compile Include="Output\Handlers\Touch\DuoTouch.cs" />
     <Compile Include="Input\WiiProvider\Settings\Calibrate.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>Calibrate.xaml</DependentUpon>
