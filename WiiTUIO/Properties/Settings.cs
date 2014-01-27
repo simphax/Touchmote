@@ -192,6 +192,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private bool _noTopmost = false;
+        public bool noTopmost
+        {
+            get { return _noTopmost; }
+            set
+            {
+                _noTopmost = value;
+                OnPropertyChanged("noTopmost");
+            }
+        }
+
         private string _keymaps_config = @"Keymaps.json";
         public string keymaps_config
         {
