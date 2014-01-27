@@ -367,7 +367,7 @@ LRESULT WINAPI WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 // +-----------+---------+
 // | Program entry point |
 // +---------------------+
-extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInstance, HWND hParent, int width, int height)
+extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInstance, HWND hParent, int width, int height, bool topmost)
 {
   MSG        uMsg;     
   WNDCLASSEX wc    = {sizeof(WNDCLASSEX),              // cbSize
@@ -404,7 +404,9 @@ extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInsta
 
   SetLayeredWindowAttributes(hWnd, 0, 180, LWA_ALPHA);
  
-  SetWindowPos(hWnd,HWND_TOPMOST,0,0,g_iWidth,g_iHeight,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+  HWND zpos = topmost ? HWND_TOPMOST : HWND_NOTOPMOST;
+
+  SetWindowPos(hWnd,zpos,0,0,g_iWidth,g_iHeight,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
 
   // Initialise Direct3D
   if(SUCCEEDED(D3DStartup(hWnd)))

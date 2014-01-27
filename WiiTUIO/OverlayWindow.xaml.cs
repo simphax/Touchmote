@@ -17,6 +17,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WiiTUIO.Output.Handlers.Touch;
+using WiiTUIO.Properties;
 using WiiTUIO.Provider;
 
 namespace WiiTUIO
@@ -48,6 +49,7 @@ namespace WiiTUIO
         private OverlayWindow()
         {
             InitializeComponent();
+
             this.Width = Util.ScreenBounds.Width;
             this.Height = Util.ScreenBounds.Height;
             this.baseGrid.Width = Util.ScreenBounds.Width;
