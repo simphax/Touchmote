@@ -92,14 +92,16 @@ namespace WiiTUIO.Output.Handlers.Touch
                 lastCursorPos = cursorPos;
 
                 lFrame = duoTouch.getFrame();
+                foreach (WiiContact contact in lFrame)
+                {
+                    this.handler.queueContact(contact);
+                }
                 if (this.usingCursors())
                 {
                     WiiContact master = null;
                     WiiContact slave = null;
                     foreach (WiiContact contact in lFrame)
                     {
-                        this.handler.queueContact(contact);
-
                         if (master == null)
                         {
                             master = contact;
