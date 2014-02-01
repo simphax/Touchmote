@@ -302,6 +302,7 @@ namespace WiiCPP {
 
 								if (!error && !removeMode)
 								{
+									Sleep(100);
 									// If this is not done, the Wii device will not remember the pairing
 									if (ShowErrorCode(_T("BluetoothEnumerateInstalledServices"), BluetoothEnumerateInstalledServices(hRadios[radio], &btdi, &pcServices, guids)) != ERROR_SUCCESS) {
 										error = TRUE;
