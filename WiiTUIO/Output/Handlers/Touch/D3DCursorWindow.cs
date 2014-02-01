@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WiiTUIO.Properties;
 
 namespace WiiTUIO.Output.Handlers.Touch
 {
@@ -37,7 +38,7 @@ namespace WiiTUIO.Output.Handlers.Touch
         private List<D3DCursor> cursors;
             
         [DllImport("D3DCursor.dll")]
-        private static extern IntPtr StartD3DCursorWindow(IntPtr hInstance, IntPtr parent, int windowWidth, int windowHeight);
+        private static extern IntPtr StartD3DCursorWindow(IntPtr hInstance, IntPtr parent, int windowWidth, int windowHeight, bool topmost);
 
         [DllImport("D3DCursor.dll")]
         private static extern void SetD3DCursorPosition(int id, int x, int y);
@@ -60,7 +61,7 @@ namespace WiiTUIO.Output.Handlers.Touch
         //Should be run with a dispatcher
         public void Start(IntPtr parent, int width, int height)
         {
-            StartD3DCursorWindow(Process.GetCurrentProcess().Handle, parent, width, height);
+            StartD3DCursorWindow(Process.GetCurrentProcess().Handle, parent, width, height, !Settings.Default.noTopmost);
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)

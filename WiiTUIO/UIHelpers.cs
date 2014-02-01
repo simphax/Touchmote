@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
+using WiiTUIO.Properties;
 
 namespace WiiTUIO
 {
@@ -120,17 +121,29 @@ namespace WiiTUIO
 
         public static void TopmostFix(Window window)
         {
+            IntPtr HWND_TOPMOST = new IntPtr(-1);
+            IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+
+            IntPtr zorder = Settings.Default.noTopmost ? HWND_NOTOPMOST : HWND_TOPMOST;
+
             IntPtr hWnd = new WindowInteropHelper(window).Handle;
 
-            IntPtr hWndHiddenOwner = GetWindow(hWnd, GetWindowCmd.GW_OWNER);
-
-            if (hWndHiddenOwner != IntPtr.Zero)
+            if (hWnd != IntPtr.Zero)
             {
-                IntPtr HWND_TOPMOST = new IntPtr(-1);
-                SetWindowPos(hWndHiddenOwner, HWND_TOPMOST, 0, 0, 0, 0,
-                   SetWindowPosFlags.SWP_NOMOVE |
-                   SetWindowPosFlags.SWP_NOSIZE |
-                   SetWindowPosFlags.SWP_NOACTIVATE);
+                SetWindowPos(hWnd, zorder, 0, 0, 0, 0,
+                       SetWindowPosFlags.SWP_NOMOVE |
+                       SetWindowPosFlags.SWP_NOSIZE |
+                       SetWindowPosFlags.SWP_NOACTIVATE);
+
+                IntPtr hWndHiddenOwner = GetWindow(hWnd, GetWindowCmd.GW_OWNER);
+
+                if (hWndHiddenOwner != IntPtr.Zero)
+                {
+                    SetWindowPos(hWndHiddenOwner, zorder, 0, 0, 0, 0,
+                       SetWindowPosFlags.SWP_NOMOVE |
+                       SetWindowPosFlags.SWP_NOSIZE |
+                       SetWindowPosFlags.SWP_NOACTIVATE);
+                }
             }
         }
 

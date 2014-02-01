@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Touchmote")]
-[assembly: AssemblyDescription("v1.0b10")]
+[assembly: AssemblyDescription("v1.0b11")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Simphax")]
 [assembly: AssemblyProduct("Touchmote")]
