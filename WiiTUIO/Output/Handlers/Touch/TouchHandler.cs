@@ -14,15 +14,19 @@ namespace WiiTUIO.Output.Handlers.Touch
 {
     class TouchHandler : IButtonHandler, ICursorHandler, IStickHandler
     {
-
-        IProviderHandler handler;
-        DuoTouch duoTouch;
-        CursorPos lastCursorPos;
-        CursorPos positionToPush;
+        private IProviderHandler handler;
+        private DuoTouch duoTouch;
+        private CursorPos lastCursorPos;
+        private CursorPos positionToPush;
 
         private bool touchDownMaster = false;
         private bool touchDownSlave = false;
         private bool useCustomCursor = false;
+
+        private CursorPos timeoutCursorPos;
+        private System.Timers.Timer timeoutTimer;
+        private bool mightTimeOut = false;
+        private bool timedOut = false;
 
         private long id;
 
@@ -36,6 +40,26 @@ namespace WiiTUIO.Output.Handlers.Touch
             ulong touchStartID = (ulong)(id - 1) * 4 + 1;//This'll make sure the touch point IDs won't be the same. DuoTouch uses a span of 4 IDs.
             this.duoTouch = new DuoTouch(Screen.PrimaryScreen.Bounds, Settings.Default.pointer_positionSmoothing, touchStartID);
             this.lastCursorPos = new CursorPos(0, 0, 0);
+
+            this.timeoutTimer = new System.Timers.Timer();
+            this.timeoutTimer.Interval = Settings.Default.pointer_cursorStillHideTimeout;
+            this.timeoutTimer.Elapsed += timeoutTimer_Elapsed;
+            this.timeoutTimer.Enabled = true;
+            this.timeoutTimer.Start();
+        }
+
+        void timeoutTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            this.timeoutTimer.Stop();
+            this.timedOut = true;
+            if (this.usingCursors())
+            {
+                this.masterCursor.Hide();
+            }
+        }
+
+        void timeoutTimer_Tick(object sender, EventArgs e)
+        {
         }
 
         public bool setPosition(string key, Provider.CursorPos cursorPos)
@@ -50,8 +74,27 @@ namespace WiiTUIO.Output.Handlers.Touch
 
         private void setPosition(Provider.CursorPos cursorPos)
         {
-            if (!cursorPos.OutOfReach)
+            if(!mightTimeOut)
             {
+                timeoutCursorPos = cursorPos;
+                this.timeoutTimer.Start();
+            }
+            if (!this.touchDownMaster && !this.touchDownSlave && Math.Abs(this.timeoutCursorPos.X - cursorPos.X) < Settings.Default.pointer_cursorStillThreshold && Math.Abs(this.timeoutCursorPos.Y - cursorPos.Y) < Settings.Default.pointer_cursorStillThreshold)
+            {
+                this.mightTimeOut = true;
+            }
+            else
+            {
+                this.mightTimeOut = false;
+                this.timedOut = false;
+                this.timeoutTimer.Stop();
+            }
+            if (!cursorPos.OutOfReach && !timedOut)
+            {
+                if(timedOut)
+                {
+                    this.timedOut = false;
+                }
                 Queue<WiiContact> lFrame = new Queue<WiiContact>(1);
                 // Store the state.
 

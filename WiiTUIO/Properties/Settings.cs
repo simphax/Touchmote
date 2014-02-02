@@ -269,6 +269,29 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private int _pointer_cursorStillHideTimeout = 3000;
+        public int pointer_cursorStillHideTimeout
+        {
+            get { return _pointer_cursorStillHideTimeout; }
+            set
+            {
+                _pointer_cursorStillHideTimeout = value;
+                OnPropertyChanged("pointer_cursorStillHideTimeout");
+            }
+        }
+
+        //Delta pixels before the cursor is considered still.
+        private int _pointer_cursorStillThreshold = 10;
+        public int pointer_cursorStillThreshold
+        {
+            get { return _pointer_cursorStillThreshold; }
+            set
+            {
+                _pointer_cursorStillThreshold = value;
+                OnPropertyChanged("pointer_cursorStillThreshold");
+            }
+        }
+
         private string _pointer_sensorBarPos = "center";
         public string pointer_sensorBarPos
         {
