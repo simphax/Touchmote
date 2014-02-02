@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              mc:Ignorable="d" 
-             d:DesignHeight="40" d:DesignWidth="400">
+             d:DesignHeight="200" d:DesignWidth="415">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="../Resources/Icons.xaml" />
@@ -33,23 +33,50 @@
             <Ellipse Width="12" Height="12" Margin="0,0,70,0" Fill="White"></Ellipse>
         </Grid>
         <Border Name="connection_input_border" Background="#FFEEEEEE" BorderThickness="0" BorderBrush="White" Margin="5,5,265,5" CornerRadius="2">
-            
+
         </Border>
         <StackPanel Margin="5,5,265,5" VerticalAlignment="Center">
             <TextBlock Name="connection_input_name" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Center" VerticalAlignment="Center" />
             <Border Name="connection_input_config_border" Background="#FFFFFFFF" BorderThickness="0" BorderBrush="White" Margin="5,5,5,5" CornerRadius="2">
                 <StackPanel>
                     <Grid>
-                        <TextBlock Text="Deadzone" Margin="5,5,60,5" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Right" VerticalAlignment="Center" />
-                        <xctk:DoubleUpDown FormatString="F1" Value="0.01" Increment=".1"  Maximum="10.0" Margin="75,5,5,5" FontFamily="Segoe UI Semilight" FontSize="11" Minimum="0" BorderBrush="#FFDEDEDE" />
+                        <TextBlock Text="Deadzone" Margin="5,5,75,5" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Right" VerticalAlignment="Center" />
+                        <Controls:NumericUpDown StringFormat="F2" Value="0.01" Interval="0.1" Maximum="1.0" Margin="34,0,5,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0" BorderBrush="#FFDEDEDE" RenderTransformOrigin="1.0,0.5">
+                            <Controls:NumericUpDown.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Controls:NumericUpDown.RenderTransform>
+                        </Controls:NumericUpDown>
                     </Grid>
                     <Grid>
-                        <TextBlock Text="Scale" Margin="5,5,60,5" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Right" VerticalAlignment="Center" />
-                        <xctk:DoubleUpDown FormatString="F1" Value="1.0" Increment=".1"  Maximum="10.0" Margin="75,5,5,5" FontFamily="Segoe UI Semilight" FontSize="11" Minimum="0" BorderBrush="#FFDEDEDE" />
+                        <TextBlock Text="Scale" Margin="5,5,75,5" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Right" VerticalAlignment="Center" />
+                        <Controls:NumericUpDown StringFormat="F2" Value="1.0" Interval="0.1" Maximum="10.0" Margin="34,0,5,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0" BorderBrush="#FFDEDEDE" RenderTransformOrigin="1.0,0.5" >
+                            <Controls:NumericUpDown.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Controls:NumericUpDown.RenderTransform>
+                        </Controls:NumericUpDown>
                     </Grid>
                     <Grid>
-                        <TextBlock Text="Threshold" Margin="5,5,60,5" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Right" VerticalAlignment="Center" />
-                        <xctk:DoubleUpDown FormatString="F1" Value="0.8" Increment=".1"  Maximum="10.0" Margin="75,5,5,5" FontFamily="Segoe UI Semilight" FontSize="11" Minimum="0" BorderBrush="#FFDEDEDE" />
+                        <TextBlock Text="Threshold" Margin="5,5,75,5" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Right" VerticalAlignment="Center" />
+                        <Controls:NumericUpDown StringFormat="F2" Value="0.8" Interval="0.1" Maximum="1.0" Margin="34,0,5,0" FontFamily="Segoe UI Semilight" FontSize="16" Minimum="0" BorderBrush="#FFDEDEDE" RenderTransformOrigin="1.0,0.5">
+                            <Controls:NumericUpDown.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Controls:NumericUpDown.RenderTransform>
+                        </Controls:NumericUpDown>
                     </Grid>
                 </StackPanel>
             </Border>
