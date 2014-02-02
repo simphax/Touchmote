@@ -448,11 +448,15 @@ namespace WiiTUIO.Provider
                     {
                         if (output.Continous)
                         {
+                            double newValue = value;
+                            //Make sure the value is not above 1
+                            newValue = newValue > 1 ? 1 : newValue;
                             //Set value to 0 if it's within deadzone
-                            value = value < outConfig.Deadzone ? 0 : value;
+                            newValue = newValue <= outConfig.Deadzone ? 0 : (newValue - outConfig.Deadzone) / (1 - outConfig.Deadzone);
+                            
                             //Add the scaling from the config
-                            value = value * outConfig.Scale;
-                            if (stickHandler.setValue(output.Key.ToLower(), value))
+                            newValue = newValue * outConfig.Scale;
+                            if (stickHandler.setValue(output.Key.ToLower(), newValue))
                             {
                                 break; // we will break for the first accepting handler, for each output key
                             }

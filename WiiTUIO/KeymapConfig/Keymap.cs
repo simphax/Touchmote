@@ -112,7 +112,7 @@ namespace WiiTUIO
                     }
                     if (config.Deadzone != Settings.Default.defaultContinousDeadzone)
                     {
-                        settings.Add("deadzone", config.Threshold);
+                        settings.Add("deadzone", config.Deadzone);
                     }
                     settings.Add("output", outputs);
                     outputs = settings;
