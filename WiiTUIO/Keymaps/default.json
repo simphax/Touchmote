@@ -19,9 +19,6 @@
       "LWin",
       "Tab"
     ],
-	"AccelX": "disable",
-	"AccelY": "disable",
-	"AccelZ": "disable",
     "Nunchuk.StickUp": {
 		"output": [
 			"360.StickLUp",

@@ -49,9 +49,12 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Minus", "Minus"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "One", "One"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Two", "Two"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X", "AccelX", false, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y", "AccelY", false, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z", "AccelZ", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X-", "AccelX-", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X+", "AccelX+", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y-", "AccelY-", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y+", "AccelY+", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z-", "AccelZ-", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z+", "AccelZ+", false, true, false));
 
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "C", "Nunchuk.C"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Z", "Nunchuk.Z"));
@@ -534,6 +537,13 @@ namespace WiiTUIO
             buttonTwo.Add(new JValue("LWin"));
             buttonTwo.Add(new JValue("Tab"));
             buttons.Add(new JProperty("Two", buttonTwo));
+
+            buttons.Add(new JProperty("AccelX+", "disable"));
+            buttons.Add(new JProperty("AccelX-", "disable"));
+            buttons.Add(new JProperty("AccelY+", "disable"));
+            buttons.Add(new JProperty("AccelY-", "disable"));
+            buttons.Add(new JProperty("AccelZ+", "disable"));
+            buttons.Add(new JProperty("AccelZ-", "disable"));
 
             buttons.Add(new JProperty("Nunchuk.StickUp", "360.StickLUp"));
             buttons.Add(new JProperty("Nunchuk.StickDown", "360.StickLDown"));

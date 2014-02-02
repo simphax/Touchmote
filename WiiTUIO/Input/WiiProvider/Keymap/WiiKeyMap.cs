@@ -32,6 +32,12 @@ namespace WiiTUIO.Provider
 
         private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
         {
+            {"AccelX+",false},
+            {"AccelX-",false},
+            {"AccelY+",false},
+            {"AccelY-",false},
+            {"AccelZ+",false},
+            {"AccelZ-",false},
             {"Nunchuk.StickUp",false},
             {"Nunchuk.StickDown",false},
             {"Nunchuk.StickLeft",false},
@@ -55,6 +61,15 @@ namespace WiiTUIO.Provider
             this.inputSimulator = new InputSimulator();
 
             this.outputHandlers = outputHandlers;
+
+            foreach (IOutputHandler outputHandler in outputHandlers)
+            {
+                if (outputHandler is IRumbleFeedback)
+                {
+                    IRumbleFeedback rumbleFeedback = (IRumbleFeedback)outputHandler;
+                    rumbleFeedback.OnRumble += Xinput_OnRumble;
+                }
+            }
         }
 
         public void SetKeymap(Keymap keymap)
@@ -129,18 +144,137 @@ namespace WiiTUIO.Provider
         public void updateAccelerometer(AccelState accelState)
         {
             KeymapOutConfig outConfig;
+            if (this.config.TryGetValue("AccelX+", out outConfig))
+            {
+                if (accelState.Values.X > 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.X * 2);
+                }
+                else if (accelState.Values.X == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
 
-            if (this.config.TryGetValue("AccelX", out outConfig))
-            {
-                updateStickHandlers(outConfig, accelState.Values.X * -0.5 + 0.5);
+                if (accelState.Values.X * 2 > outConfig.Threshold && !PressedButtons["AccelX+"])
+                {
+                    PressedButtons["AccelX+"] = true;
+                    this.executeButtonDown("AccelX+");
+                }
+                else if (accelState.Values.X * 2 < outConfig.Threshold && PressedButtons["AccelX+"])
+                {
+                    PressedButtons["AccelX+"] = false;
+                    this.executeButtonUp("AccelX+");
+                }
             }
-            if (this.config.TryGetValue("AccelY", out outConfig))
+            if (this.config.TryGetValue("AccelX-", out outConfig))
             {
-                updateStickHandlers(outConfig, accelState.Values.Y * -0.5 + 0.5);
+                if (accelState.Values.X < 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.X * -2);
+                }
+                else if (accelState.Values.X == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.X * -2 > outConfig.Threshold && !PressedButtons["AccelX-"])
+                {
+                    PressedButtons["AccelX-"] = true;
+                    this.executeButtonDown("AccelX-");
+                }
+                else if (accelState.Values.X * -2 < outConfig.Threshold && PressedButtons["AccelX-"])
+                {
+                    PressedButtons["AccelX-"] = false;
+                    this.executeButtonUp("AccelX-");
+                }
             }
-            if (this.config.TryGetValue("AccelZ", out outConfig))
+            if (this.config.TryGetValue("AccelY+", out outConfig))
             {
-                updateStickHandlers(outConfig, accelState.Values.Z * -0.5 + 0.5);
+                if (accelState.Values.Y > 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.Y * 2);
+                }
+                else if (accelState.Values.Y == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.Y * 2 > outConfig.Threshold && !PressedButtons["AccelY+"])
+                {
+                    PressedButtons["AccelY+"] = true;
+                    this.executeButtonDown("AccelY+");
+                }
+                else if (accelState.Values.Y * 2 < outConfig.Threshold && PressedButtons["AccelY+"])
+                {
+                    PressedButtons["AccelY+"] = false;
+                    this.executeButtonUp("AccelY+");
+                }
+            }
+            if (this.config.TryGetValue("AccelY-", out outConfig))
+            {
+                if (accelState.Values.Y < 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.Y * -2);
+                }
+                else if (accelState.Values.Y == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.Y * -2 > outConfig.Threshold && !PressedButtons["AccelY-"])
+                {
+                    PressedButtons["AccelY-"] = true;
+                    this.executeButtonDown("AccelY-");
+                }
+                else if (accelState.Values.Y * -2 < outConfig.Threshold && PressedButtons["AccelY-"])
+                {
+                    PressedButtons["AccelY-"] = false;
+                    this.executeButtonUp("AccelY-");
+                }
+            }
+            if (this.config.TryGetValue("AccelZ+", out outConfig))
+            {
+                if (accelState.Values.Z > 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.Z * 2);
+                }
+                else if (accelState.Values.Z == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.Z * 2 > outConfig.Threshold && !PressedButtons["AccelZ+"])
+                {
+                    PressedButtons["AccelZ+"] = true;
+                    this.executeButtonDown("AccelZ+");
+                }
+                else if (accelState.Values.Z * 2 < outConfig.Threshold && PressedButtons["AccelZ+"])
+                {
+                    PressedButtons["AccelZ+"] = false;
+                    this.executeButtonUp("AccelZ+");
+                }
+            }
+            if (this.config.TryGetValue("AccelZ-", out outConfig))
+            {
+                if (accelState.Values.Z < 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.Z * -2);
+                }
+                else if (accelState.Values.Z == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.Z * -2 > outConfig.Threshold && !PressedButtons["AccelZ-"])
+                {
+                    PressedButtons["AccelZ-"] = true;
+                    this.executeButtonDown("AccelZ-");
+                }
+                else if (accelState.Values.Z * -2 < outConfig.Threshold && PressedButtons["AccelZ-"])
+                {
+                    PressedButtons["AccelZ-"] = false;
+                    this.executeButtonUp("AccelZ-");
+                }
             }
         }
 
