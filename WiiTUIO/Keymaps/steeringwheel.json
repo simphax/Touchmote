@@ -1,8 +1,10 @@
 {
   "Title": "Steering Wheel",
   "All": {
-    "AccelY": "360.StickLX",
-	"AccelZ": "360.StickLY",
+    "AccelY-": "360.StickLRight",
+    "AccelY+": "360.StickLLeft",
+    "AccelZ-": "360.StickLDown",
+    "AccelZ+": "360.StickLUp",
 	"Two": "360.TriggerR",
 	"One": "360.TriggerL"
   }

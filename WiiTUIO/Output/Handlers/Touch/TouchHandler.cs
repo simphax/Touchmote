@@ -305,10 +305,7 @@ namespace WiiTUIO.Output.Handlers.Touch
 
         private bool normalStickCursor(string key, double value)
         {
-
-            Console.WriteLine(value);
             int step = (int)Math.Round(30 * value);
-            //Console.WriteLine(step);
             CursorPos fromPos;
             if (positionToPush != null)
             {
