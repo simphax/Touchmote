@@ -63,12 +63,10 @@ namespace WiiTUIO.Output
             //start tuio-to-vmulti service
             start_service(etd_ServiceName);
             this.TUIOHandler.connect();
-            OnConnect();
-        }
-
-        public void processEventFrame(Provider.FrameEventArgs e)
-        {
-            //this.TUIOHandler.processEventFrame(e);
+            if(OnConnect != null)
+            {
+                OnConnect();
+            }
         }
 
         public void disconnect()
@@ -76,7 +74,10 @@ namespace WiiTUIO.Output
             //stop tuio-to-vmulti-service
             stop_service(etd_ServiceName);
             this.TUIOHandler.disconnect();
-            OnDisconnect();
+            if(OnDisconnect != null)
+            {
+                OnDisconnect();
+            }
         }
 
         #region Code from EcoTUIOdriver
@@ -183,12 +184,12 @@ namespace WiiTUIO.Output
 
         public void processEventFrame()
         {
-            throw new NotImplementedException();
+            this.TUIOHandler.processEventFrame();
         }
 
         public void queueContact(Provider.WiiContact contact)
         {
-            throw new NotImplementedException();
+            this.TUIOHandler.queueContact(contact);
         }
     }
 }

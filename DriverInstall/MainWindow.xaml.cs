@@ -45,6 +45,11 @@ namespace DriverInstall
                     this.installVmultiDriverComplete();
                 }
 
+                if (Environment.GetCommandLineArgs().Contains("-service"))
+                {
+                    this.installTuioServiceComplete();
+                }
+
                 if (Environment.GetCommandLineArgs().Contains("-scpbus"))
                 {
                     this.installScpBusDriverComplete();
@@ -57,6 +62,12 @@ namespace DriverInstall
             }
             else if (Environment.GetCommandLineArgs().Contains("-uninstall"))
             {
+
+                if (Environment.GetCommandLineArgs().Contains("-service"))
+                {
+                    this.uninstallTuioServiceComplete();
+                }
+
                 if (Environment.GetCommandLineArgs().Contains("-vmulti"))
                 {
                     this.uninstallVmultiDriverComplete();
@@ -103,6 +114,7 @@ namespace DriverInstall
         {
             this.installVmultiDriverComplete();
             this.installScpBusDriverComplete();
+            this.installTuioServiceComplete();
             //this.store_settings();
             //this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
             //this.install_service(etd_ServiceName, etd_ServiceFilename, "3333");
@@ -116,6 +128,19 @@ namespace DriverInstall
             this.installVmultiDriver();
 
             this.removeAllButTouch();
+        }
+
+        private void installTuioServiceComplete()
+        {
+            this.store_settings();
+            this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
+            this.install_service(etd_ServiceName, etd_ServiceFilename, "3333");
+            this.give_service_permissions(etd_ServiceName);
+        }
+
+        private void uninstallTuioServiceComplete()
+        {
+            this.uninstall_service(etd_ServiceName, etd_ServiceFilename);
         }
 
         private void installScpBusDriverComplete()
@@ -162,7 +187,7 @@ namespace DriverInstall
         {
             uninstallVmultiDriverComplete();
             uninstallScpBusDriverComplete();
-            //this.uninstall_service(etd_ServiceName,etd_ServiceFilename);
+            uninstallTuioServiceComplete();
         }
 
         private void uninstallVmultiDriverComplete()

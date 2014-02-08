@@ -42,7 +42,10 @@ namespace WiiTUIO.Output
         {
             Launcher.Launch("", "ResetTouchInjection.exe", "", null);
 
-            OnConnect();
+            if (OnConnect != null)
+            {
+                OnConnect();
+            }
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
@@ -113,7 +116,10 @@ namespace WiiTUIO.Output
 
         public void disconnect()
         {
-            OnDisconnect();
+            if (OnConnect != null)
+            {
+                OnDisconnect();
+            }
         }
 
         public void queueContact(WiiContact contact)
