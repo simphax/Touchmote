@@ -12,6 +12,8 @@ namespace WiiTUIO.Output
     public class TUIOProviderHandler :IProviderHandler
     {
 
+        private Queue<WiiContact> contactQueue;
+
         private static int iFrame = 0;
 
         /// <summary>
@@ -19,16 +21,17 @@ namespace WiiTUIO.Output
         /// </summary>
         private OSCTransmitter pUDPWriter = null;
 
-        private Window settingsWindow = null;
-
         public TUIOProviderHandler()
         {
+            /* old stuff
             this.settingsWindow = new TUIOSettings(this);
             this.settingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.settingsWindow.Hide();
+             * */
+            contactQueue = new Queue<WiiContact>();
         }
         
-        public void processEventFrame(FrameEventArgs e)
+        public void processEventFrame()
         {
             // Create an new TUIO Bundle
                 OSCBundle pBundle = new OSCBundle();
@@ -44,25 +47,34 @@ namespace WiiTUIO.Output
                 pMessageAlive.Append("alive");
 
                 // Now we want to take the raw frame data and draw points based on its data.
-                foreach (WiiContact pContact in e.Contacts)
+                WiiContact contact;
+                while (contactQueue.Count > 0)
                 {
-                    // Compile the set message.
-                    OSCMessage pMessage = new OSCMessage("/tuio/2Dcur");
-                    pMessage.Append("set");                 // set
-                    pMessage.Append((int)pContact.ID);           // session
-                    pMessage.Append((float)pContact.NormalPosition.X);   // x
-                    pMessage.Append((float)pContact.NormalPosition.Y);   // y
-                    pMessage.Append(0f);                 // dx
-                    pMessage.Append(0f);                 // dy
-                    pMessage.Append(0f);                 // motion
-                    pMessage.Append((float)pContact.Size.X);   // height
-                    pMessage.Append((float)pContact.Size.Y);   // width
+                    contact = contactQueue.Dequeue();
+                    if ((contact.Type == ContactType.Hover || contact.Type == ContactType.EndFromHover))
+                    {
+                        //No hover yet
+                    }
+                    else
+                    {
+                        // Compile the set message.
+                        OSCMessage pMessage = new OSCMessage("/tuio/2Dcur");
+                        pMessage.Append("set");                 // set
+                        pMessage.Append((int)contact.ID);           // session
+                        pMessage.Append((float)contact.NormalPosition.X);   // x
+                        pMessage.Append((float)contact.NormalPosition.Y);   // y
+                        pMessage.Append(0f);                 // dx
+                        pMessage.Append(0f);                 // dy
+                        pMessage.Append(0f);                 // motion
+                        pMessage.Append((float)contact.Size.X);   // height
+                        pMessage.Append((float)contact.Size.Y);   // width
 
-                    // Append it to the bundle.
-                    pBundle.Append(pMessage);
+                        // Append it to the bundle.
+                        pBundle.Append(pMessage);
 
-                    // Append the alive message for this contact to tbe bundle.
-                    pMessageAlive.Append((int)pContact.ID);
+                        // Append the alive message for this contact to tbe bundle.
+                        pMessageAlive.Append((int)contact.ID);
+                    }
                 }
 
                 // Save the alive message.
@@ -98,21 +110,9 @@ namespace WiiTUIO.Output
             }
         }
 
-
-        public void showSettingsWindow()
-        {
-            this.settingsWindow.Show();
-        }
-
-
-        public void processEventFrame()
-        {
-            throw new NotImplementedException();
-        }
-
         public void queueContact(WiiContact contact)
         {
-            throw new NotImplementedException();
+            contactQueue.Enqueue(contact);
         }
     }
 }

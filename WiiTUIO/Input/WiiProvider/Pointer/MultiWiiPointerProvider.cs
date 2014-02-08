@@ -128,6 +128,7 @@ namespace WiiTUIO.Provider
         /// </summary>
         public void start()
         {
+            OutputFactory.getCurrentProviderHandler().connect();
             this.bRunning = true;
             wiimoteConnectorTimer.Change(0, CONNECTION_THREAD_SLEEP);
         }
@@ -161,6 +162,8 @@ namespace WiiTUIO.Provider
             }
 
             this.pWC.Clear();
+
+            OutputFactory.getCurrentProviderHandler().disconnect();
 
         }
         #endregion

@@ -68,7 +68,7 @@ namespace WiiTUIO.Output
 
         public void processEventFrame(Provider.FrameEventArgs e)
         {
-            this.TUIOHandler.processEventFrame(e);
+            //this.TUIOHandler.processEventFrame(e);
         }
 
         public void disconnect()
@@ -77,11 +77,6 @@ namespace WiiTUIO.Output
             stop_service(etd_ServiceName);
             this.TUIOHandler.disconnect();
             OnDisconnect();
-        }
-
-        public void showSettingsWindow()
-        {
-            this.TUIOHandler.showSettingsWindow();
         }
 
         #region Code from EcoTUIOdriver
