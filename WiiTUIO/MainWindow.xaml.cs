@@ -299,10 +299,9 @@ namespace WiiTUIO
                 }
                 statusStackMutex.WaitOne();
                 WiimoteStatusUC uc = new WiimoteStatusUC(ID);
-                FrameworkElement child = (FrameworkElement)uc.GetChildObjects().First();
-                child.Visibility = Visibility.Collapsed;
+                uc.Visibility = Visibility.Collapsed;
                 this.statusStack.Children.Add(uc);
-                this.animateExpand(child);
+                this.animateExpand(uc);
                 statusStackMutex.ReleaseMutex();
 
                 //connectProviderHandler();
@@ -335,7 +334,7 @@ namespace WiiTUIO
                     WiimoteStatusUC uc = (WiimoteStatusUC)child;
                     if (uc.ID == ID)
                     {
-                        this.animateCollapse((FrameworkElement)uc.GetChildObjects().First(),true);
+                        this.animateCollapse(uc,true);
                         //this.statusStack.Children.Remove(child);
                         break;
                     }

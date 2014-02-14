@@ -1,23 +1,21 @@
-﻿<UserControl x:Class="WiiTUIO.WiimoteStatusUC"
+﻿<StackPanel Width="419" Background="#FF2F2F2F" x:Class="WiiTUIO.WiimoteStatusUC"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d">
-    <StackPanel Width="419" Background="#FF2F2F2F">
-        <Canvas Height="63">
-            <Ellipse Name="color" Opacity="0.6"  Width="25" Height="25" Canvas.Left="15" Canvas.Top="18" Stroke="Cyan" StrokeThickness="2"/>
-            <Ellipse Opacity="0.4"  Width="19" Height="19" Canvas.Left="18" Canvas.Top="21" Fill="White" StrokeThickness="2"/>
-            <TextBlock Name="lbId" Text="2" Width="30" Height="24" Canvas.Left="41" Canvas.Top="20" FontFamily="Segoe UI Semilight" FontSize="14" Foreground="White" TextAlignment="Center"/>
-            <Label Name="lbStatus" Content="connected" Canvas.Left="108" Canvas.Top="14" FontFamily="Segoe UI Light" FontSize="15" Foreground="#FF5BFF00"/>
-            <Label Content="battery:" Canvas.Left="288" Canvas.Top="14" FontFamily="Segoe UI Light" FontSize="15" Foreground="White"/>
-            <Rectangle Name="battery1" Fill="White" Height="20" Width="7" Canvas.Left="349" Canvas.Top="20"/>
-            <Rectangle Name="battery2" Fill="White" Height="20" Width="7" Canvas.Left="358" Canvas.Top="20"/>
-            <Rectangle Name="battery3" Fill="White" Height="20" Width="7" Canvas.Left="367" Canvas.Top="20"/>
-            <Rectangle Name="battery4" Fill="White" Height="20" Width="7" Canvas.Left="376" Canvas.Top="20"/>
-            <Rectangle Name="battery5" Fill="White" Height="20" Width="7" Canvas.Left="385" Canvas.Top="20"/>
-            <Rectangle Name="battery6" Fill="#FF4F4F4F" Height="20" Width="7" Canvas.Left="394" Canvas.Top="20"/>
-            <Rectangle Width="419" Fill="#FF191919" Height="3" Canvas.Bottom="0"/>
-        </Canvas>
-    </StackPanel>
-</UserControl>
+    <Canvas Height="63">
+        <Ellipse Name="color" Opacity="0.6"  Width="25" Height="25" Canvas.Left="15" Canvas.Top="18" Stroke="Cyan" StrokeThickness="2"/>
+        <Ellipse Opacity="0.4"  Width="19" Height="19" Canvas.Left="18" Canvas.Top="21" Fill="White" StrokeThickness="2"/>
+        <TextBlock Name="lbId" Text="2" Width="30" Height="24" Canvas.Left="41" Canvas.Top="20" FontFamily="Segoe UI Semilight" FontSize="14" Foreground="White" TextAlignment="Center"/>
+        <Label Name="lbStatus" Content="connected" Canvas.Left="108" Canvas.Top="14" FontFamily="Segoe UI Light" FontSize="15" Foreground="#FF5BFF00"/>
+        <Label Content="battery:" Canvas.Left="288" Canvas.Top="14" FontFamily="Segoe UI Light" FontSize="15" Foreground="White"/>
+        <Rectangle Name="battery1" Fill="White" Height="20" Width="7" Canvas.Left="349" Canvas.Top="20"/>
+        <Rectangle Name="battery2" Fill="White" Height="20" Width="7" Canvas.Left="358" Canvas.Top="20"/>
+        <Rectangle Name="battery3" Fill="White" Height="20" Width="7" Canvas.Left="367" Canvas.Top="20"/>
+        <Rectangle Name="battery4" Fill="White" Height="20" Width="7" Canvas.Left="376" Canvas.Top="20"/>
+        <Rectangle Name="battery5" Fill="White" Height="20" Width="7" Canvas.Left="385" Canvas.Top="20"/>
+        <Rectangle Name="battery6" Fill="#FF4F4F4F" Height="20" Width="7" Canvas.Left="394" Canvas.Top="20"/>
+        <Rectangle Width="419" Fill="#FF191919" Height="3" Canvas.Bottom="0"/>
+    </Canvas>
+</StackPanel>
