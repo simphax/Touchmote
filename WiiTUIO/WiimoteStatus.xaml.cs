@@ -20,7 +20,7 @@ namespace WiiTUIO
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class WiimoteStatusUC : UserControl
+    public partial class WiimoteStatusUC : StackPanel
     {
         public int ID;
         public int battery;
