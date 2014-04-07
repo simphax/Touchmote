@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
+using WiiTUIO.Output.Handlers.Touch;
+using WiiTUIO.Properties;
 using WiiTUIO.Provider;
 using WindowsInput;
 using WindowsInput.Native;
@@ -15,10 +18,14 @@ namespace WiiTUIO.Output.Handlers
         private InputSimulator inputSimulator;
         private System.Drawing.Rectangle screenBounds;
 
+        //TODO factor out whats relevant for mouse... this is kinda hacky
+        private DuoTouch duoTouch;
+
         public MouseHandler()
         {
             this.screenBounds = Screen.PrimaryScreen.Bounds;
             this.inputSimulator = new InputSimulator();
+            this.duoTouch = new DuoTouch(screenBounds, Settings.Default.pointer_positionSmoothing, 1);
         }
 
         public bool setButtonDown(string key)
@@ -30,9 +37,11 @@ namespace WiiTUIO.Output.Handlers
                 {
                     case MouseCode.MOUSELEFT:
                         this.inputSimulator.Mouse.LeftButtonDown();
+                        duoTouch.setContactMaster(); //To get touch tap threshold...
                         break;
                     case MouseCode.MOUSERIGHT:
                         this.inputSimulator.Mouse.RightButtonDown();
+                        duoTouch.setContactMaster();
                         break;
                     default:
                         return false;
@@ -51,9 +60,11 @@ namespace WiiTUIO.Output.Handlers
                 {
                     case MouseCode.MOUSELEFT:
                         this.inputSimulator.Mouse.LeftButtonUp();
+                        duoTouch.releaseContactMaster();
                         break;
                     case MouseCode.MOUSERIGHT:
                         this.inputSimulator.Mouse.RightButtonUp();
+                        duoTouch.releaseContactMaster();
                         break;
                     default:
                         return false;
@@ -69,8 +80,17 @@ namespace WiiTUIO.Output.Handlers
             {
                 if (!cursorPos.OutOfReach)
                 {
-                    this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * cursorPos.X) / this.screenBounds.Width, (65535 * cursorPos.Y) / this.screenBounds.Height);
-                    return true;
+                    duoTouch.setMasterPosition(new Point(cursorPos.X, cursorPos.Y));
+                    Queue<WiiContact> contacts = duoTouch.getFrame();
+
+                    if (contacts.Count > 0)
+                    {
+                        WiiContact first = contacts.First();
+                        Point smoothedPos = first.Position;
+
+                        this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X) / this.screenBounds.Width, (65535 * smoothedPos.Y) / this.screenBounds.Height);
+                        return true;
+                    }
                 }
             }
             return false;
