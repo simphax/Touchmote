@@ -50,6 +50,15 @@ namespace WiiTUIO
         {
             this.jsonObj.Remove("Title");
             this.jsonObj.Add("Title", name);
+
+            //Needed to update the name in layout chooser because its names are stored in a different file
+            KeymapSettings settings = new KeymapSettings(Settings.Default.keymaps_config);
+            if(settings.isInLayoutChooser(this))
+            {
+                settings.removeFromLayoutChooser(this);
+                settings.addToLayoutChooser(this);
+            }
+
             save();
         }
 
