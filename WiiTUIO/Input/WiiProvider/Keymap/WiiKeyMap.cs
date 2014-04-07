@@ -684,7 +684,6 @@ namespace WiiTUIO.Provider
             {
                 HashSet<string> handledKeys = new HashSet<string>();
                 List<KeymapOutput> stack = new List<KeymapOutput>(outConfig.Stack);
-                stack.Reverse();
                 foreach (KeymapOutput output in stack)
                 {
                     keyList.Add(output.Key);
@@ -696,9 +695,9 @@ namespace WiiTUIO.Provider
                             this.executeKeyUp(output.Key);
                         }
                         handledKeys.Add(output.Key);
-                    }
 
-                    handled |= this.executeKeyDown(output.Key);
+                        handled |= this.executeKeyDown(output.Key);
+                    }
                 }
             }
 
