@@ -378,4 +378,139 @@ namespace WiiCPP {
 			return;
 		}
 	};
+
+
+	//
+	//
+	// Following is based on
+	// https://github.com/Ciantic/monitortoggler/blob/master/src/restoremonitors7.c
+	//
+	public ref class MonitorInfo
+	{
+	public:
+		String^ DevicePath;
+		String^ FriendlyName;
+	};
+
+	public ref class Monitors
+	{
+	public:
+		/*
+		Gets GDI Device name from Source (e.g. \\.\DISPLAY4).
+		*/
+		static String^ getGDIDeviceNameFromSource(LUID adapterId, UINT32 sourceId) {
+			DISPLAYCONFIG_SOURCE_DEVICE_NAME deviceName;
+			DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+			header.size = sizeof(DISPLAYCONFIG_SOURCE_DEVICE_NAME);
+			header.adapterId = adapterId;
+			header.id = sourceId;
+			header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
+			deviceName.header = header;
+			DisplayConfigGetDeviceInfo((DISPLAYCONFIG_DEVICE_INFO_HEADER*)&deviceName);
+			return gcnew System::String(deviceName.viewGdiDeviceName);
+		}
+
+		/*
+		Gets Device Path from Target
+		e.g. \\?\DISPLAY#SAM0304#5&9a89472&0&UID33554704#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}
+		*/
+		static String^ getMonitorDevicePathFromTarget(LUID adapterId, UINT32 targetId) {
+			DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName;
+			DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+			header.size = sizeof(DISPLAYCONFIG_TARGET_DEVICE_NAME);
+			header.adapterId = adapterId;
+			header.id = targetId;
+			header.type = DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME;
+			deviceName.header = header;
+			DisplayConfigGetDeviceInfo((DISPLAYCONFIG_DEVICE_INFO_HEADER*)&deviceName);
+			return gcnew System::String(deviceName.monitorDevicePath);
+		}
+
+
+		/*
+		Gets Friendly name from Target (e.g. "SyncMaster")
+		*/
+		static String^ getFriendlyNameFromTarget(LUID adapterId, UINT32 targetId) {
+			DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName;
+			DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+			header.size = sizeof(DISPLAYCONFIG_TARGET_DEVICE_NAME);
+			header.adapterId = adapterId;
+			header.id = targetId;
+			header.type = DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME;
+			deviceName.header = header;
+			DisplayConfigGetDeviceInfo((DISPLAYCONFIG_DEVICE_INFO_HEADER*)&deviceName);
+			return gcnew System::String(deviceName.monitorFriendlyDeviceName);
+		}
+
+		static array<MonitorInfo^>^ enumerateMonitors(){
+
+			int numMonitors = 0;
+			int curMonitor = 0;
+
+			UINT32 num_of_paths = 0;
+			UINT32 num_of_modes = 0;
+			DISPLAYCONFIG_PATH_INFO* displayPaths = NULL;
+			DISPLAYCONFIG_MODE_INFO* displayModes = NULL;
+
+			UINT32 num_of_paths2 = 0;
+			UINT32 num_of_modes2 = 0;
+			DISPLAYCONFIG_PATH_INFO* displayPaths2 = NULL;
+			DISPLAYCONFIG_MODE_INFO* displayModes2 = NULL;
+
+			GetDisplayConfigBufferSizes(QDC_ALL_PATHS, &num_of_paths, &num_of_modes);
+
+
+			// Allocate paths and modes dynamically
+			displayPaths = (DISPLAYCONFIG_PATH_INFO*)calloc((int)num_of_paths, sizeof(DISPLAYCONFIG_PATH_INFO));
+			displayModes = (DISPLAYCONFIG_MODE_INFO*)calloc((int)num_of_modes, sizeof(DISPLAYCONFIG_MODE_INFO));
+
+			// Query for the information 
+			QueryDisplayConfig(QDC_ALL_PATHS, &num_of_paths, displayPaths, &num_of_modes, displayModes, NULL);
+
+			//Count how many monitors...
+			for (int i = 0; i < num_of_modes; i++) {
+
+				switch (displayModes[i].infoType) {
+				case DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE:
+					break;
+
+				case DISPLAYCONFIG_MODE_INFO_TYPE_TARGET:
+					numMonitors++;
+					break;
+
+				default:
+					fputs("error", stderr);
+					break;
+				}
+			}
+
+			array<MonitorInfo^>^ monitors = gcnew array<MonitorInfo^>(numMonitors);
+
+			for (int i = 0; i < num_of_modes; i++) {
+
+				MonitorInfo^ newMonitorInfo = gcnew MonitorInfo();
+
+				switch (displayModes[i].infoType) {
+
+				case DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE:
+					break;
+
+				case DISPLAYCONFIG_MODE_INFO_TYPE_TARGET:
+					newMonitorInfo->DevicePath = getMonitorDevicePathFromTarget(displayModes[i].adapterId, displayModes[i].id);
+					newMonitorInfo->FriendlyName = getFriendlyNameFromTarget(displayModes[i].adapterId, displayModes[i].id);
+					monitors[curMonitor++] = newMonitorInfo;
+					break;
+
+				default:
+					fputs("error", stderr);
+					break;
+				}
+			}
+
+			free(displayPaths);
+			free(displayModes);
+			return monitors;
+		}
+	};
+
 }
