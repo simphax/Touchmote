@@ -389,6 +389,7 @@ namespace WiiCPP {
 	{
 	public:
 		String^ DevicePath;
+		String^ DeviceName;
 		String^ FriendlyName;
 	};
 
@@ -488,17 +489,21 @@ namespace WiiCPP {
 
 			for (int i = 0; i < num_of_modes; i++) {
 
-				MonitorInfo^ newMonitorInfo = gcnew MonitorInfo();
+				if (!monitors[displayModes[i].id])
+				{
+					monitors[displayModes[i].id] = gcnew MonitorInfo();
+				}
 
 				switch (displayModes[i].infoType) {
 
 				case DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE:
+					monitors[displayModes[i].id]->DeviceName = getGDIDeviceNameFromSource(displayModes[i].adapterId, displayModes[i].id);
 					break;
 
 				case DISPLAYCONFIG_MODE_INFO_TYPE_TARGET:
-					newMonitorInfo->DevicePath = getMonitorDevicePathFromTarget(displayModes[i].adapterId, displayModes[i].id);
-					newMonitorInfo->FriendlyName = getFriendlyNameFromTarget(displayModes[i].adapterId, displayModes[i].id);
-					monitors[curMonitor++] = newMonitorInfo;
+					monitors[displayModes[i].id]->DevicePath = getMonitorDevicePathFromTarget(displayModes[i].adapterId, displayModes[i].id);
+					monitors[displayModes[i].id]->FriendlyName = getFriendlyNameFromTarget(displayModes[i].adapterId, displayModes[i].id);
+					monitors[curMonitor++] = monitors[displayModes[i].id];
 					break;
 
 				default:

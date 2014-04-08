@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using WiiCPP;
 using WiiTUIO.Properties;
 
 namespace WiiTUIO.Output.Handlers.Touch
@@ -29,9 +31,39 @@ namespace WiiTUIO.Output.Handlers.Touch
 
         private D3DCursorWindow()
         {
+            Settings.Default.PropertyChanged += SettingsChanged;
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             cursors = new List<D3DCursor>(2);
             mutex = new Mutex();
+
+        }
+
+        void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == "primaryMonitor")
+            {
+
+                MonitorInfo primaryMonitorInfo = null;
+                foreach (MonitorInfo info in DeviceUtils.DeviceUtil.GetMonitorList())
+                {
+                    if (info.DevicePath == Settings.Default.primaryMonitor)
+                    {
+                        primaryMonitorInfo = info;
+                    }
+                }
+
+                if (primaryMonitorInfo != null)
+                {
+                    foreach (Screen screen in Screen.AllScreens)
+                    {
+                        if (screen.DeviceName == primaryMonitorInfo.DeviceName)
+                        {
+                            Console.WriteLine("Setting cursor window position to " + screen.Bounds);
+                            SetD3DCursorWindowPosition(screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Width, screen.Bounds.Height, !Settings.Default.noTopmost);
+                        }
+                    }
+                }
+            }
         }
 
         private Mutex mutex;
@@ -39,6 +71,9 @@ namespace WiiTUIO.Output.Handlers.Touch
             
         [DllImport("D3DCursor.dll")]
         private static extern IntPtr StartD3DCursorWindow(IntPtr hInstance, IntPtr parent, int windowWidth, int windowHeight, bool topmost);
+
+        [DllImport("D3DCursor.dll")]
+        private static extern void SetD3DCursorWindowPosition(int x, int y, int width, int height, bool topmost);
 
         [DllImport("D3DCursor.dll")]
         private static extern void SetD3DCursorPosition(int id, int x, int y);
