@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{87CC8302-A614-490E-9100-1059AF5FE8FC}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WiiTUIO</RootNamespace>
     <AssemblyName>Touchmote</AssemblyName>
@@ -163,6 +163,10 @@
     <Reference Include="TCD.System.TouchInjection">
       <HintPath>..\packages\TCD.System.TouchInjection.1.0.0\lib\net45\TCD.System.TouchInjection.dll</HintPath>
     </Reference>
+    <Reference Include="VMultiDllWrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\VMultiDllWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="WiimoteLib, Version=1.7.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\WiimoteLib.dll</HintPath>
@@ -242,6 +246,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MinimizeToTray.cs" />
+    <Compile Include="Output\VmultiProviderHandler.cs" />
     <Compile Include="OverlayNotice.xaml.cs">
       <DependentUpon>OverlayNotice.xaml</DependentUpon>
     </Compile>

@@ -25,6 +25,7 @@ namespace WiiTUIO.Output
         {
             TOUCH,
             TOUCHMTV,
+            TOUCHVMULTI,
             TUIO,
             TUIOTOUCH,
             DRAW
@@ -38,6 +39,8 @@ namespace WiiTUIO.Output
                     return "touch";
                 case OutputType.TOUCHMTV:
                     return "touch-mtv";
+                case OutputType.TOUCHVMULTI:
+                    return "touch-vmulti";
                 case OutputType.TUIO:
                     return "tuio";
                 case OutputType.TUIOTOUCH:
@@ -58,6 +61,10 @@ namespace WiiTUIO.Output
             if (name == "touch-mtv")
             {
                 return OutputType.TOUCHMTV;
+            }
+            if (name == "touch-vmulti")
+            {
+                return OutputType.TOUCHVMULTI;
             }
             else if (name == "tuio")
             {
@@ -87,6 +94,8 @@ namespace WiiTUIO.Output
                     return new TouchInjectProviderHandler();
                 case OutputType.TOUCHMTV:
                     return new MTVProviderHandler();
+                case OutputType.TOUCHVMULTI:
+                    return new VmultiProviderHandler();
                 case OutputType.TUIO:
                     return new TUIOProviderHandler();
                 case OutputType.TUIOTOUCH:
