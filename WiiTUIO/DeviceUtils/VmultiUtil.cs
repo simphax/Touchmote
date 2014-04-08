@@ -60,14 +60,38 @@ namespace WiiTUIO.DeviceUtils
                         Console.WriteLine("Set vmulti monitor to " + monitor.DevicePath);
                         regKey.SetValue(valueName,monitor.DevicePath);
 
-                        //Disable and enable the vmulti device to force windows to update the touch monitor settings
-                        Launcher.Launch("Driver", "devcon", " disable \"" + vmultiDevconSearch + "\"", new Action(delegate()
-                        {
-                            Launcher.Launch("Driver", "devcon", " enable \"" + vmultiDevconSearch + "\"", null);
-                        }));
-
                         success = true;
                     }
+                }
+                if(!success)
+                {
+                    IEnumerable<HidDevice> hidDevices = HidDevices.Enumerate();
+
+                    string devicePath = null;
+
+                    foreach(HidDevice device in hidDevices)
+                    {
+                        if(device.DevicePath.ToLower().Contains(vmultiDevicePathSearch))
+                        {
+                            devicePath = device.DevicePath;
+                        }
+                    }
+
+                    if(devicePath != null)
+                    {
+                        Console.WriteLine("Creating new registry row for " + devicePath + ". Setting vmulti monitor to " + monitor.DevicePath);
+                        regKey.SetValue("20-" + devicePath, monitor.DevicePath, RegistryValueKind.String);
+                        success = true;
+                    }
+                }
+
+                if(success)
+                {
+                    //Disable and enable the vmulti device to force windows to update the touch monitor settings
+                    Launcher.Launch("Driver", "devcon", " disable \"" + vmultiDevconSearch + "\"", new Action(delegate()
+                    {
+                        Launcher.Launch("Driver", "devcon", " enable \"" + vmultiDevconSearch + "\"", null);
+                    }));
                 }
 
                 regKey.Close();
