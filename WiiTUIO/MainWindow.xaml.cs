@@ -68,6 +68,16 @@ namespace WiiTUIO
         /// </summary>
         private bool bConnected = false;
 
+        private static MainWindow defaultInstance;
+
+        public static MainWindow Current
+        {
+            get
+            {
+                return defaultInstance;
+            }
+        }
+
         /// <summary>
         /// Construct a new Window.
         /// </summary>
@@ -83,6 +93,8 @@ namespace WiiTUIO
                 this.ShowActivated = false;
                 this.WindowState = System.Windows.WindowState.Minimized;
             }
+
+            defaultInstance = this;
 
             // Load from the XAML.
             InitializeComponent();
@@ -399,9 +411,9 @@ namespace WiiTUIO
 
         #region Messages - Err/Inf
 
-        enum MessageType { Info, Error };
+        public enum MessageType { Info, Error };
 
-        private void showMessage(string message, MessageType eType)
+        public void ShowMessage(string message, MessageType eType)
         {
             Dispatcher.BeginInvoke(new Action(delegate()
             {
@@ -628,7 +640,7 @@ namespace WiiTUIO
 
                 // Report the error.
                 Console.WriteLine(pError.Message);
-                showMessage(pError.Message, MessageType.Error);
+                ShowMessage(pError.Message, MessageType.Error);
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
@@ -659,7 +671,7 @@ namespace WiiTUIO
                 catch { }
                 Console.WriteLine(pError.Message);
                 // Report the error.cr
-                showMessage(pError.Message, MessageType.Error);
+                ShowMessage(pError.Message, MessageType.Error);
                 //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
@@ -754,7 +766,7 @@ namespace WiiTUIO
 
                     if (report.deviceNames.Contains(@"Nintendo RVL-CNT-01-TR"))
                     {
-                        this.showMessage("At least one of your Wiimotes is not compatible with the Microsoft Bluetooth Stack, use only Wiimotes manufactured before November 2011 or try the instructions on touchmote.net/wiimotetr ",MessageType.Info);
+                        this.ShowMessage("At least one of your Wiimotes is not compatible with the Microsoft Bluetooth Stack, use only Wiimotes manufactured before November 2011 or try the instructions on touchmote.net/wiimotetr ",MessageType.Info);
                     }
                 }
             }
@@ -832,7 +844,7 @@ namespace WiiTUIO
 
                 if (type == WiiCPP.WiiPairListener.MessageType.ERR)
                 {
-                    this.showMessage(message, MessageType.Error);
+                    this.ShowMessage(message, MessageType.Error);
                 }
 
             }), null);

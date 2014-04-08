@@ -35,7 +35,10 @@ namespace WiiTUIO.Output
 
         public void connect()
         {
-            vmulti.connect();
+            if(!vmulti.connect())
+            {
+                MainWindow.Current.ShowMessage("The touchscreen driver is not installed. Please rerun the Touchmote installer to be able to use touch output.",MainWindow.MessageType.Info);
+            }
 
             if (OnConnect != null)
             {
