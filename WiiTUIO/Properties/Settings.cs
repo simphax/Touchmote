@@ -93,6 +93,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private string _primaryMonitor = "";
+        public string primaryMonitor
+        {
+            get { return _primaryMonitor; }
+            set
+            {
+                _primaryMonitor = value;
+                OnPropertyChanged("primaryMonitor");
+            }
+        }
+
         private bool _completelyDisconnect = false;
         public bool completelyDisconnect
         {

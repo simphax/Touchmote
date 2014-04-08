@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using WiiCPP;
+using WiiTUIO.Properties;
 
 namespace WiiTUIO.DeviceUtils
 {
@@ -59,6 +60,7 @@ namespace WiiTUIO.DeviceUtils
                     {
                         Console.WriteLine("Set vmulti monitor to " + monitor.DevicePath);
                         regKey.SetValue(valueName,monitor.DevicePath);
+                        Settings.Default.primaryMonitor = monitor.DevicePath;
 
                         success = true;
                     }
@@ -81,6 +83,7 @@ namespace WiiTUIO.DeviceUtils
                     {
                         Console.WriteLine("Creating new registry row for " + devicePath + ". Setting vmulti monitor to " + monitor.DevicePath);
                         regKey.SetValue("20-" + devicePath, monitor.DevicePath, RegistryValueKind.String);
+                        Settings.Default.primaryMonitor = monitor.DevicePath;
                         success = true;
                     }
                 }

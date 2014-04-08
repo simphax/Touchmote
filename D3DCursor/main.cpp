@@ -426,9 +426,12 @@ extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInsta
   return 0;
 }
 
-extern "C" __declspec(dllexport)VOID WINAPI SetD3DCursorWindowSize(int width, int height)
+extern "C" __declspec(dllexport)VOID WINAPI SetD3DCursorWindowPosition(int x, int y, int width, int height, bool topmost)
 {
-	SetWindowPos(hWnd,HWND_TOPMOST,0,0,g_iWidth,g_iHeight,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+	g_iWidth = width;
+	g_iHeight = height;
+	HWND zpos = topmost ? HWND_TOPMOST : HWND_NOTOPMOST;
+	SetWindowPos(hWnd, zpos, x, y, g_iWidth, g_iHeight, SWP_NOACTIVATE);
 }
 
 extern "C" __declspec(dllexport)VOID WINAPI RenderAllD3DCursors()
