@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HidLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WiiCPP;
+using WiiTUIO.DeviceUtils;
 using WiiTUIO.Input;
 using WiiTUIO.Output;
 using WiiTUIO.Properties;
@@ -38,6 +41,7 @@ namespace WiiTUIO
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
 
             this.reloadState();
+
         }
 
         private async void reloadState()

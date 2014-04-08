@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HidLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WiiCPP;
+using WiiTUIO.DeviceUtils;
 using WiiTUIO.Properties;
 
 namespace WiiTUIO.Provider
@@ -39,6 +42,26 @@ namespace WiiTUIO.Provider
             {
                 this.cbiCenter.IsSelected = true;
             }
+
+
+            string currentMonitor = VmultiUtil.getCurrentMonitor();
+
+            IEnumerable<MonitorInfo> monInfos = DeviceUtil.GetMonitorList();
+
+            foreach (MonitorInfo monInfo in monInfos)
+            {
+                ComboBoxItem cbItem = new ComboBoxItem();
+                cbItem.Content = monInfo.FriendlyName;
+                cbItem.DataContext = monInfo;
+                this.MonitorComboBox.Items.Add(cbItem);
+
+                if(monInfo.DevicePath == currentMonitor)
+                {
+                    this.MonitorComboBox.SelectedItem = cbItem;
+                }
+            }
+
+
             this.initializing = false;
         }
 
@@ -58,6 +81,15 @@ namespace WiiTUIO.Provider
                 {
                     Settings.Default.pointer_sensorBarPos = "center";
                 }
+            }
+        }
+
+        private void MonitorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!this.initializing)
+            {
+                MonitorInfo monInfo = (MonitorInfo)((ComboBoxItem)this.MonitorComboBox.SelectedItem).DataContext;
+                VmultiUtil.setCurrentMonitor(monInfo);
             }
         }
         /*
