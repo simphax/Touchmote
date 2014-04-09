@@ -324,6 +324,7 @@ namespace WiiTUIO.Provider
             // Hook up device event handlers.
             wiimote.WiimoteChanged += this.wiimoteChangedEventHandler;
             wiimote.WiimoteExtensionChanged += this.wiimoteExtensionChangedEventHandler;
+            wiimote.InitializeMotionPlus();
 
             OnConnect(id, this.pWiimoteMap.Count);
 

@@ -55,7 +55,157 @@ namespace WiiTUIO.Provider
             SBPositionOffset = (int)(screenBounds.Width * Settings.Default.pointer_sensorBarPosCompensation);
         }
 
+        private int lastX = Util.ScreenWidth / 2;
+        private int lastY = Util.ScreenHeight / 2;
+
+        private double calibratedPitch = -1;
+        private double calibratedJaw = -1;
+
+        double lastAccelY = 0;
+
+        double lastPitch = double.NaN;
+        double lastJaw = double.NaN;
+        
         public CursorPos CalculateCursorPos(WiimoteState wiimoteState)
+        {
+            
+            int x = 0;
+            int y = 0;
+
+            double accelY = wiimoteState.AccelState.Values.Y;
+            double magic = Math.Abs(accelY * 0.005 + lastAccelY * 0.015);
+
+            double pitch = (wiimoteState.MotionPlusState.RawValues.X / 16384.0);
+            double jaw = (wiimoteState.MotionPlusState.RawValues.Z / 16384.0);
+
+            lastAccelY = wiimoteState.AccelState.Values.Y;
+
+            /*
+            if (lastMPX != float.NaN)
+            {
+                float deltaX = wiimoteState.MotionPlusState.Values.X - lastMPX;
+                deltaX *= 10;
+            }
+            if (lastMPY != float.NaN)
+            {
+                float deltaY = wiimoteState.MotionPlusState.Values.Y - lastMPX;
+                deltaY *= 10;
+            }
+
+            lastMPX = wiimoteState.MotionPlusState.Values.X;
+            lastMPY = wiimoteState.MotionPlusState.Values.Y;
+            */
+
+            if (calibratedPitch == -1 || (wiimoteState.ButtonState.Down && wiimoteState.ButtonState.A))
+            {
+                calibratedPitch = pitch;
+                lastX = Util.ScreenWidth / 2;
+            }
+            else
+            {
+                //calibratedMPX = (wiimoteState.MotionPlusState.RawValues.X / 16384.0) * 0.01 + calibratedMPX * 0.99;
+            }
+            if (calibratedJaw == -1 || (wiimoteState.ButtonState.Down && wiimoteState.ButtonState.A))
+            {
+                calibratedJaw = jaw;
+                lastY = Util.ScreenHeight / 2;
+            }
+            else
+            {
+                //calibratedMPY = (wiimoteState.MotionPlusState.RawValues.Z / 16384.0) * 0.01 + calibratedMPY * 0.99;
+            }
+            /*
+            if (lastPitch.Equals(double.NaN))
+            {
+                lastPitch = pitch;
+            }
+            if (lastJaw.Equals(double.NaN))
+            {
+                lastJaw = jaw;
+            }
+
+            double deltaX = pitch - lastPitch;
+            double deltaY = jaw - lastJaw;
+
+            lastPitch = pitch;
+            lastJaw = jaw;
+            */
+            double deltaX = calibratedPitch - pitch;
+            double deltaY = calibratedJaw - jaw;
+            /*
+            if (Math.Abs(pitch) < 0.01)
+            {
+                deltaX = 0;
+            }
+            if (Math.Abs(jaw) < 0.01)
+            {
+                deltaY = 0;
+            }
+            */
+            
+            /*
+            if (lastMPX == -1)
+            {
+                lastMPX = (wiimoteState.MotionPlusState.RawValues.X / 16384.0);
+            }
+            if (lastMPY == -1)
+            {
+                lastMPY = (wiimoteState.MotionPlusState.RawValues.Y / 16384.0);
+            }
+
+            double deltaX = (wiimoteState.MotionPlusState.RawValues.X / 16384.0) - lastMPX;
+            double deltaY = (wiimoteState.MotionPlusState.RawValues.Y / 16384.0) + lastMPX;
+
+            lastMPX = (wiimoteState.MotionPlusState.RawValues.X / 16384.0);
+            lastMPY = (wiimoteState.MotionPlusState.RawValues.Y / 16384.0);
+
+            Console.WriteLine("DeltaX: " + deltaX);
+            Console.WriteLine("DeltaY: " + deltaY);
+            */
+            /*
+            if (Math.Abs(deltaX) <= 0.1)
+            {
+                calibratedPitch = pitch * 0.01 + calibratedPitch * 0.99;
+            }
+
+            if (Math.Abs(deltaY) <= 0.1)
+            {
+                calibratedJaw = jaw * 0.01 + calibratedJaw * 0.99;
+            }
+            */
+            deltaX *= 500;
+            deltaY *= 500;
+
+            x = lastX - Convert.ToInt32(deltaX);
+            y = lastY + Convert.ToInt32(deltaY);
+
+            if (x <= 0)
+            {
+                x = 0;
+            }
+            else if (x >= Util.ScreenWidth)
+            {
+                x = Util.ScreenWidth - 1;
+            }
+            if (y <= 0)
+            {
+                y = 0;
+            }
+            else if (y >= Util.ScreenHeight)
+            {
+                y = Util.ScreenHeight - 1;
+            }
+
+            lastX = x;
+            lastY = y;
+
+            CursorPos result = new CursorPos(x,y,0);
+            result.OutOfReach = false;
+
+            return result;
+        }
+
+        public CursorPos CalculateCursorPosIR(WiimoteState wiimoteState)
         {
             int x;
             int y;
