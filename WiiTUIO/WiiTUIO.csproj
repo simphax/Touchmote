@@ -378,7 +378,6 @@
     <Compile Include="Input\WiiProvider\IProvider.cs" />
     <Compile Include="Input\WiiProvider\Pointer\MouseSimulator.cs" />
     <Compile Include="Input\WiiProvider\Pointer\ScreenPositionCalculator.cs" />
-    <Compile Include="Input\WiiProvider\Pointer\Util.cs" />
     <Compile Include="Input\WiiProvider\Pointer\MultiWiiPointerProvider.cs" />
     <Compile Include="Input\WiiProvider\ContactType.cs" />
     <Compile Include="Input\WiiProvider\FrameEventArgs.cs" />

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WiiCPP;
+using WiiTUIO.DeviceUtils;
 using WiiTUIO.Properties;
 
 namespace WiiTUIO.Output.Handlers.Touch
@@ -16,6 +17,8 @@ namespace WiiTUIO.Output.Handlers.Touch
     public class D3DCursorWindow
     {
         private static D3DCursorWindow defaultInstance;
+
+        private Screen primaryScreen;
 
         public static D3DCursorWindow Current
         {
@@ -36,41 +39,29 @@ namespace WiiTUIO.Output.Handlers.Touch
             cursors = new List<D3DCursor>(2);
             mutex = new Mutex();
 
+            primaryScreen = DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
         }
 
-        void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(e.PropertyName == "primaryMonitor")
             {
-
-                MonitorInfo primaryMonitorInfo = null;
-                foreach (MonitorInfo info in DeviceUtils.DeviceUtil.GetMonitorList())
-                {
-                    if (info.DevicePath == Settings.Default.primaryMonitor)
-                    {
-                        primaryMonitorInfo = info;
-                    }
-                }
-
-                if (primaryMonitorInfo != null)
-                {
-                    foreach (Screen screen in Screen.AllScreens)
-                    {
-                        if (screen.DeviceName == primaryMonitorInfo.DeviceName)
-                        {
-                            Console.WriteLine("Setting cursor window position to " + screen.Bounds);
-                            SetD3DCursorWindowPosition(screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Width, screen.Bounds.Height, !Settings.Default.noTopmost);
-                        }
-                    }
-                }
+                primaryScreen = DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+                this.updateWindowToScreen(primaryScreen);
             }
+        }
+
+        private void updateWindowToScreen(Screen screen)
+        {
+            Console.WriteLine("Setting cursor window position to " + screen.Bounds);
+            SetD3DCursorWindowPosition(screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Width, screen.Bounds.Height, !Settings.Default.noTopmost);
         }
 
         private Mutex mutex;
         private List<D3DCursor> cursors;
             
         [DllImport("D3DCursor.dll")]
-        private static extern IntPtr StartD3DCursorWindow(IntPtr hInstance, IntPtr parent, int windowWidth, int windowHeight, bool topmost);
+        private static extern IntPtr StartD3DCursorWindow(IntPtr hInstance, IntPtr parent, int windowX, int windowY, int windowWidth, int windowHeight, bool topmost);
 
         [DllImport("D3DCursor.dll")]
         private static extern void SetD3DCursorWindowPosition(int x, int y, int width, int height, bool topmost);
@@ -94,14 +85,16 @@ namespace WiiTUIO.Output.Handlers.Touch
         private static extern void RenderAllD3DCursors();
 
         //Should be run with a dispatcher
-        public void Start(IntPtr parent, int width, int height)
+        public void Start(IntPtr parent)
         {
-            StartD3DCursorWindow(Process.GetCurrentProcess().Handle, parent, width, height, !Settings.Default.noTopmost);
+            StartD3DCursorWindow(Process.GetCurrentProcess().Handle, parent, primaryScreen.Bounds.X, primaryScreen.Bounds.Y, primaryScreen.Bounds.Width, primaryScreen.Bounds.Height, !Settings.Default.noTopmost);
+            updateWindowToScreen(primaryScreen);
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
- 	        
+            primaryScreen = DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+            this.updateWindowToScreen(primaryScreen);
         }
 
         public void AddCursor(D3DCursor cursor)

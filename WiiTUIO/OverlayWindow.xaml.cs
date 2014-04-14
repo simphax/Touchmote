@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WiiTUIO.DeviceUtils;
 using WiiTUIO.Output.Handlers.Touch;
 using WiiTUIO.Properties;
 using WiiTUIO.Provider;
@@ -34,6 +35,8 @@ namespace WiiTUIO
         private bool hidden = true;
         private bool activatedOnce = false;
 
+        private System.Windows.Forms.Screen primaryScreen;
+
         public static OverlayWindow Current
         {
             get
@@ -50,11 +53,14 @@ namespace WiiTUIO
         {
             InitializeComponent();
 
-            this.Width = Util.ScreenBounds.Width;
-            this.Height = Util.ScreenBounds.Height;
-            this.baseGrid.Width = Util.ScreenBounds.Width;
-            this.baseGrid.Height = Util.ScreenBounds.Height;
+            primaryScreen = DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
 
+            this.Width = primaryScreen.Bounds.Width;
+            this.Height = primaryScreen.Bounds.Height;
+            this.baseGrid.Width = primaryScreen.Bounds.Width;
+            this.baseGrid.Height = primaryScreen.Bounds.Height;
+
+            Settings.Default.PropertyChanged += SettingsChanged;
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
             this.baseGrid.Visibility = Visibility.Hidden;
@@ -74,14 +80,36 @@ namespace WiiTUIO
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
+            this.primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
             Dispatcher.BeginInvoke(new Action(delegate()
             {
-                this.Width = Util.ScreenBounds.Width;
-                this.Height = Util.ScreenBounds.Height;
-                this.baseGrid.Width = Util.ScreenBounds.Width;
-                this.baseGrid.Height = Util.ScreenBounds.Height;
-                UIHelpers.TopmostFix(this);
+                this.updateWindowToScreen(primaryScreen);
             }));
+        }
+
+        private void updateWindowToScreen(System.Windows.Forms.Screen screen)
+        {
+            Console.WriteLine("Setting overlay window position to " + screen.Bounds);
+            //this.Left = screen.Bounds.X;
+            //this.Top = screen.Bounds.Y;
+            //this.Width = screen.Bounds.Width;
+            //this.Height = screen.Bounds.Height;
+            UIHelpers.SetWindowPos((new WindowInteropHelper(this)).Handle, IntPtr.Zero, screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Width, screen.Bounds.Height, UIHelpers.SetWindowPosFlags.SWP_NOACTIVATE | UIHelpers.SetWindowPosFlags.SWP_NOZORDER);
+            this.baseGrid.Width = screen.Bounds.Width;
+            this.baseGrid.Height = screen.Bounds.Height;
+            UIHelpers.TopmostFix(this);
+        }
+
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "primaryMonitor")
+            {
+                primaryScreen = DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+                Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    this.updateWindowToScreen(primaryScreen);
+                }));
+            }
         }
 
         public void ShowNotice(string message, int wiimoteID)

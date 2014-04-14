@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using WiimoteLib;
 using WiiTUIO.Properties;
 
@@ -27,32 +28,46 @@ namespace WiiTUIO.Provider
 
         private CursorPos lastPos;
 
-        private System.Drawing.Rectangle screenBounds;
+        private Screen primaryScreen;
 
         public ScreenPositionCalculator()
         {
-            this.recalculateScreenBounds();
+            this.primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+            this.recalculateScreenBounds(this.primaryScreen);
 
+            Settings.Default.PropertyChanged += SettingsChanged;
             SystemEvents.DisplaySettingsChanged +=SystemEvents_DisplaySettingsChanged;
 
             lastPos = new CursorPos(0, 0, 0);
+
+        }
+
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "primaryMonitor")
+            {
+                this.primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+                Console.WriteLine("Setting primary monitor for screen position calculator to "+this.primaryScreen.Bounds);
+                this.recalculateScreenBounds(this.primaryScreen);
+            }
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
-            recalculateScreenBounds();
+            this.primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+            recalculateScreenBounds(this.primaryScreen);
         }
 
-        private void recalculateScreenBounds()
+        private void recalculateScreenBounds(Screen screen)
         {
-            this.screenBounds = Util.ScreenBounds;
-            minXPos = -(int)(screenBounds.Width * Settings.Default.pointer_marginsLeftRight);
-            maxXPos = screenBounds.Width + (int)(screenBounds.Width * Settings.Default.pointer_marginsLeftRight);
+            Console.WriteLine("Setting primary monitor for screen position calculator to " + this.primaryScreen.Bounds);
+            minXPos = -(int)(screen.Bounds.Width * Settings.Default.pointer_marginsLeftRight);
+            maxXPos = screen.Bounds.Width + (int)(screen.Bounds.Width * Settings.Default.pointer_marginsLeftRight);
             maxWidth = maxXPos - minXPos;
-            minYPos = -(int)(screenBounds.Height * Settings.Default.pointer_marginsTopBottom);
-            maxYPos = screenBounds.Height + (int)(screenBounds.Height * Settings.Default.pointer_marginsTopBottom);
+            minYPos = -(int)(screen.Bounds.Height * Settings.Default.pointer_marginsTopBottom);
+            maxYPos = screen.Bounds.Height + (int)(screen.Bounds.Height * Settings.Default.pointer_marginsTopBottom);
             maxHeight = maxYPos - minYPos;
-            SBPositionOffset = (int)(screenBounds.Width * Settings.Default.pointer_sensorBarPosCompensation);
+            SBPositionOffset = (int)(screen.Bounds.Width * Settings.Default.pointer_sensorBarPosCompensation);
         }
 
         public CursorPos CalculateCursorPos(WiimoteState wiimoteState)
@@ -232,17 +247,17 @@ namespace WiiTUIO.Provider
             {
                 x = 0;
             }
-            else if (x >= Util.ScreenWidth)
+            else if (x >= primaryScreen.Bounds.Width)
             {
-                x = Util.ScreenWidth - 1;
+                x = primaryScreen.Bounds.Width - 1;
             }
             if (y <= 0)
             {
                 y = 0;
             }
-            else if (y >= Util.ScreenHeight)
+            else if (y >= primaryScreen.Bounds.Height)
             {
-                y = Util.ScreenHeight - 1;
+                y = primaryScreen.Bounds.Height - 1;
             }
 
             CursorPos result = new CursorPos(x, y, smoothedRotation);

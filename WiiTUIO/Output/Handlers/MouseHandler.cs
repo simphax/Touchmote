@@ -16,16 +16,14 @@ namespace WiiTUIO.Output.Handlers
     public class MouseHandler : IButtonHandler, IStickHandler, ICursorHandler
     {
         private InputSimulator inputSimulator;
-        private System.Drawing.Rectangle screenBounds;
 
         //TODO factor out whats relevant for mouse... this is kinda hacky
         private DuoTouch duoTouch;
 
         public MouseHandler()
         {
-            this.screenBounds = Screen.PrimaryScreen.Bounds;
             this.inputSimulator = new InputSimulator();
-            this.duoTouch = new DuoTouch(screenBounds, Settings.Default.pointer_positionSmoothing, 1);
+            this.duoTouch = new DuoTouch(Settings.Default.pointer_positionSmoothing, 1);
         }
 
         public bool setButtonDown(string key)
@@ -86,9 +84,9 @@ namespace WiiTUIO.Output.Handlers
                     if (contacts.Count > 0)
                     {
                         WiiContact first = contacts.First();
-                        Point smoothedPos = first.Position;
+                        Point smoothedPos = first.NormalPosition;
 
-                        this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X) / this.screenBounds.Width, (65535 * smoothedPos.Y) / this.screenBounds.Height);
+                        this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
                         return true;
                     }
                 }

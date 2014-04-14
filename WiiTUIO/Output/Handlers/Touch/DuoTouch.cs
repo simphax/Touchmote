@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WiiTUIO.Provider;
+using WiiTUIO.Properties;
+using Microsoft.Win32;
 
 namespace WiiTUIO.Output.Handlers.Touch
 {
@@ -14,7 +16,6 @@ namespace WiiTUIO.Output.Handlers.Touch
         private int slavePriority;
 
         private SmoothingBuffer smoothingBuffer;
-
         public System.Drawing.Rectangle screenBounds;
 
         private bool stepIDs = false;
@@ -52,9 +53,10 @@ namespace WiiTUIO.Output.Handlers.Touch
 
         public double EdgeHelperMargins = Properties.Settings.Default.touch_edgeGestureHelperMargins;
         public double EdgeHelperRelease = Properties.Settings.Default.touch_edgeGestureHelperRelease;
+        
 
 
-        public DuoTouch(System.Drawing.Rectangle screenBounds, int smoothSize, ulong startId)
+        public DuoTouch(int smoothSize, ulong startId)
         {
             this.masterID = startId;
             this.slaveID = startId+1;
@@ -63,12 +65,30 @@ namespace WiiTUIO.Output.Handlers.Touch
             this.masterPriority = (int)masterID;
             this.slavePriority = (int)slaveID;
 
-            this.screenBounds = screenBounds;
+            this.screenBounds = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor).Bounds;
+            Settings.Default.PropertyChanged += SettingsChanged;
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+
+
             if (smoothSize < 1)
             {
                 smoothSize = 1;
             }
             this.smoothingBuffer = new SmoothingBuffer(smoothSize);
+        }
+
+
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "primaryMonitor")
+            {
+                this.screenBounds = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor).Bounds;
+            }
+        }
+
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            this.screenBounds = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor).Bounds;
         }
 
         public void setMasterPosition(Point position)

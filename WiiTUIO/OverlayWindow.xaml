@@ -8,7 +8,8 @@
         AllowsTransparency="True"
         WindowStyle="None"
         Background="Transparent"
-        ShowInTaskbar="False">
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual">
     <Canvas Name="baseCanvas">
         <Grid MouseUp="Grid_MouseUp" Name="baseGrid" Background="#33000000">
             <Grid.RowDefinitions>

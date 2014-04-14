@@ -1,8 +1,10 @@
 ﻿
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using WiiTUIO.Properties;
 
 namespace WiiTUIO.Provider
 {
@@ -482,6 +484,8 @@ namespace WiiTUIO.Provider
         internal int iTrackerLostLock = 0;
         #endregion
 
+        System.Windows.Forms.Screen primaryScreen;
+
         /// <summary>
         /// Construct a new tracker with a default smoothing value.
         /// </summary>
@@ -495,9 +499,29 @@ namespace WiiTUIO.Provider
             // Save the ID.
             this.ID = iID;
 
+            this.primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+
+            Settings.Default.PropertyChanged += SettingsChanged;
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+
             // Save the state.
             this.eTrackerState = TrackerState.Discover;
-            this.PredictionScale = Math.Max(Util.ScreenWidth, Util.ScreenHeight);
+            this.PredictionScale = Math.Max(primaryScreen.Bounds.Width, primaryScreen.Bounds.Height);
+        }
+
+
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "primaryMonitor")
+            {
+                primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+                this.PredictionScale = Math.Max(primaryScreen.Bounds.Width, primaryScreen.Bounds.Height);
+            }
+        }
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+            this.PredictionScale = Math.Max(primaryScreen.Bounds.Width, primaryScreen.Bounds.Height);
         }
 
         /// <summary>

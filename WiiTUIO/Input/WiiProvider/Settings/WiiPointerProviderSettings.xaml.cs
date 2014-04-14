@@ -44,7 +44,7 @@ namespace WiiTUIO.Provider
             }
 
 
-            string currentMonitor = VmultiUtil.getCurrentMonitor();
+            string currentMonitor = VmultiUtil.getCurrentMonitorDevicePath();
 
             IEnumerable<MonitorInfo> monInfos = DeviceUtil.GetMonitorList();
 

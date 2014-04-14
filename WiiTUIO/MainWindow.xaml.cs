@@ -125,7 +125,7 @@ namespace WiiTUIO
                 {
                     System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(delegate()
                     {
-                        D3DCursorWindow.Current.Start((new WindowInteropHelper(OverlayWindow.Current)).Handle, Util.ScreenWidth, Util.ScreenHeight);
+                        D3DCursorWindow.Current.Start((new WindowInteropHelper(OverlayWindow.Current)).Handle);
                     }));
                 }
 

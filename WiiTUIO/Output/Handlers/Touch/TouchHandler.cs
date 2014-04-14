@@ -38,7 +38,7 @@ namespace WiiTUIO.Output.Handlers.Touch
             this.id = id;
             this.handler = handler;
             ulong touchStartID = (ulong)(id - 1) * 4 + 1;//This'll make sure the touch point IDs won't be the same. DuoTouch uses a span of 4 IDs.
-            this.duoTouch = new DuoTouch(Screen.PrimaryScreen.Bounds, Settings.Default.pointer_positionSmoothing, touchStartID);
+            this.duoTouch = new DuoTouch(Settings.Default.pointer_positionSmoothing, touchStartID);
             this.lastCursorPos = new CursorPos(0, 0, 0);
 
             this.timeoutTimer = new System.Timers.Timer();
@@ -273,7 +273,6 @@ namespace WiiTUIO.Output.Handlers.Touch
 
         public bool startUpdate()
         {
-            this.duoTouch.screenBounds = Screen.PrimaryScreen.Bounds;
             return true;
         }
 
