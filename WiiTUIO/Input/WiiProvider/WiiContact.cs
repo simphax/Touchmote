@@ -52,6 +52,8 @@ namespace WiiTUIO.Provider
         /// <summary>
         /// Return the bounding rectangle of the contact (using the size as the width and height and the position as the center).
         /// </summary>
+        /// 
+        /*
         public Rect BoundingRectangle
         {
             get
@@ -64,7 +66,7 @@ namespace WiiTUIO.Provider
                 return new Rect(left, right, Size.X, Size.Y);
             }
         }
-
+        */
         /// <summary>
         /// Return the area of the contact - this is here partially for calculating pressure.
         /// </summary>

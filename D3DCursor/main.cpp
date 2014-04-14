@@ -65,7 +65,7 @@ D3DXMATRIX Identity;
 CURSORPTR				*clearQueue = new CURSORPTR[MAX_CURSORS];
 INT nToClear=0;
 
-
+BOOL wait = false;
 
 
 // +--------------+
@@ -186,152 +186,155 @@ FLOAT easeInOutQuint(FLOAT elapsedTime, FLOAT startValue, FLOAT changeInValue, F
 // +------------------------------------+
 VOID Render(VOID)
 {
-  D3DXMATRIX    scaleMatrix;
-  D3DXMATRIX	positionMatrix;
-  // Sanity check
-  if(g_pD3DDevice == NULL) return;
-  if(g_sprite == NULL) return;
-  
-  D3DRECT *clearRect = new D3DRECT[enabledCursors+nToClear];
-  int j = -1;
-  int i = 0;
-  for(i=0; i<enabledCursors; i++)
-  {
-	  while(!cursors[++j].enabled)
-	  {
-		
-	  }
-	  
-	  clearRect[i].x1 = cursors[j].last_rendered_x - (SPRITE_SIZE/2);
-	  clearRect[i].x2 = cursors[j].last_rendered_x + (SPRITE_SIZE/2);
-	  clearRect[i].y1 = cursors[j].last_rendered_y - (SPRITE_SIZE/2);
-	  clearRect[i].y2 = cursors[j].last_rendered_y + (SPRITE_SIZE/2);
-  }
-  for(j=0; i<enabledCursors+nToClear; i++)
-  {
-	  clearRect[i].x1 = clearQueue[j].cursor->last_rendered_x - (SPRITE_SIZE/2);
-	  clearRect[i].x2 = clearQueue[j].cursor->last_rendered_x + (SPRITE_SIZE/2);
-	  clearRect[i].y1 = clearQueue[j].cursor->last_rendered_y - (SPRITE_SIZE/2);
-	  clearRect[i].y2 = clearQueue[j].cursor->last_rendered_y + (SPRITE_SIZE/2);
-	  j++;
-  }
-
-  g_pD3DDevice->Clear(enabledCursors+nToClear, clearRect, D3DCLEAR_TARGET, ARGB_TRANS, 1.0f, 0);
-  
-  nToClear=0;
-  // Render scene
-  if(SUCCEEDED(g_pD3DDevice->BeginScene()))
-  {
-	D3DXVECTOR2 pos;
-	RECT size;
-	D3DXVECTOR2 spriteCentre = D3DXVECTOR2(64.0f,64.0f);
-	D3DXMATRIX mat;
-	D3DXVECTOR2 scaling;
-
-	size.top=0;
-	size.left=0;
-	size.right=128;
-	size.bottom=128;
-
-	if(SUCCEEDED(g_sprite->Begin(D3DXSPRITE_ALPHABLEND)))
+	if (!wait)
 	{
-		j = -1;
-		for(int i=0; i<enabledCursors; i++)
+		D3DXMATRIX    scaleMatrix;
+		D3DXMATRIX	positionMatrix;
+		// Sanity check
+		if (g_pD3DDevice == NULL) return;
+		if (g_sprite == NULL) return;
+
+		D3DRECT *clearRect = new D3DRECT[enabledCursors + nToClear];
+		int j = -1;
+		int i = 0;
+		for (i = 0; i < enabledCursors; i++)
 		{
-			while(!cursors[++j].enabled)
+			while (!cursors[++j].enabled)
 			{
-		
-			}
-			cursors[j].last_rendered_x = cursors[j].x;
-			cursors[j].last_rendered_y = cursors[j].y;
 
-			pos.x = cursors[j].x - (SPRITE_SIZE/2);
-			pos.y = cursors[j].y - (SPRITE_SIZE/2);
-
-
-			//Animation
-			if(cursors[j].hidden)
-			{
-				if(cursors[j].scaling == HIDDEN_SIZE)
-				{
-
-				}
-				else if(abs(cursors[j].scaling - HIDDEN_SIZE) > 0.01)
-				{
-					float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC ) * 1000;
-					cursors[j].scaling = easeInOutQuint(diff,cursors[j].snapshot_scaling,HIDDEN_SIZE-cursors[j].snapshot_scaling,ANIMATION_DURATION);
-				}
-				else
-				{
-					cursors[j].scaling = HIDDEN_SIZE;
-				}
-			}
-			else if(cursors[j].pressed)
-			{
-				if(cursors[j].scaling == PRESSED_SIZE)
-				{
-
-				}
-				else if(abs(cursors[j].scaling - PRESSED_SIZE) > 0.01)
-				{
-					float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC ) * 1000;
-					cursors[j].scaling = easeInOutQuint(diff,cursors[j].snapshot_scaling,PRESSED_SIZE-cursors[j].snapshot_scaling,ANIMATION_DURATION);
-				}
-				else
-				{
-					cursors[j].scaling = PRESSED_SIZE;
-				}
-			}
-			else if(!cursors[j].pressed)
-			{
-				if(cursors[j].scaling == NORMAL_SIZE)
-				{
-
-				}
-				else if(abs(cursors[j].scaling - NORMAL_SIZE) > 0.01)
-				{
-					float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC ) * 1000;
-					cursors[j].scaling = easeInOutQuint(diff,cursors[j].snapshot_scaling,NORMAL_SIZE-cursors[j].snapshot_scaling,ANIMATION_DURATION);
-				}
-				else
-				{
-					cursors[j].scaling = NORMAL_SIZE;
-				}
 			}
 
-			if(cursors[j].scaling < 0 || cursors[j].scaling > 1.0f)
-			{
-				cursors[j].scaling = HIDDEN_SIZE;
-			}
-
-			scaling.x = cursors[j].scaling;
-			scaling.y = cursors[j].scaling;
-			D3DXMatrixTransformation2D(&mat,&spriteCentre,0.0,&scaling,&spriteCentre,0,&pos);
-			g_sprite->SetTransform(&mat);
-			g_sprite->Draw(g_circle,NULL,NULL,NULL,0xff000000 | cursors[j].color);
-
-			scaling.x *= 0.9f;
-			scaling.y *= 0.9f;
-			D3DXMatrixTransformation2D(&mat,&spriteCentre,0.0,&scaling,&spriteCentre,0,&pos);
-			g_sprite->SetTransform(&mat);
-			g_sprite->Draw(g_circle,NULL,NULL,NULL,0xff000000);
-
-			scaling.x *= 0.5f;
-			scaling.y *= 0.5f;
-			D3DXMatrixTransformation2D(&mat,&spriteCentre,0.0,&scaling,&spriteCentre,0,&pos);
-			g_sprite->SetTransform(&mat);
-			g_sprite->Draw(g_circle,NULL,NULL,NULL,0xffFFFFFF);
-
+			clearRect[i].x1 = cursors[j].last_rendered_x - (SPRITE_SIZE / 2);
+			clearRect[i].x2 = cursors[j].last_rendered_x + (SPRITE_SIZE / 2);
+			clearRect[i].y1 = cursors[j].last_rendered_y - (SPRITE_SIZE / 2);
+			clearRect[i].y2 = cursors[j].last_rendered_y + (SPRITE_SIZE / 2);
+		}
+		for (j = 0; i < enabledCursors + nToClear; i++)
+		{
+			clearRect[i].x1 = clearQueue[j].cursor->last_rendered_x - (SPRITE_SIZE / 2);
+			clearRect[i].x2 = clearQueue[j].cursor->last_rendered_x + (SPRITE_SIZE / 2);
+			clearRect[i].y1 = clearQueue[j].cursor->last_rendered_y - (SPRITE_SIZE / 2);
+			clearRect[i].y2 = clearQueue[j].cursor->last_rendered_y + (SPRITE_SIZE / 2);
+			j++;
 		}
 
-		g_sprite->End();
+		g_pD3DDevice->Clear(enabledCursors + nToClear, clearRect, D3DCLEAR_TARGET, ARGB_TRANS, 1.0f, 0);
+
+		nToClear = 0;
+		// Render scene
+		if (SUCCEEDED(g_pD3DDevice->BeginScene()))
+		{
+			D3DXVECTOR2 pos;
+			RECT size;
+			D3DXVECTOR2 spriteCentre = D3DXVECTOR2(64.0f, 64.0f);
+			D3DXMATRIX mat;
+			D3DXVECTOR2 scaling;
+
+			size.top = 0;
+			size.left = 0;
+			size.right = 128;
+			size.bottom = 128;
+
+			if (SUCCEEDED(g_sprite->Begin(D3DXSPRITE_ALPHABLEND)))
+			{
+				j = -1;
+				for (int i = 0; i < enabledCursors; i++)
+				{
+					while (!cursors[++j].enabled)
+					{
+
+					}
+					cursors[j].last_rendered_x = cursors[j].x;
+					cursors[j].last_rendered_y = cursors[j].y;
+
+					pos.x = cursors[j].x - (SPRITE_SIZE / 2);
+					pos.y = cursors[j].y - (SPRITE_SIZE / 2);
+
+
+					//Animation
+					if (cursors[j].hidden)
+					{
+						if (cursors[j].scaling == HIDDEN_SIZE)
+						{
+
+						}
+						else if (abs(cursors[j].scaling - HIDDEN_SIZE) > 0.01)
+						{
+							float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC) * 1000;
+							cursors[j].scaling = easeInOutQuint(diff, cursors[j].snapshot_scaling, HIDDEN_SIZE - cursors[j].snapshot_scaling, ANIMATION_DURATION);
+						}
+						else
+						{
+							cursors[j].scaling = HIDDEN_SIZE;
+						}
+					}
+					else if (cursors[j].pressed)
+					{
+						if (cursors[j].scaling == PRESSED_SIZE)
+						{
+
+						}
+						else if (abs(cursors[j].scaling - PRESSED_SIZE) > 0.01)
+						{
+							float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC) * 1000;
+							cursors[j].scaling = easeInOutQuint(diff, cursors[j].snapshot_scaling, PRESSED_SIZE - cursors[j].snapshot_scaling, ANIMATION_DURATION);
+						}
+						else
+						{
+							cursors[j].scaling = PRESSED_SIZE;
+						}
+					}
+					else if (!cursors[j].pressed)
+					{
+						if (cursors[j].scaling == NORMAL_SIZE)
+						{
+
+						}
+						else if (abs(cursors[j].scaling - NORMAL_SIZE) > 0.01)
+						{
+							float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC) * 1000;
+							cursors[j].scaling = easeInOutQuint(diff, cursors[j].snapshot_scaling, NORMAL_SIZE - cursors[j].snapshot_scaling, ANIMATION_DURATION);
+						}
+						else
+						{
+							cursors[j].scaling = NORMAL_SIZE;
+						}
+					}
+
+					if (cursors[j].scaling < 0 || cursors[j].scaling > 1.0f)
+					{
+						cursors[j].scaling = HIDDEN_SIZE;
+					}
+
+					scaling.x = cursors[j].scaling;
+					scaling.y = cursors[j].scaling;
+					D3DXMatrixTransformation2D(&mat, &spriteCentre, 0.0, &scaling, &spriteCentre, 0, &pos);
+					g_sprite->SetTransform(&mat);
+					g_sprite->Draw(g_circle, NULL, NULL, NULL, 0xff000000 | cursors[j].color);
+
+					scaling.x *= 0.9f;
+					scaling.y *= 0.9f;
+					D3DXMatrixTransformation2D(&mat, &spriteCentre, 0.0, &scaling, &spriteCentre, 0, &pos);
+					g_sprite->SetTransform(&mat);
+					g_sprite->Draw(g_circle, NULL, NULL, NULL, 0xff000000);
+
+					scaling.x *= 0.5f;
+					scaling.y *= 0.5f;
+					D3DXMatrixTransformation2D(&mat, &spriteCentre, 0.0, &scaling, &spriteCentre, 0, &pos);
+					g_sprite->SetTransform(&mat);
+					g_sprite->Draw(g_circle, NULL, NULL, NULL, 0xffFFFFFF);
+
+				}
+
+				g_sprite->End();
+			}
+
+			g_pD3DDevice->EndScene();
+		}
+
+		// Update display
+		g_pD3DDevice->PresentEx(NULL, NULL, NULL, NULL, NULL);
 	}
-
-	g_pD3DDevice->EndScene();
-  }
-
-  // Update display
-  g_pD3DDevice->PresentEx(NULL, NULL, NULL, NULL, NULL);
 }
 
 // +--------------+
@@ -367,7 +370,7 @@ LRESULT WINAPI WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 // +-----------+---------+
 // | Program entry point |
 // +---------------------+
-extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInstance, HWND hParent, int width, int height, bool topmost)
+extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInstance, HWND hParent, int x, int y, int width, int height, bool topmost)
 {
   MSG        uMsg;     
   WNDCLASSEX wc    = {sizeof(WNDCLASSEX),              // cbSize
@@ -392,7 +395,7 @@ extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInsta
                         g_wcpAppName,                 // lpClassName
                         g_wcpAppName,                 // lpWindowName
 						WS_POPUP,        // dwStyle
-                        0, 0, // x, y
+                        x, y, // x, y
                         g_iWidth, g_iHeight,          // nWidth, nHeight
                         hParent,                         // hWndParent
                         NULL,                         // hMenu
@@ -406,7 +409,7 @@ extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInsta
  
   HWND zpos = topmost ? HWND_TOPMOST : HWND_NOTOPMOST;
 
-  SetWindowPos(hWnd,zpos,0,0,g_iWidth,g_iHeight,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+  SetWindowPos(hWnd,zpos,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
 
   // Initialise Direct3D
   if(SUCCEEDED(D3DStartup(hWnd)))
@@ -431,7 +434,22 @@ extern "C" __declspec(dllexport)VOID WINAPI SetD3DCursorWindowPosition(int x, in
 	g_iWidth = width;
 	g_iHeight = height;
 	HWND zpos = topmost ? HWND_TOPMOST : HWND_NOTOPMOST;
+	wait = true;
 	SetWindowPos(hWnd, zpos, x, y, g_iWidth, g_iHeight, SWP_NOACTIVATE);
+	D3DShutdown();
+	if (SUCCEEDED(D3DStartup(hWnd)))
+	{
+		if (SUCCEEDED(InitSprites()))
+		{
+			// Show the window
+			ShowWindow(hWnd, SW_SHOWDEFAULT);
+			UpdateWindow(hWnd);
+		}
+	}
+	wait = false;
+	//D3DXMATRIX Ortho2D;
+	//D3DXMatrixOrthoLH(&Ortho2D, g_iWidth, g_iHeight, 0.0f, 1.0f);
+	//g_pD3DDevice->SetTransform(D3DTS_PROJECTION, &Ortho2D);
 }
 
 extern "C" __declspec(dllexport)VOID WINAPI RenderAllD3DCursors()

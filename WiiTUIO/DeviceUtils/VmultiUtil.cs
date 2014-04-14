@@ -23,7 +23,7 @@ namespace WiiTUIO.DeviceUtils
         private static string registryPath = "SOFTWARE\\Microsoft\\Wisp\\Pen\\Digimon";
 
         //Returns device path to current monitor for the vmulti device
-        public static string getCurrentMonitor()
+        public static string getCurrentMonitorDevicePath()
         {
             RegistryKey regKey = Registry.LocalMachine.OpenSubKey(registryPath, false);
             if (regKey != null)
