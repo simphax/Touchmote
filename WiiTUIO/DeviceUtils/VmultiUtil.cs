@@ -58,14 +58,10 @@ namespace WiiTUIO.DeviceUtils
                 {
                     if (valueName.ToLower().Contains(vmultiDevicePathSearch))
                     {
-                        Console.WriteLine("Set vmulti monitor to " + monitor.DevicePath);
-                        regKey.SetValue(valueName,monitor.DevicePath);
-                        Settings.Default.primaryMonitor = monitor.DevicePath;
-
-                        success = true;
+                        Console.WriteLine("Deleting registry key for " + valueName);
+                        regKey.DeleteValue(valueName);
                     }
                 }
-                if(!success)
                 {
                     IEnumerable<HidDevice> hidDevices = HidDevices.Enumerate();
 
@@ -81,7 +77,7 @@ namespace WiiTUIO.DeviceUtils
 
                     if(devicePath != null)
                     {
-                        Console.WriteLine("Creating new registry row for " + devicePath + ". Setting vmulti monitor to " + monitor.DevicePath);
+                        Console.WriteLine("Creating registry key for " + devicePath + ". Setting vmulti monitor to " + monitor.DevicePath);
                         regKey.SetValue("20-" + devicePath, monitor.DevicePath, RegistryValueKind.String);
                         Settings.Default.primaryMonitor = monitor.DevicePath;
                         success = true;
