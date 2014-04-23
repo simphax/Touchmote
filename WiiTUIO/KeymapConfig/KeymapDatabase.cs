@@ -128,10 +128,10 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Page Down", "next"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "End", "end"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Home", "home"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left", "left"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Up", "up"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Right", "right"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Down", "down"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Arrow Left", "left"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Arrow Up", "up"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Arrow Right", "right"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Arrow Down", "down"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Print Screen", "snapshot"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Insert", "ins"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Delete", "delete"));
