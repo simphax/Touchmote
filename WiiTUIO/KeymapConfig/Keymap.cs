@@ -92,43 +92,45 @@ namespace WiiTUIO
                     ((JObject)level1).Remove(input.Key);
                 }
 
-                JToken outputs = null;
-
-                if (config.Stack.Count > 1)
+                if (!config.Inherited)
                 {
-                    JArray array = new JArray();
-                    foreach(KeymapOutput output in config.Stack)
-                    {
-                        array.Add(output.Key);
-                    }
-                    outputs = array;
-                }
-                else if (config.Stack.Count == 1)
-                {
-                    outputs = config.Stack.First().Key;
-                }
+                    JToken outputs = null;
 
-                if (config.Scale != Settings.Default.defaultContinousScale || config.Threshold != Settings.Default.defaultContinousPressThreshold || config.Deadzone != Settings.Default.defaultContinousDeadzone)
-                {
-                    JObject settings = new JObject();
-                    if (config.Scale != Settings.Default.defaultContinousScale)
+                    if (config.Stack.Count > 1)
                     {
-                        settings.Add("scale", config.Scale);
+                        JArray array = new JArray();
+                        foreach (KeymapOutput output in config.Stack)
+                        {
+                            array.Add(output.Key);
+                        }
+                        outputs = array;
                     }
-                    if (config.Threshold != Settings.Default.defaultContinousPressThreshold)
+                    else if (config.Stack.Count == 1)
                     {
-                        settings.Add("threshold", config.Threshold);
+                        outputs = config.Stack.First().Key;
                     }
-                    if (config.Deadzone != Settings.Default.defaultContinousDeadzone)
+
+                    if (config.Scale != Settings.Default.defaultContinousScale || config.Threshold != Settings.Default.defaultContinousPressThreshold || config.Deadzone != Settings.Default.defaultContinousDeadzone)
                     {
-                        settings.Add("deadzone", config.Deadzone);
+                        JObject settings = new JObject();
+                        if (config.Scale != Settings.Default.defaultContinousScale)
+                        {
+                            settings.Add("scale", config.Scale);
+                        }
+                        if (config.Threshold != Settings.Default.defaultContinousPressThreshold)
+                        {
+                            settings.Add("threshold", config.Threshold);
+                        }
+                        if (config.Deadzone != Settings.Default.defaultContinousDeadzone)
+                        {
+                            settings.Add("deadzone", config.Deadzone);
+                        }
+                        settings.Add("output", outputs);
+                        outputs = settings;
                     }
-                    settings.Add("output", outputs);
-                    outputs = settings;
+
+                    ((JObject)level1).Add(input.Key, outputs);
                 }
-
-                ((JObject)level1).Add(input.Key, outputs);
-
                 jsonObj.Remove(key);
                 jsonObj.Add(key, level1);
             }
