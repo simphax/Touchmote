@@ -68,19 +68,15 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right", "Classic.Right"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Up", "Classic.Up"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Down", "Classic.Down"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick X", "Classic.StickLX", false, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Y", "Classic.StickLY", false, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick X", "Classic.StickRX", false, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Y", "Classic.StickRY", false, true, false));
 
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Left", "Classic.StickLLeft"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Right", "Classic.StickLRight"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Up", "Classic.StickLUp"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Down", "Classic.StickLDown"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Left", "Classic.StickRLeft"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Right", "Classic.StickRRight"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Up", "Classic.StickRUp"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Down", "Classic.StickRDown"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Left", "Classic.StickLLeft", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Right", "Classic.StickLRight", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Up", "Classic.StickLUp", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Down", "Classic.StickLDown", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Left", "Classic.StickRLeft", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Right", "Classic.StickRRight", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Up", "Classic.StickRUp", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Down", "Classic.StickRDown", true, true, false));
 
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Minus", "Classic.Minus"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Plus", "Classic.Plus"));
