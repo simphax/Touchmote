@@ -252,6 +252,18 @@ namespace WiiTUIO.Output.Handlers.Xinput
                     case "stickldown":
                         report.StickLY = 0.5 - (value * 0.5);
                         break;
+                    case "stickrright":
+                        report.StickRX = 0.5 + (value * 0.5);
+                        break;
+                    case "stickrleft":
+                        report.StickRX = 0.5 - (value * 0.5);
+                        break;
+                    case "stickrup":
+                        report.StickRY = 0.5 + (value * 0.5);
+                        break;
+                    case "stickrdown":
+                        report.StickRY = 0.5 - (value * 0.5);
+                        break;
                     case "triggerr":
                         report.TriggerR = value;
                         break;
