@@ -10,6 +10,8 @@
 #include <bthdef.h>
 #include <BluetoothAPIs.h>
 #include <strsafe.h>
+#include <vcclr.h>
+#include <map>
 
 #pragma comment(lib, "Bthprops.lib")
 
@@ -397,6 +399,18 @@ namespace WiiCPP {
 		}
 	};
 
+	//To be able to use LUID in map
+	class luidComp
+	{
+	public:
+
+		bool operator()(const LUID& l,
+			const LUID& r)
+			const
+		{
+			return (l.LowPart != r.LowPart) || (l.HighPart != r.HighPart);
+		}
+	};
 
 	//
 	//
@@ -461,6 +475,7 @@ namespace WiiCPP {
 			return gcnew System::String(deviceName.monitorFriendlyDeviceName);
 		}
 
+
 		static array<MonitorInfo^>^ enumerateMonitors(){
 
 			int numMonitors = 0;
@@ -471,21 +486,17 @@ namespace WiiCPP {
 			DISPLAYCONFIG_PATH_INFO* displayPaths = NULL;
 			DISPLAYCONFIG_MODE_INFO* displayModes = NULL;
 
-			UINT32 num_of_paths2 = 0;
-			UINT32 num_of_modes2 = 0;
-			DISPLAYCONFIG_PATH_INFO* displayPaths2 = NULL;
-			DISPLAYCONFIG_MODE_INFO* displayModes2 = NULL;
-
 			GetDisplayConfigBufferSizes(QDC_ALL_PATHS, &num_of_paths, &num_of_modes);
-
+			
 
 			// Allocate paths and modes dynamically
 			displayPaths = (DISPLAYCONFIG_PATH_INFO*)calloc((int)num_of_paths, sizeof(DISPLAYCONFIG_PATH_INFO));
 			displayModes = (DISPLAYCONFIG_MODE_INFO*)calloc((int)num_of_modes, sizeof(DISPLAYCONFIG_MODE_INFO));
 
 			// Query for the information 
-			QueryDisplayConfig(QDC_ALL_PATHS, &num_of_paths, displayPaths, &num_of_modes, displayModes, NULL);
-
+			LONG result = QueryDisplayConfig(QDC_ALL_PATHS, &num_of_paths, displayPaths, &num_of_modes, displayModes, NULL);
+			
+			/*
 			//Count how many monitors...
 			for (int i = 0; i < num_of_modes; i++) {
 
@@ -502,34 +513,57 @@ namespace WiiCPP {
 					break;
 				}
 			}
+			*/
 
-			array<MonitorInfo^>^ monitors = gcnew array<MonitorInfo^>(numMonitors);
+			map<LUID, gcroot<MonitorInfo^>,luidComp> monitormap;
+
+			MonitorInfo^ tmpMonInfo;
 
 			for (int i = 0; i < num_of_modes; i++) {
-
-				if (!monitors[displayModes[i].id])
+				/*
+				printf("\n AdapterID Low: %d", displayModes[i].adapterId.LowPart);
+				printf("\n AdapterID High: %d", displayModes[i].adapterId.LowPart);
+				*/
+				if (!monitormap.count(displayModes[i].adapterId))
 				{
-					monitors[displayModes[i].id] = gcnew MonitorInfo();
+					monitormap[displayModes[i].adapterId] = gcnew MonitorInfo();
 				}
 
 				switch (displayModes[i].infoType) {
 
 				case DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE:
-					monitors[displayModes[i].id]->DeviceName = getGDIDeviceNameFromSource(displayModes[i].adapterId, displayModes[i].id);
+					monitormap[displayModes[i].adapterId]->DeviceName = getGDIDeviceNameFromSource(displayModes[i].adapterId, displayModes[i].id);
 					break;
 
 				case DISPLAYCONFIG_MODE_INFO_TYPE_TARGET:
-					monitors[displayModes[i].id]->DevicePath = getMonitorDevicePathFromTarget(displayModes[i].adapterId, displayModes[i].id);
-					monitors[displayModes[i].id]->FriendlyName = getFriendlyNameFromTarget(displayModes[i].adapterId, displayModes[i].id);
-					monitors[curMonitor++] = monitors[displayModes[i].id];
+					monitormap[displayModes[i].adapterId]->DevicePath = getMonitorDevicePathFromTarget(displayModes[i].adapterId, displayModes[i].id);
+					monitormap[displayModes[i].adapterId]->FriendlyName = getFriendlyNameFromTarget(displayModes[i].adapterId, displayModes[i].id);
 					break;
 
 				default:
 					fputs("error", stderr);
 					break;
 				}
+
 			}
 
+
+			array<MonitorInfo^>^ monitors = gcnew array<MonitorInfo^>(monitormap.size());
+			
+			
+			for (map<LUID, gcroot<MonitorInfo^>>::iterator iter = monitormap.begin();
+				iter != monitormap.end();
+				++iter)
+			{
+				/*
+				printf("\n low: %d", iter->first.LowPart);
+				printf("\n high: %d", iter->first.HighPart);
+				printf("\n Devname: %s", iter->second->DeviceName);
+				printf("\n friendly: %s", iter->second->FriendlyName);
+				*/
+				monitors[curMonitor++] = iter->second;
+			}
+			
 			free(displayPaths);
 			free(displayModes);
 			return monitors;
