@@ -25,9 +25,13 @@ Please use the GitHub Issue tracker to report bugs. Always include the following
 
 How to build
 ==============
-1. Install the Touchmote test certificate by running the installer from touchmote.net<br />
-2. Get the source and open Touchmote.sln with Microsoft Visual Studio. Make sure Visual Studio is run with admin priviliges. <br />
-3. If you want to use the debugger, edit the file called app.manifest and change uiAccess to false. Otherwise the app has to be run under Program Files. This is for the cursor to be able to show outside the desktop.<br />
+*First install:*<br />
+Microsoft Visual Studio 2013<br />
+Direct X SDK
+
+1. Install the Touchmote drivers and test certificate by running the installer from touchmote.net<br />
+2. Run Visual Studio "as Administrator". Open the project file Touchmote.sln. <br />
+3. If you want to use the debugger, edit the file called app.manifest and change uiAccess to false. Otherwise the app has to be run under Program Files. This is for the cursor to be able to show on top of the Modern UI.<br />
 4. Go to Build->Configuration manager...<br />
 5. Choose solution platform for either x86 or x64 depending on your system. Close it and Build.<br />
 
@@ -43,6 +47,12 @@ MultiTouchVista:  http://multitouchvista.codeplex.com<br />
 
 Release History
 ==============
+**v1.0 beta 11**<br />
+- Support for multiple monitors
+- More possibilities with analog sticks
+- Better pairing
+- Bug fixes
+
 **v1.0 beta 10**<br />
 - Added visual keymap editor.
 - Experimental Windows 7 support.
