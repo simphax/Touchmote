@@ -11,6 +11,8 @@
 #include <d3dx9.h>
 #include <dwmapi.h>
 
+#include <iostream>
+
 // Import libraries to link with
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
@@ -20,9 +22,6 @@
 #define MAX_CURSORS 16
 #define SPRITE_SIZE 128
 
-#define NORMAL_SIZE 0.5f
-#define PRESSED_SIZE 0.4f
-#define HIDDEN_SIZE 0.0f
 #define ANIMATION_DURATION 100
 
 #define TEXTURE_PATH L"Resources\\circle.png"
@@ -56,7 +55,10 @@ LPD3DXSPRITE g_sprite=NULL;
 LPDIRECT3DTEXTURE9 g_circle=NULL;
 INT enabledCursors = 0;
 
-FLOAT scale = 0.1f;
+FLOAT screenRelativeCursorScale = 0.02f;
+FLOAT normalCursorScale = 0.5f;
+FLOAT pressedCursorScale = 0.4f;
+FLOAT hiddenCursorScale = 0.0f;
 
 HWND       hWnd  = NULL;
 
@@ -204,17 +206,17 @@ VOID Render(VOID)
 
 			}
 
-			clearRect[i].x1 = cursors[j].last_rendered_x - (SPRITE_SIZE / 2);
-			clearRect[i].x2 = cursors[j].last_rendered_x + (SPRITE_SIZE / 2);
-			clearRect[i].y1 = cursors[j].last_rendered_y - (SPRITE_SIZE / 2);
-			clearRect[i].y2 = cursors[j].last_rendered_y + (SPRITE_SIZE / 2);
+			clearRect[i].x1 = cursors[j].last_rendered_x - (SPRITE_SIZE * normalCursorScale);
+			clearRect[i].x2 = cursors[j].last_rendered_x + (SPRITE_SIZE * normalCursorScale);
+			clearRect[i].y1 = cursors[j].last_rendered_y - (SPRITE_SIZE * normalCursorScale);
+			clearRect[i].y2 = cursors[j].last_rendered_y + (SPRITE_SIZE * normalCursorScale);
 		}
 		for (j = 0; i < enabledCursors + nToClear; i++)
 		{
-			clearRect[i].x1 = clearQueue[j].cursor->last_rendered_x - (SPRITE_SIZE / 2);
-			clearRect[i].x2 = clearQueue[j].cursor->last_rendered_x + (SPRITE_SIZE / 2);
-			clearRect[i].y1 = clearQueue[j].cursor->last_rendered_y - (SPRITE_SIZE / 2);
-			clearRect[i].y2 = clearQueue[j].cursor->last_rendered_y + (SPRITE_SIZE / 2);
+			clearRect[i].x1 = clearQueue[j].cursor->last_rendered_x - (SPRITE_SIZE * normalCursorScale);
+			clearRect[i].x2 = clearQueue[j].cursor->last_rendered_x + (SPRITE_SIZE * normalCursorScale);
+			clearRect[i].y1 = clearQueue[j].cursor->last_rendered_y - (SPRITE_SIZE * normalCursorScale);
+			clearRect[i].y2 = clearQueue[j].cursor->last_rendered_y + (SPRITE_SIZE * normalCursorScale);
 			j++;
 		}
 
@@ -232,8 +234,8 @@ VOID Render(VOID)
 
 			size.top = 0;
 			size.left = 0;
-			size.right = 128;
-			size.bottom = 128;
+			size.right = SPRITE_SIZE;
+			size.bottom = SPRITE_SIZE;
 
 			if (SUCCEEDED(g_sprite->Begin(D3DXSPRITE_ALPHABLEND)))
 			{
@@ -254,56 +256,56 @@ VOID Render(VOID)
 					//Animation
 					if (cursors[j].hidden)
 					{
-						if (cursors[j].scaling == HIDDEN_SIZE)
+						if (cursors[j].scaling == hiddenCursorScale)
 						{
 
 						}
-						else if (abs(cursors[j].scaling - HIDDEN_SIZE) > 0.01)
+						else if (abs(cursors[j].scaling - hiddenCursorScale) > 0.01)
 						{
 							float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC) * 1000;
-							cursors[j].scaling = easeInOutQuint(diff, cursors[j].snapshot_scaling, HIDDEN_SIZE - cursors[j].snapshot_scaling, ANIMATION_DURATION);
+							cursors[j].scaling = easeInOutQuint(diff, cursors[j].snapshot_scaling, hiddenCursorScale - cursors[j].snapshot_scaling, ANIMATION_DURATION);
 						}
 						else
 						{
-							cursors[j].scaling = HIDDEN_SIZE;
+							cursors[j].scaling = hiddenCursorScale;
 						}
 					}
 					else if (cursors[j].pressed)
 					{
-						if (cursors[j].scaling == PRESSED_SIZE)
+						if (cursors[j].scaling == pressedCursorScale)
 						{
 
 						}
-						else if (abs(cursors[j].scaling - PRESSED_SIZE) > 0.01)
+						else if (abs(cursors[j].scaling - pressedCursorScale) > 0.01)
 						{
 							float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC) * 1000;
-							cursors[j].scaling = easeInOutQuint(diff, cursors[j].snapshot_scaling, PRESSED_SIZE - cursors[j].snapshot_scaling, ANIMATION_DURATION);
+							cursors[j].scaling = easeInOutQuint(diff, cursors[j].snapshot_scaling, pressedCursorScale - cursors[j].snapshot_scaling, ANIMATION_DURATION);
 						}
 						else
 						{
-							cursors[j].scaling = PRESSED_SIZE;
+							cursors[j].scaling = pressedCursorScale;
 						}
 					}
 					else if (!cursors[j].pressed)
 					{
-						if (cursors[j].scaling == NORMAL_SIZE)
+						if (cursors[j].scaling == normalCursorScale)
 						{
 
 						}
-						else if (abs(cursors[j].scaling - NORMAL_SIZE) > 0.01)
+						else if (abs(cursors[j].scaling - normalCursorScale) > 0.01)
 						{
 							float diff = (((float)clock() - (float)cursors[j].animationStart) / CLOCKS_PER_SEC) * 1000;
-							cursors[j].scaling = easeInOutQuint(diff, cursors[j].snapshot_scaling, NORMAL_SIZE - cursors[j].snapshot_scaling, ANIMATION_DURATION);
+							cursors[j].scaling = easeInOutQuint(diff, cursors[j].snapshot_scaling, normalCursorScale - cursors[j].snapshot_scaling, ANIMATION_DURATION);
 						}
 						else
 						{
-							cursors[j].scaling = NORMAL_SIZE;
+							cursors[j].scaling = normalCursorScale;
 						}
 					}
 
-					if (cursors[j].scaling < 0 || cursors[j].scaling > 1.0f)
+					if (cursors[j].scaling < 0)
 					{
-						cursors[j].scaling = HIDDEN_SIZE;
+						cursors[j].scaling = hiddenCursorScale;
 					}
 
 					scaling.x = cursors[j].scaling;
@@ -365,12 +367,19 @@ LRESULT WINAPI WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
+VOID recalculateCursorScale(FLOAT scale)
+{
+	normalCursorScale = (scale * g_iWidth) / SPRITE_SIZE;
+	//normalCursorScale = normalCursorScale > 1.0f ? 1.0f : normalCursorScale;
+	pressedCursorScale = 0.8f*normalCursorScale;
+}
+
 // +-----------+
 // | WinMain() |
 // +-----------+---------+
 // | Program entry point |
 // +---------------------+
-extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInstance, HWND hParent, int x, int y, int width, int height, bool topmost)
+extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInstance, HWND hParent, int x, int y, int width, int height, bool topmost, float cursorScale)
 {
   MSG        uMsg;     
   WNDCLASSEX wc    = {sizeof(WNDCLASSEX),              // cbSize
@@ -390,6 +399,10 @@ extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInsta
 
   g_iWidth = width;
   g_iHeight = height;
+
+  screenRelativeCursorScale = cursorScale;
+
+  recalculateCursorScale(screenRelativeCursorScale);
 
   hWnd = CreateWindowEx(WS_EX_COMPOSITED | WS_EX_LAYERED | WS_EX_TRANSPARENT,             // dwExStyle
                         g_wcpAppName,                 // lpClassName
@@ -429,6 +442,12 @@ extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInsta
   return 0;
 }
 
+extern "C" __declspec(dllexport)VOID WINAPI SetCursorScale(float cursorScale)
+{
+	screenRelativeCursorScale = cursorScale;
+	recalculateCursorScale(screenRelativeCursorScale);
+}
+
 extern "C" __declspec(dllexport)VOID WINAPI SetD3DCursorWindowPosition(int x, int y, int width, int height, bool topmost)
 {
 	g_iWidth = width;
@@ -437,6 +456,9 @@ extern "C" __declspec(dllexport)VOID WINAPI SetD3DCursorWindowPosition(int x, in
 	wait = true;
 	SetWindowPos(hWnd, zpos, x, y, g_iWidth, g_iHeight, SWP_NOACTIVATE);
 	D3DShutdown();
+
+	recalculateCursorScale(screenRelativeCursorScale);
+
 	if (SUCCEEDED(D3DStartup(hWnd)))
 	{
 		if (SUCCEEDED(InitSprites()))
@@ -500,7 +522,7 @@ extern "C" __declspec(dllexport)VOID WINAPI AddD3DCursor(int id, DWORD color)
 		newcursor.rotation = 0;
 		newcursor.last_rendered_x = 0;
 		newcursor.last_rendered_y = 0;
-		newcursor.scaling = NORMAL_SIZE;
+		newcursor.scaling = normalCursorScale;
 		newcursor.hidden = false;
 		newcursor.enabled = true;
 		newcursor.color = color;

@@ -236,6 +236,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private double _pointer_cursorSize = 0.03;
+        public double pointer_cursorSize
+        {
+            get { return _pointer_cursorSize; }
+            set
+            {
+                _pointer_cursorSize = value;
+                OnPropertyChanged("pointer_cursorSize");
+            }
+        }
+
         private double _pointer_marginsTopBottom = 0.8;
         public double pointer_marginsTopBottom
         {
