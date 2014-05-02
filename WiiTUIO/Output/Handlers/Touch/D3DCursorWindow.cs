@@ -61,7 +61,7 @@ namespace WiiTUIO.Output.Handlers.Touch
         private List<D3DCursor> cursors;
             
         [DllImport("D3DCursor.dll")]
-        private static extern IntPtr StartD3DCursorWindow(IntPtr hInstance, IntPtr parent, int windowX, int windowY, int windowWidth, int windowHeight, bool topmost);
+        private static extern IntPtr StartD3DCursorWindow(IntPtr hInstance, IntPtr parent, int windowX, int windowY, int windowWidth, int windowHeight, bool topmost, float cursorScale);
 
         [DllImport("D3DCursor.dll")]
         private static extern void SetD3DCursorWindowPosition(int x, int y, int width, int height, bool topmost);
@@ -87,7 +87,7 @@ namespace WiiTUIO.Output.Handlers.Touch
         //Should be run with a dispatcher
         public void Start(IntPtr parent)
         {
-            StartD3DCursorWindow(Process.GetCurrentProcess().Handle, parent, primaryScreen.Bounds.X, primaryScreen.Bounds.Y, primaryScreen.Bounds.Width, primaryScreen.Bounds.Height, !Settings.Default.noTopmost);
+            StartD3DCursorWindow(Process.GetCurrentProcess().Handle, parent, primaryScreen.Bounds.X, primaryScreen.Bounds.Y, primaryScreen.Bounds.Width, primaryScreen.Bounds.Height, !Settings.Default.noTopmost, (float)Settings.Default.pointer_cursorSize);
             updateWindowToScreen(primaryScreen);
         }
 
