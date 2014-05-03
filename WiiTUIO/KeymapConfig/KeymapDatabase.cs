@@ -94,10 +94,10 @@ namespace WiiTUIO
 
             allOutputs = new List<KeymapOutput>();
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor", "touch", false, false, true, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor Left", "touchx-", true, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor Right", "touchx+", true, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor Up", "touchy+", true, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor Down", "touchy-", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor Left", "touchx-", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor Right", "touchx+", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor Up", "touchy+", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor Down", "touchy-", false, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Main", "touchmaster"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Slave", "touchslave"));
 
