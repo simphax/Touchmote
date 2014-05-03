@@ -317,7 +317,7 @@ namespace DriverInstall
 
         private void removeAllButTouch()
         {
-            for (int i = 2; i <= 9; i++)
+            for (int i = 2; i <= 7; i++)
             {
                 try
                 {
