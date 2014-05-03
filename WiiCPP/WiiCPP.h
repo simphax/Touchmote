@@ -488,7 +488,6 @@ namespace WiiCPP {
 
 			GetDisplayConfigBufferSizes(QDC_ALL_PATHS, &num_of_paths, &num_of_modes);
 			
-
 			// Allocate paths and modes dynamically
 			displayPaths = (DISPLAYCONFIG_PATH_INFO*)calloc((int)num_of_paths, sizeof(DISPLAYCONFIG_PATH_INFO));
 			displayModes = (DISPLAYCONFIG_MODE_INFO*)calloc((int)num_of_modes, sizeof(DISPLAYCONFIG_MODE_INFO));
@@ -496,68 +495,31 @@ namespace WiiCPP {
 			// Query for the information 
 			LONG result = QueryDisplayConfig(QDC_ALL_PATHS, &num_of_paths, displayPaths, &num_of_modes, displayModes, NULL);
 			
-			/*
-			//Count how many monitors...
-			for (int i = 0; i < num_of_modes; i++) {
+			map<int, gcroot<MonitorInfo^>> monitormap;
 
-				switch (displayModes[i].infoType) {
-				case DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE:
-					break;
-
-				case DISPLAYCONFIG_MODE_INFO_TYPE_TARGET:
-					numMonitors++;
-					break;
-
-				default:
-					fputs("error", stderr);
-					break;
-				}
-			}
-			*/
-
-			map<LUID, gcroot<MonitorInfo^>,luidComp> monitormap;
-
-			MonitorInfo^ tmpMonInfo;
-
-			for (int i = 0; i < num_of_modes; i++) {
-				/*
-				printf("\n AdapterID Low: %d", displayModes[i].adapterId.LowPart);
-				printf("\n AdapterID High: %d", displayModes[i].adapterId.LowPart);
-				*/
-				if (!monitormap.count(displayModes[i].adapterId))
+			//display paths lists relationships between virtual desktop (source) -> physical monitors (target)
+			//we will base the list on physical monitor ids
+			//since there can only be either several monitors to one virtual desktop but never 
+			//several virtual desktops to one monitor (as far as I can tell...)
+			for (int i = 0; i < num_of_paths; i++)
+			{
+				if (displayPaths[i].flags & DISPLAYCONFIG_PATH_ACTIVE) //If the monitor is active
 				{
-					monitormap[displayModes[i].adapterId] = gcnew MonitorInfo();
+					monitormap[displayPaths[i].targetInfo.id] = gcnew MonitorInfo();
+					monitormap[displayPaths[i].targetInfo.id]->DeviceName = getGDIDeviceNameFromSource(displayPaths[i].sourceInfo.adapterId, displayPaths[i].sourceInfo.id);
+					monitormap[displayPaths[i].targetInfo.id]->DevicePath = getMonitorDevicePathFromTarget(displayPaths[i].targetInfo.adapterId, displayPaths[i].targetInfo.id);
+					monitormap[displayPaths[i].targetInfo.id]->FriendlyName = getFriendlyNameFromTarget(displayPaths[i].targetInfo.adapterId, displayPaths[i].targetInfo.id);
 				}
-
-				switch (displayModes[i].infoType) {
-
-				case DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE:
-					monitormap[displayModes[i].adapterId]->DeviceName = getGDIDeviceNameFromSource(displayModes[i].adapterId, displayModes[i].id);
-					break;
-
-				case DISPLAYCONFIG_MODE_INFO_TYPE_TARGET:
-					monitormap[displayModes[i].adapterId]->DevicePath = getMonitorDevicePathFromTarget(displayModes[i].adapterId, displayModes[i].id);
-					monitormap[displayModes[i].adapterId]->FriendlyName = getFriendlyNameFromTarget(displayModes[i].adapterId, displayModes[i].id);
-					break;
-
-				default:
-					fputs("error", stderr);
-					break;
-				}
-
 			}
-
 
 			array<MonitorInfo^>^ monitors = gcnew array<MonitorInfo^>(monitormap.size());
 			
-			
-			for (map<LUID, gcroot<MonitorInfo^>>::iterator iter = monitormap.begin();
+			for (map<int, gcroot<MonitorInfo^>>::iterator iter = monitormap.begin();
 				iter != monitormap.end();
 				++iter)
 			{
 				/*
-				printf("\n low: %d", iter->first.LowPart);
-				printf("\n high: %d", iter->first.HighPart);
+				printf("\n id: %d", iter->first);
 				printf("\n Devname: %s", iter->second->DeviceName);
 				printf("\n friendly: %s", iter->second->FriendlyName);
 				*/
