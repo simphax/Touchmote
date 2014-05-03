@@ -23,7 +23,7 @@ namespace WiiTUIO.Output
 
         public enum OutputType
         {
-            TOUCH,
+            TOUCHINJECT,
             TOUCHMTV,
             TOUCHVMULTI,
             TUIO,
@@ -35,8 +35,8 @@ namespace WiiTUIO.Output
         {
             switch (type)
             {
-                case OutputType.TOUCH:
-                    return "touch";
+                case OutputType.TOUCHINJECT:
+                    return "touch-inject";
                 case OutputType.TOUCHMTV:
                     return "touch-mtv";
                 case OutputType.TOUCHVMULTI:
@@ -48,7 +48,7 @@ namespace WiiTUIO.Output
                 case OutputType.DRAW:
                     return "draw";
                 default:
-                    return "touch";
+                    return "touch-vmulti";
             }
         }
 
@@ -56,7 +56,11 @@ namespace WiiTUIO.Output
         {
             if (name == "touch")
             {
-                return OutputType.TOUCH;
+                return OutputType.TOUCHVMULTI;
+            }
+            if (name == "touch-inject")
+            {
+                return OutputType.TOUCHINJECT;
             }
             if (name == "touch-mtv")
             {
@@ -78,7 +82,7 @@ namespace WiiTUIO.Output
             {
                 return OutputType.DRAW;
             }
-            return OutputType.TOUCH; //Default to touch
+            return OutputType.TOUCHVMULTI; //Default
         }
 
         private static IProviderHandler createProviderHandler(string name)
@@ -90,7 +94,7 @@ namespace WiiTUIO.Output
         {
             switch (type)
             {
-                case OutputType.TOUCH:
+                case OutputType.TOUCHINJECT:
                     return new TouchInjectProviderHandler();
                 case OutputType.TOUCHMTV:
                     return new MTVProviderHandler();
