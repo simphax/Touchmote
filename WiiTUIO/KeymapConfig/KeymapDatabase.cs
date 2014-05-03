@@ -49,12 +49,12 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Minus", "Minus"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "One", "One"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Two", "Two"));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X-", "AccelX-", false, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X+", "AccelX+", false, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y-", "AccelY-", false, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y+", "AccelY+", false, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z-", "AccelZ-", false, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z+", "AccelZ+", false, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X-", "AccelX-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X+", "AccelX+", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y-", "AccelY-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y+", "AccelY+", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z-", "AccelZ-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z+", "AccelZ+", true, true, false));
 
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "C", "Nunchuk.C"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Z", "Nunchuk.Z"));
