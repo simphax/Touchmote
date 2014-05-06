@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="ZeroconfService.DNSService">
+    <Position X="2.5" Y="6" Width="2.5" />
+    <Members>
+      <Method Name="AsyncPollCallback" Hidden="true" />
+      <Method Name="GetInvokeObject" Hidden="true" />
+      <Method Name="InheritInvokeOptions" Hidden="true" />
+      <Method Name="Invoke" Hidden="true" />
+      <Field Name="mAllowApplicationForms" Hidden="true" />
+      <Field Name="mAllowMultithreadedCallbacks" Hidden="true" />
+      <Field Name="mInvokeableObject" Hidden="true" />
+      <Method Name="PollInvokeable" Hidden="true" />
+      <Field Name="sdRefToSocketMapping" Hidden="true" />
+      <Method Name="SetupWatchSocket" Hidden="true" />
+      <Method Name="TeardownWatchSocket" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="ZeroconfService.DNSService.PollInvokeableDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DNSService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>JAAIAABgAIAIRAAAAAAAAAAAAAAEAgAEAAACAQgAAAA=</HashCode>
+      <FileName>DNSService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ZeroconfService.DNSServiceException">
+    <Position X="8.25" Y="0.5" Width="2.25" />
+    <Members>
+      <Method Name="DNSServiceException" Hidden="true" />
+      <Field Name="e" Hidden="true" />
+      <Field Name="f" Hidden="true" />
+      <Field Name="innerException" Hidden="true" />
+      <Field Name="s" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAIAAAACQAASAIAAIBAAAAA=</HashCode>
+      <FileName>DNSServiceException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ZeroconfService.NetService">
+    <Position X="0.5" Y="0.5" Width="2.75" />
+    <Members>
+      <Method Name="~NetService" Hidden="true" />
+      <Method Name="ByteArrayCompare" Hidden="true" />
+      <Field Name="disposed" Hidden="true" />
+      <Method Name="IPLookup" Hidden="true" />
+      <Field Name="ipLookupQueryHandle" Hidden="true" />
+      <Method Name="IPLookupReply" Hidden="true" />
+      <Field Name="ipLookupReplyCb" Hidden="true" />
+      <Field Name="mAddresses" Hidden="true" />
+      <Field Name="mDomain" Hidden="true" />
+      <Field Name="mHostName" Hidden="true" />
+      <Field Name="mName" Hidden="true" />
+      <Field Name="mPort" Hidden="true" />
+      <Field Name="mTXTRecordData" Hidden="true" />
+      <Field Name="mType" Hidden="true" />
+      <Method Name="Publish" Hidden="true" />
+      <Method Name="QueryReply" Hidden="true" />
+      <Field Name="queryReplyCb" Hidden="true" />
+      <Field Name="registeredServiceHandle" Hidden="true" />
+      <Method Name="RegisterReply" Hidden="true" />
+      <Field Name="registerReplyCb" Hidden="true" />
+      <Method Name="ResolveReply" Hidden="true" />
+      <Field Name="resolveReplyCb" Hidden="true" />
+      <Field Name="resolveTimer" Hidden="true" />
+      <Method Name="ResolveTimerCallback" Hidden="true" />
+      <Method Name="ResolveTimerReply" Hidden="true" />
+      <Field Name="serviceQueryHandle" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="ZeroconfService.NetService.ServicePublished" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>NetService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ZeroconfService.NetService.ServiceNotPublished" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>NetService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ZeroconfService.NetService.ServiceResolved" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>NetService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ZeroconfService.NetService.ServiceNotResolved" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>NetService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ZeroconfService.NetService.ServiceTXTUpdated" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>NetService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ZeroconfService.NetService.ResolveTimerReplyDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>NetService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>oAJCgIMAAGARASCIgUCYABYBKggQAAAAZQgCAAAAMAA=</HashCode>
+      <FileName>NetService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ZeroconfService.NetServiceBrowser">
+    <Position X="3.75" Y="0.5" Width="2.5" />
+    <Members>
+      <Method Name="BrowseReply" Hidden="true" />
+      <Field Name="browseReplyCb" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Field Name="disposed" Hidden="true" />
+      <Method Name="DomainSearchReply" Hidden="true" />
+      <Field Name="domainSearchReplyCb" Hidden="true" />
+      <Field Name="foundServices" Hidden="true" />
+      <Method Name="SearchForDomains" Hidden="true" />
+      <Field Name="serviceHandle" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="ZeroconfService.NetServiceBrowser.ServiceFound" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>NetServiceBrowser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ZeroconfService.NetServiceBrowser.ServiceRemoved" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>NetServiceBrowser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ZeroconfService.NetServiceBrowser.DomainFound" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>NetServiceBrowser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ZeroconfService.NetServiceBrowser.DomainRemoved" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>NetServiceBrowser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <InheritanceLine Type="ZeroconfService.DNSService" ManuallyRouted="true">
+      <Path>
+        <Point X="3.75" Y="6" />
+        <Point X="3.75" Y="5.749" />
+        <Point X="5" Y="5.749" />
+        <Point X="5" Y="3.351" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAIAAAAACCAAAAAAQQAAAIAACAQABAAEIAgAECBAAEA=</HashCode>
+      <FileName>NetServiceBrowser.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="ZeroconfService.DNSServiceErrorType">
+    <Position X="8.25" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>CBCEACKQEQEABAhAAAABIAAgAAIIAgIAAAAAAIAAABA=</HashCode>
+      <FileName>mDNSImports.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

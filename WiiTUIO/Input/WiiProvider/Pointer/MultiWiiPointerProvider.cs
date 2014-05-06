@@ -140,7 +140,7 @@ namespace WiiTUIO.Provider
                 Exception pError;
                 if (!this.initialiseWiimoteConnections(out pError))
                 {
-                    Console.WriteLine("Could not establish connection to a Wiimote: " + pError.Message, pError);
+                    //Console.WriteLine("Could not establish connection to a Wiimote: " + pError.Message, pError);
                 }
             }
         }
@@ -558,6 +558,8 @@ namespace WiiTUIO.Provider
                         //FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
 
                         //this.OnNewFrame(this, newFrame);
+
+                        //Well this is weird to call these here but its to minimize latency
 
                         OutputFactory.getCurrentProviderHandler().processEventFrame();
 
