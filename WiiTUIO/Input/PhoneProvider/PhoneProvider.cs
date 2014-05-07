@@ -17,7 +17,7 @@ using WiiTUIO.Output;
 using WiiTUIO.Output.Handlers;
 using OSC.NET;
 using System.Windows.Forms;
-using ZeroconfService;
+using Bonjour;
 
 namespace WiiTUIO.Provider
 {
@@ -27,20 +27,18 @@ namespace WiiTUIO.Provider
     public class PhoneProvider : IProvider
     {
         public event Action<int, int> OnConnect;
-
         public event Action<int, int> OnDisconnect;
-
         public event Action<WiimoteStatus> OnStatusUpdate;
-
         public event EventHandler<FrameEventArgs> OnNewFrame;
 
         private static OSCReceiver receiver;
         private static Thread messageRecieveThread;
 
-        private static NetService netService;
+        //Bonjour
+        private static DNSSDService netService;
+        private static DNSSDService publishedService;
 
         private static List<IOutputHandler> outputHandlers;
-
         private static Screen primaryScreen;
 
         public void start()
@@ -70,25 +68,9 @@ namespace WiiTUIO.Provider
             }
             OutputFactory.getCurrentProviderHandler().connect();
 
-            netService = new NetService("local.", "_touchmote._udp.", "Touchmote", port);
-            netService.DidPublishService +=netService_DidPublishService;
-            netService.DidNotPublishService += netService_DidNotPublishService;
-            netService.Publish();
-            
+            netService = new DNSSDService();
+            publishedService = netService.Register(0, 0, "Touchmote", "_touchmote._udp", null, null, port, null, null);
         }
-
-        void netService_DidNotPublishService(NetService service, DNSServiceException exception)
-        {
-            Console.WriteLine(String.Format("A DNSServiceException occured: {0}", exception.Message), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void netService_DidPublishService(NetService service)
-        {
-            Console.WriteLine("Published Bonjour Service: domain({0}) type({1}) name({2})", service.Domain, service.Type, service.Name);
-
-            netService.Stop();
-        }
-
 
         static void ListenLoop()
         {
@@ -169,9 +151,10 @@ namespace WiiTUIO.Provider
                 handler.disconnect();
             }
             OutputFactory.getCurrentProviderHandler().disconnect();
-            netService.Stop();
+            publishedService.Stop();
             receiver.Close();
             messageRecieveThread.Abort();
         }
+
     }
 }

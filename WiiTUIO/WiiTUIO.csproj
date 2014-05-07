@@ -128,6 +128,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.Bonjour">
+      <HintPath>.\Interop.Bonjour.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=0.13.0.13, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MahApps.Metro.0.13.0.13-ALPHA\lib\net45\MahApps.Metro.dll</HintPath>
@@ -473,10 +477,6 @@
     <ProjectReference Include="..\WiiCPP\WiiCPP.vcxproj">
       <Project>{78eb9de8-b6fc-47f3-970f-0b4fcb0f38a8}</Project>
       <Name>WiiCPP</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ZeroconfService\ZeroconfService.csproj">
-      <Project>{ad5cf7a9-93c4-48dd-acd8-38dd434f1491}</Project>
-      <Name>ZeroconfService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
