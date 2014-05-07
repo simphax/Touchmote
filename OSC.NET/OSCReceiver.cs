@@ -11,17 +11,24 @@ namespace OSC.NET
 	{
 		protected UdpClient udpClient;
 		protected int localPort;
+        protected int receiveBufferSize = 8192;
 
-		public OSCReceiver(int localPort)
-		{
-			this.localPort = localPort;
-			Connect();
-		}
+        public OSCReceiver(int localPort)
+        {
+            this.localPort = localPort;
+            Connect();
+        }
+
+        public OSCReceiver(int localPort, int receiveBufferSize) : this(localPort)
+        {
+            this.receiveBufferSize = receiveBufferSize;
+        }
 
 		public void Connect()
 		{
 			if(this.udpClient != null) Close();
 			this.udpClient = new UdpClient(this.localPort);
+            this.udpClient.Client.ReceiveBufferSize = this.receiveBufferSize;
 		}
 
 		public void Close()

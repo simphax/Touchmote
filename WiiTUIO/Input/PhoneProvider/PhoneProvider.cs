@@ -47,9 +47,10 @@ namespace WiiTUIO.Provider
 
             // This is the port we are going to listen on 
             ushort port = 3560;
+            int messageByteCount = 44; // We set the buffer to the size of one message so we never lag behind
 
             // Create the receiver
-            receiver = new OSCReceiver(port);
+            receiver = new OSCReceiver(port,messageByteCount);
             receiver.Connect();
 
             // Create a thread to do the listening
