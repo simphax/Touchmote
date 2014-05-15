@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
+using System.Drawing;
 
 using OSC.NET;
 using WiiTUIO.WinTouch;
@@ -139,24 +140,13 @@ namespace WiiTUIO
             Application.Current.Exit += appWillExit;
             Application.Current.SessionEnding += windowsShutdownEvent;
 
-            wiiPair = new WiiCPP.WiiPair();
-            wiiPair.addListener(this);
+            //Window window = Window.GetWindow(this);
 
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
 
             // Create the providers.
             this.createProvider();
             //this.createProviderHandler();
-
-            if (Settings.Default.pairOnStart)
-            {
-                this.startupPair = true;
-                this.runWiiPair();
-            }
-            else //if (Settings.Default.connectOnStart)
-            {
-                this.connectProvider();
-            }
 
             AppSettingsUC settingspanel = new AppSettingsUC();
             settingspanel.OnClose += SettingsPanel_OnClose;
@@ -933,7 +923,41 @@ namespace WiiTUIO
             this.animateCollapse(spErrorMsg,false);
         }
 
-    }
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            var wih = new WindowInteropHelper(this);
+            wiiPair = new WiiCPP.WiiPair(wih.Handle);
+            wiiPair.addListener(this);
+            if (Settings.Default.pairOnStart)
+            {
+                this.startupPair = true;
+                this.runWiiPair();
+            }
+            else //if (Settings.Default.connectOnStart)
+            {
+                this.connectProvider();
+            }
 
+            HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
+            source.AddHook(WndProc);
+        }
+
+        [System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            // Listen for operating system messages. 
+            switch (msg)
+            {
+                // WM_APP + 1042 (my chosen custom window message for toshiba bluetooth stack)
+                case 0x8000 + 1042:
+                    wiiPair.ToshibaBluetoothMessage((int)wParam, (int)lParam);
+                    handled = true;
+                    break;
+            }
+            return IntPtr.Zero;
+        }
+
+    }
     
 }
