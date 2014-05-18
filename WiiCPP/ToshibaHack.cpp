@@ -88,14 +88,14 @@ BOOL LoadToshibaBluetoothStack(HWND handle) {
 	} else {
 		// this is a blocking call that may take a long time if the Bluetooth Manager is not running.
 		// it will fail with -3005 if it times out.
-		LaunchToshibaBluetoothManagerInSystemTray(error);
+		//LaunchToshibaBluetoothManagerInSystemTray(error);
 	}
 	if (!ToshibaBluetoothAdapterGetInfo) {
 		DebugPrint("[Bluetooth] Toshiba BtGetLocalInfo2 function is missing.");
 	} else {
 		error = 0;
-		result = ToshibaBluetoothAdapterGetInfo(RemoteName, error);
-		memcpy(ToshibaBluetoothAdapterAddr, RemoteName, 6);
+		//result = ToshibaBluetoothAdapterGetInfo(RemoteName, error);
+		//memcpy(ToshibaBluetoothAdapterAddr, RemoteName, 6);
 		if (error == 0)
 			hasToshibaAdapter = true;
 	}
@@ -104,14 +104,13 @@ BOOL LoadToshibaBluetoothStack(HWND handle) {
 	}
 	else {
 		error = 0;
-		result = ToshibaBluetoothNotify(0xFFFFFFFF, error, handle, WM_TOSHIBA_BLUETOOTH);
+		//result = ToshibaBluetoothNotify(0xFFFFFFFF, error, handle, WM_TOSHIBA_BLUETOOTH);
 	}
 	if (!ToshibaBluetoothStartSearching) {
 		DebugPrint("[Bluetooth] Toshiba BtDiscoverRemoteDevice2 function is missing.");
 	}
 	else {
 	}
-
 
 	loaded = true;
 	return result;

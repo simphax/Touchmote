@@ -65,6 +65,7 @@ namespace WiiCPP {
 		bool killme;
 		bool cancelled;
 		int ToshibaState;
+		int ToshibaConnectedCount;
 
 		WiiPairListener ^listener;
 
@@ -147,17 +148,27 @@ namespace WiiCPP {
 		void StartPairingWiimote(int i) {
 			int error;
 			ToshibaState = 3;
-			listener->pairingConsole("Pairing " + i + ": '" + gcnew String(pDeviceList->device[i].name) + "' " + gcnew String(FormatToshibaBTAddress(pDeviceList->device[i].BluetoothAddress)));
-			if (ToshibaBluetoothClearPIN)
-				ToshibaBluetoothClearPIN(pDeviceList->device[i].BluetoothAddress, error);
+			listener->pairingMessage("Found a new Wiimote (Toshiba)", WiiPairListener::MessageType::SUCCESS);
+			//listener->pairingConsole("Pairing " + i + ": '" + gcnew String(pDeviceList->device[i].name) + "' " + gcnew String(FormatToshibaBTAddress(pDeviceList->device[i].BluetoothAddress)));
+			//if (ToshibaBluetoothClearPIN)
+			//	ToshibaBluetoothClearPIN(pDeviceList->device[i].BluetoothAddress, error);
+			//ToshibaBluetoothNotify(0, error, windowHandle, WM_TOSHIBA_BLUETOOTH);
 			if (ToshibaBluetoothConnectHID)
-				ToshibaBluetoothConnectHID(pDeviceList->device[i].BluetoothAddress, error, windowHandle, WM_TOSHIBA_BLUETOOTH, i);
-			ToshibaBluetoothNotify(0, error, windowHandle, WM_TOSHIBA_BLUETOOTH);
+			  ToshibaBluetoothConnectHID(&(pDeviceList->device[i].BluetoothAddress[0]), error, windowHandle, WM_TOSHIBA_BLUETOOTH, i);
+			//ToshibaBluetoothConnectHID(NULL, error, 0, WM_TOSHIBA_BLUETOOTH, 7);
+			System::Threading::Thread::Sleep(500);
+			
 		}
 
 		void ConnectToshibaWiimotes() {
 			if (!pDeviceList) return;
+			if (pDeviceList->deviceCount == 0) {
+				listener->pairingConsole("No bluetooth devices found.\n");
+			}
 			for (int i = 0; i < pDeviceList->deviceCount; i++) {
+				String ^szName = gcnew String(pDeviceList->device[i].name);
+				System::String ^str = "Found:" + szName + "\n";
+				listener->pairingConsole(str);
 				if (ToshibaBluetoothIsWiiController(pDeviceList->device[i]))
 					StartPairingWiimote(i);
 			}
@@ -166,24 +177,28 @@ namespace WiiCPP {
 		}
 
 		void ToshibaBluetoothMessage(int wParam, int lParam) {
-			if (!listener) {
+			//if (!listener) {
 				switch (wParam) {
 				case TOSHIBA_BLUETOOTH_SEARCH_FINISHED:
 				case TOSHIBA_BLUETOOTH_SEARCH_ERROR:
-					ToshibaState = 2; // atomic
+					ToshibaState = 2;
+					break;
+				case TOSHIBA_BLUETOOTH_CONNECT_HID_CONNECTED:
+					if (ToshibaState == 3) ToshibaConnectedCount++;
+					break;
+				case TOSHIBA_BLUETOOTH_CONNECT_HID_FINISHED:
+					ToshibaState = 4;
 					break;
 				}
-			}
+			//}
 			switch (wParam) {
 			case TOSHIBA_BLUETOOTH_SEARCH_STARTING:
 					listener->pairingConsole("Starting Toshiba search.\n");
 					break;
 			case TOSHIBA_BLUETOOTH_SEARCH_FINISHED:
-					ToshibaState = 2; // atomic
 					listener->pairingConsole("Finnished Toshiba search.\n");
 					break;
 			case TOSHIBA_BLUETOOTH_SEARCH_ERROR:
-					ToshibaState = 2; // atomic
 					listener->pairingConsole("ERROR in Toshiba search.\n");
 					break;
 			case TOSHIBA_BLUETOOTH_SEARCH_FOUND:
@@ -238,6 +253,9 @@ namespace WiiCPP {
 			int nMicrosoftRadios, nToshibaRadios;
 			int nPaired = 0;
 
+			ToshibaState = 0;
+			ToshibaConnectedCount = 0;
+
 			listener->onPairingStarted();
 
 			report->removeMode = removeMode;
@@ -278,7 +296,8 @@ namespace WiiCPP {
 						ShowErrorCode(_T("Error enumerating radios"), lastError);
 						listener->pairingMessage("Couldn't find any bluetooth adapters\nusing Microsoft stack",WiiPairListener::MessageType::INFO);
 						
-						if (GetLastError() == ERROR_NO_MORE_ITEMS)
+						// It's not a problem if there are no Microsoft adapters (because we can use Toshiba ones) unless we are in removeMode.
+						if (GetLastError() == ERROR_NO_MORE_ITEMS && !removeMode)
 						{
 							report->status = WiiPairReport::Status::RUNNING;
 							listener->onPairingProgress(report);
@@ -320,20 +339,42 @@ namespace WiiCPP {
 
 					if (nToshibaRadios > 0) {
 						if (ToshibaState == 2) { // Connecting
+							listener->pairingConsole("State=" + ToshibaState + "\n");
 							ConnectToshibaWiimotes();
-						} 
+							System::Threading::Thread::Sleep(500);
+						}
+
 						if (ToshibaState == 0) { // Ready
+							listener->pairingConsole("State=0\n");
 							int error;
 							BOOL result;
 							error = 0;
 							listener->pairingConsole("Scanning (Toshiba)...\n");
 							// notify us about everything (this is probably unneccessary)
-							result = ToshibaBluetoothNotify(0xFFFFFFFF, error, windowHandle, WM_TOSHIBA_BLUETOOTH);
+							//result = ToshibaBluetoothNotify(0xFFFFFFFF, error, windowHandle, WM_TOSHIBA_BLUETOOTH);
 							ToshibaState = 1; // Scanning
 							result = ToshibaBluetoothStartSearching(pDeviceList, 0, error, windowHandle, WM_TOSHIBA_BLUETOOTH, 57);
+							System::Threading::Thread::Sleep(500);
+							for (radio = 0; radio < nMicrosoftRadios; radio++) {
+
+							}
 							listener->pairingMessage("Scanning (Toshiba)...", WiiPairListener::MessageType::INFO);
+						} else if (ToshibaState == 4) { // finished connecting
+							listener->pairingConsole("State=4\n");
+
+							//report->deviceNames[nPaired] = (gcnew System::String("test"));
+							nPaired += ToshibaConnectedCount;
+							report->numberPaired = nPaired;
+							report->status = WiiPairReport::Status::RUNNING;
+							listener->onPairingProgress(report);
+							if (nPaired >= stopat) {
+								killme = true;
+							}
+							ToshibaState = 0;
+							ToshibaConnectedCount = 0;
 						} else {
-							Sleep(500);
+							listener->pairingConsole("State="+ToshibaState+"\n");
+							System::Threading::Thread::Sleep(500);
 						}
 					}
 
@@ -384,7 +425,7 @@ namespace WiiCPP {
 								listener->pairingConsole("No bluetooth devices found.\n");
 								if(removeMode)
 								{
-									killme = true;
+									killme = true; // I don't use removeMode with Toshiba.
 								}
 							}
 							else

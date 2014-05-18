@@ -60,7 +60,7 @@ typedef BOOL(__cdecl *TToshibaBluetoothCancelSearching)(int &error);
 typedef BOOL(__cdecl *TBtGetRemoteName)(TToshibaBluetoothAddress BluetoothAddress, char *RemoteName, int &error);
 typedef BOOL(__cdecl *TBtAddRemoteDevice)(PToshibaBluetoothDeviceList pDeviceList, int &error);
 // other
-typedef BOOL(__cdecl *TToshibaBluetoothConnectHID)(TToshibaBluetoothAddress BluetoothAddress, int &error, HWND WindowHandle, DWORD MessageNumber, LPARAM lParam);
+typedef BOOL(__cdecl *TToshibaBluetoothConnectHID)(void *BluetoothAddress, int &error, HWND WindowHandle, DWORD MessageNumber, LPARAM lParam);
 typedef BOOL(__cdecl *TToshibaBluetoothClearPIN)(TToshibaBluetoothAddress BluetoothAddress, int &error);
 typedef BOOL(__cdecl *TToshibaBluetoothSetPIN)(TToshibaBluetoothAddress BluetoothAddress, char *PinCode, int PinLength, int &error);
 
