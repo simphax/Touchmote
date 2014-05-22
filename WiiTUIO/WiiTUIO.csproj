@@ -221,6 +221,7 @@
     <Compile Include="Input\WiiProvider\Pointer\WiimoteStatus.cs" />
     <Compile Include="Input\WiiProvider\Keymap\WiiKeyMap.cs" />
     <Compile Include="Output\Handlers\MouseHandler.cs" />
+    <Compile Include="Output\Handlers\Touch\PhoneTouchHandler.cs" />
     <Compile Include="Output\Handlers\Touch\TouchHandler.cs" />
     <Compile Include="Output\Handlers\Xinput\XinputBus.cs">
       <SubType>Component</SubType>

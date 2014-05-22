@@ -74,7 +74,7 @@ namespace WiiTUIO.Provider
         }
 
 
-        private static float pitch,roll,yaw,touchX,touchY;
+        private static float pitch,roll,yaw,lastYaw,lastPitch,touchX,touchY;
         private static bool touchDown;
 
         private static int lastSentMessageId;
@@ -83,6 +83,8 @@ namespace WiiTUIO.Provider
         {
             try
             {
+                lastYaw = 0;
+                lastPitch = 0;
                 while (true)
                 {
                     // get the next message 
@@ -115,6 +117,45 @@ namespace WiiTUIO.Provider
                             pitch = (float)packet.Values[1];
                             roll = (float)packet.Values[2];
                             yaw = (float)packet.Values[3];
+                            /*
+                            if (lastYaw == 0)
+                            {
+                                lastYaw = yaw;
+                            }
+
+                            // kalman filtering
+                            float q = 1.0f;   // process noise
+                            float r = 1.0f;   // sensor noise
+                            float p = 1.0f;   // estimated error
+                            float k = 0.5f;   // kalman filter gain
+
+                            float x = lastYaw;
+                            p = p + q;
+                            k = p / (p + r);
+                            x = x + k * (yaw - x);
+                            p = (1 - k) * p;
+                            lastYaw = x;
+
+                            if (lastPitch == 0)
+                            {
+                                lastPitch = pitch;
+                            }
+
+                            // kalman filtering
+                            q = 1.0f;   // process noise
+                            r = 1.0f;   // sensor noise
+                            p = 1.0f;   // estimated error
+                            k = 0.5f;   // kalman filter gain
+
+                            x = lastPitch;
+                            p = p + q;
+                            k = p / (p + r);
+                            x = x + k * (pitch - x);
+                            p = (1 - k) * p;
+                            lastPitch = x;
+                             * */
+                            lastYaw = yaw;
+                            lastPitch = pitch;
                         }
                         else if (packet.Address == "/tmote/relCur")
                         {
@@ -129,12 +170,12 @@ namespace WiiTUIO.Provider
                         {
                             foreach (IOutputHandler outputHandler in outputHandlers)
                             {
-                                if (outputHandler is TouchHandler)
+                                if (outputHandler is PhoneTouchHandler)
                                 {
-                                    TouchHandler touchHandler = (TouchHandler)outputHandler;
+                                    PhoneTouchHandler touchHandler = (PhoneTouchHandler)outputHandler;
 
-                                    double xRel = (180 / Math.PI * yaw * -1 + 15) / 30;
-                                    double yRel = (180 / Math.PI * pitch * -1 + 15) / 30;
+                                    double xRel = (180 / Math.PI * lastYaw * -1 + 15) / 30;
+                                    double yRel = (180 / Math.PI * lastPitch * -1 + 15) / 30;
 
                                     xRel += touchX * 0.5;
                                     yRel += touchY * 0.8;
@@ -154,13 +195,13 @@ namespace WiiTUIO.Provider
 
                                     if (touchDown)
                                     {
-                                        touchHandler.setButtonDown("touchmaster");
+                                        touchHandler.setButtonDown("touch0");
                                     }
                                     else
                                     {
-                                        touchHandler.setButtonUp("touchmaster");
+                                        touchHandler.setButtonUp("touch0");
                                     }
-                                    touchHandler.setPosition("touch", cursorPos);
+                                    touchHandler.setPosition("touch0", cursorPos);
 
                                     touchHandler.endUpdate();
                                 }
