@@ -74,10 +74,12 @@ namespace WiiTUIO.Provider
         }
 
 
-        private static float pitch,roll,yaw,lastYaw,lastPitch,touchX,touchY;
+        private static float pitch,roll,yaw,lastYaw,lastPitch;
         private static bool touchDown;
 
         private static int lastSentMessageId;
+
+        private static Dictionary<int,Vector> offsetTouches;
 
         static void ListenLoop()
         {
@@ -85,6 +87,7 @@ namespace WiiTUIO.Provider
             {
                 lastYaw = 0;
                 lastPitch = 0;
+                offsetTouches = new Dictionary<int,Vector>();
                 while (true)
                 {
                     // get the next message 
@@ -108,9 +111,8 @@ namespace WiiTUIO.Provider
                             pitch = 0;
                             roll = 0;
                             yaw = 0;
-                            touchX = 0;
-                            touchY = 0;
                             touchDown = false;
+                            offsetTouches.Clear();
                         }
                         else if (packet.Address == "/tmote/motion")
                         {
@@ -159,8 +161,7 @@ namespace WiiTUIO.Provider
                         }
                         else if (packet.Address == "/tmote/relCur")
                         {
-                            touchX = (float)packet.Values[2];
-                            touchY = (float)packet.Values[3];
+                            offsetTouches[(int)packet.Values[1]] = new Vector((float)packet.Values[2], (float)packet.Values[3]);
                         }
                         else if (packet.Address == "/tmote/buttons")
                         {
@@ -177,31 +178,71 @@ namespace WiiTUIO.Provider
                                     double xRel = (180 / Math.PI * lastYaw * -1 + 15) / 30;
                                     double yRel = (180 / Math.PI * lastPitch * -1 + 15) / 30;
 
-                                    xRel += touchX * 0.5;
-                                    yRel += touchY * 0.8;
-
-                                    int x = Convert.ToInt32((float)primaryScreen.Bounds.Width * xRel);
-                                    int y = Convert.ToInt32((float)primaryScreen.Bounds.Height * yRel);
-
-                                    if (x < 0) x = 0;
-                                    if (y < 0) y = 0;
-                                    if (x >= primaryScreen.Bounds.Width) x = primaryScreen.Bounds.Width - 1;
-                                    if (y >= primaryScreen.Bounds.Height) y = primaryScreen.Bounds.Height - 1;
-
-                                    //Console.WriteLine("Set cursor x: " + x + " y: " + y);
-
-                                    CursorPos cursorPos = new CursorPos((int)x, (int)y, 0);
-                                    cursorPos.OutOfReach = false;
-
-                                    if (touchDown)
+                                    if(offsetTouches.Count > 0)
                                     {
-                                        touchHandler.setButtonDown("touch0");
+                                        foreach (KeyValuePair<int, Vector> entry in offsetTouches)
+                                        {
+                                            int touchId = entry.Key;
+                                            Vector offset = entry.Value;
+
+                                            double xRelOff = xRel + offset.X * 0.5;
+                                            double yRelOff = yRel + offset.Y * 0.8;
+
+                                            int x = Convert.ToInt32((float)primaryScreen.Bounds.Width * xRelOff);
+                                            int y = Convert.ToInt32((float)primaryScreen.Bounds.Height * yRelOff);
+
+                                            if (x < 0) x = 0;
+                                            if (y < 0) y = 0;
+                                            if (x >= primaryScreen.Bounds.Width) x = primaryScreen.Bounds.Width - 1;
+                                            if (y >= primaryScreen.Bounds.Height) y = primaryScreen.Bounds.Height - 1;
+
+                                            //Console.WriteLine("Set cursor x: " + x + " y: " + y);
+
+                                            CursorPos cursorPos = new CursorPos((int)x, (int)y, 0);
+                                            cursorPos.OutOfReach = false;
+
+                                            if (touchDown)
+                                            {
+                                                touchHandler.setButtonDown("touch" + touchId);
+                                            }
+                                            else
+                                            {
+                                                touchHandler.setButtonUp("touch0");
+                                                touchHandler.setButtonUp("touch1");
+                                                touchHandler.setButtonUp("touch2");
+                                                touchHandler.setButtonUp("touch3");
+                                            }
+                                            touchHandler.setPosition("touch" + touchId, cursorPos);
+                                        }
                                     }
                                     else
                                     {
-                                        touchHandler.setButtonUp("touch0");
+                                        int x = Convert.ToInt32((float)primaryScreen.Bounds.Width * xRel);
+                                        int y = Convert.ToInt32((float)primaryScreen.Bounds.Height * yRel);
+
+                                        if (x < 0) x = 0;
+                                        if (y < 0) y = 0;
+                                        if (x >= primaryScreen.Bounds.Width) x = primaryScreen.Bounds.Width - 1;
+                                        if (y >= primaryScreen.Bounds.Height) y = primaryScreen.Bounds.Height - 1;
+
+                                        //Console.WriteLine("Set cursor x: " + x + " y: " + y);
+
+                                        CursorPos cursorPos = new CursorPos((int)x, (int)y, 0);
+                                        cursorPos.OutOfReach = false;
+
+                                        if (touchDown)
+                                        {
+                                            touchHandler.setButtonDown("touch0");
+                                        }
+                                        else
+                                        {
+                                            touchHandler.setButtonUp("touch0");
+                                            touchHandler.setButtonUp("touch1");
+                                            touchHandler.setButtonUp("touch2");
+                                            touchHandler.setButtonUp("touch3");
+                                        }
+                                        touchHandler.setPosition("touch0", cursorPos);
                                     }
-                                    touchHandler.setPosition("touch0", cursorPos);
 
                                     touchHandler.endUpdate();
                                 }
