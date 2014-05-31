@@ -202,25 +202,25 @@ namespace WiiTUIO.Output.Handlers.Xinput
                         report.StickRX = 1.0;
                         break;
                     case "stickrup":
-                        report.StickRY = 0.0;
+                        report.StickRY = 1.0;
                         break;
                     case "sticklright":
                         report.StickLX = 1.0;
                         break;
                     case "sticklup":
-                        report.StickLY = 0.0;
+                        report.StickLY = 1.0;
                         break;
                     case "stickrleft":
                         report.StickRX = 0.0;
                         break;
                     case "stickrdown":
-                        report.StickRY = 1.0;
+                        report.StickRY = 0.0;
                         break;
                     case "sticklleft":
                         report.StickLX = 0.0;
                         break;
                     case "stickldown":
-                        report.StickLY = 1.0;
+                        report.StickLY = 0.0;
                         break;
                     default:
                         return false; //No valid key code was found
