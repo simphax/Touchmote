@@ -49,7 +49,7 @@ namespace WiiTUIO.DeviceUtils
         public static bool setCurrentMonitor(MonitorInfo monitor)
         {
             bool success = false;
-            RegistryKey regKey = Registry.LocalMachine.OpenSubKey(registryPath, true);
+            RegistryKey regKey = Registry.LocalMachine.CreateSubKey(registryPath); //Create if the key does not exist
             if (regKey != null)
             {
                 string[] valueNames = regKey.GetValueNames();
