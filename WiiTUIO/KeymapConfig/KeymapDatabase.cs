@@ -133,7 +133,7 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Arrow Right", "right"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Arrow Down", "down"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Print Screen", "snapshot"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Insert", "ins"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Insert", "insert"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Delete", "delete"));
 
 
@@ -206,18 +206,6 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F10", "f10"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F11", "f11"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F12", "f12"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F13", "f13"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F14", "f14"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F15", "f15"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F16", "f16"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F17", "f17"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F18", "f18"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F19", "f19"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F20", "f20"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F21", "f21"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F22", "f22"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F23", "f23"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F24", "f24"));
 
 
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numlock", "numlock"));

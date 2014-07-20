@@ -20,7 +20,7 @@ namespace WiiTUIO.Output.Handlers
         private List<IOutputHandler> createOutputHandlers(long id)
         {
             List<IOutputHandler> all = new List<IOutputHandler>();
-            all.Add(new KeyboardHandler());
+            all.Add(new VmultiKeyboardHandler());
             all.Add(new MouseHandler());
             all.Add(new XinputHandler(id));
             all.Add(new TouchHandler(OutputFactory.getCurrentProviderHandler(),id));

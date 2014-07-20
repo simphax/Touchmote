@@ -130,6 +130,7 @@ namespace WiiTUIO.Provider
 
         public int WiimoteID;
         private bool hideOverlayOnUp = false;
+        private bool releaseHomeOnNextUpdate = false;
 
         private List<IOutputHandler> outputHandlers;
 
@@ -421,6 +422,12 @@ namespace WiiTUIO.Provider
                 }
             }
 
+            if (this.releaseHomeOnNextUpdate)
+            {
+                this.releaseHomeOnNextUpdate = false;
+                this.KeyMap.executeButtonUp("Home");
+            }
+
             FieldInfo[] buttons = buttonState.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
             foreach (FieldInfo button in buttons) {
 
@@ -463,7 +470,7 @@ namespace WiiTUIO.Provider
                         else
                         {
                             this.KeyMap.executeButtonDown("Home");
-                            this.KeyMap.executeButtonUp("Home");
+                            this.releaseHomeOnNextUpdate = true;
                         }
                     }
                     else
@@ -477,6 +484,7 @@ namespace WiiTUIO.Provider
             {
                 handler.endUpdate();
             }
+
 
             return significant;
         }

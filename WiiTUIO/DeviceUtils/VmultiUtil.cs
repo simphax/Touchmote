@@ -17,7 +17,6 @@ namespace WiiTUIO.DeviceUtils
 {
     class VmultiUtil
     {
-
         private static string vmultiDevicePathSearch = "hid#vmultia&col01";
         private static string vmultiDevconSearch = "hid*vmultia*col01";
         private static string registryPath = "SOFTWARE\\Microsoft\\Wisp\\Pen\\Digimon";

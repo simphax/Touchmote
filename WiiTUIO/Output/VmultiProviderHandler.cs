@@ -22,7 +22,7 @@ namespace WiiTUIO.Output
 
         private Mutex touchscreenMutex = new Mutex();
 
-        private VMulti vmulti;
+        public static VMulti vmulti; //No no no no I am too lazy
 
         public VmultiProviderHandler()
         {
