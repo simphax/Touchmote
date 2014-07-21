@@ -109,11 +109,19 @@ namespace WiiTUIO.Output.Handlers
 
         public bool connect()
         {
+            /* should always be connected
+            if(!VmultiDevice.Current.isConnected())
+            {
+                return VmultiDevice.Current.connect();
+            }
+             * */
             return true;
         }
 
         public bool disconnect()
         {
+            VmultiDevice.Current.updateKeyboard(new KeyboardReport()); //Sets all keys to up state.
+            //VmultiDevice.Current.disconnect();
             return true;
         }
 
@@ -124,7 +132,7 @@ namespace WiiTUIO.Output.Handlers
 
         public bool endUpdate()
         {
-            return VmultiProviderHandler.vmulti.updateKeyboard(report);
+            return VmultiDevice.Current.updateKeyboard(report);
         }
     }
 

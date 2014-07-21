@@ -22,12 +22,8 @@ namespace WiiTUIO.Output
 
         private Mutex touchscreenMutex = new Mutex();
 
-        public static VMulti vmulti; //No no no no I am too lazy
-
         public VmultiProviderHandler()
         {
-            vmulti = new VMulti();
-
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
             contactQueue = new Queue<WiiContact>();
@@ -35,11 +31,6 @@ namespace WiiTUIO.Output
 
         public void connect()
         {
-            if(!vmulti.connect())
-            {
-                MainWindow.Current.ShowMessage("The touchscreen driver is not installed. Please rerun the Touchmote installer to be able to use touch output.",MainWindow.MessageType.Info);
-            }
-
             if (OnConnect != null)
             {
                 OnConnect();
@@ -85,7 +76,7 @@ namespace WiiTUIO.Output
             if (toFire.Count > 0)
             {
                 MultitouchReport report = new MultitouchReport(toFire);
-                if (!vmulti.updateMultitouch(report))
+                if (!VmultiDevice.Current.updateMultitouch(report))
                 {
                     Console.WriteLine("Could not send touch input, count " + toFire.Count);
                 }
@@ -95,7 +86,8 @@ namespace WiiTUIO.Output
 
         public void disconnect()
         {
-            vmulti.disconnect();
+            VmultiDevice.Current.updateMultitouch(new MultitouchReport(new List<MultitouchPointerInfo>())); //Release all touches
+            //VmultiDevice.Current.disconnect();
 
             if (OnConnect != null)
             {

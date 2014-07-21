@@ -250,6 +250,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MinimizeToTray.cs" />
+    <Compile Include="Output\VmultiDevice.cs" />
     <Compile Include="Output\VmultiProviderHandler.cs" />
     <Compile Include="OverlayNotice.xaml.cs">
       <DependentUpon>OverlayNotice.xaml</DependentUpon>
@@ -360,8 +361,8 @@
     <Compile Include="Input\WiiProvider\Keymap\WiiKeyMapper.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="Output\DrawingProviderHandler.cs" />
-    <Compile Include="Output\IProviderHandler.cs" />
-    <Compile Include="Output\OutputFactory.cs" />
+    <Compile Include="Output\ITouchProviderHandler.cs" />
+    <Compile Include="Output\TouchOutputFactory.cs" />
     <Compile Include="Output\Settings\TUIOSettings.xaml.cs">
       <DependentUpon>TUIOSettings.xaml</DependentUpon>
     </Compile>

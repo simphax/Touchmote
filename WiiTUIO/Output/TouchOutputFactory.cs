@@ -48,7 +48,7 @@ namespace WiiTUIO.Output
                 case OutputType.DRAW:
                     return "draw";
                 default:
-                    return "touch-vmulti";
+                    return "touch";
             }
         }
 
@@ -56,7 +56,7 @@ namespace WiiTUIO.Output
         {
             if (name == "touch")
             {
-                return OutputType.TOUCHVMULTI;
+                //Default - see below
             }
             if (name == "touch-inject")
             {
@@ -82,7 +82,7 @@ namespace WiiTUIO.Output
             {
                 return OutputType.DRAW;
             }
-            return OutputType.TOUCHVMULTI; //Default
+            return VmultiDevice.Current.isAvailable() ? OutputType.TOUCHVMULTI : OutputType.TOUCHINJECT; //Default
         }
 
         private static ITouchProviderHandler createProviderHandler(string name)
