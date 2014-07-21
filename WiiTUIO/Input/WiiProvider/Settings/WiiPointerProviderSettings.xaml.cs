@@ -60,7 +60,18 @@ namespace WiiTUIO.Provider
                     if (monInfo.DevicePath == currentMonitor)
                     {
                         this.MonitorComboBox.SelectedItem = cbItem;
+                        //TODO: Move this stuff somewhere else
+                        if(currentMonitor != Settings.Default.primaryMonitor)
+                        {
+                            Settings.Default.primaryMonitor = currentMonitor;
+                        }
                     }
+                }
+                this.initializing = false;
+
+                if (this.MonitorComboBox.SelectedIndex == -1)
+                {
+                    this.MonitorComboBox.SelectedIndex = 0;
                 }
             }
             else
@@ -68,13 +79,11 @@ namespace WiiTUIO.Provider
                 ComboBoxItem cbItem = new ComboBoxItem();
                 cbItem.Content = "Requires driver";
                 this.MonitorComboBox.Items.Add(cbItem);
-                this.MonitorComboBox.SelectedIndex = 0;
                 this.MonitorComboBox.IsEnabled = false;
+                this.MonitorComboBox.SelectedIndex = 0;
+                this.initializing = false;
             }
 
-
-
-            this.initializing = false;
         }
 
         private void SBPositionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
