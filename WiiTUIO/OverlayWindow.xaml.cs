@@ -170,6 +170,69 @@ namespace WiiTUIO
             this.HideOverlay();
         }
 
+        void OverlayWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Down)
+            {
+                int selectedIndex = -2;
+                for (int i = 0; i < this.layoutList.Children.Count; i++)
+                {
+                    LayoutSelectionRow row = this.layoutList.Children[i] as LayoutSelectionRow;
+                    if (row.isSelected())
+                    {
+                        selectedIndex = i;
+                        row.setSelected(false);
+                    }
+                    if(i == selectedIndex+1)
+                    {
+                        row.setSelected(true);
+                    }
+                }
+                if(selectedIndex == -2)
+                {
+                    LayoutSelectionRow row = this.layoutList.Children[0] as LayoutSelectionRow;
+                    row.setSelected(true);
+                }
+            }
+            else if (e.Key == Key.Up)
+            {
+                int selectedIndex = -2;
+                for (int i = this.layoutList.Children.Count-1; i >= 0; i--)
+                {
+                    LayoutSelectionRow row = this.layoutList.Children[i] as LayoutSelectionRow;
+                    if (row.isSelected())
+                    {
+                        selectedIndex = i;
+                        row.setSelected(false);
+                    }
+                    if (i == selectedIndex - 1)
+                    {
+                        row.setSelected(true);
+                    }
+                }
+                if (selectedIndex == -2)
+                {
+                    LayoutSelectionRow row = this.layoutList.Children[this.layoutList.Children.Count-1] as LayoutSelectionRow;
+                    row.setSelected(true);
+                }
+            }
+            else if (e.Key == Key.Right || e.Key == Key.Enter)
+            {
+                for (int i = this.layoutList.Children.Count - 1; i >= 0; i--)
+                {
+                    LayoutSelectionRow row = this.layoutList.Children[i] as LayoutSelectionRow;
+                    if (row.isSelected())
+                    {
+                        this.Select_Layout(row.getFilename());
+                    }
+                }
+            }
+            else if(e.Key == Key.Escape)
+            {
+                HideOverlay();
+            }
+        }
+
         public bool OverlayIsOn()
         {
             return !this.hidden;
@@ -229,6 +292,8 @@ namespace WiiTUIO
             {
                 activatedOnce = true;
                 UIHelpers.TopmostFix(this);
+
+                this.KeyDown += OverlayWindow_KeyDown;
             }
         }
 
