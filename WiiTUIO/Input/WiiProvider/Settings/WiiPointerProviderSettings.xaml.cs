@@ -60,19 +60,9 @@ namespace WiiTUIO.Provider
                     if (monInfo.DevicePath == currentMonitor)
                     {
                         this.MonitorComboBox.SelectedItem = cbItem;
-                        //TODO: Move this stuff somewhere else
-                        if(currentMonitor != Settings.Default.primaryMonitor)
-                        {
-                            Settings.Default.primaryMonitor = currentMonitor;
-                        }
                     }
                 }
                 this.initializing = false;
-
-                if (this.MonitorComboBox.SelectedIndex == -1)
-                {
-                    this.MonitorComboBox.SelectedIndex = 0;
-                }
             }
             else
             {

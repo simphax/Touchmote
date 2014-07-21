@@ -54,20 +54,13 @@ namespace WiiTUIO
             InitializeComponent();
 
             primaryScreen = DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
-
-            this.Width = primaryScreen.Bounds.Width;
-            this.Height = primaryScreen.Bounds.Height;
-            this.baseGrid.Width = primaryScreen.Bounds.Width;
-            this.baseGrid.Height = primaryScreen.Bounds.Height;
-
+            
             Settings.Default.PropertyChanged += SettingsChanged;
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
             this.baseGrid.Visibility = Visibility.Hidden;
             this.layoutChooserOverlay.Visibility = Visibility.Hidden;
 
-            this.scrollViewer.MaxHeight = this.Height / 2-200;
-            
             //Compensate for DPI settings
             Loaded += (o, e) =>
             {
@@ -75,6 +68,8 @@ namespace WiiTUIO
                 CompositionTarget ct = source.CompositionTarget;
                 Matrix transformMatrix = ct.TransformFromDevice;
                 this.baseCanvas.RenderTransform = new MatrixTransform(transformMatrix);
+
+                this.updateWindowToScreen(primaryScreen);
             };
         }
 
@@ -92,8 +87,9 @@ namespace WiiTUIO
             Console.WriteLine("Setting overlay window position to " + screen.Bounds);
             //this.Left = screen.Bounds.X;
             //this.Top = screen.Bounds.Y;
-            //this.Width = screen.Bounds.Width;
-            //this.Height = screen.Bounds.Height;
+            this.Width = screen.Bounds.Width;
+            this.Height = screen.Bounds.Height;
+            this.scrollViewer.MaxHeight = this.Height / 2 - 200;
             UIHelpers.SetWindowPos((new WindowInteropHelper(this)).Handle, IntPtr.Zero, screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Width, screen.Bounds.Height, UIHelpers.SetWindowPosFlags.SWP_NOACTIVATE | UIHelpers.SetWindowPosFlags.SWP_NOZORDER);
             this.baseGrid.Width = screen.Bounds.Width;
             this.baseGrid.Height = screen.Bounds.Height;

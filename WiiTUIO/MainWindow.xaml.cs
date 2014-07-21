@@ -30,6 +30,8 @@ using System.Windows.Interop;
 using WiiTUIO.Output.Handlers.Touch;
 using System.Net;
 using Newtonsoft.Json.Linq;
+using WiiTUIO.DeviceUtils;
+using WiiCPP;
 
 namespace WiiTUIO
 {
@@ -94,6 +96,37 @@ namespace WiiTUIO
             {
                 this.ShowActivated = false;
                 this.WindowState = System.Windows.WindowState.Minimized;
+            }
+
+            string currentVmultiMonitor = VmultiUtil.getCurrentMonitorDevicePath();
+            IEnumerable<MonitorInfo> monInfos = DeviceUtil.GetMonitorList();
+
+            if (VmultiDevice.Current.isAvailable())
+            {
+                //See if the selected monitor is still connected to the computer
+                if (currentVmultiMonitor != null)
+                {
+                    string primaryMonitor = null;
+                    foreach (MonitorInfo monInfo in monInfos)
+                    {
+                        if (monInfo.DevicePath == currentVmultiMonitor)
+                        {
+                            primaryMonitor = currentVmultiMonitor;
+                        }
+                    }
+                    if (primaryMonitor != null) //The vmulti monitor is still connected.
+                    {
+                        Settings.Default.primaryMonitor = primaryMonitor; //Make sure the same value is in settings.
+                    }
+                    else //The selected monitor is not connected
+                    {
+                        VmultiUtil.setCurrentMonitor(monInfos.First()); //Use the first monitor in the list.
+                    }
+                }
+                else
+                {
+                    VmultiUtil.setCurrentMonitor(monInfos.First()); //No setting found, default to first found monitor.
+                }
             }
 
             defaultInstance = this;
