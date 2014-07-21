@@ -28,6 +28,8 @@ using Newtonsoft.Json;
 using MahApps.Metro.Controls;
 using System.Windows.Interop;
 using WiiTUIO.Output.Handlers.Touch;
+using System.Net;
+using Newtonsoft.Json.Linq;
 
 namespace WiiTUIO
 {
@@ -170,9 +172,54 @@ namespace WiiTUIO
 
             Loaded += MainWindow_Loaded;
 
+            checkNewVersion();
         }
 
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private HttpWebRequest wrGETURL;
+
+        private void checkNewVersion()
+        {
+            try
+            {
+                string sURL;
+                sURL = "http://www.touchmote.net/api/versionUpdate?version=1.0b12";
+
+                wrGETURL = (HttpWebRequest)HttpWebRequest.Create(sURL);
+                wrGETURL.BeginGetResponse(new AsyncCallback(checkNewVersionResponse), null);
+            }
+            catch(Exception e)
+            {
+
+            }
+
+        }
+
+        private void checkNewVersionResponse(IAsyncResult result)
+        {
+            try
+            {
+                Stream objStream;
+                objStream = wrGETURL.EndGetResponse(result).GetResponseStream();
+
+                StreamReader objReader = new StreamReader(objStream);
+
+                var serializer = new JsonSerializer();
+                JObject jObject = (JObject)serializer.Deserialize(objReader, typeof(JObject));
+
+                bool needsUpdate = (bool)jObject.GetValue("needs_update").ToObject(typeof(bool));
+
+                if (needsUpdate)
+                {
+                    this.ShowMessage("A new version (" + jObject.GetValue("latest_version").ToString() + ") is available at touchmote.net", MessageType.Info);
+                }
+            }
+            catch(Exception e)
+            {
+
+            }
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (Settings.Default.minimizeToTray)
             {
