@@ -246,10 +246,8 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Back", "360.back"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Start", "360.start"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Guide", "360.guide"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick X", "360.sticklx", false, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Y", "360.stickly", false, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick X", "360.stickrx", false, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Y", "360.stickry", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Press", "360.stickpressl"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Press", "360.stickpressr"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Up", "360.sticklup", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Down", "360.stickldown", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Left", "360.sticklleft", true, true, false, false));
