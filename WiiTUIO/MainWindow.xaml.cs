@@ -60,7 +60,7 @@ namespace WiiTUIO
         /// <summary>
         /// A reference to the windows 7 HID driver data provider.  This takes data from the <see cref="pWiiProvider"/> and transforms it.
         /// </summary>
-        private IProviderHandler pProviderHandler = null;
+        private ITouchProviderHandler pProviderHandler = null;
 
 
         /// <summary>

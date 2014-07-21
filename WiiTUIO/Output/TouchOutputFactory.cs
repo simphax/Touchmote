@@ -7,12 +7,12 @@ using WiiTUIO.WinTouch;
 
 namespace WiiTUIO.Output
 {
-    class OutputFactory
+    class TouchOutputFactory
     {
 
-        private static IProviderHandler current;
+        private static ITouchProviderHandler current;
 
-        public static IProviderHandler getCurrentProviderHandler()
+        public static ITouchProviderHandler getCurrentProviderHandler()
         {
             if (current == null)
             {
@@ -85,12 +85,12 @@ namespace WiiTUIO.Output
             return OutputType.TOUCHVMULTI; //Default
         }
 
-        private static IProviderHandler createProviderHandler(string name)
+        private static ITouchProviderHandler createProviderHandler(string name)
         {
             return createProviderHandler(getType(name));
         }
 
-        private static IProviderHandler createProviderHandler(OutputType type)
+        private static ITouchProviderHandler createProviderHandler(OutputType type)
         {
             switch (type)
             {

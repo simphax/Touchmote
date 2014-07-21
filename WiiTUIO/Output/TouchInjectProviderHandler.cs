@@ -12,7 +12,7 @@ using WiiTUIO.Provider;
 
 namespace WiiTUIO.Output
 {
-    class TouchInjectProviderHandler : IProviderHandler
+    class TouchInjectProviderHandler : ITouchProviderHandler
     {
         
         private Queue<WiiContact> contactQueue;

@@ -23,7 +23,7 @@ namespace WiiTUIO.Output.Handlers
             all.Add(new VmultiKeyboardHandler());
             all.Add(new MouseHandler());
             all.Add(new XinputHandler(id));
-            all.Add(new TouchHandler(OutputFactory.getCurrentProviderHandler(),id));
+            all.Add(new TouchHandler(TouchOutputFactory.getCurrentProviderHandler(),id));
             return all;
         }
 

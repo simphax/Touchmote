@@ -7,7 +7,7 @@ using WiiTUIO.Provider;
 
 namespace WiiTUIO.Output
 {
-    class DrawingProviderHandler : IProviderHandler
+    class DrawingProviderHandler : ITouchProviderHandler
     {
         public event Action OnConnect;
 

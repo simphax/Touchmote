@@ -13,7 +13,7 @@ using VMultiDllWrapper;
 
 namespace WiiTUIO.Output
 {
-    class VmultiProviderHandler : IProviderHandler
+    class VmultiProviderHandler : ITouchProviderHandler
     {
         private Queue<WiiContact> contactQueue;
 
