@@ -128,6 +128,10 @@ namespace WiiTUIO
                     VmultiUtil.setCurrentMonitor(monInfos.First()); //No setting found, default to first found monitor.
                 }
             }
+            else
+            {
+                Settings.Default.primaryMonitor = "";
+            }
 
             defaultInstance = this;
 
