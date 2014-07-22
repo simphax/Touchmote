@@ -128,7 +128,7 @@ namespace WiiTUIO.Provider
         /// </summary>
         public void start()
         {
-            OutputFactory.getCurrentProviderHandler().connect();
+            TouchOutputFactory.getCurrentProviderHandler().connect();
             this.bRunning = true;
             wiimoteConnectorTimer.Change(0, CONNECTION_THREAD_SLEEP);
         }
@@ -163,7 +163,7 @@ namespace WiiTUIO.Provider
 
             this.pWC.Clear();
 
-            OutputFactory.getCurrentProviderHandler().disconnect();
+            TouchOutputFactory.getCurrentProviderHandler().disconnect();
 
         }
         #endregion
@@ -561,7 +561,7 @@ namespace WiiTUIO.Provider
 
                         //Well this is weird to call these here but its to minimize latency
 
-                        OutputFactory.getCurrentProviderHandler().processEventFrame();
+                        TouchOutputFactory.getCurrentProviderHandler().processEventFrame();
 
                         if (Settings.Default.pointer_customCursor)
                         {

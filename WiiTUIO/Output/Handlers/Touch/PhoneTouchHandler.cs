@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
 using WiimoteLib;
+using WiiTUIO.DeviceUtils;
 using WiiTUIO.Properties;
 using WiiTUIO.Provider;
 
@@ -14,7 +15,7 @@ namespace WiiTUIO.Output.Handlers.Touch
 {
     class PhoneTouchHandler : IButtonHandler, ICursorHandler
     {
-        private IProviderHandler handler;
+        private ITouchProviderHandler handler;
 
         private Dictionary<int, CursorPos> cursorPositions;
         private Dictionary<int, bool> touchDown;
@@ -26,7 +27,9 @@ namespace WiiTUIO.Output.Handlers.Touch
 
         private Dictionary<int, D3DCursor> cursors;
 
-        public PhoneTouchHandler(IProviderHandler handler, long id)
+        private Screen primaryScreen;
+
+        public PhoneTouchHandler(ITouchProviderHandler handler, long id)
         {
             this.id = id;
             this.handler = handler;
@@ -36,6 +39,18 @@ namespace WiiTUIO.Output.Handlers.Touch
             this.touchDown = new Dictionary<int, bool>();
             this.wasTouchDown = new Dictionary<int, bool>();
             this.cursors = new Dictionary<int, D3DCursor>();
+
+            this.primaryScreen = DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+
+            Settings.Default.PropertyChanged += Settings_PropertyChanged;
+        }
+
+        void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == "primaryMonitor")
+            {
+                this.primaryScreen = DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
+            }
         }
 
         public bool setPosition(string key, Provider.CursorPos cursorPos)
@@ -115,7 +130,8 @@ namespace WiiTUIO.Output.Handlers.Touch
                                     }
                                 }
 
-                                lFrame.Enqueue(new WiiContact((ulong)key,contactType,new System.Windows.Point(cursorPos.X,cursorPos.Y),0,new System.Windows.Vector(2560,1440)));
+
+                                lFrame.Enqueue(new WiiContact((ulong)key, contactType, new System.Windows.Point(cursorPos.X, cursorPos.Y), 0, new System.Windows.Vector(primaryScreen.Bounds.Width, primaryScreen.Bounds.Height)));
                             }
                             else //pointer out of reach
                             {

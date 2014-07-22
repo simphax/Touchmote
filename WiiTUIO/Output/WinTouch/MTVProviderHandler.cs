@@ -23,7 +23,7 @@ namespace WiiTUIO.WinTouch
     /// <summary>
     /// This class forwards WiiProvider events to the windows stack.
     /// </summary>
-    public class MTVProviderHandler : IProviderHandler
+    public class MTVProviderHandler : ITouchProviderHandler
     {
 
         public static bool HasDriver() {

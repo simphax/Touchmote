@@ -67,7 +67,7 @@ namespace WiiTUIO.Provider
             {
                 handler.connect();
             }
-            OutputFactory.getCurrentProviderHandler().connect();
+            TouchOutputFactory.getCurrentProviderHandler().connect();
 
             netService = new DNSSDService();
             publishedService = netService.Register(0, 0, "Touchmote", "_touchmote._udp", null, null, port, null, null);
@@ -249,7 +249,7 @@ namespace WiiTUIO.Provider
                             }
 
                             //Well this is weird to call these here but its to minimize latency
-                            OutputFactory.getCurrentProviderHandler().processEventFrame();
+                            TouchOutputFactory.getCurrentProviderHandler().processEventFrame();
 
                             if (Settings.Default.pointer_customCursor)
                             {
@@ -272,7 +272,7 @@ namespace WiiTUIO.Provider
             {
                 handler.disconnect();
             }
-            OutputFactory.getCurrentProviderHandler().disconnect();
+            TouchOutputFactory.getCurrentProviderHandler().disconnect();
             publishedService.Stop();
             receiver.Close();
             messageRecieveThread.Abort();

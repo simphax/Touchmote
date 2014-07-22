@@ -16,7 +16,7 @@ namespace WiiTUIO.Properties
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string _input = "multipointer";
+        private string _input = "iphone";
         public string input
         {
             get { return _input; }

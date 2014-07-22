@@ -133,7 +133,7 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Arrow Right", "right"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Arrow Down", "down"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Print Screen", "snapshot"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Insert", "ins"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Insert", "insert"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Delete", "delete"));
 
 
@@ -176,6 +176,7 @@ namespace WiiTUIO
 
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left Win", "lwin"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Right Win", "rwin"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Apps / Menu", "apps"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numpad 0", "numpad0"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numpad 1", "numpad1"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numpad 2", "numpad2"));
@@ -205,18 +206,6 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F10", "f10"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F11", "f11"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F12", "f12"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F13", "f13"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F14", "f14"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F15", "f15"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F16", "f16"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F17", "f17"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F18", "f18"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F19", "f19"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F20", "f20"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F21", "f21"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F22", "f22"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F23", "f23"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F24", "f24"));
 
 
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numlock", "numlock"));
@@ -257,10 +246,8 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Back", "360.back"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Start", "360.start"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Guide", "360.guide"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick X", "360.sticklx", false, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Y", "360.stickly", false, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick X", "360.stickrx", false, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Y", "360.stickry", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Press", "360.stickpressl"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Press", "360.stickpressr"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Up", "360.sticklup", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Down", "360.stickldown", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Left", "360.sticklleft", true, true, false, false));

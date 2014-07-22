@@ -23,8 +23,11 @@ namespace WiiTUIO
     {
         private string name;
         private string file;
+        private bool selected = false;
 
         public Action<string> OnClick; //filename
+
+        private Color borderColor;
 
         public LayoutSelectionRow(string name, string file, Color borderColor)
         {
@@ -32,9 +35,32 @@ namespace WiiTUIO
             this.name = name;
             this.file = file;
             this.tbName.Text = name;
+            this.borderColor = borderColor;
 
-            this.border.BorderBrush = new SolidColorBrush(borderColor);
+            setSelected(false);
+        }
 
+        public string getFilename()
+        {
+            return file;
+        }
+
+        public bool isSelected()
+        {
+            return this.selected;
+        }
+
+        public void setSelected(bool selected)
+        {
+            this.selected = selected;
+            if(selected)
+            {
+                this.border.BorderBrush = new SolidColorBrush(Color.FromArgb(0xF2, 0xFF, 0xFF, 0xFF));
+            }
+            else
+            {
+                this.border.BorderBrush = new SolidColorBrush(Color.FromArgb(0xF2, 0x0A, 0x0A, 0x0A));
+            }
         }
 
         private void tbName_MouseUp(object sender, MouseButtonEventArgs e)
@@ -43,22 +69,11 @@ namespace WiiTUIO
             {
                 OnClick(this.file);
             }
-            this.border.BorderBrush = new SolidColorBrush(Color.FromScRgb(0, 238, 238, 238));
         }
 
         private void tbName_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            this.border.BorderBrush = new SolidColorBrush(Color.FromScRgb(20,238,238,238));
-        }
-
-        private void tbName_TouchDown_1(object sender, TouchEventArgs e)
-        {
-            this.border.BorderBrush = new SolidColorBrush(Color.FromScRgb(20, 238, 238, 238));
-        }
-
-        private void tbName_TouchUp_1(object sender, TouchEventArgs e)
-        {
-
+            this.setSelected(true);
         }
 
 

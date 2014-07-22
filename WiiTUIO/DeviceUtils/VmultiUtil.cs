@@ -17,7 +17,6 @@ namespace WiiTUIO.DeviceUtils
 {
     class VmultiUtil
     {
-
         private static string vmultiDevicePathSearch = "hid#vmultia&col01";
         private static string vmultiDevconSearch = "hid*vmultia*col01";
         private static string registryPath = "SOFTWARE\\Microsoft\\Wisp\\Pen\\Digimon";
@@ -49,7 +48,7 @@ namespace WiiTUIO.DeviceUtils
         public static bool setCurrentMonitor(MonitorInfo monitor)
         {
             bool success = false;
-            RegistryKey regKey = Registry.LocalMachine.OpenSubKey(registryPath, true);
+            RegistryKey regKey = Registry.LocalMachine.CreateSubKey(registryPath); //Create if the key does not exist
             if (regKey != null)
             {
                 string[] valueNames = regKey.GetValueNames();

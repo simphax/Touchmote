@@ -28,6 +28,10 @@ using Newtonsoft.Json;
 using MahApps.Metro.Controls;
 using System.Windows.Interop;
 using WiiTUIO.Output.Handlers.Touch;
+using System.Net;
+using Newtonsoft.Json.Linq;
+using WiiTUIO.DeviceUtils;
+using WiiCPP;
 
 namespace WiiTUIO
 {
@@ -60,7 +64,7 @@ namespace WiiTUIO
         /// <summary>
         /// A reference to the windows 7 HID driver data provider.  This takes data from the <see cref="pWiiProvider"/> and transforms it.
         /// </summary>
-        private IProviderHandler pProviderHandler = null;
+        private ITouchProviderHandler pProviderHandler = null;
 
 
         /// <summary>
@@ -92,6 +96,41 @@ namespace WiiTUIO
             {
                 this.ShowActivated = false;
                 this.WindowState = System.Windows.WindowState.Minimized;
+            }
+
+            string currentVmultiMonitor = VmultiUtil.getCurrentMonitorDevicePath();
+            IEnumerable<MonitorInfo> monInfos = DeviceUtil.GetMonitorList();
+
+            if (VmultiDevice.Current.isAvailable())
+            {
+                //See if the selected monitor is still connected to the computer
+                if (currentVmultiMonitor != null)
+                {
+                    string primaryMonitor = null;
+                    foreach (MonitorInfo monInfo in monInfos)
+                    {
+                        if (monInfo.DevicePath == currentVmultiMonitor)
+                        {
+                            primaryMonitor = currentVmultiMonitor;
+                        }
+                    }
+                    if (primaryMonitor != null) //The vmulti monitor is still connected.
+                    {
+                        Settings.Default.primaryMonitor = primaryMonitor; //Make sure the same value is in settings.
+                    }
+                    else //The selected monitor is not connected
+                    {
+                        VmultiUtil.setCurrentMonitor(monInfos.First()); //Use the first monitor in the list.
+                    }
+                }
+                else
+                {
+                    VmultiUtil.setCurrentMonitor(monInfos.First()); //No setting found, default to first found monitor.
+                }
+            }
+            else
+            {
+                Settings.Default.primaryMonitor = "";
             }
 
             defaultInstance = this;
@@ -170,9 +209,54 @@ namespace WiiTUIO
 
             Loaded += MainWindow_Loaded;
 
+            checkNewVersion();
         }
 
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private HttpWebRequest wrGETURL;
+
+        private void checkNewVersion()
+        {
+            try
+            {
+                string sURL;
+                sURL = "http://www.touchmote.net/api/versionUpdate?version=1.0b12";
+
+                wrGETURL = (HttpWebRequest)HttpWebRequest.Create(sURL);
+                wrGETURL.BeginGetResponse(new AsyncCallback(checkNewVersionResponse), null);
+            }
+            catch(Exception e)
+            {
+
+            }
+
+        }
+
+        private void checkNewVersionResponse(IAsyncResult result)
+        {
+            try
+            {
+                Stream objStream;
+                objStream = wrGETURL.EndGetResponse(result).GetResponseStream();
+
+                StreamReader objReader = new StreamReader(objStream);
+
+                var serializer = new JsonSerializer();
+                JObject jObject = (JObject)serializer.Deserialize(objReader, typeof(JObject));
+
+                bool needsUpdate = (bool)jObject.GetValue("needs_update").ToObject(typeof(bool));
+
+                if (needsUpdate)
+                {
+                    this.ShowMessage("A new version (" + jObject.GetValue("latest_version").ToString() + ") is available at touchmote.net", MessageType.Info);
+                }
+            }
+            catch(Exception e)
+            {
+
+            }
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (Settings.Default.minimizeToTray)
             {

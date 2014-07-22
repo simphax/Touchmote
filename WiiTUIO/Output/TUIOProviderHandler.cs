@@ -9,7 +9,7 @@ using WiiTUIO.Provider;
 
 namespace WiiTUIO.Output
 {
-    public class TUIOProviderHandler :IProviderHandler
+    public class TUIOProviderHandler :ITouchProviderHandler
     {
 
         private Queue<WiiContact> contactQueue;

@@ -20,11 +20,12 @@ namespace WiiTUIO.Output.Handlers
         private List<IOutputHandler> createOutputHandlers(long id)
         {
             List<IOutputHandler> all = new List<IOutputHandler>();
-            all.Add(new KeyboardHandler());
+            IOutputHandler keyboardHandler = VmultiDevice.Current.isAvailable() ? (IOutputHandler)(new VmultiKeyboardHandler()) : (IOutputHandler)(new KeyboardHandler());
+            all.Add(keyboardHandler);
             all.Add(new MouseHandler());
             all.Add(new XinputHandler(id));
-            //all.Add(new TouchHandler(OutputFactory.getCurrentProviderHandler(), id));
-            all.Add(new PhoneTouchHandler(OutputFactory.getCurrentProviderHandler(), id));
+            all.Add(new PhoneTouchHandler(TouchOutputFactory.getCurrentProviderHandler(), id));
+            //all.Add(new TouchHandler(TouchOutputFactory.getCurrentProviderHandler(),id));
             return all;
         }
 
