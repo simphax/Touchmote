@@ -20,7 +20,7 @@ namespace WiiTUIO.Output.Handlers
         private List<IOutputHandler> createOutputHandlers(long id)
         {
             List<IOutputHandler> all = new List<IOutputHandler>();
-            IOutputHandler keyboardHandler = VmultiDevice.Current.isAvailable() ? (IOutputHandler)(new VmultiKeyboardHandler()) : (IOutputHandler)(new KeyboardHandler());
+            IOutputHandler keyboardHandler = VmultiDevice.Current.isAvailable() ? (IOutputHandler)(VmultiKeyboardHandler.Default) : (IOutputHandler)(new KeyboardHandler());
             all.Add(keyboardHandler);
             all.Add(new MouseHandler());
             all.Add(new XinputHandler(id));

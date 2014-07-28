@@ -14,7 +14,21 @@ namespace WiiTUIO.Output.Handlers
         private InputSimulator inputSimulator;
         private KeyboardReport report;
 
-        public VmultiKeyboardHandler()
+        private static VmultiKeyboardHandler defaultInstance;
+
+        public static VmultiKeyboardHandler Default
+        {
+            get
+            {
+                if (defaultInstance == null)
+                {
+                    defaultInstance = new VmultiKeyboardHandler();
+                }
+                return defaultInstance;
+            }
+        }
+
+        private VmultiKeyboardHandler()
         {
             this.report = new KeyboardReport();
             this.inputSimulator = new InputSimulator();
