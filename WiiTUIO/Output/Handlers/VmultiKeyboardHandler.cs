@@ -269,6 +269,10 @@ namespace WiiTUIO.Output.Handlers
                     return KeyboardKey.Y;
                 case VirtualKeyCode.VK_Z:
                     return KeyboardKey.Z;
+                case VirtualKeyCode.OEM_PERIOD:
+                    return KeyboardKey.Dot;
+                case VirtualKeyCode.OEM_COMMA:
+                    return KeyboardKey.Comma;
                 case VirtualKeyCode.LWIN:
                     return KeyboardModifier.LWin;
                 case VirtualKeyCode.RWIN:

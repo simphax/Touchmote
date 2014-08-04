@@ -42,6 +42,12 @@ namespace WiiTUIO.Provider
             {"Nunchuk.StickDown",false},
             {"Nunchuk.StickLeft",false},
             {"Nunchuk.StickRight",false},
+            {"Nunchuk.AccelX+",false},
+            {"Nunchuk.AccelX-",false},
+            {"Nunchuk.AccelY+",false},
+            {"Nunchuk.AccelY-",false},
+            {"Nunchuk.AccelZ+",false},
+            {"Nunchuk.AccelZ-",false},
             {"Classic.StickLUp",false},
             {"Classic.StickLDown",false},
             {"Classic.StickLLeft",false},
@@ -148,7 +154,7 @@ namespace WiiTUIO.Provider
             {
                 if (accelState.Values.X > 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.X * 2);
+                    updateStickHandlers(outConfig, accelState.Values.X);
                 }
                 else if (accelState.Values.X == 0)
                 {
@@ -170,7 +176,7 @@ namespace WiiTUIO.Provider
             {
                 if (accelState.Values.X < 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.X * -2);
+                    updateStickHandlers(outConfig, accelState.Values.X * -1);
                 }
                 else if (accelState.Values.X == 0)
                 {
@@ -192,7 +198,7 @@ namespace WiiTUIO.Provider
             {
                 if (accelState.Values.Y > 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.Y * 2);
+                    updateStickHandlers(outConfig, accelState.Values.Y);
                 }
                 else if (accelState.Values.Y == 0)
                 {
@@ -214,7 +220,7 @@ namespace WiiTUIO.Provider
             {
                 if (accelState.Values.Y < 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.Y * -2);
+                    updateStickHandlers(outConfig, accelState.Values.Y * -1);
                 }
                 else if (accelState.Values.Y == 0)
                 {
@@ -236,7 +242,7 @@ namespace WiiTUIO.Provider
             {
                 if (accelState.Values.Z > 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.Z * 2);
+                    updateStickHandlers(outConfig, accelState.Values.Z);
                 }
                 else if (accelState.Values.Z == 0)
                 {
@@ -258,7 +264,7 @@ namespace WiiTUIO.Provider
             {
                 if (accelState.Values.Z < 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.Z * -2);
+                    updateStickHandlers(outConfig, accelState.Values.Z * -1);
                 }
                 else if (accelState.Values.Z == 0)
                 {
@@ -373,6 +379,140 @@ namespace WiiTUIO.Provider
                 }
             }
 
+            AccelState accelState = nunchuk.AccelState;
+
+            if (this.config.TryGetValue("Nunchuk.AccelX+", out outConfig))
+            {
+                if (accelState.Values.X > 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.X );
+                }
+                else if (accelState.Values.X == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.X * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.AccelX+"])
+                {
+                    PressedButtons["Nunchuk.AccelX+"] = true;
+                    this.executeButtonDown("Nunchuk.AccelX+");
+                }
+                else if (accelState.Values.X * 2 < outConfig.Threshold && PressedButtons["Nunchuk.AccelX+"])
+                {
+                    PressedButtons["Nunchuk.AccelX+"] = false;
+                    this.executeButtonUp("Nunchuk.AccelX+");
+                }
+            }
+            if (this.config.TryGetValue("Nunchuk.AccelX-", out outConfig))
+            {
+                if (accelState.Values.X < 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.X * -1);
+                }
+                else if (accelState.Values.X == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.X * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.AccelX-"])
+                {
+                    PressedButtons["Nunchuk.AccelX-"] = true;
+                    this.executeButtonDown("Nunchuk.AccelX-");
+                }
+                else if (accelState.Values.X * -2 < outConfig.Threshold && PressedButtons["Nunchuk.AccelX-"])
+                {
+                    PressedButtons["Nunchuk.AccelX-"] = false;
+                    this.executeButtonUp("Nunchuk.AccelX-");
+                }
+            }
+            if (this.config.TryGetValue("Nunchuk.AccelY+", out outConfig))
+            {
+                if (accelState.Values.Y > 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.Y);
+                }
+                else if (accelState.Values.Y == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.Y * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.AccelY+"])
+                {
+                    PressedButtons["Nunchuk.AccelY+"] = true;
+                    this.executeButtonDown("Nunchuk.AccelY+");
+                }
+                else if (accelState.Values.Y * 2 < outConfig.Threshold && PressedButtons["Nunchuk.AccelY+"])
+                {
+                    PressedButtons["Nunchuk.AccelY+"] = false;
+                    this.executeButtonUp("Nunchuk.AccelY+");
+                }
+            }
+            if (this.config.TryGetValue("Nunchuk.AccelY-", out outConfig))
+            {
+                if (accelState.Values.Y < 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.Y * -1);
+                }
+                else if (accelState.Values.Y == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.Y * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.AccelY-"])
+                {
+                    PressedButtons["Nunchuk.AccelY-"] = true;
+                    this.executeButtonDown("Nunchuk.AccelY-");
+                }
+                else if (accelState.Values.Y * -2 < outConfig.Threshold && PressedButtons["Nunchuk.AccelY-"])
+                {
+                    PressedButtons["Nunchuk.AccelY-"] = false;
+                    this.executeButtonUp("Nunchuk.AccelY-");
+                }
+            }
+            if (this.config.TryGetValue("Nunchuk.AccelZ+", out outConfig))
+            {
+                if (accelState.Values.Z > 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.Z);
+                }
+                else if (accelState.Values.Z == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.Z * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.AccelZ+"])
+                {
+                    PressedButtons["Nunchuk.AccelZ+"] = true;
+                    this.executeButtonDown("Nunchuk.AccelZ+");
+                }
+                else if (accelState.Values.Z * 2 < outConfig.Threshold && PressedButtons["Nunchuk.AccelZ+"])
+                {
+                    PressedButtons["Nunchuk.AccelZ+"] = false;
+                    this.executeButtonUp("Nunchuk.AccelZ+");
+                }
+            }
+            if (this.config.TryGetValue("Nunchuk.AccelZ-", out outConfig))
+            {
+                if (accelState.Values.Z < 0)
+                {
+                    updateStickHandlers(outConfig, accelState.Values.Z * -1);
+                }
+                else if (accelState.Values.Z == 0)
+                {
+                    updateStickHandlers(outConfig, 0);
+                }
+
+                if (accelState.Values.Z * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.AccelZ-"])
+                {
+                    PressedButtons["Nunchuk.AccelZ-"] = true;
+                    this.executeButtonDown("Nunchuk.AccelZ-");
+                }
+                else if (accelState.Values.Z * -2 < outConfig.Threshold && PressedButtons["Nunchuk.AccelZ-"])
+                {
+                    PressedButtons["Nunchuk.AccelZ-"] = false;
+                    this.executeButtonUp("Nunchuk.AccelZ-");
+                }
+            }
         }
 
         public void updateClassicController(ClassicControllerState classic)
