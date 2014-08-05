@@ -40,7 +40,7 @@ namespace WiiTUIO.Output.Handlers.Xinput
             this.Close();
         }
 
-        public override Int32 Parse(Byte[] Input, Byte[] Output)
+        public override Int32 Parse(Byte[] Input, Byte[] Output, DsModel Type = DsModel.None)
         {
             Byte Serial = Input[0];
 
