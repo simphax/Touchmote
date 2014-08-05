@@ -308,6 +308,11 @@ VOID Render(VOID)
 						cursors[j].scaling = hiddenCursorScale;
 					}
 
+					if (cursors[j].scaling > normalCursorScale)
+					{
+						cursors[j].scaling = normalCursorScale;
+					}
+
 					scaling.x = cursors[j].scaling;
 					scaling.y = cursors[j].scaling;
 					D3DXMatrixTransformation2D(&mat, &spriteCentre, 0.0, &scaling, &spriteCentre, 0, &pos);
