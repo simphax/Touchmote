@@ -219,7 +219,7 @@ namespace WiiTUIO
             try
             {
                 string sURL;
-                sURL = "http://www.touchmote.net/api/versionUpdate?version=1.0b12";
+                sURL = "http://www.touchmote.net/api/versionUpdate?version=1.0b13";
 
                 wrGETURL = (HttpWebRequest)HttpWebRequest.Create(sURL);
                 wrGETURL.BeginGetResponse(new AsyncCallback(checkNewVersionResponse), null);
