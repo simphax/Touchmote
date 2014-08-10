@@ -34,6 +34,13 @@ namespace WiiTUIO.Output.Handlers
             this.inputSimulator = new InputSimulator();
         }
 
+
+        public bool reset()
+        {
+            report = new KeyboardReport();
+            return true;
+        }
+
         public bool setButtonDown(string key)
         {
             if (Enum.IsDefined(typeof(KeyboardKey), key.ToUpper()))

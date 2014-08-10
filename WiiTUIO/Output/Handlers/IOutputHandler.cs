@@ -11,6 +11,9 @@ namespace WiiTUIO.Output.Handlers
         bool connect();
         bool disconnect();
 
+        //Called when the keymap changed. So we should put all buttons to UP position
+        bool reset();
+
         bool startUpdate();
         bool endUpdate();
     }

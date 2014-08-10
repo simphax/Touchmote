@@ -166,7 +166,7 @@ namespace WiiTUIO
             this.HideOverlay();
         }
 
-        void OverlayWindow_KeyDown(object sender, KeyEventArgs e)
+        void OverlayWindow_KeyUp(object sender, KeyEventArgs e)
         {
             if(e.Key == Key.Down)
             {
@@ -289,7 +289,7 @@ namespace WiiTUIO
                 activatedOnce = true;
                 UIHelpers.TopmostFix(this);
 
-                this.KeyDown += OverlayWindow_KeyDown;
+                this.KeyUp += OverlayWindow_KeyUp;
             }
         }
 
