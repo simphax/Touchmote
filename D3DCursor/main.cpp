@@ -116,9 +116,7 @@ HRESULT D3DStartup(HWND hWnd)
   
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	
-
-		D3DXMatrixOrthoLH(&Ortho2D, g_iWidth, g_iHeight, 0.0f, 1.0f);
+	D3DXMatrixOrthoLH(&Ortho2D, g_iWidth, g_iHeight, 0.0f, 1.0f);
 	D3DXMatrixIdentity(&Identity);
 
 	g_pD3DDevice->SetTransform(D3DTS_PROJECTION, &Ortho2D);
@@ -417,13 +415,13 @@ LRESULT WINAPI WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_ERASEBKGND:
       // We dont want to call render twice so just force Render() in WM_PAINT to be called
-      //SendMessage(hWnd, WM_PAINT, NULL, NULL);
+      SendMessage(hWnd, WM_PAINT, NULL, NULL);
       return TRUE;
 
-    /*case WM_PAINT:
+    case WM_PAINT:
       // Force a render to keep the window updated
 	  Sleep(10);
-      return 0;*/
+      return 0;
   }
 
   return DefWindowProc(hWnd, uMsg, wParam, lParam);
