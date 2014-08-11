@@ -55,11 +55,13 @@ namespace WiiTUIO
             this.selected = selected;
             if(selected)
             {
-                this.border.BorderBrush = new SolidColorBrush(Color.FromArgb(0xF2, 0xFF, 0xFF, 0xFF));
+                this.border.Background = new SolidColorBrush(this.borderColor);//Color.FromArgb(0xEE, 0x33, 0x33, 0x33));
+                this.border.BorderBrush = new SolidColorBrush(Color.FromArgb(0xEE, 0x33, 0x33, 0x33));
             }
             else
             {
-                this.border.BorderBrush = new SolidColorBrush(Color.FromArgb(0xF2, 0x0A, 0x0A, 0x0A));
+                this.border.Background = new SolidColorBrush(Color.FromArgb(0x44, 0x00, 0x00, 0x00));
+                this.border.BorderBrush = new SolidColorBrush(Color.FromArgb(0x44, 0x00, 0x00, 0x00));
             }
         }
 
@@ -75,7 +77,6 @@ namespace WiiTUIO
         {
             this.setSelected(true);
         }
-
 
     }
 }

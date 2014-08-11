@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Border Name="border" Background="#F20A0A0A" BorderThickness="5" BorderBrush="Red" Margin="0">
-    <TextBlock MouseDown="tbName_MouseDown" MouseUp="tbName_MouseUp" Name="tbName" Text="Default" Margin="15" FontSize="24" FontFamily="Segoe UI Semilight" Foreground="White" Cursor="Hand" TextAlignment="Center" />
+    <Border Name="border" Background="#44000000" CornerRadius="0" BorderThickness="3" Width="300" BorderBrush="Black" Margin="2" MouseDown="tbName_MouseDown" MouseUp="tbName_MouseUp">
+        <TextBlock TextTrimming="CharacterEllipsis" Name="tbName" Text="Default" Margin="18" FontSize="16" FontFamily="Segoe UI Light" Foreground="White" Cursor="Hand" TextAlignment="Left" />
     </Border>
 </UserControl>

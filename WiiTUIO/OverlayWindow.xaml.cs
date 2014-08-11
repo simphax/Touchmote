@@ -62,15 +62,17 @@ namespace WiiTUIO
             this.layoutChooserOverlay.Visibility = Visibility.Hidden;
 
             //Compensate for DPI settings
+            
             Loaded += (o, e) =>
             {
-                PresentationSource source = PresentationSource.FromVisual(this);
-                CompositionTarget ct = source.CompositionTarget;
-                Matrix transformMatrix = ct.TransformFromDevice;
-                this.baseCanvas.RenderTransform = new MatrixTransform(transformMatrix);
+                //PresentationSource source = PresentationSource.FromVisual(this);
+                //CompositionTarget ct = source.CompositionTarget;
+                //Matrix transformMatrix = ct.TransformFromDevice;
+                //this.baseCanvas.RenderTransform = new MatrixTransform(transformMatrix);
 
                 this.updateWindowToScreen(primaryScreen);
             };
+            
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
@@ -87,12 +89,17 @@ namespace WiiTUIO
             Console.WriteLine("Setting overlay window position to " + screen.Bounds);
             //this.Left = screen.Bounds.X;
             //this.Top = screen.Bounds.Y;
-            this.Width = screen.Bounds.Width;
-            this.Height = screen.Bounds.Height;
-            this.scrollViewer.MaxHeight = this.Height / 2 - 200;
+            PresentationSource source = PresentationSource.FromVisual(this);
+            Matrix transformMatrix = source.CompositionTarget.TransformToDevice;
+
+            this.Width = screen.Bounds.Width * transformMatrix.M22;
+            this.Height = screen.Bounds.Height * transformMatrix.M11;
+            this.scrollViewer.MaxHeight = this.Height - 200;
             UIHelpers.SetWindowPos((new WindowInteropHelper(this)).Handle, IntPtr.Zero, screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Width, screen.Bounds.Height, UIHelpers.SetWindowPosFlags.SWP_NOACTIVATE | UIHelpers.SetWindowPosFlags.SWP_NOZORDER);
-            this.baseGrid.Width = screen.Bounds.Width;
-            this.baseGrid.Height = screen.Bounds.Height;
+            this.baseGrid.Width = this.Width;
+            this.baseGrid.Height = this.Height;
+            this.baseCanvas.Width = this.Width;
+            this.baseCanvas.Height = this.Height;
             UIHelpers.TopmostFix(this);
         }
 
@@ -132,10 +139,14 @@ namespace WiiTUIO
                     this.Activate();
 
                     Color bordercolor = CursorColor.getColor(keyMapper.WiimoteID);
-                    bordercolor.ScA = 0.5f;
+                    //bordercolor.ScA = 0.5f;
+                    bordercolor.R = (byte)(bordercolor.R * 0.8);
+                    bordercolor.G = (byte)(bordercolor.G * 0.8);
+                    bordercolor.B = (byte)(bordercolor.B * 0.8);
                     this.titleBorder.BorderBrush = new SolidColorBrush(bordercolor);
 
                     this.title.Text = "Choose a layout for Wiimote " + keyMapper.WiimoteID;
+                    //this.title.Foreground = new SolidColorBrush(bordercolor);
 
                     this.layoutList.Children.Clear();
                     foreach (LayoutChooserSetting config in this.keyMapper.GetLayoutList())
