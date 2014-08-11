@@ -236,7 +236,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _pointer_cursorSize = 0.04;
+        private double _pointer_cursorSize = 0.03;
         public double pointer_cursorSize
         {
             get { return _pointer_cursorSize; }
