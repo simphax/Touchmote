@@ -33,7 +33,7 @@
             </Border>
             <Border Grid.Row="2"></Border>
         </Grid>
-        <StackPanel Name="noticeStack" Canvas.Right="20" Canvas.Top="20" Width="500">
+        <StackPanel Name="noticeStack" Canvas.Right="20" Canvas.Top="20" Width="400">
             
         </StackPanel>
     </Canvas>
