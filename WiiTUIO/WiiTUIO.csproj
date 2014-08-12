@@ -140,6 +140,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="ScpControl, Version=1.0.0.103, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\ScpControl.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -207,6 +211,7 @@
     <Compile Include="Output\Handlers\IOutputHandler.cs" />
     <Compile Include="Output\Handlers\IRumbleFeedback.cs" />
     <Compile Include="Output\Handlers\IStickHandler.cs" />
+    <Compile Include="Output\Handlers\VmultiKeyboardHandler.cs" />
     <Compile Include="Output\Handlers\Touch\CursorColor.cs" />
     <Compile Include="Output\Handlers\IButtonHandler.cs" />
     <Compile Include="Output\Handlers\KeyboardHandler.cs" />
@@ -249,6 +254,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MinimizeToTray.cs" />
+    <Compile Include="Output\VmultiDevice.cs" />
     <Compile Include="Output\VmultiProviderHandler.cs" />
     <Compile Include="OverlayNotice.xaml.cs">
       <DependentUpon>OverlayNotice.xaml</DependentUpon>
@@ -359,8 +365,8 @@
     <Compile Include="Input\WiiProvider\Keymap\WiiKeyMapper.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="Output\DrawingProviderHandler.cs" />
-    <Compile Include="Output\IProviderHandler.cs" />
-    <Compile Include="Output\OutputFactory.cs" />
+    <Compile Include="Output\ITouchProviderHandler.cs" />
+    <Compile Include="Output\TouchOutputFactory.cs" />
     <Compile Include="Output\Settings\TUIOSettings.xaml.cs">
       <DependentUpon>TUIOSettings.xaml</DependentUpon>
     </Compile>
@@ -464,10 +470,6 @@
     <ProjectReference Include="..\OSC.NET\OSC.NET.csproj">
       <Project>{14bd1d44-261d-4fc2-a7dd-a3cda413d790}</Project>
       <Name>OSC.NET</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ScpControl\ScpControl.csproj">
-      <Project>{ddecf06e-be48-4610-8bf8-4ae5140d9f0c}</Project>
-      <Name>ScpControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\WiiCPP\WiiCPP.vcxproj">
       <Project>{78eb9de8-b6fc-47f3-970f-0b4fcb0f38a8}</Project>

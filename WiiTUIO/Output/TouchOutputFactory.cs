@@ -7,12 +7,12 @@ using WiiTUIO.WinTouch;
 
 namespace WiiTUIO.Output
 {
-    class OutputFactory
+    class TouchOutputFactory
     {
 
-        private static IProviderHandler current;
+        private static ITouchProviderHandler current;
 
-        public static IProviderHandler getCurrentProviderHandler()
+        public static ITouchProviderHandler getCurrentProviderHandler()
         {
             if (current == null)
             {
@@ -48,7 +48,7 @@ namespace WiiTUIO.Output
                 case OutputType.DRAW:
                     return "draw";
                 default:
-                    return "touch-vmulti";
+                    return "touch";
             }
         }
 
@@ -56,7 +56,7 @@ namespace WiiTUIO.Output
         {
             if (name == "touch")
             {
-                return OutputType.TOUCHVMULTI;
+                //Default - see below
             }
             if (name == "touch-inject")
             {
@@ -82,15 +82,15 @@ namespace WiiTUIO.Output
             {
                 return OutputType.DRAW;
             }
-            return OutputType.TOUCHVMULTI; //Default
+            return VmultiDevice.Current.isAvailable() ? OutputType.TOUCHVMULTI : OutputType.TOUCHINJECT; //Default
         }
 
-        private static IProviderHandler createProviderHandler(string name)
+        private static ITouchProviderHandler createProviderHandler(string name)
         {
             return createProviderHandler(getType(name));
         }
 
-        private static IProviderHandler createProviderHandler(OutputType type)
+        private static ITouchProviderHandler createProviderHandler(OutputType type)
         {
             switch (type)
             {

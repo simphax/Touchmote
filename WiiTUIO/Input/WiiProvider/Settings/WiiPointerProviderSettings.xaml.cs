@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WiiCPP;
 using WiiTUIO.DeviceUtils;
+using WiiTUIO.Output;
 using WiiTUIO.Properties;
 
 namespace WiiTUIO.Provider
@@ -43,26 +44,36 @@ namespace WiiTUIO.Provider
                 this.cbiCenter.IsSelected = true;
             }
 
+            if(VmultiDevice.Current.isAvailable())
+            {
+                string currentMonitor = VmultiUtil.getCurrentMonitorDevicePath();
 
-            string currentMonitor = VmultiUtil.getCurrentMonitorDevicePath();
+                IEnumerable<MonitorInfo> monInfos = DeviceUtil.GetMonitorList();
 
-            IEnumerable<MonitorInfo> monInfos = DeviceUtil.GetMonitorList();
+                foreach (MonitorInfo monInfo in monInfos)
+                {
+                    ComboBoxItem cbItem = new ComboBoxItem();
+                    cbItem.Content = monInfo.FriendlyName;
+                    cbItem.DataContext = monInfo;
+                    this.MonitorComboBox.Items.Add(cbItem);
 
-            foreach (MonitorInfo monInfo in monInfos)
+                    if (monInfo.DevicePath == currentMonitor)
+                    {
+                        this.MonitorComboBox.SelectedItem = cbItem;
+                    }
+                }
+                this.initializing = false;
+            }
+            else
             {
                 ComboBoxItem cbItem = new ComboBoxItem();
-                cbItem.Content = monInfo.FriendlyName;
-                cbItem.DataContext = monInfo;
+                cbItem.Content = "Requires driver";
                 this.MonitorComboBox.Items.Add(cbItem);
-
-                if(monInfo.DevicePath == currentMonitor)
-                {
-                    this.MonitorComboBox.SelectedItem = cbItem;
-                }
+                this.MonitorComboBox.IsEnabled = false;
+                this.MonitorComboBox.SelectedIndex = 0;
+                this.initializing = false;
             }
 
-
-            this.initializing = false;
         }
 
         private void SBPositionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -88,8 +99,11 @@ namespace WiiTUIO.Provider
         {
             if (!this.initializing)
             {
-                MonitorInfo monInfo = (MonitorInfo)((ComboBoxItem)this.MonitorComboBox.SelectedItem).DataContext;
-                VmultiUtil.setCurrentMonitor(monInfo);
+                MonitorInfo monInfo = ((ComboBoxItem)this.MonitorComboBox.SelectedItem).DataContext as MonitorInfo;
+                if(monInfo != null)
+                {
+                    VmultiUtil.setCurrentMonitor(monInfo);
+                }
             }
         }
         /*

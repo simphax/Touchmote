@@ -43,14 +43,14 @@
         </DockPanel>
         <DockPanel Width="420">
             <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Edit Layout</Label>
-            <ScrollViewer>
+            <ScrollViewer PanningMode="VerticalOnly">
                 <StackPanel>
                     <StackPanel Margin="4">
                         <Grid>
                             <TextBox HorizontalAlignment="Left" Name="tbKeymapTitle" Tag="Title" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="6" Width="223"></TextBox>
                                 <TextBlock Name="tbDelete" Cursor="Hand" MouseUp="tbDelete_MouseUp" Foreground="Red" FontFamily="Segoe UI Semilight" FontSize="12" Margin="349,10,6,10" TextAlignment="Center" TextDecorations="Underline">Delete</TextBlock>
                         </Grid>
-                        <CheckBox Name="cbLayoutChooser" FontFamily="Segoe UI Semilight" Margin="6">Available in Layout Chooser</CheckBox>
+                        <CheckBox Name="cbLayoutChooser" FontFamily="Segoe UI Semilight" Margin="6">Available in Layout Chooser (hold Home 3 sec)</CheckBox>
                         <DockPanel>
                             <CheckBox Name="cbApplicationSearch" FontFamily="Segoe UI Semilight" Margin="6,6,6,2">Hook to application</CheckBox>
                             <TextBox Name="tbApplicationSearch" Tag="Search string (process name or window title, e.g. example.exe)" FontFamily="Segoe UI Semilight" FontSize="12" Padding="2,1" Margin="6,3,6,6"></TextBox>
@@ -100,7 +100,7 @@
                 </ComboBox>
                 <TextBox Name="tbOutputFilter" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" TextChanged="tbOutputFilter_TextChanged" Tag="Filter" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="0,8,0,0"></TextBox>
             </StackPanel>
-            <ScrollViewer>
+            <ScrollViewer PanningMode="VerticalOnly">
                 <StackPanel Name="spOutputList">
                 </StackPanel>
             </ScrollViewer>

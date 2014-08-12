@@ -119,15 +119,43 @@ namespace WiiTUIO.Output.Handlers.Touch
             mutex.ReleaseMutex();
         }
 
+        bool stopRendering = false;
+        int someLastFrames = 0;
+
         public void RefreshCursors()
         {
+            bool anyCursorIsVisible = false;
             foreach(D3DCursor cursor in cursors)
             {
                 SetD3DCursorPosition(cursor.ID, cursor.X, cursor.Y);
                 SetD3DCursorPressed(cursor.ID, cursor.Pressed);
                 SetD3DCursorHidden(cursor.ID, cursor.Hidden);
+
+                anyCursorIsVisible |= !cursor.Hidden;
             }
-            RenderAllD3DCursors();
+
+            //If there are no cursors to draw, draw a couple of frames to finish the hide animation, then stop rendering.
+            if (cursors.Count > 0 && anyCursorIsVisible)
+            {
+                stopRendering = false;
+            }
+            else
+            {
+                if (!stopRendering)
+                {
+                    stopRendering = true;
+                    someLastFrames = 20;
+                }
+            }
+
+            if (!stopRendering || someLastFrames > 0)
+            {
+                RenderAllD3DCursors();
+                if(stopRendering)
+                {
+                    someLastFrames--;
+                }
+            }
         }
 
     }

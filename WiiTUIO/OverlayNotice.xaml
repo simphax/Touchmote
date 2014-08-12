@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="180" d:DesignWidth="550">
-    <Border MouseUp="noticeBorder_MouseUp" Margin="0,0,0,20" Name="noticeBorder" Width="500" Background="#F20A0A0A" BorderThickness="3" BorderBrush="Red">
+    <Border MouseUp="noticeBorder_MouseUp" Margin="0,0,0,20" Name="noticeBorder" Width="400" Background="#F20A0A0A" BorderThickness="0" BorderBrush="Red">
         <StackPanel>
-            <TextBlock Name="noticeMessage" Text="Layout changed to ..." FontSize="27" FontFamily="Segoe UI Light" Foreground="White" Margin="20" TextWrapping="Wrap" />
+            <TextBlock Name="noticeMessage" Text="Layout changed to ..." FontSize="16" FontFamily="Segoe UI Light" Foreground="White" Margin="24" TextWrapping="Wrap" />
         </StackPanel>
     </Border>
 </UserControl>

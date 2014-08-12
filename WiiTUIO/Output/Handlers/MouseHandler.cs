@@ -19,11 +19,27 @@ namespace WiiTUIO.Output.Handlers
 
         //TODO factor out whats relevant for mouse... this is kinda hacky
         private DuoTouch duoTouch;
+        
+        private bool mouseLeftDown = false;
+        private bool mouseRightDown = false;
 
         public MouseHandler()
         {
             this.inputSimulator = new InputSimulator();
             this.duoTouch = new DuoTouch(Settings.Default.pointer_positionSmoothing, 1);
+        }
+
+        public bool reset()
+        {
+            if (mouseLeftDown)
+            {
+                setButtonUp("mouseleft");
+            }
+            if (mouseRightDown)
+            {
+                setButtonUp("mouseright");
+            }
+            return true;
         }
 
         public bool setButtonDown(string key)
@@ -36,10 +52,12 @@ namespace WiiTUIO.Output.Handlers
                     case MouseCode.MOUSELEFT:
                         this.inputSimulator.Mouse.LeftButtonDown();
                         duoTouch.setContactMaster(); //To get touch tap threshold...
+                        mouseLeftDown = true;
                         break;
                     case MouseCode.MOUSERIGHT:
                         this.inputSimulator.Mouse.RightButtonDown();
                         duoTouch.setContactMaster();
+                        mouseRightDown = true;
                         break;
                     default:
                         return false;
@@ -59,10 +77,12 @@ namespace WiiTUIO.Output.Handlers
                     case MouseCode.MOUSELEFT:
                         this.inputSimulator.Mouse.LeftButtonUp();
                         duoTouch.releaseContactMaster();
+                        mouseLeftDown = false;
                         break;
                     case MouseCode.MOUSERIGHT:
                         this.inputSimulator.Mouse.RightButtonUp();
                         duoTouch.releaseContactMaster();
+                        mouseLeftDown = false;
                         break;
                     default:
                         return false;

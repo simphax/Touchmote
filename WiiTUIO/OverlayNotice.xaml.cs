@@ -33,8 +33,11 @@ namespace WiiTUIO
             this.noticeMessage.Text = ""+message;
 
             Color bordercolor = CursorColor.getColor(wiimoteID);
-            bordercolor.ScA = 0.5f;
-            this.noticeBorder.BorderBrush = new SolidColorBrush(bordercolor);
+            //bordercolor.ScA = 0.5f;
+            bordercolor.R = (byte)(bordercolor.R * 0.8);
+            bordercolor.G = (byte)(bordercolor.G * 0.8);
+            bordercolor.B = (byte)(bordercolor.B * 0.8);
+            this.noticeBorder.Background = new SolidColorBrush(bordercolor);
 
             this.hideTimer = new Timer();
             this.hideTimer.Interval = timeout;

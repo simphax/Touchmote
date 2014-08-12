@@ -254,8 +254,10 @@ namespace WiiTUIO
             }
             else
             {
-                //This will happen if we request a input string that is not defined in this nor the default keymap.
-                return null;
+                //This means we have no setting for the input on this keymap nor any keymap to inherit from. Let's save a "Disable" setting on this.
+                this.setConfigFor(controllerId, KeymapDatabase.Current.getInput(input), new KeymapOutConfig(KeymapDatabase.Current.getDisableOutput(),false));
+                //It's a small chance of deadlock here if the above command doesnt work, but wth
+                return this.getConfigFor(controllerId,input);
             }
         }
 

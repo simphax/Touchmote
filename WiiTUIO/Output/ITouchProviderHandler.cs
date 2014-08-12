@@ -6,7 +6,7 @@ using WiiTUIO.Provider;
 
 namespace WiiTUIO.Output
 {
-    interface IProviderHandler
+    interface ITouchProviderHandler
     {
 
         event Action OnConnect;

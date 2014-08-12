@@ -14,7 +14,7 @@ using HidLibrary;
 
 namespace WiiTUIO.Output
 {
-    class TUIOVmultiProviderHandler : IProviderHandler
+    class TUIOVmultiProviderHandler : ITouchProviderHandler
     {
         public event Action OnConnect;
 

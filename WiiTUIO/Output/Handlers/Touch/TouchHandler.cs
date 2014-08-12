@@ -14,7 +14,7 @@ namespace WiiTUIO.Output.Handlers.Touch
 {
     class TouchHandler : IButtonHandler, ICursorHandler, IStickHandler
     {
-        private IProviderHandler handler;
+        private ITouchProviderHandler handler;
         private DuoTouch duoTouch;
         private CursorPos lastCursorPos;
         private CursorPos positionToPush;
@@ -33,7 +33,7 @@ namespace WiiTUIO.Output.Handlers.Touch
         private D3DCursor masterCursor;
         private D3DCursor slaveCursor;
 
-        public TouchHandler(IProviderHandler handler, long id)
+        public TouchHandler(ITouchProviderHandler handler, long id)
         {
             this.id = id;
             this.handler = handler;
@@ -46,6 +46,13 @@ namespace WiiTUIO.Output.Handlers.Touch
             this.timeoutTimer.Elapsed += timeoutTimer_Elapsed;
             this.timeoutTimer.Enabled = true;
             this.timeoutTimer.Start();
+        }
+
+        public bool reset()
+        {
+            this.masterCursor.SetReleased();
+            this.slaveCursor.SetReleased();
+            return true;
         }
 
         void timeoutTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)

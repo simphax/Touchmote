@@ -177,5 +177,6 @@ namespace WiiTUIO
             makeExTransparent(hWnd);
             makeExTransparent(hWndHiddenOwner);
         }
+
     }
 }

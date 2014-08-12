@@ -62,6 +62,12 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Down", "Nunchuk.StickDown", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Left", "Nunchuk.StickLeft", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Right", "Nunchuk.StickRight", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt X-", "Nunchuk.AccelX-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt X+", "Nunchuk.AccelX+", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Y-", "Nunchuk.AccelY-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Y+", "Nunchuk.AccelY+", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Z-", "Nunchuk.AccelZ-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Z+", "Nunchuk.AccelZ+", true, true, false));
 
 
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left", "Classic.Left"));
@@ -133,7 +139,7 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Arrow Right", "right"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Arrow Down", "down"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Print Screen", "snapshot"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Insert", "ins"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Insert", "insert"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Delete", "delete"));
 
 
@@ -174,6 +180,9 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Y", "vk_y"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Z", "vk_z"));
 
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Period .", "oem_period"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Comma ,", "oem_comma"));
+
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left Win", "lwin"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Right Win", "rwin"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Apps / Menu", "apps"));
@@ -187,11 +196,11 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numpad 7", "numpad7"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numpad 8", "numpad8"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numpad 9", "numpad9"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "*", "multiply"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "+", "add"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "-", "subtract"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, ",", "decimal"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "/", "divide"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Multiply *", "multiply"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Add +", "add"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Subtract -", "subtract"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Decimal ,", "decimal"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Divide /", "divide"));
 
 
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F1", "f1"));
@@ -206,18 +215,6 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F10", "f10"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F11", "f11"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F12", "f12"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F13", "f13"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F14", "f14"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F15", "f15"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F16", "f16"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F17", "f17"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F18", "f18"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F19", "f19"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F20", "f20"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F21", "f21"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F22", "f22"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F23", "f23"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F24", "f24"));
 
 
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numlock", "numlock"));
@@ -258,10 +255,8 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Back", "360.back"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Start", "360.start"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Guide", "360.guide"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick X", "360.sticklx", false, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Y", "360.stickly", false, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick X", "360.stickrx", false, true, false, false));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Y", "360.stickry", false, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Press", "360.stickpressl"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Press", "360.stickpressr"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Up", "360.sticklup", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Down", "360.stickldown", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Left", "360.sticklleft", true, true, false, false));
