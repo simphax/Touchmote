@@ -72,11 +72,11 @@ namespace WiiTUIO
                 OnClick(this.file);
             }
         }
-
+        /*
         private void tbName_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.setSelected(true);
         }
-
+        */
     }
 }
