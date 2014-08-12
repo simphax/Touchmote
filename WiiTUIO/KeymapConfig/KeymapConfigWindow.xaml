@@ -43,7 +43,7 @@
         </DockPanel>
         <DockPanel Width="420">
             <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Edit Layout</Label>
-            <ScrollViewer>
+            <ScrollViewer PanningMode="VerticalOnly">
                 <StackPanel>
                     <StackPanel Margin="4">
                         <Grid>
@@ -100,7 +100,7 @@
                 </ComboBox>
                 <TextBox Name="tbOutputFilter" GotFocus="tb_placeholder_GotFocus" LostFocus="tb_placeholder_LostFocus" TextChanged="tbOutputFilter_TextChanged" Tag="Filter" FontFamily="Segoe UI Semilight" FontSize="14" Padding="2,1" Margin="0,8,0,0"></TextBox>
             </StackPanel>
-            <ScrollViewer>
+            <ScrollViewer PanningMode="VerticalOnly">
                 <StackPanel Name="spOutputList">
                 </StackPanel>
             </ScrollViewer>
