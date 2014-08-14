@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-        <Border Cursor="/Resources/openhand.cur" Name="border" Background="#F2FF5100" BorderThickness="0" BorderBrush="Red" MouseMove="border_MouseMove" CornerRadius="2" ClipToBounds="True">
+        <Border Cursor="/Resources/openhand.cur" Name="border" Background="#F2FF5100" BorderThickness="0" BorderBrush="Red" MouseMove="border_MouseMove" TouchDown="border_TouchDown" TouchMove="border_TouchMove" CornerRadius="2" ClipToBounds="True">
             <TextBlock Name="tbName" Text="Default" Margin="5" FontSize="14" FontFamily="Segoe UI Semilight" Foreground="White" TextAlignment="Center" />
         </Border>
     

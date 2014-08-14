@@ -14,10 +14,31 @@ namespace WiiTUIO.Output.Handlers
         private InputSimulator inputSimulator;
         private KeyboardReport report;
 
-        public VmultiKeyboardHandler()
+        private static VmultiKeyboardHandler defaultInstance;
+
+        public static VmultiKeyboardHandler Default
+        {
+            get
+            {
+                if (defaultInstance == null)
+                {
+                    defaultInstance = new VmultiKeyboardHandler();
+                }
+                return defaultInstance;
+            }
+        }
+
+        private VmultiKeyboardHandler()
         {
             this.report = new KeyboardReport();
             this.inputSimulator = new InputSimulator();
+        }
+
+
+        public bool reset()
+        {
+            report = new KeyboardReport();
+            return true;
         }
 
         public bool setButtonDown(string key)
@@ -255,6 +276,10 @@ namespace WiiTUIO.Output.Handlers
                     return KeyboardKey.Y;
                 case VirtualKeyCode.VK_Z:
                     return KeyboardKey.Z;
+                case VirtualKeyCode.OEM_PERIOD:
+                    return KeyboardKey.Dot;
+                case VirtualKeyCode.OEM_COMMA:
+                    return KeyboardKey.Comma;
                 case VirtualKeyCode.LWIN:
                     return KeyboardModifier.LWin;
                 case VirtualKeyCode.RWIN:

@@ -48,6 +48,13 @@ namespace WiiTUIO.Output.Handlers.Touch
             this.timeoutTimer.Start();
         }
 
+        public bool reset()
+        {
+            this.masterCursor.SetReleased();
+            this.slaveCursor.SetReleased();
+            return true;
+        }
+
         void timeoutTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             this.timeoutTimer.Stop();

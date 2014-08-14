@@ -62,6 +62,12 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Down", "Nunchuk.StickDown", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Left", "Nunchuk.StickLeft", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Right", "Nunchuk.StickRight", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt X-", "Nunchuk.AccelX-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt X+", "Nunchuk.AccelX+", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Y-", "Nunchuk.AccelY-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Y+", "Nunchuk.AccelY+", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Z-", "Nunchuk.AccelZ-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Z+", "Nunchuk.AccelZ+", true, true, false));
 
 
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left", "Classic.Left"));
@@ -174,6 +180,9 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Y", "vk_y"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Z", "vk_z"));
 
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Period .", "oem_period"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Comma ,", "oem_comma"));
+
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Left Win", "lwin"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Right Win", "rwin"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Apps / Menu", "apps"));
@@ -187,11 +196,11 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numpad 7", "numpad7"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numpad 8", "numpad8"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Numpad 9", "numpad9"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "*", "multiply"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "+", "add"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "-", "subtract"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, ",", "decimal"));
-            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "/", "divide"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Multiply *", "multiply"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Add +", "add"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Subtract -", "subtract"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Decimal ,", "decimal"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "Divide /", "divide"));
 
 
             allOutputs.Add(new KeymapOutput(KeymapOutputType.KEYBOARD, "F1", "f1"));

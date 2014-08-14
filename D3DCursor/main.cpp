@@ -12,6 +12,7 @@
 #include <dwmapi.h>
 
 #include <iostream>
+#include <vector>
 
 // Import libraries to link with
 #pragma comment(lib, "d3d9.lib")
@@ -67,7 +68,7 @@ D3DXMATRIX Identity;
 CURSORPTR				*clearQueue = new CURSORPTR[MAX_CURSORS];
 INT nToClear=0;
 
-BOOL wait = false;
+BOOL wait = true;
 
 
 // +--------------+
@@ -95,28 +96,11 @@ HRESULT D3DStartup(HWND hWnd)
 	// Setup presentation parameters
 	ZeroMemory(&pp, sizeof(pp));
 	pp.Windowed            = TRUE;
-	pp.SwapEffect          = D3DSWAPEFFECT_DISCARD; // Required for multi sampling
+	pp.SwapEffect          = D3DSWAPEFFECT_DISCARD; 
 	pp.BackBufferFormat    = D3DFMT_A8R8G8B8;       // Back buffer format with alpha channel
 	pp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE; //Disables vsync
-	
-	// Set highest quality non-maskable AA available or none if not
-	if(SUCCEEDED(g_pD3D->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT,
-													D3DDEVTYPE_HAL,
-													D3DFMT_A8R8G8B8,
-													TRUE,
-													D3DMULTISAMPLE_NONMASKABLE,
-													&msqAAQuality
-													)))
-	{
-	// Set AA quality
-	pp.MultiSampleType     = D3DMULTISAMPLE_NONMASKABLE;
-	pp.MultiSampleQuality  = msqAAQuality - 1;
-	}
-	else
-	{
-	// No AA
-	pp.MultiSampleType     = D3DMULTISAMPLE_NONE;
-	}
+
+	pp.MultiSampleType = D3DMULTISAMPLE_NONE;
 
 	// Create a Direct3D device object
 	if(FAILED(g_pD3D->CreateDeviceEx(D3DADAPTER_DEFAULT,
@@ -132,9 +116,7 @@ HRESULT D3DStartup(HWND hWnd)
   
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	
-
-		D3DXMatrixOrthoLH(&Ortho2D, g_iWidth, g_iHeight, 0.0f, 1.0f);
+	D3DXMatrixOrthoLH(&Ortho2D, g_iWidth, g_iHeight, 0.0f, 1.0f);
 	D3DXMatrixIdentity(&Identity);
 
 	g_pD3DDevice->SetTransform(D3DTS_PROJECTION, &Ortho2D);
@@ -190,6 +172,8 @@ VOID Render(VOID)
 {
 	if (!wait)
 	{
+		std::vector<RECT> dirtyRects;
+
 		D3DXMATRIX    scaleMatrix;
 		D3DXMATRIX	positionMatrix;
 		// Sanity check
@@ -210,6 +194,14 @@ VOID Render(VOID)
 			clearRect[i].x2 = cursors[j].last_rendered_x + (SPRITE_SIZE * normalCursorScale);
 			clearRect[i].y1 = cursors[j].last_rendered_y - (SPRITE_SIZE * normalCursorScale);
 			clearRect[i].y2 = cursors[j].last_rendered_y + (SPRITE_SIZE * normalCursorScale);
+
+			RECT dirtyRect;
+			dirtyRect.left = clearRect[i].x1;
+			dirtyRect.right = clearRect[i].x2;
+			dirtyRect.top = clearRect[i].y1;
+			dirtyRect.bottom = clearRect[i].y2;
+
+			dirtyRects.push_back(dirtyRect);
 		}
 		for (j = 0; i < enabledCursors + nToClear; i++)
 		{
@@ -217,8 +209,19 @@ VOID Render(VOID)
 			clearRect[i].x2 = clearQueue[j].cursor->last_rendered_x + (SPRITE_SIZE * normalCursorScale);
 			clearRect[i].y1 = clearQueue[j].cursor->last_rendered_y - (SPRITE_SIZE * normalCursorScale);
 			clearRect[i].y2 = clearQueue[j].cursor->last_rendered_y + (SPRITE_SIZE * normalCursorScale);
+
+			RECT dirtyRect;
+			dirtyRect.left = clearRect[i].x1;
+			dirtyRect.right = clearRect[i].x2;
+			dirtyRect.top = clearRect[i].y1;
+			dirtyRect.bottom = clearRect[i].y2;
+
+			dirtyRects.push_back(dirtyRect);
+
 			j++;
+
 		}
+
 
 		g_pD3DDevice->Clear(enabledCursors + nToClear, clearRect, D3DCLEAR_TARGET, ARGB_TRANS, 1.0f, 0);
 
@@ -252,6 +255,13 @@ VOID Render(VOID)
 					pos.x = cursors[j].x - (SPRITE_SIZE / 2);
 					pos.y = cursors[j].y - (SPRITE_SIZE / 2);
 
+					RECT dirtyRect;
+					dirtyRect.left = pos.x;
+					dirtyRect.right = pos.x + SPRITE_SIZE;
+					dirtyRect.top = pos.y;
+					dirtyRect.bottom = pos.y + SPRITE_SIZE;
+
+					dirtyRects.push_back(dirtyRect);
 
 					//Animation
 					if (cursors[j].hidden)
@@ -338,9 +348,54 @@ VOID Render(VOID)
 
 			g_pD3DDevice->EndScene();
 		}
+		RECT dummy;
+		dummy.left = 0;
+		dummy.right = 0;
+		dummy.bottom = 0;
+		dummy.top = 0;
+		dirtyRects.push_back(dummy);
+
+		DWORD size = dirtyRects.size() * sizeof(RECT)+sizeof(RGNDATAHEADER);
+
+		RGNDATA *rgndata = NULL;
+
+		//allocate  the memory
+		rgndata = (RGNDATA *)HeapAlloc(GetProcessHeap(), 0, size);
+
+		if (!rgndata)
+			return;
+
+		RECT* pRectInitial = (RECT*)rgndata->Buffer;
+		RECT rectBounding = dirtyRects[0];
+
+		//feeding the rectangles into the buffer of rgndata
+		for (int i = 0; i < dirtyRects.size(); i++)
+		{
+			RECT rectCurrent = dirtyRects[i];
+			rectBounding.left = min(rectBounding.left, rectCurrent.left);
+			rectBounding.right = max(rectBounding.right, rectCurrent.right);
+			rectBounding.top = min(rectBounding.top, rectCurrent.top);
+			rectBounding.bottom = max(rectBounding.bottom, rectCurrent.bottom);
+
+			*pRectInitial = dirtyRects[i];
+			pRectInitial++;
+		}
+
+		//preparing rgndata header
+		RGNDATAHEADER  header;
+		header.dwSize = sizeof(RGNDATAHEADER);
+		header.iType = RDH_RECTANGLES;
+		header.nCount = dirtyRects.size();
+		header.nRgnSize = dirtyRects.size() * sizeof(RECT);
+		header.rcBound.left = rectBounding.left;
+		header.rcBound.top = rectBounding.top;
+		header.rcBound.right = rectBounding.right;
+		header.rcBound.bottom = rectBounding.bottom;
+
+		rgndata->rdh = header;
 
 		// Update display
-		g_pD3DDevice->PresentEx(NULL, NULL, NULL, NULL, NULL);
+		g_pD3DDevice->PresentEx(NULL, NULL, NULL, rgndata, 0);
 	}
 }
 
@@ -365,7 +420,7 @@ LRESULT WINAPI WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_PAINT:
       // Force a render to keep the window updated
-		Sleep(10);
+	  Sleep(10);
       return 0;
   }
 
@@ -440,6 +495,7 @@ extern "C" __declspec(dllexport)INT WINAPI StartD3DCursorWindow(HINSTANCE hInsta
     }
   }
 
+  wait = false;
   // Shutdown Direct3D
   //D3DShutdown();
 
@@ -481,9 +537,13 @@ extern "C" __declspec(dllexport)VOID WINAPI SetD3DCursorWindowPosition(int x, in
 
 extern "C" __declspec(dllexport)VOID WINAPI RenderAllD3DCursors()
 {
-	try {
-	Render();
-	} catch(...) {}
+	if (!wait)
+	{
+		try {
+			Render();
+		}
+		catch (...) {}
+	}
 }
 
 extern "C" __declspec(dllexport)VOID WINAPI SetD3DCursorPosition(int id, int x, int y)

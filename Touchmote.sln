@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HidLibrary", "HidLibrary\Hi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriverInstall", "DriverInstall\DriverInstall.csproj", "{914C6098-F4B6-4AFA-AFD0-5B90411C9271}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScpControl", "ScpControl\ScpControl.csproj", "{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResetTouchInjection", "ResetTouchInjection\ResetTouchInjection.csproj", "{D1E85F1A-3BE3-46C1-B086-EF1335457EF5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3DCursor", "D3DCursor\D3DCursor.vcxproj", "{4796387A-2F8E-4ED0-96E4-A72137B4428C}"

@@ -43,28 +43,36 @@ namespace WiiTUIO
             UIElement element = sender as UIElement;
             if (element != null && e.LeftButton == MouseButtonState.Pressed)
             {
-                //if (this.adorner == null)
-                //{
-                    this.adorner = new TestAdorner(this.border);
-                    this.adorner.IsHitTestVisible = false;
-                //}
-                //this.adorner.Visibility = Visibility.Visible;
-                if (OnDragStart != null)
-                {
-                    OnDragStart(this.adorner);
-                }
-                DataObject data = new DataObject();
-                data.SetData("KeymapOutput", this.output);
-                data.SetData("KeymapOutputItem", this);
-                DragDrop.DoDragDrop(this.border,
-                                     data,
-                                     DragDropEffects.Copy | DragDropEffects.Move);
-                if (OnDragStop != null)
-                {
-                    OnDragStop(this.adorner);
-                }
-                
-                //this.adorner.Visibility = Visibility.Hidden;
+                dragMe();
+            }
+        }
+
+        private void border_TouchMove(object sender, TouchEventArgs e)
+        {
+            UIElement element = sender as UIElement;
+            if (element != null)
+            {
+                dragMe();
+            }
+        }
+
+        private void dragMe()
+        {
+            this.adorner = new TestAdorner(this.border);
+            this.adorner.IsHitTestVisible = false;
+            if (OnDragStart != null)
+            {
+                OnDragStart(this.adorner);
+            }
+            DataObject data = new DataObject();
+            data.SetData("KeymapOutput", this.output);
+            data.SetData("KeymapOutputItem", this);
+            DragDrop.DoDragDrop(this.border,
+                                 data,
+                                 DragDropEffects.Copy | DragDropEffects.Move);
+            if (OnDragStop != null)
+            {
+                OnDragStop(this.adorner);
             }
         }
 
@@ -107,6 +115,12 @@ namespace WiiTUIO
         {
             this.adorner.UnlockPosition();
         }
+
+        private void border_TouchDown(object sender, TouchEventArgs e)
+        {
+            e.Handled = true;
+        }
+
     }
 
     public class TestAdorner : Adorner

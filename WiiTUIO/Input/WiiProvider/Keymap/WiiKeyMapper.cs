@@ -217,26 +217,41 @@ namespace WiiTUIO.Provider
             return KeymapDatabase.Current.getKeymapSettings().getLayoutChooserSettings();
         }
 
+        private void setKeymap(Keymap keymap)
+        {
+            foreach (IOutputHandler handler in outputHandlers)
+            {
+                handler.startUpdate();
+                handler.reset();
+                handler.endUpdate();
+            }
+            this.KeyMap.SetKeymap(keymap);
+        }
+
         public void SetFallbackKeymap(string filename)
         {
             this.fallbackKeymap = this.loadKeyMap(filename);
         }
+        public string GetFallbackKeymap()
+        {
+            return this.fallbackKeymap.Filename;
+        }
 
         public void SwitchToDefault()
         {
-            this.KeyMap.SetKeymap(this.defaultKeymap); //Switch to fallback even if we did not choose anything in the chooser.
+            this.setKeymap(this.defaultKeymap); //Switch to fallback even if we did not choose anything in the chooser.
         }
 
         public void SwitchToFallback()
         {
-            this.KeyMap.SetKeymap(this.fallbackKeymap); //Switch to fallback even if we did not choose anything in the chooser.
+            this.setKeymap(this.fallbackKeymap); //Switch to fallback even if we did not choose anything in the chooser.
         }
 
         void homeButtonTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (this.PressedButtons["Home"])
             {
-                this.KeyMap.SetKeymap(this.defaultKeymap);
+                this.setKeymap(this.defaultKeymap);
                 OverlayWindow.Current.ShowLayoutOverlay(this);
                 this.PressedButtons["Home"] = true;
             }
@@ -264,7 +279,7 @@ namespace WiiTUIO.Provider
                 }
                 if (!keymapFound)
                 {
-                    this.KeyMap.SetKeymap(this.fallbackKeymap);
+                    this.setKeymap(this.fallbackKeymap);
                 }
 
             }
@@ -328,7 +343,7 @@ namespace WiiTUIO.Provider
         {
             Keymap keymap = KeymapDatabase.Current.getKeymap(filename);
 
-            this.KeyMap.SetKeymap(keymap);
+            this.setKeymap(keymap);
 
             this.processWiimoteState(new WiimoteState()); //Sets all buttons to "not pressed"
 

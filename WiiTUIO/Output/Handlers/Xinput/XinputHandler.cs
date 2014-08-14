@@ -24,6 +24,12 @@ namespace WiiTUIO.Output.Handlers.Xinput
             xinputBus = XinputBus.Default;
         }
 
+        public bool reset()
+        {
+            report = new XinputReport((int)id);
+            return true;
+        }
+
         public bool connect()
         {
             this.disconnect();
