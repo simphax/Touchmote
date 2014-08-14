@@ -142,21 +142,25 @@ namespace WiiCPP {
 			// Nintendo RVL-WBC-01    = Wii Fit Balance Board
 			// Nintendo RVL-CNT-01-UC = Wii U Pro Controller
 			String^ name = gcnew String(Device.name);
-			return (name->ToUpper()->Substring(0, 13)->Equals("NINTENDO RVL-"));
+			if (name->Length > 12)
+			{
+				return (name->ToUpper()->Substring(0, 13)->Equals("NINTENDO RVL-"));
+			}
+			return false;
 		}
 
 		void StartPairingWiimote(int i) {
 			int error;
 			ToshibaState = 3;
 			listener->pairingMessage("Found a new Wiimote (Toshiba)", WiiPairListener::MessageType::SUCCESS);
-			//listener->pairingConsole("Pairing " + i + ": '" + gcnew String(pDeviceList->device[i].name) + "' " + gcnew String(FormatToshibaBTAddress(pDeviceList->device[i].BluetoothAddress)));
+			listener->pairingConsole("Pairing " + i + ": '" + gcnew String(pDeviceList->device[i].name) + "' " + gcnew String(FormatToshibaBTAddress(pDeviceList->device[i].BluetoothAddress)));
 			//if (ToshibaBluetoothClearPIN)
 			//	ToshibaBluetoothClearPIN(pDeviceList->device[i].BluetoothAddress, error);
 			//ToshibaBluetoothNotify(0, error, windowHandle, WM_TOSHIBA_BLUETOOTH);
 			if (ToshibaBluetoothConnectHID)
 			  ToshibaBluetoothConnectHID(&(pDeviceList->device[i].BluetoothAddress[0]), error, windowHandle, WM_TOSHIBA_BLUETOOTH, i);
 			//ToshibaBluetoothConnectHID(NULL, error, 0, WM_TOSHIBA_BLUETOOTH, 7);
-			System::Threading::Thread::Sleep(500);
+			System::Threading::Thread::Sleep(2000);
 			
 		}
 
