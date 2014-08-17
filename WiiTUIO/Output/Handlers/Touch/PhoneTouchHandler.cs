@@ -53,6 +53,11 @@ namespace WiiTUIO.Output.Handlers.Touch
             }
         }
 
+        public bool reset()
+        {
+            return true;
+        }
+
         public bool setPosition(string key, Provider.CursorPos cursorPos)
         {
             if (key.Length > 5 && key.Substring(0,5).ToLower().Equals("touch"))
