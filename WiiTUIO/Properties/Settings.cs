@@ -170,6 +170,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private bool _disconnectWiimotesOnDolphin = true;
+        public bool disconnectWiimotesOnDolphin
+        {
+            get { return _disconnectWiimotesOnDolphin; }
+            set
+            {
+                _disconnectWiimotesOnDolphin = value;
+                OnPropertyChanged("disconnectWiimotesOnDolphin");
+            }
+        }
+
         private string _tuio_IP = "127.0.0.1";
         public string tuio_IP
         {
