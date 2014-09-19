@@ -23,7 +23,7 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Button>
-        <Label Name="versionLabel" Content="Touchmote v1.0b13" Canvas.Left="76" Canvas.Top="36" FontFamily="Segoe UI Light" FontSize="18"/>
+        <Label Name="versionLabel" Content="Touchmote v1.0b14" Canvas.Left="76" Canvas.Top="36" FontFamily="Segoe UI Light" FontSize="18"/>
         <TextBlock Canvas.Left="81" TextWrapping="Wrap" Canvas.Top="80" Height="54" Width="292" FontFamily="Segoe UI Semilight">Touchmote provides a way for one or several Wiimotes to act as a multi-touch and gamepad device.</TextBlock>
         <TextBlock Canvas.Left="81" TextWrapping="Wrap" Canvas.Top="124" Height="27" Width="270" FontFamily="Segoe UI Semilight">        
                             Visit <Hyperlink NavigateUri="http://touchmote.net/" RequestNavigate="Hyperlink_RequestNavigate">touchmote.net</Hyperlink> for more information.
