@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using WiiTUIO.Output.Handlers.Touch;
-using WiiTUIO.Properties;
 using WiiTUIO.Provider;
 using WindowsInput;
 using WindowsInput.Native;
@@ -17,18 +15,14 @@ namespace WiiTUIO.Output.Handlers
     {
         private InputSimulator inputSimulator;
 
-        //TODO factor out whats relevant for mouse... this is kinda hacky
-        private DuoTouch duoTouch;
-        
         private bool mouseLeftDown = false;
         private bool mouseRightDown = false;
 
         public MouseHandler()
         {
             this.inputSimulator = new InputSimulator();
-            this.duoTouch = new DuoTouch(Settings.Default.pointer_positionSmoothing, 1);
         }
-
+        
         public bool reset()
         {
             if (mouseLeftDown)
@@ -51,12 +45,10 @@ namespace WiiTUIO.Output.Handlers
                 {
                     case MouseCode.MOUSELEFT:
                         this.inputSimulator.Mouse.LeftButtonDown();
-                        duoTouch.setContactMaster(); //To get touch tap threshold...
                         mouseLeftDown = true;
                         break;
                     case MouseCode.MOUSERIGHT:
                         this.inputSimulator.Mouse.RightButtonDown();
-                        duoTouch.setContactMaster();
                         mouseRightDown = true;
                         break;
                     default:
@@ -76,12 +68,10 @@ namespace WiiTUIO.Output.Handlers
                 {
                     case MouseCode.MOUSELEFT:
                         this.inputSimulator.Mouse.LeftButtonUp();
-                        duoTouch.releaseContactMaster();
                         mouseLeftDown = false;
                         break;
                     case MouseCode.MOUSERIGHT:
                         this.inputSimulator.Mouse.RightButtonUp();
-                        duoTouch.releaseContactMaster();
                         mouseLeftDown = false;
                         break;
                     default:
@@ -94,22 +84,27 @@ namespace WiiTUIO.Output.Handlers
 
         public bool setPosition(string key, CursorPos cursorPos)
         {
-            if (key.ToLower().Equals("mouse"))
+            key = key.ToLower();
+            if (key.Equals("mouse"))
             {
                 if (!cursorPos.OutOfReach)
                 {
-                    duoTouch.setMasterPosition(new Point(cursorPos.X, cursorPos.Y));
-                    Queue<WiiContact> contacts = duoTouch.getFrame();
-
-                    if (contacts.Count > 0)
-                    {
-                        WiiContact first = contacts.First();
-                        Point smoothedPos = first.NormalPosition;
-
-                        this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
-                        return true;
-                    }
+                    Point smoothedPos = CursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
+                    this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
                 }
+            }
+
+            if (key.Equals("fpsmouse"))
+            {
+                Point smoothedPos = CursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
+
+                double deadzone = 0.1; // TODO: Move to settings
+                double shiftX = Math.Abs(smoothedPos.X - 0.5) > deadzone ? smoothedPos.X - 0.5 : 0;
+                double shiftY = Math.Abs(smoothedPos.Y - 0.5) > deadzone ? smoothedPos.Y - 0.5 : 0;
+
+                this.inputSimulator.Mouse.MoveMouseBy((int)(30 * shiftX), (int)(30 * shiftY));
+
+                return true;
             }
             return false;
         }

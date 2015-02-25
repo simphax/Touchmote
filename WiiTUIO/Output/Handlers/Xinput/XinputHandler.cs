@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using WiiTUIO.Provider;
 
 namespace WiiTUIO.Output.Handlers.Xinput
 {
-    public class XinputHandler : IButtonHandler, IStickHandler, IRumbleFeedback
+    public class XinputHandler : IButtonHandler, IStickHandler, IRumbleFeedback, ICursorHandler
     {
         private static string PREFIX = "360.";
 
@@ -232,6 +234,36 @@ namespace WiiTUIO.Output.Handlers.Xinput
                         return false; //No valid key code was found
                 }
                 return true;
+            }
+            return false;
+        }
+
+        public bool setPosition(string key, CursorPos cursorPos)
+        {
+            key = key.ToLower();
+            if (key.Equals("360.stickl") || key.Equals("360.stickr"))
+            {
+                if (!cursorPos.OutOfReach)
+                {
+                    Point smoothedPos = CursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
+
+                    double smoothedX = smoothedPos.X;
+                    double smoothedY = 1 - smoothedPos.Y; // Y is inverted
+
+                    switch (key)
+                    {
+                        case "360.stickl":
+                            report.StickLX = smoothedX;
+                            report.StickLY = smoothedY;
+                            break;
+                        case "360.stickr":
+                            report.StickRX = smoothedX;
+                            report.StickRY = smoothedY;
+                            break;
+                    }
+                    return true;
+
+                }
             }
             return false;
         }
