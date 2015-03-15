@@ -18,9 +18,12 @@ namespace WiiTUIO.Output.Handlers
         private bool mouseLeftDown = false;
         private bool mouseRightDown = false;
 
+        private CursorPositionHelper cursorPositionHelper;
+
         public MouseHandler()
         {
             this.inputSimulator = new InputSimulator();
+            cursorPositionHelper = new CursorPositionHelper();
         }
         
         public bool reset()
@@ -89,14 +92,14 @@ namespace WiiTUIO.Output.Handlers
             {
                 if (!cursorPos.OutOfReach)
                 {
-                    Point smoothedPos = CursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
+                    Point smoothedPos = cursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
                     this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
                 }
             }
 
             if (key.Equals("fpsmouse"))
             {
-                Point smoothedPos = CursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
+                Point smoothedPos = cursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
 
                 double deadzone = 0.1; // TODO: Move to settings
                 double shiftX = Math.Abs(smoothedPos.X - 0.5) > deadzone ? smoothedPos.X - 0.5 : 0;

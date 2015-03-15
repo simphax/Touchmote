@@ -16,6 +16,8 @@ namespace WiiTUIO.Output.Handlers.Xinput
         private XinputDevice device;
         private XinputReport report;
 
+        private CursorPositionHelper cursorPositionHelper;
+
         private long id;
 
         public Action<Byte, Byte> OnRumble { get; set; }
@@ -24,6 +26,7 @@ namespace WiiTUIO.Output.Handlers.Xinput
         {
             this.id = id;
             xinputBus = XinputBus.Default;
+            cursorPositionHelper = new CursorPositionHelper();
         }
 
         public bool reset()
@@ -245,7 +248,7 @@ namespace WiiTUIO.Output.Handlers.Xinput
             {
                 if (!cursorPos.OutOfReach)
                 {
-                    Point smoothedPos = CursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
+                    Point smoothedPos = cursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
 
                     double smoothedX = smoothedPos.X;
                     double smoothedY = 1 - smoothedPos.Y; // Y is inverted

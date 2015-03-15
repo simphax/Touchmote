@@ -14,12 +14,12 @@ namespace WiiTUIO.Output
     /// This helper class transforms absolute position of Wii pointer to relative position. 
     /// x=0.5, y=0.5 means center of the screen.
     /// </summary>
-    static class CursorPositionHelper
+    class CursorPositionHelper
     {
-        private static SmoothingBuffer smoothingBuffer;
-        private static System.Drawing.Rectangle screenBounds;
+        private SmoothingBuffer smoothingBuffer;
+        private System.Drawing.Rectangle screenBounds;
         
-        static CursorPositionHelper()
+        public CursorPositionHelper()
         {
             smoothingBuffer = new SmoothingBuffer(Settings.Default.pointer_positionSmoothing);
             screenBounds = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor).Bounds;
@@ -29,7 +29,7 @@ namespace WiiTUIO.Output
 
         }
 
-        private static void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "primaryMonitor")
             {
@@ -37,12 +37,12 @@ namespace WiiTUIO.Output
             }
         }
 
-        private static void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
             screenBounds = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor).Bounds;
         }
 
-        public static Point getRelativePosition(Point absPosition)
+        public Point getRelativePosition(Point absPosition)
         {
             smoothingBuffer.addValue(new System.Windows.Vector(absPosition.X, absPosition.Y));
             System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
