@@ -170,7 +170,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private bool _disconnectWiimotesOnDolphin = true;
+        private bool _disconnectWiimotesOnDolphin = false;
         public bool disconnectWiimotesOnDolphin
         {
             get { return _disconnectWiimotesOnDolphin; }
