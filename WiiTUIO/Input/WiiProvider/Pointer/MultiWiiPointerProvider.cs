@@ -128,13 +128,18 @@ namespace WiiTUIO.Provider
         /// </summary>
         public void start()
         {
+            Console.WriteLine("Start");
             TouchOutputFactory.getCurrentProviderHandler().connect();
             this.bRunning = true;
-            wiimoteConnectorTimer.Change(0, CONNECTION_THREAD_SLEEP);
+            wiimoteConnectorTimer.Change(0, Timeout.Infinite);
         }
+
+        bool waitingToConnect = false;
 
         void wiimoteConnectorTimer_Elapsed(object sender)
         {
+            wiimoteConnectorTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            Console.WriteLine("wiimoteConnectorTimer_Elapsed");
             if (this.bRunning)
             {
                 Exception pError;
@@ -142,6 +147,7 @@ namespace WiiTUIO.Provider
                 {
                     Console.WriteLine("Could not establish connection to a Wiimote: " + pError.Message, pError);
                 }
+                wiimoteConnectorTimer.Change(CONNECTION_THREAD_SLEEP, Timeout.Infinite);
             }
         }
 
@@ -150,6 +156,7 @@ namespace WiiTUIO.Provider
         /// </summary>
         public void stop()
         {
+            Console.WriteLine("stop");
             // Set the running flag.
             this.bRunning = false;
 
@@ -194,7 +201,7 @@ namespace WiiTUIO.Provider
                             && control.LastWiimoteEventTime != null
                             && DateTime.Now.Subtract(control.LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_DISCONNECT_TIMEOUT)
                         {
-                            Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
+                            Console.WriteLine("Teardown 1 " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(pWiimoteMap[pDevice.HIDDevicePath].LastWiimoteEventTime).TotalMilliseconds);
                             teardownWiimoteConnection(control.Wiimote);
                         }
                         else if (!control.Status.InPowerSave
@@ -209,7 +216,7 @@ namespace WiiTUIO.Provider
                         && control.LastWiimoteEventTime != null
                         && DateTime.Now.Subtract(control.LastWiimoteEventTime).TotalMilliseconds > WIIMOTE_POWER_SAVE_DISCONNECT_TIMEOUT)
                         {
-                            Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(control.LastWiimoteEventTime).TotalMilliseconds);
+                            Console.WriteLine("Teardown 2 " + pDevice.HIDDevicePath + " because of timeout with delta " + DateTime.Now.Subtract(control.LastWiimoteEventTime).TotalMilliseconds);
                             teardownWiimoteConnection(control.Wiimote);
                         }
                         else if (control.Status.InPowerSave)
@@ -249,7 +256,7 @@ namespace WiiTUIO.Provider
                     {
                         try
                         {
-                            Console.WriteLine("Teardown " + pDevice.HIDDevicePath + " because of " + pError.Message);
+                            Console.WriteLine("Teardown 3 " + pDevice.HIDDevicePath + " because of " + pError.Message);
                             this.teardownWiimoteConnection(pDevice);
                         }
                         finally
@@ -277,7 +284,7 @@ namespace WiiTUIO.Provider
                         // Ensure we are ok.
                         try
                         {
-                            Console.WriteLine("Teardown "+ pDevice.HIDDevicePath +" because of " + pError.Message);
+                            Console.WriteLine("Teardown 4 "+ pDevice.HIDDevicePath +" because of " + pError.Message);
                             this.teardownWiimoteConnection(pDevice);
                         }
                         finally { }
