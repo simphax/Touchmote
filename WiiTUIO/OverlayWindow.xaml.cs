@@ -130,6 +130,8 @@ namespace WiiTUIO
             {
                 this.keyMapper = keyMapper;
                 this.keyMapper.SwitchToDefault();
+                this.keyMapper.OnButtonDown += keyMapper_OnButtonDown;
+                this.keyMapper.OnButtonUp += keyMapper_OnButtonUp;
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
 
@@ -154,7 +156,15 @@ namespace WiiTUIO
                         string name = config.Title;
                         string filename = config.Keymap;
                         LayoutSelectionRow row = new LayoutSelectionRow(name, filename, bordercolor);
-                        row.OnClick += Select_Layout;
+                        //row.OnClick += row_OnClick;
+
+                        if(this.keyMapper.GetFallbackKeymap().Equals(filename))
+                        {
+                            row.setSelected(true);
+                        }
+
+                        row.MouseDown += row_MouseDown;
+                        row.TouchDown += row_TouchDown;
                         this.layoutList.Children.Add(row);
                     }
 
@@ -171,15 +181,67 @@ namespace WiiTUIO
             }
         }
 
-        private void Select_Layout(string filename)
+        private void row_TouchDown(object sender, TouchEventArgs e)
         {
-            this.keyMapper.SetFallbackKeymap(filename);
-            this.HideOverlay();
+            for (int i = this.layoutList.Children.Count - 1; i >= 0; i--)
+            {
+                LayoutSelectionRow row = this.layoutList.Children[i] as LayoutSelectionRow;
+                row.setSelected(false);
+            }
+            LayoutSelectionRow senderRow = sender as LayoutSelectionRow;
+            senderRow.setSelected(true);
         }
 
-        void OverlayWindow_KeyUp(object sender, KeyEventArgs e)
+        void row_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.Key == Key.Down)
+            for (int i = this.layoutList.Children.Count - 1; i >= 0; i--)
+            {
+                LayoutSelectionRow row = this.layoutList.Children[i] as LayoutSelectionRow;
+                row.setSelected(false);
+            }
+            LayoutSelectionRow senderRow = sender as LayoutSelectionRow;
+            senderRow.setSelected(true);
+        }
+        /*
+        private void row_OnClick(string keymap)
+        {
+            if (!this.hidden)
+            {
+                Select_Layout(keymap);
+            }
+        }
+        */
+        private void keyMapper_OnButtonUp(WiiButtonEvent e)
+        {
+            if(!hidden)
+            {
+                if (e.Button.ToLower().Equals("down"))
+                {
+                    highlightNext();
+                }
+                else if (e.Button.ToLower().Equals("up"))
+                {
+                    highlightPrev();
+                }
+                else if (e.Button.ToLower().Equals("right") || e.Button.ToLower().Equals("a"))
+                {
+                    selectHighlighted();
+                }
+                
+            }
+        }
+
+        private void keyMapper_OnButtonDown(WiiButtonEvent e)
+        {
+            if(!hidden)
+            {
+
+            }
+        }
+
+        private void highlightNext()
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
             {
                 int selectedIndex = -2;
                 for (int i = 0; i < this.layoutList.Children.Count; i++)
@@ -190,21 +252,30 @@ namespace WiiTUIO
                         selectedIndex = i;
                         row.setSelected(false);
                     }
-                    if(i == selectedIndex+1)
+                    if (i == selectedIndex + 1)
                     {
                         row.setSelected(true);
                     }
                 }
-                if(selectedIndex == -2)
+                if (selectedIndex == this.layoutList.Children.Count-1)
                 {
                     LayoutSelectionRow row = this.layoutList.Children[0] as LayoutSelectionRow;
                     row.setSelected(true);
                 }
-            }
-            else if (e.Key == Key.Up)
+                else if (selectedIndex == -2)//If no row was found selected
+                {
+                    LayoutSelectionRow row = this.layoutList.Children[0] as LayoutSelectionRow;
+                    row.setSelected(true);
+                }
+            }));
+        }
+
+        private void highlightPrev()
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
             {
                 int selectedIndex = -2;
-                for (int i = this.layoutList.Children.Count-1; i >= 0; i--)
+                for (int i = this.layoutList.Children.Count - 1; i >= 0; i--)
                 {
                     LayoutSelectionRow row = this.layoutList.Children[i] as LayoutSelectionRow;
                     if (row.isSelected())
@@ -217,13 +288,22 @@ namespace WiiTUIO
                         row.setSelected(true);
                     }
                 }
-                if (selectedIndex == -2)
+                if (selectedIndex == 0)
                 {
-                    LayoutSelectionRow row = this.layoutList.Children[this.layoutList.Children.Count-1] as LayoutSelectionRow;
+                    LayoutSelectionRow row = this.layoutList.Children[this.layoutList.Children.Count - 1] as LayoutSelectionRow;
                     row.setSelected(true);
                 }
-            }
-            else if (e.Key == Key.Right || e.Key == Key.Enter)
+                else if (selectedIndex == -2)//If no row was found selected
+                {
+                    LayoutSelectionRow row = this.layoutList.Children[this.layoutList.Children.Count - 1] as LayoutSelectionRow;
+                    row.setSelected(true);
+                }
+            }));
+        }
+
+        private void selectHighlighted()
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
             {
                 for (int i = this.layoutList.Children.Count - 1; i >= 0; i--)
                 {
@@ -233,10 +313,35 @@ namespace WiiTUIO
                         this.Select_Layout(row.getFilename());
                     }
                 }
-            }
-            else if(e.Key == Key.Escape)
+            }));
+        }
+
+        private void Select_Layout(string filename)
+        {
+            this.keyMapper.SetFallbackKeymap(filename);
+            this.HideOverlay();
+        }
+
+        void OverlayWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(!hidden)
             {
-                HideOverlay();
+                /*if(e.Key == Key.Down)
+                {
+                    highlightNext();
+                }
+                else if(e.Key == Key.Up)
+                {
+                    highlightPrev();
+                }
+                else if(e.Key == Key.Right || e.Key == Key.Enter)
+                {
+                    selectHighlighted();
+                }
+                else */if (e.Key == Key.Escape)
+                {
+                    HideOverlay();
+                }
             }
         }
 
@@ -249,6 +354,9 @@ namespace WiiTUIO
         {
             if (!this.hidden)
             {
+                this.hidden = true;
+                this.keyMapper.OnButtonDown -= keyMapper_OnButtonDown;
+                this.keyMapper.OnButtonUp -= keyMapper_OnButtonUp;
                 this.keyMapper.SwitchToFallback();
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
@@ -259,7 +367,6 @@ namespace WiiTUIO
                         this.baseGrid.Visibility = Visibility.Hidden;
                     };
                     this.baseGrid.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
-                    this.hidden = true;
                 }), null);
             }
         }

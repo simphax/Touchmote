@@ -232,6 +232,10 @@ namespace WiiTUIO.Provider
         {
             this.fallbackKeymap = this.loadKeyMap(filename);
         }
+        public string GetFallbackKeymap()
+        {
+            return this.fallbackKeymap.Filename;
+        }
 
         public void SwitchToDefault()
         {

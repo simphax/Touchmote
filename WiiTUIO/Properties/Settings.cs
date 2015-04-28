@@ -170,6 +170,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private bool _disconnectWiimotesOnDolphin = true;
+        public bool disconnectWiimotesOnDolphin
+        {
+            get { return _disconnectWiimotesOnDolphin; }
+            set
+            {
+                _disconnectWiimotesOnDolphin = value;
+                OnPropertyChanged("disconnectWiimotesOnDolphin");
+            }
+        }
+
         private string _tuio_IP = "127.0.0.1";
         public string tuio_IP
         {
@@ -236,7 +247,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _pointer_cursorSize = 0.04;
+        private double _pointer_cursorSize = 0.03;
         public double pointer_cursorSize
         {
             get { return _pointer_cursorSize; }
@@ -325,7 +336,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _pointer_FPS = 80;
+        private int _pointer_FPS = 100;
         public int pointer_FPS
         {
             get { return _pointer_FPS; }
