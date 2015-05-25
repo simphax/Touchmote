@@ -10,13 +10,17 @@ namespace WiiTUIO.Provider
     {
         public int X;
         public int Y;
+        public double RelativeX;
+        public double RelativeY;
         public double Rotation;
         public bool OutOfReach;
 
-        public CursorPos(int x, int y, double rotation)
+        public CursorPos(int x, int y, double relativeX, double relativeY, double rotation)
         {
             this.X = x;
             this.Y = y;
+            this.RelativeX = relativeX;
+            this.RelativeY = relativeY;
             this.Rotation = rotation;
             this.OutOfReach = false;
         }

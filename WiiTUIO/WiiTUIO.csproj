@@ -206,6 +206,7 @@
     <Compile Include="Autostart.cs" />
     <Compile Include="DeviceUtils\VmultiUtil.cs" />
     <Compile Include="DeviceUtils\DeviceUtil.cs" />
+    <Compile Include="Output\CursorPositionHelper.cs" />
     <Compile Include="Output\Handlers\HandlerFactory.cs" />
     <Compile Include="Output\Handlers\ICursorHandler.cs" />
     <Compile Include="Output\Handlers\IOutputHandler.cs" />
@@ -490,7 +491,7 @@
     <PostBuildEvent>copy "$(ProjectDir)VMultiDll_$(PlatformName).dll" "$(TargetDir)VMultiDll.dll" /Y
 xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
 cd "C:\Program Files\Touchmote"
-"C:\Program Files (x86)\Windows Kits\8.1\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.verisign.com/scripts/timestamp.dll Touchmote.exe</PostBuildEvent>
+"C:\Program Files (x86)\Windows Kits\8.1\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.verisign.com/scripts/timstamp.dll "C:\Program Files\Touchmote\Touchmote.exe"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

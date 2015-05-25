@@ -54,6 +54,8 @@ namespace WiiTUIO
 
         private Mutex statusStackMutex = new Mutex();
 
+        private SystemProcessMonitor processMonitor;
+
         /// <summary>
         /// A reference to the WiiProvider we want to use to get/forward input.
         /// </summary>
@@ -210,6 +212,27 @@ namespace WiiTUIO
             Loaded += MainWindow_Loaded;
 
             checkNewVersion();
+
+            if (Settings.Default.disconnectWiimotesOnDolphin)
+            {
+                this.processMonitor = SystemProcessMonitor.Default;
+                this.processMonitor.ProcessChanged += processChanged;
+                this.processMonitor.Start();
+            }
+        }
+
+        private void processChanged(ProcessChangedEvent obj)
+        {
+            if (obj.Process.ProcessName == "Dolphin")
+            {
+                Console.WriteLine("Dolphin detected. Disconnecting provider. Hiding overlay window.");
+                this.disconnectProvider();
+                D3DCursorWindow.Current.RefreshCursors();
+            }
+            else
+            {
+                this.connectProvider();
+            }
         }
 
         private HttpWebRequest wrGETURL;
@@ -219,7 +242,7 @@ namespace WiiTUIO
             try
             {
                 string sURL;
-                sURL = "http://www.touchmote.net/api/versionUpdate?version=1.0b13";
+                sURL = "http://www.touchmote.net/api/versionUpdate?version=1.0b14";
 
                 wrGETURL = (HttpWebRequest)HttpWebRequest.Create(sURL);
                 wrGETURL.BeginGetResponse(new AsyncCallback(checkNewVersionResponse), null);

@@ -39,7 +39,7 @@ namespace WiiTUIO.Output.Handlers.Touch
             this.handler = handler;
             ulong touchStartID = (ulong)(id - 1) * 4 + 1;//This'll make sure the touch point IDs won't be the same. DuoTouch uses a span of 4 IDs.
             this.duoTouch = new DuoTouch(Settings.Default.pointer_positionSmoothing, touchStartID);
-            this.lastCursorPos = new CursorPos(0, 0, 0);
+            this.lastCursorPos = new CursorPos(0, 0,0,0, 0);
 
             this.timeoutTimer = new System.Timers.Timer();
             this.timeoutTimer.Interval = Settings.Default.pointer_cursorStillHideTimeout;
@@ -324,25 +324,25 @@ namespace WiiTUIO.Output.Handlers.Touch
             if (key.ToLower().Equals("touchx-"))
             {
                 int x = fromPos.X - step < 0 ? 0 : fromPos.X - step;
-                positionToPush = new CursorPos(x, fromPos.Y, 0);
+                positionToPush = new CursorPos(x, fromPos.Y,0,0, 0);
                 return true;
             }
             else if (key.ToLower().Equals("touchx+"))
             {
                 int x = fromPos.X + step > this.duoTouch.screenBounds.Width - 1 ? this.duoTouch.screenBounds.Width - 1 : fromPos.X + step;
-                positionToPush = new CursorPos(x, fromPos.Y, 0);
+                positionToPush = new CursorPos(x, fromPos.Y,0,0, 0);
                 return true;
             }
             else if (key.ToLower().Equals("touchy-"))
             {
                 int y = fromPos.Y + step > this.duoTouch.screenBounds.Height - 1 ? this.duoTouch.screenBounds.Height - 1 : fromPos.Y + step;
-                positionToPush = new CursorPos(fromPos.X, y, 0);
+                positionToPush = new CursorPos(fromPos.X, y,0,0, 0);
                 return true;
             }
             else if (key.ToLower().Equals("touchy+"))
             {
                 int y = fromPos.Y - step < 0 ? 0 : fromPos.Y - step;
-                positionToPush = new CursorPos(fromPos.X, y, 0);
+                positionToPush = new CursorPos(fromPos.X, y,0,0, 0);
                 return true;
             }
             return false;
@@ -364,28 +364,28 @@ namespace WiiTUIO.Output.Handlers.Touch
             {
                 int x = (int)((this.duoTouch.screenBounds.Width / 2) - value * (this.duoTouch.screenBounds.Width / 2) + 0.5);
                 x = x < 0 ? 0 : x;
-                positionToPush = new CursorPos(x, fromPos.Y, 0);
+                positionToPush = new CursorPos(x, fromPos.Y,0,0, 0);
                 return true;
             }
             else if (key.ToLower().Equals("touchx+"))
             {
                 int x = (int)((this.duoTouch.screenBounds.Width / 2) + value * (this.duoTouch.screenBounds.Width / 2) + 0.5);
                 x = x > this.duoTouch.screenBounds.Width - 1 ? this.duoTouch.screenBounds.Width - 1 : x;
-                positionToPush = new CursorPos(x, fromPos.Y, 0);
+                positionToPush = new CursorPos(x, fromPos.Y,0,0, 0);
                 return true;
             }
             else if (key.ToLower().Equals("touchy-"))
             {
                 int y = (int)((this.duoTouch.screenBounds.Height / 2) + value * (this.duoTouch.screenBounds.Height / 2) + 0.5);
                 y = y > this.duoTouch.screenBounds.Height - 1 ? this.duoTouch.screenBounds.Height - 1 : y;
-                positionToPush = new CursorPos(fromPos.X, y, 0);
+                positionToPush = new CursorPos(fromPos.X, y,0,0, 0);
                 return true;
             }
             else if (key.ToLower().Equals("touchy+"))
             {
                 int y = (int)((this.duoTouch.screenBounds.Height / 2) - value * (this.duoTouch.screenBounds.Height / 2) + 0.5);
                 y = y < 0 ? 0 : y;
-                positionToPush = new CursorPos(fromPos.X, y, 0);
+                positionToPush = new CursorPos(fromPos.X, y,0,0, 0);
                 return true;
             }
             return false;

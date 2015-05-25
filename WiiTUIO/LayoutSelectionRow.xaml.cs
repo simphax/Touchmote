@@ -60,8 +60,8 @@ namespace WiiTUIO
             }
             else
             {
-                this.border.Background = new SolidColorBrush(Color.FromArgb(0x44, 0x00, 0x00, 0x00));
-                this.border.BorderBrush = new SolidColorBrush(Color.FromArgb(0x44, 0x00, 0x00, 0x00));
+                this.border.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0x33));
+                this.border.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x66, 0x66, 0x66));
             }
         }
 
@@ -72,11 +72,11 @@ namespace WiiTUIO
                 OnClick(this.file);
             }
         }
-
+        /*
         private void tbName_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.setSelected(true);
         }
-
+        */
     }
 }

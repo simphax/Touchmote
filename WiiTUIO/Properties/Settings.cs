@@ -137,7 +137,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _defaultContinousPressThreshold = 0.8;
+        private double _defaultContinousPressThreshold = 0.4;
         public double defaultContinousPressThreshold
         {
             get { return _defaultContinousPressThreshold; }
@@ -167,6 +167,17 @@ namespace WiiTUIO.Properties
             {
                 _alternativeStickToCursorMapping = value;
                 OnPropertyChanged("alternativeStickToCursorMapping");
+            }
+        }
+
+        private bool _disconnectWiimotesOnDolphin = false;
+        public bool disconnectWiimotesOnDolphin
+        {
+            get { return _disconnectWiimotesOnDolphin; }
+            set
+            {
+                _disconnectWiimotesOnDolphin = value;
+                OnPropertyChanged("disconnectWiimotesOnDolphin");
             }
         }
 
@@ -236,7 +247,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _pointer_cursorSize = 0.04;
+        private double _pointer_cursorSize = 0.03;
         public double pointer_cursorSize
         {
             get { return _pointer_cursorSize; }
@@ -325,7 +336,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _pointer_FPS = 80;
+        private int _pointer_FPS = 100;
         public int pointer_FPS
         {
             get { return _pointer_FPS; }
@@ -344,6 +355,28 @@ namespace WiiTUIO.Properties
             {
                 _pointer_positionSmoothing = value;
                 OnPropertyChanged("pointer_positionSmoothing");
+            }
+        }
+
+        private double _fpsmouse_deadzone = 0.03;
+        public double fpsmouse_deadzone
+        {
+            get { return _fpsmouse_deadzone; }
+            set
+            {
+                _fpsmouse_deadzone = value;
+                OnPropertyChanged("fpsmouse_deadzone");
+            }
+        }
+
+        private int _fpsmouse_speed = 30;
+        public int fpsmouse_speed
+        {
+            get { return _fpsmouse_speed; }
+            set
+            {
+                _fpsmouse_speed = value;
+                OnPropertyChanged("fpsmouse_speed");
             }
         }
 
@@ -446,6 +479,7 @@ namespace WiiTUIO.Properties
                 handler(this, new PropertyChangedEventArgs(name));
             }
         }
+
     }
 
 }

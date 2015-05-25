@@ -18,12 +18,12 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Border Grid.Row="0"></Border>
-            <Border Grid.Row="1" MouseUp="layoutChooserOverlay_MouseUp" Name="layoutChooserOverlay" Width="Auto" Height="Auto">
+            <Border Grid.Row="1" Name="layoutChooserOverlay" Width="Auto" Height="Auto">
                 <StackPanel>
                     <Border Name="titleBorder" Background="#00FFFFFF" BorderThickness="0" BorderBrush="Transparent" Margin="0,0,0,10">
                         <TextBlock Name="title" Text="Choose a layout" FontSize="30" FontFamily="Segoe UI Semilight" Foreground="White" Margin="10" TextAlignment="Center"></TextBlock>
                     </Border>
-                    <ScrollViewer Name="scrollViewer" PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                    <ScrollViewer MouseUp="layoutChooserOverlay_MouseUp" Width="306" Name="scrollViewer" PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                         <StackPanel Name="layoutList" Margin="0,0,0,10">
 
                         </StackPanel>
@@ -33,7 +33,7 @@
             </Border>
             <Border Grid.Row="2"></Border>
         </Grid>
-        <StackPanel Name="noticeStack" Canvas.Right="20" Canvas.Top="20" Width="500">
+        <StackPanel Name="noticeStack" Canvas.Right="20" Canvas.Top="20" Width="400">
             
         </StackPanel>
     </Canvas>
