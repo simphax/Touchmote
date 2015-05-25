@@ -42,6 +42,13 @@ namespace WiiTUIO.Output
             screenBounds = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor).Bounds;
         }
 
+        public Point getSmoothedPosition(Point relativePosition)
+        {
+            smoothingBuffer.addValue(new System.Windows.Vector(relativePosition.X, relativePosition.Y));
+            System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+            return new Point(smoothedVec.X, smoothedVec.Y);
+        }   
+
         public Point getRelativePosition(Point absPosition)
         {
             smoothingBuffer.addValue(new System.Windows.Vector(absPosition.X, absPosition.Y));

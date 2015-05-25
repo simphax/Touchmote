@@ -38,7 +38,7 @@ namespace WiiTUIO.Provider
             Settings.Default.PropertyChanged += SettingsChanged;
             SystemEvents.DisplaySettingsChanged +=SystemEvents_DisplaySettingsChanged;
 
-            lastPos = new CursorPos(0, 0, 0);
+            lastPos = new CursorPos(0, 0, 0, 0, 0);
 
         }
 
@@ -67,7 +67,7 @@ namespace WiiTUIO.Provider
             minYPos = -(int)(screen.Bounds.Height * Settings.Default.pointer_marginsTopBottom);
             maxYPos = screen.Bounds.Height + (int)(screen.Bounds.Height * Settings.Default.pointer_marginsTopBottom);
             maxHeight = maxYPos - minYPos;
-            SBPositionOffset = (int)(screen.Bounds.Width * Settings.Default.pointer_sensorBarPosCompensation);
+            SBPositionOffset = (int)(screen.Bounds.Height * Settings.Default.pointer_sensorBarPosCompensation);
         }
 
         public CursorPos CalculateCursorPos(WiimoteState wiimoteState)
@@ -260,7 +260,7 @@ namespace WiiTUIO.Provider
                 y = primaryScreen.Bounds.Height - 1;
             }
 
-            CursorPos result = new CursorPos(x, y, smoothedRotation);
+            CursorPos result = new CursorPos(x, y, relativePosition.X, relativePosition.Y, smoothedRotation);
             lastPos = result;
             return result;
         }
