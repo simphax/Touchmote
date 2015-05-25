@@ -118,7 +118,7 @@ namespace WiiTUIO.Output.Handlers
                 double shiftX = Math.Abs(smoothedPos.X - 0.5) > deadzone ? smoothedPos.X - 0.5 : 0;
                 double shiftY = Math.Abs(smoothedPos.Y - 0.5) > deadzone ? smoothedPos.Y - 0.5 : 0;
 
-                this.inputSimulator.Mouse.MoveMouseBy((int)(40 * shiftX), (int)(40 * shiftY));
+                this.inputSimulator.Mouse.MoveMouseBy((int)(Settings.Default.fpsmouse_speed * shiftX), (int)(Settings.Default.fpsmouse_speed * shiftY));
 
                 return true;
             }

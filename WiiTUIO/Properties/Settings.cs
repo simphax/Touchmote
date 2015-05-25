@@ -137,7 +137,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _defaultContinousPressThreshold = 0.8;
+        private double _defaultContinousPressThreshold = 0.4;
         public double defaultContinousPressThreshold
         {
             get { return _defaultContinousPressThreshold; }
@@ -358,7 +358,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _fpsmouse_deadzone = 0.05;
+        private double _fpsmouse_deadzone = 0.03;
         public double fpsmouse_deadzone
         {
             get { return _fpsmouse_deadzone; }
@@ -366,6 +366,17 @@ namespace WiiTUIO.Properties
             {
                 _fpsmouse_deadzone = value;
                 OnPropertyChanged("fpsmouse_deadzone");
+            }
+        }
+
+        private int _fpsmouse_speed = 30;
+        public int fpsmouse_speed
+        {
+            get { return _fpsmouse_speed; }
+            set
+            {
+                _fpsmouse_speed = value;
+                OnPropertyChanged("fpsmouse_speed");
             }
         }
 
