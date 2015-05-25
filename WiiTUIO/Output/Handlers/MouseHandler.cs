@@ -101,29 +101,26 @@ namespace WiiTUIO.Output.Handlers
 
             if (key.Equals("fpsmouse"))
             {
-                if (!cursorPos.OutOfReach)
+                Point smoothedPos = cursorPositionHelper.getSmoothedPosition(new Point(cursorPos.RelativeX, cursorPos.RelativeY));
+
+                /*
+                    * TODO: Consider sensor bar position?
+                if (Settings.Default.pointer_sensorBarPos == "top")
                 {
-                    Point smoothedPos = cursorPositionHelper.getSmoothedPosition(new Point(cursorPos.RelativeX, cursorPos.RelativeY));
-
-                    /*
-                     * TODO: Consider sensor bar position?
-                    if (Settings.Default.pointer_sensorBarPos == "top")
-                    {
-                        smoothedPos.Y = smoothedPos.Y - Settings.Default.pointer_sensorBarPosCompensation;
-                    }
-                    else if (Settings.Default.pointer_sensorBarPos == "bottom")
-                    {
-                        smoothedPos.Y = smoothedPos.Y + Settings.Default.pointer_sensorBarPosCompensation;
-                    }
-                    */
-                    double deadzone = 0.05; // TODO: Move to settings
-                    double shiftX = Math.Abs(smoothedPos.X - 0.5) > deadzone ? smoothedPos.X - 0.5 : 0;
-                    double shiftY = Math.Abs(smoothedPos.Y - 0.5) > deadzone ? smoothedPos.Y - 0.5 : 0;
-
-                    this.inputSimulator.Mouse.MoveMouseBy((int)(40 * shiftX), (int)(40 * shiftY));
-
-                    return true;
+                    smoothedPos.Y = smoothedPos.Y - Settings.Default.pointer_sensorBarPosCompensation;
                 }
+                else if (Settings.Default.pointer_sensorBarPos == "bottom")
+                {
+                    smoothedPos.Y = smoothedPos.Y + Settings.Default.pointer_sensorBarPosCompensation;
+                }
+                */
+                double deadzone = Settings.Default.fpsmouse_deadzone; // TODO: Move to settings
+                double shiftX = Math.Abs(smoothedPos.X - 0.5) > deadzone ? smoothedPos.X - 0.5 : 0;
+                double shiftY = Math.Abs(smoothedPos.Y - 0.5) > deadzone ? smoothedPos.Y - 0.5 : 0;
+
+                this.inputSimulator.Mouse.MoveMouseBy((int)(40 * shiftX), (int)(40 * shiftY));
+
+                return true;
             }
             return false;
         }

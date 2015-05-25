@@ -358,6 +358,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private double _fpsmouse_deadzone = 0.05;
+        public double fpsmouse_deadzone
+        {
+            get { return _fpsmouse_deadzone; }
+            set
+            {
+                _fpsmouse_deadzone = value;
+                OnPropertyChanged("fpsmouse_deadzone");
+            }
+        }
+
         private int _touch_touchTapThreshold = 40;
         public int touch_touchTapThreshold
         {
@@ -457,6 +468,7 @@ namespace WiiTUIO.Properties
                 handler(this, new PropertyChangedEventArgs(name));
             }
         }
+
     }
 
 }
