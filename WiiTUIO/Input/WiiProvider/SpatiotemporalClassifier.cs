@@ -733,6 +733,8 @@ namespace WiiTUIO.Provider
             this.iSmoothIndex = 0;
         }
 
+        private Vector current_pos = new Vector();
+        private double Radius = Settings.Default.pointer_positionRadius;
         /// <summary>
         /// Insert a value into this buffer for smoothing.
         /// </summary>
@@ -753,9 +755,7 @@ namespace WiiTUIO.Provider
         /// <param name="tPoint">A pointer to the point structure.</param>
         public void addValue(Vector vPoint)
         {
-            // Insert the value then update the counter.
-            tSmoothBuffer[iSmoothIndex % tSmoothBuffer.Length] = vPoint;
-            ++iSmoothIndex;
+            addValue(vPoint.X, vPoint.Y);
         }
 
         public void replaceLast(Vector vPoint)
@@ -777,6 +777,7 @@ namespace WiiTUIO.Provider
         /// <returns></returns>
         public Vector getSmoothedValue()
         {
+
             // Get the number of values to iterate too.
             Vector tSmooth = new Vector(0, 0);
             int iMax = Math.Min(iSmoothIndex, tSmoothBuffer.Length);
@@ -800,13 +801,21 @@ namespace WiiTUIO.Provider
             // Sum up the values in the array.
             for (int i = 0; i < iMax; ++i)
             {
-                tSmooth.X += tSmoothBuffer[i].X;
-                tSmooth.Y += tSmoothBuffer[i].Y;
+                tSmooth += tSmoothBuffer[i];
             }
 
             // Divide to average.
-            tSmooth.X /= iMax;
-            tSmooth.Y /= iMax;
+            tSmooth /= iMax;
+
+            Vector d = tSmooth - current_pos;
+            if (d.Length > Radius) {
+                Vector D = d;
+                D.Normalize();
+                d -= (D * Radius);
+                current_pos += d;
+            }
+
+            return current_pos;
 
             // Return the value.
             return tSmooth;
