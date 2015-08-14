@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using WiiTUIO.Properties;
 using WiiTUIO.Provider;
 using WindowsInput;
 using WindowsInput.Native;
@@ -94,18 +95,30 @@ namespace WiiTUIO.Output.Handlers
                 {
                     Point smoothedPos = cursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
                     this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
+                    return true;
                 }
             }
 
             if (key.Equals("fpsmouse"))
             {
-                Point smoothedPos = cursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
+                Point smoothedPos = cursorPositionHelper.getSmoothedPosition(new Point(cursorPos.RelativeX, cursorPos.RelativeY));
 
-                double deadzone = 0.1; // TODO: Move to settings
+                /*
+                    * TODO: Consider sensor bar position?
+                if (Settings.Default.pointer_sensorBarPos == "top")
+                {
+                    smoothedPos.Y = smoothedPos.Y - Settings.Default.pointer_sensorBarPosCompensation;
+                }
+                else if (Settings.Default.pointer_sensorBarPos == "bottom")
+                {
+                    smoothedPos.Y = smoothedPos.Y + Settings.Default.pointer_sensorBarPosCompensation;
+                }
+                */
+                double deadzone = Settings.Default.fpsmouse_deadzone; // TODO: Move to settings
                 double shiftX = Math.Abs(smoothedPos.X - 0.5) > deadzone ? smoothedPos.X - 0.5 : 0;
                 double shiftY = Math.Abs(smoothedPos.Y - 0.5) > deadzone ? smoothedPos.Y - 0.5 : 0;
 
-                this.inputSimulator.Mouse.MoveMouseBy((int)(30 * shiftX), (int)(30 * shiftY));
+                this.inputSimulator.Mouse.MoveMouseBy((int)(Settings.Default.fpsmouse_speed * shiftX), (int)(Settings.Default.fpsmouse_speed * shiftY));
 
                 return true;
             }

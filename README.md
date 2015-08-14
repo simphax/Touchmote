@@ -48,6 +48,10 @@ MultiTouchVista:  http://multitouchvista.codeplex.com<br />
 Release History
 ==============
 
+**v1.0 beta 14**<br />
+- FPS cursor mapping and cursor to stick mapping, thanks rVinor
+- Updated OSD GUI
+
 **v1.0 beta 13**<br />
 - Less GPU usage
 - Works together with other Xbox 360 controls
