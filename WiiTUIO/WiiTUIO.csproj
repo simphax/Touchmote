@@ -272,6 +272,7 @@
     <Compile Include="WiimoteStatus.xaml.cs">
       <DependentUpon>WiimoteStatus.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Win32WindowStyles.cs" />
     <Page Include="AboutUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
