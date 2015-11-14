@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -178,5 +179,26 @@ namespace WiiTUIO
             makeExTransparent(hWndHiddenOwner);
         }
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, [Out] StringBuilder lParam);
+        public static string GetWindowTextRaw(IntPtr hwnd)
+        {
+            // Allocate correct string length first
+            int length = (int)SendMessage(hwnd, 0xE, IntPtr.Zero, null);
+            StringBuilder sb = new StringBuilder(length + 1);
+            SendMessage(hwnd, 0xD, (IntPtr)sb.Capacity, sb);
+            return sb.ToString();
+        }
+        
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern int SetActiveWindow(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetActiveWindow();
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+        
     }
 }
