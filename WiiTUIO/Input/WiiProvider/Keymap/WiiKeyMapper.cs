@@ -253,7 +253,6 @@ namespace WiiTUIO.Provider
             {
                 this.setKeymap(this.defaultKeymap);
                 OverlayWindow.Current.ShowLayoutOverlay(this);
-                this.PressedButtons["Home"] = true;
             }
         }
 
@@ -345,7 +344,14 @@ namespace WiiTUIO.Provider
 
             this.setKeymap(keymap);
 
-            this.processWiimoteState(new WiimoteState()); //Sets all buttons to "not pressed"
+            //this.processWiimoteState(new WiimoteState()); //Sets all buttons to "not pressed"
+            foreach (string key in new List<string>(PressedButtons.Keys))
+            {
+                if(key != "Home")
+                {
+                    PressedButtons[key] = false;
+                }
+            }
 
             Console.WriteLine("Loaded new keymap " + filename);
             return keymap;
@@ -449,16 +455,21 @@ namespace WiiTUIO.Provider
                 bool pressedNow = (bool)button.GetValue(buttonState);
                 bool pressedBefore = PressedButtons[button.Name];
 
-                if(pressedNow && !pressedBefore)
+                if(pressedNow && !pressedBefore) //On down
                 {
                     PressedButtons[button.Name] = true;
                     significant = true;
                     if (button.Name == "Home")
                     {
-                        this.homeButtonTimer.Start();
+                        Console.WriteLine("home down");
                         if (OverlayWindow.Current.OverlayIsOn())
                         {
                             this.hideOverlayOnUp = true;
+                            Console.WriteLine("hide overlay on up");
+                        }
+                        else
+                        {
+                            this.homeButtonTimer.Start();
                         }
                     }
                     else
@@ -466,12 +477,13 @@ namespace WiiTUIO.Provider
                         this.KeyMap.executeButtonDown(button.Name);
                     }
                 }
-                else if (!pressedNow && pressedBefore)
+                else if (!pressedNow && pressedBefore) //On up
                 {
                     PressedButtons[button.Name] = false;
                     significant = true;
                     if(button.Name == "Home")
                     {
+                        Console.WriteLine("home up");
                         this.homeButtonTimer.Stop();
 
                         if (this.hideOverlayOnUp)
@@ -479,7 +491,7 @@ namespace WiiTUIO.Provider
                             this.hideOverlayOnUp = false;
                             OverlayWindow.Current.HideOverlay();
                         }
-                        else if (OverlayWindow.Current.OverlayIsOn())
+                        else if (OverlayWindow.Current.OverlayIsOn()) //We opened the overlay on this down
                         {
                         }
                         else

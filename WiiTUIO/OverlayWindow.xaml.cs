@@ -136,6 +136,7 @@ namespace WiiTUIO
         {
             if (this.hidden)
             {
+                this.hidden = false;
                 previousForegroundWindow = UIHelpers.GetForegroundWindow();
                 if(previousForegroundWindow == null)
                 {
@@ -190,7 +191,6 @@ namespace WiiTUIO
                     };
                     this.baseGrid.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
 
-                    this.hidden = false;
                 }), null);
             }
         }
