@@ -62,13 +62,7 @@ namespace WiiTUIO
         private IProvider pWiiProvider = null;
 
         WiiCPP.WiiPair wiiPair = null;
-
-        /// <summary>
-        /// A reference to the windows 7 HID driver data provider.  This takes data from the <see cref="pWiiProvider"/> and transforms it.
-        /// </summary>
-        private ITouchProviderHandler pProviderHandler = null;
-
-
+        
         /// <summary>
         /// Boolean to tell if we are connected to the mote and network.
         /// </summary>
@@ -324,68 +318,13 @@ namespace WiiTUIO
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            /*CursorWindow.Current.Dispatcher.BeginInvoke(new Action(delegate() {
-                CursorWindow.Current.Close();
-            }));
-            OverlayWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
-            {
-                OverlayWindow.Current.Close();
-            }));*/
-            /*
-            if (this.bConnected)
-            {
-                MessageBoxResult result = MessageBox.Show(this, "All Wiimotes will be disconnected. Are you sure?",
-     "Comfirmation", MessageBoxButton.YesNo, MessageBoxImage.Information);
-
-                e.Cancel = result != MessageBoxResult.Yes;
-            }
-            if (!e.Cancel)
-            {
-                CursorWindow.getInstance().Close();
-            }
-             * */
-        }
-        /*
-        protected override void OnActivated(EventArgs e)
-        {
-            if (!this.minimizedOnce && Settings.Default.minimizeToTray)
-            {
-                MinimizeToTray.Enable(this, Settings.Default.minimizeOnStart);
-                this.minimizedOnce = true;
-            }
-            base.OnActivated(e);
         }
 
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            
-            base.OnRender(drawingContext);
-        }
-         * */
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
         }
-        
-        /// <summary>
-        /// Raises the <see cref="E:System.Windows.FrameworkElement.Initialized"/> event.
-        /// </summary>
-        /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
-        /*protected override void OnActivated(EventArgs e)
-        {
-            if (!this.minimizedOnce && Settings.Default.minimizeOnStart)
-            {
-                this.WindowState = System.Windows.WindowState.Minimized;
-                this.minimizedOnce = true;
-                
-            }
-            else
-            {
-                // Call the base class.
-                base.OnActivated(e);
-            }
-        }*/
         
         private void appWillExit(object sender, ExitEventArgs e)
         {
@@ -470,29 +409,7 @@ namespace WiiTUIO
 
 
         private Mutex pCommunicationMutex = new Mutex();
-        /*
-        /// <summary>
-        /// This is called when the WiiProvider has a new set of input to send.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void pWiiProvider_OnNewFrame(object sender, FrameEventArgs e)
-        {
-            
-            // If dispatching events is enabled.
-            if (bConnected)
-            {
-                // Call these in another thread.
-                OverlayWindow.Current.Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    if (this.pProviderHandler != null && providerHandlerConnected)
-                    {
-                        this.pProviderHandler.processEventFrame(e);
-                    }
-                }),System.Windows.Threading.DispatcherPriority.Send,null);
-            }
-        }
-        */
+      
         /// <summary>
         /// This is called when the battery state changes.
         /// </summary>
@@ -611,104 +528,8 @@ namespace WiiTUIO
             //this.canvasAbout.Visibility = Visibility.Visible;
             //this.canvasSettings.Visibility = Visibility.Collapsed;
         }
-
-
-        #region Create and Die
-
-        /*
-        /// <summary>
-        /// Create the link to the Windows 7 HID driver.
-        /// </summary>
-        /// <returns></returns>
-        private bool createProviderHandler()
-        {
-            try
-            {
-                // Close any open connections.
-                disconnectProviderHandler();
-                
-                // Reconnect with the new API.
-                this.pProviderHandler = OutputFactory.createProviderHandler(Settings.Default.output);
-                this.pProviderHandler.OnConnect += pProviderHandler_OnConnect;
-                this.pProviderHandler.OnDisconnect += pProviderHandler_OnDisconnect;
-                
-                return true;
-            }
-            catch (Exception pError)
-            {
-                // Tear down.
-                try
-                {
-                    this.disconnectProviderHandler();
-                }
-                catch { }
-
-                // Report the error.
-                showMessage(pError.Message, MessageType.Error);
-                //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
-        }
         
-        void pProviderHandler_OnDisconnect()
-        {
-            providerHandlerConnected = false;
-        }
-
-        void pProviderHandler_OnConnect()
-        {
-            providerHandlerConnected = true;
-        }
-        */
-        /*
-        /// <summary>
-        /// Create the link to the Windows 7 HID driver.
-        /// </summary>
-        /// <returns></returns>
-        private bool connectProviderHandler()
-        {
-            try
-            {
-                this.pProviderHandler.connect();
-                return true;
-            }
-            catch (Exception pError)
-            {
-                // Tear down.
-                try
-                {
-                    this.disconnectProviderHandler();
-                }
-                catch { }
-
-                // Report the error.
-                showMessage(pError.Message, MessageType.Error);
-                //MessageBox.Show(pError.Message, "WiiTUIO", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
-        }
-        
-        /// <summary>
-        /// Destroy the link to the Windows 7 HID driver.
-        /// </summary>
-        /// <returns></returns>
-        private void disconnectProviderHandler()
-        {
-            // Remove any provider links.
-            //if (this.pTouchDevice != null)
-            //    this.pTouchDevice.Provider = null;
-            if (this.pProviderHandler != null)
-            {
-                this.pProviderHandler.disconnect();
-            }
-        }
-        */
-        #endregion
-
-
         #region WiiProvider
-
-
         /// <summary>
         /// Try to create the WiiProvider (this involves connecting to the Wiimote).
         /// </summary>
@@ -809,15 +630,7 @@ namespace WiiTUIO
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
-        /*
-        private void btnOutputSettings_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.pProviderHandler != null)
-            {
-                this.pProviderHandler.showSettingsWindow();
-            }
-        }
-        */
+    
         private void PairWiimotes_Click(object sender, RoutedEventArgs e)
         {
             //this.disableMainControls();
@@ -955,52 +768,7 @@ namespace WiiTUIO
 
             }), null);
         }
-
-        /*
-        private void driverNotInstalled()
-        {
-            Dispatcher.BeginInvoke(new Action(delegate()
-            {
-                this.disableMainControls();
-                this.driverMissingOverlay.Visibility = Visibility.Visible;
-            }), null);
-        }
-
-        private void linkInstallDriver_Click(object sender, RoutedEventArgs e)
-        {
-            Launcher.Launch("", "elevate", "DriverInstall.exe -install", new Action(delegate()
-            {
-                
-            }));
-            this.driverMissingOverlay.IsEnabled = false;
-            Thread thread = new Thread(new ThreadStart(waitForDriver));
-            thread.Start();
-        }
-
-        private void waitForDriver()
-        {
-            while (!TUIOVmultiProviderHandler.HasDriver())
-            {
-                System.Threading.Thread.Sleep(3000);
-            }
-            this.driverInstalled();
-        }
-
-        private void driverInstalled()
-        {
-            Dispatcher.BeginInvoke(new Action(delegate()
-            {
-                this.driverMissingOverlay.Visibility = Visibility.Hidden;
-                this.driverInstalledOverlay.Visibility = Visibility.Visible;
-            }), null);
-        }
-
-        private void btnRestart_Click(object sender, RoutedEventArgs e)
-        {
-            Launcher.RestartComputer();
-        }
-        */
-
+        
         private void btnAppSettings_Click(object sender, RoutedEventArgs e)
         {
             this.showConfig();
