@@ -15,7 +15,6 @@
 
 #pragma comment(lib, "Bthprops.lib")
 
-using namespace std;
 using namespace System;
 
 namespace WiiCPP {
@@ -495,7 +494,7 @@ namespace WiiCPP {
 			// Query for the information 
 			LONG result = QueryDisplayConfig(QDC_ALL_PATHS, &num_of_paths, displayPaths, &num_of_modes, displayModes, NULL);
 			
-			map<int, gcroot<MonitorInfo^>> monitormap;
+			std::map<int, gcroot<MonitorInfo^>> monitormap;
 
 			//display paths lists relationships between virtual desktop (source) -> physical monitors (target)
 			//we will base the list on physical monitor ids
@@ -514,7 +513,7 @@ namespace WiiCPP {
 
 			array<MonitorInfo^>^ monitors = gcnew array<MonitorInfo^>(monitormap.size());
 			
-			for (map<int, gcroot<MonitorInfo^>>::iterator iter = monitormap.begin();
+			for (std::map<int, gcroot<MonitorInfo^>>::iterator iter = monitormap.begin();
 				iter != monitormap.end();
 				++iter)
 			{
