@@ -356,7 +356,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _pointer_positionRadius = 25.0;
+        private double _pointer_positionRadius = 8.0;
         public double pointer_positionRadius {
             get { return _pointer_positionRadius; }
             set {

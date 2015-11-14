@@ -15,7 +15,7 @@ namespace WiiTUIO.Output.Handlers.Touch
         private int masterPriority;
         private int slavePriority;
 
-        private SmoothingBuffer smoothingBuffer;
+        private RadiusBuffer smoothingBuffer;
         public System.Drawing.Rectangle screenBounds;
 
         private bool stepIDs = false;
@@ -74,7 +74,7 @@ namespace WiiTUIO.Output.Handlers.Touch
             {
                 smoothSize = 1;
             }
-            this.smoothingBuffer = new SmoothingBuffer(smoothSize);
+            this.smoothingBuffer = new RadiusBuffer(smoothSize);
         }
 
 
@@ -197,9 +197,8 @@ namespace WiiTUIO.Output.Handlers.Touch
                             this.masterPosition.X = (this.firstMasterContact.X + this.firstMasterContact.X + this.masterPosition.X) / 3;
                         }
                     }
-
-                    smoothingBuffer.addValue(new System.Windows.Vector(masterPosition.X, masterPosition.Y));
-                    System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+                    
+                    System.Windows.Vector smoothedVec = smoothingBuffer.AddAndGet(new System.Windows.Vector(masterPosition.X, masterPosition.Y));
                     this.masterPosition.X = smoothedVec.X;
                     this.masterPosition.Y = smoothedVec.Y;
 
@@ -224,8 +223,8 @@ namespace WiiTUIO.Output.Handlers.Touch
                     else
                     {
                         contactType = ContactType.Hover;
-                        smoothingBuffer.addValue(new Vector(masterPosition.X, masterPosition.Y));
-                        Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+                        
+                        Vector smoothedVec = smoothingBuffer.AddAndGet(new Vector(masterPosition.X, masterPosition.Y));
                         this.masterPosition.X = smoothedVec.X;
                         this.masterPosition.Y = smoothedVec.Y;
                     }
