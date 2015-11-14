@@ -284,6 +284,12 @@ namespace WiiTUIO
             if (Settings.Default.minimizeToTray)
             {
                 MinimizeToTray.Enable(this, Settings.Default.minimizeOnStart);
+
+                //If minimizeToTry option is enabled prevent MainWindow from showing up in alt+tab menu.
+                WindowInteropHelper wndHelper = new WindowInteropHelper(this);
+                int exStyle = (int)Win32WindowStyles.GetWindowLong(wndHelper.Handle, (int)Win32WindowStyles.GetWindowLongFields.GWL_EXSTYLE);
+                exStyle |= (int)Win32WindowStyles.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
+                Win32WindowStyles.SetWindowLong(wndHelper.Handle, (int)Win32WindowStyles.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
             }
 
 
