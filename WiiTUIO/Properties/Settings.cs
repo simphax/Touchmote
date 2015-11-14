@@ -258,7 +258,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _pointer_marginsTopBottom = 0.8;
+        private double _pointer_marginsTopBottom = 0.5;
         public double pointer_marginsTopBottom
         {
             get { return _pointer_marginsTopBottom; }
@@ -269,7 +269,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _pointer_marginsLeftRight = 0.7;
+        private double _pointer_marginsLeftRight = 0.4;
         public double pointer_marginsLeftRight
         {
             get { return _pointer_marginsLeftRight; }
@@ -336,7 +336,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _pointer_FPS = 100;
+        private int _pointer_FPS = 120;
         public int pointer_FPS
         {
             get { return _pointer_FPS; }
