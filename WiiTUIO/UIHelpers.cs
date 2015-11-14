@@ -120,6 +120,7 @@ namespace WiiTUIO
         [DllImport("user32.dll")]
         public static extern int SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, SetWindowPosFlags uFlags);
 
+
         public static void TopmostFix(Window window)
         {
             IntPtr HWND_TOPMOST = new IntPtr(-1);
@@ -149,6 +150,7 @@ namespace WiiTUIO
         }
 
         private static int WS_EX_TRANSPARENT = 0x00000020;
+        private static int WS_EX_TOOLWINDOW = 0x00000080;
         private static int GWL_EXSTYLE = (-20);
 
         [DllImport("user32.dll")]
@@ -177,6 +179,20 @@ namespace WiiTUIO
 
             makeExTransparent(hWnd);
             makeExTransparent(hWndHiddenOwner);
+        }
+
+        public static void HideFromAltTab(Window window)
+        {
+            IntPtr hWnd = new WindowInteropHelper(window).Handle;
+            int extendedStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+            SetWindowLong(hWnd, GWL_EXSTYLE, extendedStyle | WS_EX_TOOLWINDOW);
+        }
+
+        public static void RevertHideFromAltTab(Window window)
+        {
+            IntPtr hWnd = new WindowInteropHelper(window).Handle;
+            int extendedStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+            SetWindowLong(hWnd, GWL_EXSTYLE, extendedStyle & ~WS_EX_TOOLWINDOW);
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]

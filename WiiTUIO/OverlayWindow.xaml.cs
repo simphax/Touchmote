@@ -75,10 +75,7 @@ namespace WiiTUIO
                 this.updateWindowToScreen(primaryScreen);
 
                 //Prevent OverlayWindow from showing up in alt+tab menu.
-                WindowInteropHelper wndHelper = new WindowInteropHelper(this);
-                int exStyle = (int)Win32WindowStyles.GetWindowLong(wndHelper.Handle, (int)Win32WindowStyles.GetWindowLongFields.GWL_EXSTYLE);
-                exStyle |= (int)Win32WindowStyles.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
-                Win32WindowStyles.SetWindowLong(wndHelper.Handle, (int)Win32WindowStyles.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
+                UIHelpers.HideFromAltTab(this);
             };
             
         }
