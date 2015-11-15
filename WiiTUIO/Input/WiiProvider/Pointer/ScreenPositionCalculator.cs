@@ -137,7 +137,7 @@ namespace WiiTUIO.Provider
                                 dx /= d;
                                 dy /= d;
 
-                                smoothedRotation = 0.7 * smoothedRotation + 0.3 * Math.Atan2(dy, dx);
+                                smoothedRotation = Math.Atan2(dy, dx);
                             }
                         }
                     }
