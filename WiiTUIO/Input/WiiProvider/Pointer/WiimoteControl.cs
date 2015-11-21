@@ -70,114 +70,16 @@ namespace WiiTUIO.Provider
                 currentKeymap = evt.Filename;
                 OverlayWindow.Current.ShowNotice("Layout for Wiimote " + this.Status.ID + " changed to \"" + evt.Name + "\"", this.Status.ID);
             }
-            /*
-            if (evt.Pointer.ToLower() == "touch")
-            {
-                this.showPointer = true;
-                this.mouseMode = false;
-                this.duoTouch.enableHover();
-                if (this.usingCursors())
-                {
-                    this.masterCursor.Show();
-                }
-            }
-            else if (evt.Pointer.ToLower() == "mouse")
-            {
-                this.mouseMode = true;
-                this.gamingMouse = false;
-                this.duoTouch.disableHover();
-                if (this.usingCursors())
-                {
-                    this.masterCursor.Hide();
-                    this.slaveCursor.Hide();
-                }
-                MouseSimulator.WakeCursor();
-            }
-            else if (evt.Pointer.ToLower() == "gamingmouse")
-            {
-                this.mouseMode = true;
-                this.gamingMouse = true;
-                this.duoTouch.disableHover();
-                if (this.usingCursors())
-                {
-                    this.masterCursor.Hide();
-                    this.slaveCursor.Hide();
-                }
-                MouseSimulator.WakeCursor();
-            }
-            else
-            {
-                this.showPointer = false;
-                this.mouseMode = false;
-                this.duoTouch.disableHover();
-                if (this.usingCursors())
-                {
-                    this.masterCursor.Hide();
-                    this.slaveCursor.Hide();
-                }
-            }
-            */
         }
 
         private void WiiButton_Up(WiiButtonEvent evt)
         {
-            /*
-            foreach (string action in evt.Actions)
-            {
-                if (action.ToLower() == "nextlayout" && !evt.Handled)
-                {
-                    List<LayoutChooserSetting> layoutList = this.keyMapper.GetLayoutList();
-                    int curpos = 0;
-                    int foundpos = 0;
-                    foreach (LayoutChooserSetting setting in layoutList)
-                    {
-                        JToken token = setting.Keymap;
-                        if (token != null)
-                        {
-                            if (token.ToString() == this.currentKeymap)
-                            {
-                                foundpos = curpos;
-                            }
-                        }
-                        curpos++;
-                    }
-                    LayoutChooserSetting nextLayout = layoutList.ElementAt(++foundpos % (layoutList.Count() - 1));
-                    if (nextLayout.Keymap != null)
-                    {
-                        this.keyMapper.SetFallbackKeymap(nextLayout.Keymap);
-                        evt.Handled = true;
-                    }
-                }
-                if (action.ToLower() == "pointertoggle" && !evt.Handled)
-                {
-                    this.showPointer = this.showPointer ? false : true;
-                    if (this.showPointer)
-                    {
-                        this.duoTouch.enableHover();
-                        if (this.usingCursors() && !mouseMode)
-                        {
-                            this.masterCursor.Show();
-                        }
-                    }
-                    else
-                    {
-                        this.duoTouch.disableHover();
-                        if (this.usingCursors())
-                        {
-                            this.masterCursor.Hide();
-                            this.slaveCursor.Hide();
-                        }
-                    }
-                }
-            }
-            */
         }
 
         private void WiiButton_Down(WiiButtonEvent evt)
         {
         }
-
-
+        
         public bool handleWiimoteChanged(object sender, WiimoteChangedEventArgs e)
         {
             // Obtain mutual excluseion.

@@ -92,7 +92,6 @@ namespace WiiTUIO.Provider
         /// </summary>
         public MultiWiiPointerProvider()
         {
-
             this.pWC = new WiimoteCollection();
 
             this.wiimoteChangedEventHandler = new EventHandler<WiimoteChangedEventArgs>(handleWiimoteChanged);
@@ -104,19 +103,7 @@ namespace WiiTUIO.Provider
             wiimoteHandlerThread.Priority = ThreadPriority.Highest;
             wiimoteHandlerThread.IsBackground = true;
             wiimoteHandlerThread.Start();
-
-            /*
-            this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
-            this.showPointer = Settings.Default.pointer_moveCursor;
-            if (this.showPointer && !this.mouseMode)
-            {
-                this.duoTouch.enableHover();
-            }
-            else
-            {
-                this.duoTouch.disableHover();
-            }
-            */
+            
         }
 
         #endregion
@@ -543,28 +530,9 @@ namespace WiiTUIO.Provider
                                 {
                                     this.OnStatusUpdate(control.Status);
                                 }
-
-                                /*
-                                if (control.FrameQueue.Count > 0)
-                                {
-                                    FrameEventArgs frame = control.FrameQueue.Dequeue();
-
-                                    ulong timeDelta = ((ulong)Stopwatch.GetTimestamp() / 10000) - (frame.Timestamp / 10000);
-                                    if (timeDelta < OLD_FRAME_TIMEOUT) //Happens when the pointer is out of reach
-                                    {
-                                        foreach (WiiContact contact in frame.Contacts)
-                                        {
-                                            allContacts.Enqueue(contact);
-                                        }
-                                    }
-                                }
-                                */
+                                
                             }
                         }
-
-                        //FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
-
-                        //this.OnNewFrame(this, newFrame);
 
                         TouchOutputFactory.getCurrentProviderHandler().processEventFrame();
 

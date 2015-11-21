@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WiiTUIO.Provider;
 using WiiTUIO.Properties;
 using Microsoft.Win32;
+using WiiTUIO.Filters;
 
 namespace WiiTUIO.Output.Handlers.Touch
 {
@@ -197,10 +198,10 @@ namespace WiiTUIO.Output.Handlers.Touch
                             this.masterPosition.X = (this.firstMasterContact.X + this.firstMasterContact.X + this.masterPosition.X) / 3;
                         }
                     }
-                    
+
                     System.Windows.Vector smoothedVec = smoothingBuffer.AddAndGet(new System.Windows.Vector(masterPosition.X, masterPosition.Y));
-                    this.masterPosition.X = smoothedVec.X;
-                    this.masterPosition.Y = smoothedVec.Y;
+                    masterPosition.X = smoothedVec.X;
+                    masterPosition.Y = smoothedVec.Y;
 
                     this.isFirstMasterContact = false;
                     
@@ -225,8 +226,9 @@ namespace WiiTUIO.Output.Handlers.Touch
                         contactType = ContactType.Hover;
                         
                         Vector smoothedVec = smoothingBuffer.AddAndGet(new Vector(masterPosition.X, masterPosition.Y));
-                        this.masterPosition.X = smoothedVec.X;
-                        this.masterPosition.Y = smoothedVec.Y;
+                        masterPosition.X = smoothedVec.X;
+                        masterPosition.Y = smoothedVec.Y;
+
                     }
 
                     this.isFirstMasterContact = true;

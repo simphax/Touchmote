@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using WiimoteLib;
+using WiiTUIO.Filters;
 using WiiTUIO.Properties;
 
 namespace WiiTUIO.Provider
@@ -30,16 +31,19 @@ namespace WiiTUIO.Provider
 
         private Screen primaryScreen;
 
+        private CoordFilter coordFilter;
+
         public ScreenPositionCalculator()
         {
             this.primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
             this.recalculateScreenBounds(this.primaryScreen);
 
             Settings.Default.PropertyChanged += SettingsChanged;
-            SystemEvents.DisplaySettingsChanged +=SystemEvents_DisplaySettingsChanged;
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
             lastPos = new CursorPos(0, 0, 0, 0, 0);
 
+            coordFilter = new CoordFilter();
         }
 
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -47,7 +51,7 @@ namespace WiiTUIO.Provider
             if (e.PropertyName == "primaryMonitor")
             {
                 this.primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
-                Console.WriteLine("Setting primary monitor for screen position calculator to "+this.primaryScreen.Bounds);
+                Console.WriteLine("Setting primary monitor for screen position calculator to " + this.primaryScreen.Bounds);
                 this.recalculateScreenBounds(this.primaryScreen);
             }
         }
@@ -80,8 +84,7 @@ namespace WiiTUIO.Provider
             PointF relativePosition = new PointF();
 
             bool foundMidpoint = false;
-
-            for(int i=0;i<irState.IRSensors.Count() && !foundMidpoint;i++)
+            for (int i = 0; i < irState.IRSensors.Count() && !foundMidpoint; i++)
             {
                 if (irState.IRSensors[i].Found)
                 {
@@ -96,35 +99,38 @@ namespace WiiTUIO.Provider
 
                             if (Settings.Default.pointer_considerRotation)
                             {
-                                smoothedX = smoothedX * 0.95 + wiimoteState.AccelState.RawValues.X * 0.05;
-                                smoothedZ = smoothedZ * 0.95 + wiimoteState.AccelState.RawValues.Z * 0.05;
+                                smoothedX = smoothedX * 0.9f + wiimoteState.AccelState.RawValues.X * 0.1f;
+                                smoothedZ = smoothedZ * 0.9f + wiimoteState.AccelState.RawValues.Z * 0.1f;
 
-                                double absx = Math.Abs(smoothedX - 128), absz = Math.Abs(smoothedZ - 128);
-
-                                if (orientation == 0 || orientation == 2) absx -= 5;
-                                if (orientation == 1 || orientation == 3) absz -= 5;
-
-                                if (absz >= absx)
-                                {
-                                    if (absz > 5)
-                                        orientation = (smoothedZ > 128) ? 0 : 2;
-                                }
-                                else
-                                {
-                                    if (absx > 5)
-                                        orientation = (smoothedX > 128) ? 3 : 1;
-                                }
-                                
                                 int l = leftPoint, r;
-                                switch (orientation)
+                                if (leftPoint == -1)
                                 {
-                                    case 0: l = (irState.IRSensors[i].RawPosition.X < irState.IRSensors[j].RawPosition.X) ? i : j; break;
-                                    case 1: l = (irState.IRSensors[i].RawPosition.Y > irState.IRSensors[j].RawPosition.Y) ? i : j; break;
-                                    case 2: l = (irState.IRSensors[i].RawPosition.X > irState.IRSensors[j].RawPosition.X) ? i : j; break;
-                                    case 3: l = (irState.IRSensors[i].RawPosition.Y < irState.IRSensors[j].RawPosition.Y) ? i : j; break;
+                                    double absx = Math.Abs(smoothedX - 128), absz = Math.Abs(smoothedZ - 128);
+
+                                    if (orientation == 0 || orientation == 2) absx -= 5;
+                                    if (orientation == 1 || orientation == 3) absz -= 5;
+
+                                    if (absz >= absx)
+                                    {
+                                        if (absz > 5)
+                                            orientation = (smoothedZ > 128) ? 0 : 2;
+                                    }
+                                    else
+                                    {
+                                        if (absx > 5)
+                                            orientation = (smoothedX > 128) ? 3 : 1;
+                                    }
+
+                                    switch (orientation)
+                                    {
+                                        case 0: l = (irState.IRSensors[i].RawPosition.X < irState.IRSensors[j].RawPosition.X) ? i : j; break;
+                                        case 1: l = (irState.IRSensors[i].RawPosition.Y > irState.IRSensors[j].RawPosition.Y) ? i : j; break;
+                                        case 2: l = (irState.IRSensors[i].RawPosition.X > irState.IRSensors[j].RawPosition.X) ? i : j; break;
+                                        case 3: l = (irState.IRSensors[i].RawPosition.Y < irState.IRSensors[j].RawPosition.Y) ? i : j; break;
+                                    }
                                 }
                                 leftPoint = l;
-                                r = 1 - l;
+                                r = l == i ? j : i;
 
                                 double dx = irState.IRSensors[r].RawPosition.X - irState.IRSensors[l].RawPosition.X;
                                 double dy = irState.IRSensors[r].RawPosition.Y - irState.IRSensors[l].RawPosition.Y;
@@ -134,7 +140,7 @@ namespace WiiTUIO.Provider
                                 dx /= d;
                                 dy /= d;
 
-                                smoothedRotation = 0.7 * smoothedRotation + 0.3 * Math.Atan2(dy, dx);
+                                smoothedRotation = Math.Atan2(dy, dx);
                             }
                         }
                     }
@@ -145,6 +151,7 @@ namespace WiiTUIO.Provider
             {
                 CursorPos err = lastPos;
                 err.OutOfReach = true;
+                leftPoint = -1;
 
                 return err;
             }
@@ -161,7 +168,7 @@ namespace WiiTUIO.Provider
             }
 
             relativePosition.X = 1 - relativePosition.X;
-            
+
             if (Settings.Default.pointer_considerRotation)
             {
                 relativePosition.X = relativePosition.X - 0.5F;
@@ -172,7 +179,12 @@ namespace WiiTUIO.Provider
                 relativePosition.X = relativePosition.X + 0.5F;
                 relativePosition.Y = relativePosition.Y + 0.5F;
             }
-            
+
+            System.Windows.Point filteredPoint = coordFilter.AddGetFilteredCoord(new System.Windows.Point(relativePosition.X, relativePosition.Y), 1.0, 1.0);
+            relativePosition.X = (float)filteredPoint.X;
+            relativePosition.Y = (float)filteredPoint.Y;
+
+
             x = Convert.ToInt32((float)maxWidth * relativePosition.X + minXPos);
             y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;
 
@@ -207,7 +219,7 @@ namespace WiiTUIO.Provider
             double ynew = point.X * sin + point.Y * cos;
 
             PointF result;
-            
+
             result.X = (float)xnew;
             result.Y = (float)ynew;
 

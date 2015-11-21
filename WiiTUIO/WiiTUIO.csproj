@@ -209,6 +209,8 @@
     <Compile Include="Input\WiiProvider\CircularBuffer.cs" />
     <Compile Include="Input\WiiProvider\RadiusBuffer.cs" />
     <Compile Include="Input\WiiProvider\SmoothingBuffer.cs" />
+    <Compile Include="Filters\CoordFilter.cs" />
+    <Compile Include="Filters\OneEuroFilter.cs" />
     <Compile Include="Output\CursorPositionHelper.cs" />
     <Compile Include="Output\Handlers\HandlerFactory.cs" />
     <Compile Include="Output\Handlers\ICursorHandler.cs" />

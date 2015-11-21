@@ -257,8 +257,8 @@ namespace WiiTUIO.Properties
                 OnPropertyChanged("pointer_cursorSize");
             }
         }
-
-        private double _pointer_marginsTopBottom = 0.6;
+        
+        private double _pointer_marginsTopBottom = 0.5;
         public double pointer_marginsTopBottom
         {
             get { return _pointer_marginsTopBottom; }
@@ -268,8 +268,8 @@ namespace WiiTUIO.Properties
                 OnPropertyChanged("pointer_marginsTopBottom");
             }
         }
-
-        private double _pointer_marginsLeftRight = 0.5;
+        
+        private double _pointer_marginsLeftRight = 0.4;
         public double pointer_marginsLeftRight
         {
             get { return _pointer_marginsLeftRight; }
@@ -336,7 +336,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _pointer_FPS = 100;
+        private int _pointer_FPS = 120;
         public int pointer_FPS
         {
             get { return _pointer_FPS; }
@@ -356,7 +356,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _pointer_positionRadius = 8.0;
+        private double _pointer_positionRadius = 4.0;
         public double pointer_positionRadius {
             get { return _pointer_positionRadius; }
             set {
