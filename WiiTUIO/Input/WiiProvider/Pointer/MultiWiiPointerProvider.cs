@@ -45,7 +45,7 @@ namespace WiiTUIO.Provider
 
         private Dictionary<string, WiimoteControl> pWiimoteMap = new Dictionary<string, WiimoteControl>();
 
-        private Dictionary<string, WiimoteChangedEventArgs> eventBuffer = new Dictionary<string, WiimoteChangedEventArgs>();
+        private List<Tuple<string, WiimoteChangedEventArgs>> eventBuffer = new List<Tuple<string, WiimoteChangedEventArgs>>();
 
         private WiimoteCollection pWC;
 
@@ -84,7 +84,9 @@ namespace WiiTUIO.Provider
         public event Action<int,int> OnConnect;
         public event Action<int,int> OnDisconnect;
 
-   
+        private Timer fpsTimer;
+        private int wiimoteChangedCount;
+
         #endregion
 
         /// <summary>
@@ -117,6 +119,14 @@ namespace WiiTUIO.Provider
                 this.duoTouch.disableHover();
             }
             */
+
+            fpsTimer = new Timer(fpsTimer_Elapsed, null, 0, 1000);
+        }
+
+        private void fpsTimer_Elapsed(object state)
+        {
+            Console.WriteLine("FPS: " + wiimoteChangedCount);
+            wiimoteChangedCount = 0;
         }
 
         #endregion
@@ -530,42 +540,27 @@ namespace WiiTUIO.Provider
 
                         foreach (WiimoteControl control in pWiimoteMap.Values)
                         {
-                            if (eventBuffer.ContainsKey(control.Wiimote.HIDDevicePath))
+                            for(int i=0; i < eventBuffer.Count; i++)
                             {
-                                WiimoteChangedEventArgs e = eventBuffer[control.Wiimote.HIDDevicePath];
-
-                                if (control.handleWiimoteChanged(this, e) && control.Status.InPowerSave)
+                                Tuple<string, WiimoteChangedEventArgs> wiimoteEvent = eventBuffer[i];
+                                if (wiimoteEvent.Item1 == control.Wiimote.HIDDevicePath)
                                 {
-                                    this.wakeFromPowerSave(control);
-                                }
-
-                                if (this.OnStatusUpdate != null)
-                                {
-                                    this.OnStatusUpdate(control.Status);
-                                }
-
-                                /*
-                                if (control.FrameQueue.Count > 0)
-                                {
-                                    FrameEventArgs frame = control.FrameQueue.Dequeue();
-
-                                    ulong timeDelta = ((ulong)Stopwatch.GetTimestamp() / 10000) - (frame.Timestamp / 10000);
-                                    if (timeDelta < OLD_FRAME_TIMEOUT) //Happens when the pointer is out of reach
+                                    if (control.handleWiimoteChanged(this, wiimoteEvent.Item2) && control.Status.InPowerSave)
                                     {
-                                        foreach (WiiContact contact in frame.Contacts)
-                                        {
-                                            allContacts.Enqueue(contact);
-                                        }
+                                        this.wakeFromPowerSave(control);
                                     }
+
+                                    if (this.OnStatusUpdate != null)
+                                    {
+                                        this.OnStatusUpdate(control.Status);
+                                    }
+
+                                    eventBuffer.RemoveAt(i);
+                                    i--;
                                 }
-                                */
                             }
                         }
-
-                        //FrameEventArgs newFrame = new FrameEventArgs((ulong)Stopwatch.GetTimestamp(), allContacts);
-
-                        //this.OnNewFrame(this, newFrame);
-
+                        
                         TouchOutputFactory.getCurrentProviderHandler().processEventFrame();
 
                         if (Settings.Default.pointer_customCursor)
@@ -594,11 +589,12 @@ namespace WiiTUIO.Provider
         /// <param name="e"></param>
         private void handleWiimoteChanged(object sender, WiimoteChangedEventArgs e)
         {
-
-            eventBuffer[((Wiimote)sender).HIDDevicePath] = e;
+            pDeviceMutex.WaitOne();
+            wiimoteChangedCount++;
+            eventBuffer.Add(new Tuple<string, WiimoteChangedEventArgs>(((Wiimote)sender).HIDDevicePath, e));
 
             pWiimoteMap[((Wiimote)sender).HIDDevicePath].LastWiimoteEventTime = DateTime.Now;
-
+            pDeviceMutex.ReleaseMutex();
         }
         #endregion
 
