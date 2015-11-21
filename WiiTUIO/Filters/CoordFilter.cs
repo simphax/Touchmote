@@ -13,13 +13,11 @@ namespace WiiTUIO.Filters
         public double Freq;
         public double Mincutoff;
         public double Beta;
-
-        int frameCount = 0;
-
+        
         OneEuroFilter xFilter;
         OneEuroFilter yFilter;
 
-        public CoordFilter() : this(100.0, 1.0, 0.005)
+        public CoordFilter() : this(90.0, 0.01, 0.001)
         {
         }
 
@@ -42,8 +40,7 @@ namespace WiiTUIO.Filters
 
             filteredVector.X *= width;
             filteredVector.Y *= height;
-
-            frameCount++;
+            
 
             return filteredVector;
         }
@@ -51,8 +48,8 @@ namespace WiiTUIO.Filters
         private Point filterUnitVector(Point vector)
         {
             Point filteredVector = new Point();
-            filteredVector.X = xFilter.Filter(vector.X, frameCount / Freq);
-            filteredVector.Y = yFilter.Filter(vector.Y, frameCount / Freq);
+            filteredVector.X = xFilter.Filter(vector.X, 1 / Freq);
+            filteredVector.Y = yFilter.Filter(vector.Y, 1 / Freq);
             return filteredVector;
         }
     }
