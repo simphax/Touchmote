@@ -13,21 +13,23 @@ namespace WiiTUIO.Filters
         public double Freq;
         public double Mincutoff;
         public double Beta;
-        
+        public double Dcutoff;
+
         OneEuroFilter xFilter;
         OneEuroFilter yFilter;
 
-        public CoordFilter() : this(90.0, 0.003, 0.001)
+        public CoordFilter() : this(120.0, 0.02, 0.007, 2.0)
         {
         }
 
-        public CoordFilter(double freq, double mincutoff, double beta)
+        public CoordFilter(double freq, double mincutoff, double beta, double dcutoff)
         {
             this.Freq = freq;
             this.Mincutoff = mincutoff;
             this.Beta = beta;
-            xFilter = new OneEuroFilter(Mincutoff, Beta);
-            yFilter = new OneEuroFilter(Mincutoff, Beta);
+            this.Dcutoff = dcutoff;
+            xFilter = new OneEuroFilter(Mincutoff, Beta, Dcutoff);
+            yFilter = new OneEuroFilter(Mincutoff, Beta, Dcutoff);
         }
 
         public Point AddGetFilteredCoord(Point point, double width, double height)

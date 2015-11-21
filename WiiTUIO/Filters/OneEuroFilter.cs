@@ -10,7 +10,7 @@ namespace WiiTUIO.Filters
 {
     public class OneEuroFilter
     {
-        public OneEuroFilter(double minCutoff, double beta)
+        public OneEuroFilter(double minCutoff, double beta, double dcutoff)
         {
             firstTime = true;
             this.minCutoff = minCutoff;
@@ -18,7 +18,7 @@ namespace WiiTUIO.Filters
 
             xFilt = new LowpassFilter();
             dxFilt = new LowpassFilter();
-            dcutoff = 1.0;
+            dcutoff = dcutoff;
         }
 
         protected bool firstTime;
