@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WiiTUIO.Provider {
+namespace WiiTUIO.Filters {
 
     class CircularBufferEnum<T> : IEnumerator<T>, IEnumerator {
         int pos_ = -1;

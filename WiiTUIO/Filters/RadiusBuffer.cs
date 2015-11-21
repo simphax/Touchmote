@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using WiiTUIO.Properties;
 
-namespace WiiTUIO.Provider {
+namespace WiiTUIO.Filters
+{
 
     class RadiusBuffer : CircularBuffer<Vector> {
         private double Radius = Settings.Default.pointer_positionRadius;

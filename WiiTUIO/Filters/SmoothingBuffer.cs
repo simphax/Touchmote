@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using WiiTUIO.Properties;
 
-namespace WiiTUIO.Provider {
+namespace WiiTUIO.Filters
+{
     /// <summary>
     /// A SmoothingBuffer class is a helper around a smoothing array.  It implements a linear smoothing by taking the average over the
     /// number of items pushed into the buffer.  The oldest items are replaced by the newest ones.

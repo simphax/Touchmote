@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using WiiTUIO.Properties;
+using WiiTUIO.Filters;
 
 namespace WiiTUIO.Provider
 {
