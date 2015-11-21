@@ -75,7 +75,7 @@ namespace WiiTUIO.Output.Handlers.Touch
             {
                 smoothSize = 1;
             }
-            this.smoothingBuffer = new RadiusBuffer(smoothSize);
+            this.smoothingBuffer = new RadiusBuffer(4);
         }
 
 
@@ -168,16 +168,16 @@ namespace WiiTUIO.Output.Handlers.Touch
                     {
                         if (this.masterHoldPosition)
                         {
-                            if (Math.Abs(this.firstMasterContact.X - this.masterPosition.X) < TouchHoldThreshold && Math.Abs(this.firstMasterContact.Y - this.masterPosition.Y) < TouchHoldThreshold)
+                           /* if (Math.Abs(this.firstMasterContact.X - this.masterPosition.X) < TouchHoldThreshold && Math.Abs(this.firstMasterContact.Y - this.masterPosition.Y) < TouchHoldThreshold)
                             {
                                 /*Console.WriteLine("DiffX: " + Math.Abs(this.firstMasterContact.X - this.masterPosition.X) + " DiffY: " + Math.Abs(this.firstMasterContact.Y - this.masterPosition.Y));*/
-                                this.masterPosition = this.firstMasterContact;
+                                /*this.masterPosition = this.firstMasterContact;
                                 this.masterHoldPosition = true;
                             }
                             else
-                            {
+                            {*/
                                 this.masterHoldPosition = false;
-                            }
+                            //}
                         }
 
                         //Helps to perform "edge swipe" guestures
