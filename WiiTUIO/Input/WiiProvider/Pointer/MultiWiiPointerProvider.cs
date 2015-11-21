@@ -94,7 +94,6 @@ namespace WiiTUIO.Provider
         /// </summary>
         public MultiWiiPointerProvider()
         {
-
             this.pWC = new WiimoteCollection();
 
             this.wiimoteChangedEventHandler = new EventHandler<WiimoteChangedEventArgs>(handleWiimoteChanged);
@@ -106,20 +105,7 @@ namespace WiiTUIO.Provider
             wiimoteHandlerThread.Priority = ThreadPriority.Highest;
             wiimoteHandlerThread.IsBackground = true;
             wiimoteHandlerThread.Start();
-
-            /*
-            this.mouseMode = this.keyMapper.KeyMap.Pointer.ToLower() == "mouse";
-            this.showPointer = Settings.Default.pointer_moveCursor;
-            if (this.showPointer && !this.mouseMode)
-            {
-                this.duoTouch.enableHover();
-            }
-            else
-            {
-                this.duoTouch.disableHover();
-            }
-            */
-
+            
             fpsTimer = new Timer(fpsTimer_Elapsed, null, 0, 1000);
         }
 
