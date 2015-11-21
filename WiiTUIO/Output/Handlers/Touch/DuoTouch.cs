@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WiiTUIO.Provider;
 using WiiTUIO.Properties;
 using Microsoft.Win32;
+using WiiTUIO.Filters;
 
 namespace WiiTUIO.Output.Handlers.Touch
 {
@@ -15,7 +16,7 @@ namespace WiiTUIO.Output.Handlers.Touch
         private int masterPriority;
         private int slavePriority;
 
-        private SmoothingBuffer smoothingBuffer;
+        private CoordFilter smoothingFilter;
         public System.Drawing.Rectangle screenBounds;
 
         private bool stepIDs = false;
@@ -74,7 +75,7 @@ namespace WiiTUIO.Output.Handlers.Touch
             {
                 smoothSize = 1;
             }
-            this.smoothingBuffer = new SmoothingBuffer(smoothSize);
+            this.smoothingFilter = new CoordFilter();
         }
 
 
@@ -198,8 +199,7 @@ namespace WiiTUIO.Output.Handlers.Touch
                         }
                     }
 
-                    smoothingBuffer.addValue(new System.Windows.Vector(masterPosition.X, masterPosition.Y));
-                    System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+                    Point smoothedVec = smoothingFilter.AddGetFilteredCoord(this.masterPosition, this.screenBounds.Width, this.screenBounds.Height);
                     this.masterPosition.X = smoothedVec.X;
                     this.masterPosition.Y = smoothedVec.Y;
 
@@ -224,8 +224,7 @@ namespace WiiTUIO.Output.Handlers.Touch
                     else
                     {
                         contactType = ContactType.Hover;
-                        smoothingBuffer.addValue(new Vector(masterPosition.X, masterPosition.Y));
-                        Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+                        Point smoothedVec = smoothingFilter.AddGetFilteredCoord(this.masterPosition, this.screenBounds.Width, this.screenBounds.Height);
                         this.masterPosition.X = smoothedVec.X;
                         this.masterPosition.Y = smoothedVec.Y;
                     }
