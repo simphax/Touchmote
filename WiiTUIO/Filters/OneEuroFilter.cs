@@ -18,7 +18,7 @@ namespace WiiTUIO.Filters
 
             xFilt = new LowpassFilter();
             dxFilt = new LowpassFilter();
-            dcutoff = 1;
+            dcutoff = 1.0;
         }
 
         protected bool firstTime;

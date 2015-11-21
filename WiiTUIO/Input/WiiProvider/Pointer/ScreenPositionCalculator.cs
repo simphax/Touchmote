@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using WiimoteLib;
+using WiiTUIO.Filters;
 using WiiTUIO.Properties;
 
 namespace WiiTUIO.Provider
@@ -30,6 +31,8 @@ namespace WiiTUIO.Provider
 
         private Screen primaryScreen;
 
+        private CoordFilter coordFilter;
+
         public ScreenPositionCalculator()
         {
             this.primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
@@ -40,6 +43,7 @@ namespace WiiTUIO.Provider
 
             lastPos = new CursorPos(0, 0, 0, 0, 0);
 
+            coordFilter = new CoordFilter();
         }
 
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -176,6 +180,11 @@ namespace WiiTUIO.Provider
                 relativePosition.X = relativePosition.X + 0.5F;
                 relativePosition.Y = relativePosition.Y + 0.5F;
             }
+
+            System.Windows.Point filteredPoint = coordFilter.AddGetFilteredCoord(new System.Windows.Point(relativePosition.X, relativePosition.Y), 1.0, 1.0);
+            relativePosition.X = (float)filteredPoint.X;
+            relativePosition.Y = (float)filteredPoint.Y;
+
 
             x = Convert.ToInt32((float)maxWidth * relativePosition.X + minXPos);
             y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;

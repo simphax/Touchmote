@@ -16,7 +16,7 @@ namespace WiiTUIO.Output.Handlers.Touch
         private int masterPriority;
         private int slavePriority;
 
-        private CoordFilter smoothingFilter;
+        private SmoothingBuffer smoothingBuffer;
         public System.Drawing.Rectangle screenBounds;
 
         private bool stepIDs = false;
@@ -75,7 +75,7 @@ namespace WiiTUIO.Output.Handlers.Touch
             {
                 smoothSize = 1;
             }
-            this.smoothingFilter = new CoordFilter();
+            this.smoothingBuffer = new SmoothingBuffer(smoothSize);
         }
 
 
@@ -199,9 +199,12 @@ namespace WiiTUIO.Output.Handlers.Touch
                         }
                     }
 
-                    Point smoothedVec = smoothingFilter.AddGetFilteredCoord(this.masterPosition, this.screenBounds.Width, this.screenBounds.Height);
+                    /*
+                    smoothingBuffer.addValue(new System.Windows.Vector(masterPosition.X, masterPosition.Y));
+                    System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
                     this.masterPosition.X = smoothedVec.X;
                     this.masterPosition.Y = smoothedVec.Y;
+                    */
 
                     this.isFirstMasterContact = false;
                     
@@ -224,9 +227,12 @@ namespace WiiTUIO.Output.Handlers.Touch
                     else
                     {
                         contactType = ContactType.Hover;
-                        Point smoothedVec = smoothingFilter.AddGetFilteredCoord(this.masterPosition, this.screenBounds.Width, this.screenBounds.Height);
+                        /*
+                        smoothingBuffer.addValue(new System.Windows.Vector(masterPosition.X, masterPosition.Y));
+                        System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
                         this.masterPosition.X = smoothedVec.X;
                         this.masterPosition.Y = smoothedVec.Y;
+                        */
                     }
 
                     this.isFirstMasterContact = true;

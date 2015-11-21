@@ -19,7 +19,7 @@ namespace WiiTUIO.Filters
         OneEuroFilter xFilter;
         OneEuroFilter yFilter;
 
-        public CoordFilter() : this(120.0, 3.0, 0.007)
+        public CoordFilter() : this(100.0, 1.0, 0.005)
         {
         }
 
