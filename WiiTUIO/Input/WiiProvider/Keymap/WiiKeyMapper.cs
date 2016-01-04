@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -89,37 +88,40 @@ namespace WiiTUIO.Provider
 
         private WiiKeyMap KeyMap;
 
-        private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
+        [Flags]
+        private enum ButtonFlag
         {
-            {"A",false},
-            {"B",false},
-            {"Up",false},
-            {"Down",false},
-            {"Left",false},
-            {"Right",false},
-            {"Minus",false},
-            {"Plus",false},
-            {"Home",false},
-            {"One",false},
-            {"Two",false},
-            {"Nunchuk.C",false},
-            {"Nunchuk.Z",false},
-            {"Classic.A",false},
-            {"Classic.B",false},
-            {"Classic.X",false},
-            {"Classic.Y",false},
-            {"Classic.Up",false},
-            {"Classic.Down",false},
-            {"Classic.Left",false},
-            {"Classic.Right",false},
-            {"Classic.Home",false},
-            {"Classic.Plus",false},
-            {"Classic.Minus",false},
-            {"Classic.L",false},
-            {"Classic.R",false},
-            {"Classic.ZL",false},
-            {"Classic.ZR",false}
-        };
+            A = (1 << 0),
+            B = (1 << 1),
+            Up = (1 << 2),
+            Down = (1 << 3),
+            Left = (1 << 4),
+            Right = (1 << 5),
+            Minus = (1 << 6),
+            Plus = (1 << 7),
+            Home = (1 << 8),
+            One = (1 << 9),
+            Two = (1 << 10),
+            NunchukC = (1 << 11),
+            NunchukZ = (1 << 12),
+            ClassicA = (1 << 13),
+            ClassicB = (1 << 14),
+            ClassicX = (1 << 15),
+            ClassicY = (1 << 16),
+            ClassicUp = (1 << 17),
+            ClassicDown = (1 << 18),
+            ClassicLeft = (1 << 19),
+            ClassicRight = (1 << 20),
+            ClassicHome = (1 << 21),
+            ClassicPlus = (1 << 22),
+            ClassicMinus = (1 << 23),
+            ClassicL = (1 << 24),
+            ClassicR = (1 << 25),
+            ClassicZL = (1 << 26),
+            ClassicZR = (1 << 27)
+        }
+
+        private ButtonFlag PressedButtons;
 
         private SystemProcessMonitor processMonitor;
 
@@ -249,7 +251,7 @@ namespace WiiTUIO.Provider
 
         void homeButtonTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (this.PressedButtons["Home"])
+            if (isButtonPressed(ButtonFlag.Home))
             {
                 this.setKeymap(this.defaultKeymap);
                 OverlayWindow.Current.ShowLayoutOverlay(this);
@@ -345,13 +347,7 @@ namespace WiiTUIO.Provider
             this.setKeymap(keymap);
 
             //this.processWiimoteState(new WiimoteState()); //Sets all buttons to "not pressed"
-            foreach (string key in new List<string>(PressedButtons.Keys))
-            {
-                if(key != "Home")
-                {
-                    PressedButtons[key] = false;
-                }
-            }
+            PressedButtons = PressedButtons & ButtonFlag.Home;
 
             Console.WriteLine("Loaded new keymap " + filename);
             return keymap;
@@ -376,34 +372,8 @@ namespace WiiTUIO.Provider
             {
                 this.KeyMap.updateNunchuk(wiimoteState.NunchukState);
 
-                if (wiimoteState.NunchukState.C && !PressedButtons["Nunchuk.C"])
-                {
-                    PressedButtons["Nunchuk.C"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(NunchukButton.C);
-                }
-                else if (!wiimoteState.NunchukState.C && PressedButtons["Nunchuk.C"])
-                {
-                    PressedButtons["Nunchuk.C"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(NunchukButton.C);
-                }
-
-                if (wiimoteState.NunchukState.Z && !PressedButtons["Nunchuk.Z"])
-                {
-                    PressedButtons["Nunchuk.Z"] = true;
-                    significant = true;
-                    this.KeyMap.executeButtonDown(NunchukButton.Z);
-                }
-                else if (!wiimoteState.NunchukState.Z && PressedButtons["Nunchuk.Z"])
-                {
-                    PressedButtons["Nunchuk.Z"] = false;
-                    significant = true;
-                    this.KeyMap.executeButtonUp(NunchukButton.Z);
-                }
-
-                
-                
+                significant |= checkButtonState(wiimoteState.NunchukState.C, "Nunchuk.C");
+                significant |= checkButtonState(wiimoteState.NunchukState.Z, "Nunchuk.Z");
             }
 
             if (wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.ClassicController)
@@ -412,35 +382,21 @@ namespace WiiTUIO.Provider
 
                 ClassicControllerButtonState classicButtonState = wiimoteState.ClassicControllerState.ButtonState;
 
-                FieldInfo[] cbuttons = classicButtonState.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
-                foreach (FieldInfo button in cbuttons)
-                {
-                    string buttonName = "Classic." + button.Name;
-                    if (button.Name == "TriggerL")
-                    {
-                        buttonName = "Classic.L";
-                    }
-                    else if (button.Name == "TriggerR")
-                    {
-                        buttonName = "Classic.R";
-                    }
-
-                    bool pressedNow = (bool)button.GetValue(classicButtonState);
-                    bool pressedBefore = PressedButtons[buttonName];
-
-                    if (pressedNow && !pressedBefore)
-                    {
-                        PressedButtons[buttonName] = true;
-                        significant = true;
-                        this.KeyMap.executeButtonDown(buttonName);
-                    }
-                    else if (!pressedNow && pressedBefore)
-                    {
-                        PressedButtons[buttonName] = false;
-                        significant = true;
-                        this.KeyMap.executeButtonUp(buttonName);
-                    }
-                }
+                significant |= checkButtonState(classicButtonState.A , "Classic.A");
+                significant |= checkButtonState(classicButtonState.B, "Classic.B");
+                significant |= checkButtonState(classicButtonState.Down, "Classic.Down");
+                significant |= checkButtonState(classicButtonState.Home, "Classic.Home");
+                significant |= checkButtonState(classicButtonState.Left, "Classic.Left");
+                significant |= checkButtonState(classicButtonState.Minus, "Classic.Minus");
+                significant |= checkButtonState(classicButtonState.Plus, "Classic.Plus");
+                significant |= checkButtonState(classicButtonState.Right, "Classic.Right");
+                significant |= checkButtonState(classicButtonState.TriggerL, "Classic.L");
+                significant |= checkButtonState(classicButtonState.TriggerR, "Classic.R");
+                significant |= checkButtonState(classicButtonState.Up, "Classic.Up");
+                significant |= checkButtonState(classicButtonState.X, "Classic.X");
+                significant |= checkButtonState(classicButtonState.Y, "Classic.Y");
+                significant |= checkButtonState(classicButtonState.ZL, "Classic.ZL");
+                significant |= checkButtonState(classicButtonState.ZR, "Classic.ZR");
             }
 
             if (this.releaseHomeOnNextUpdate)
@@ -449,69 +405,142 @@ namespace WiiTUIO.Provider
                 this.KeyMap.executeButtonUp("Home");
             }
 
-            FieldInfo[] buttons = buttonState.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
-            foreach (FieldInfo button in buttons) {
-
-                bool pressedNow = (bool)button.GetValue(buttonState);
-                bool pressedBefore = PressedButtons[button.Name];
-
-                if(pressedNow && !pressedBefore) //On down
-                {
-                    PressedButtons[button.Name] = true;
-                    significant = true;
-                    if (button.Name == "Home")
-                    {
-                        Console.WriteLine("home down");
-                        if (OverlayWindow.Current.OverlayIsOn())
-                        {
-                            this.hideOverlayOnUp = true;
-                            Console.WriteLine("hide overlay on up");
-                        }
-                        else
-                        {
-                            this.homeButtonTimer.Start();
-                        }
-                    }
-                    else
-                    {
-                        this.KeyMap.executeButtonDown(button.Name);
-                    }
-                }
-                else if (!pressedNow && pressedBefore) //On up
-                {
-                    PressedButtons[button.Name] = false;
-                    significant = true;
-                    if(button.Name == "Home")
-                    {
-                        Console.WriteLine("home up");
-                        this.homeButtonTimer.Stop();
-
-                        if (this.hideOverlayOnUp)
-                        {
-                            this.hideOverlayOnUp = false;
-                            OverlayWindow.Current.HideOverlay();
-                        }
-                        else if (OverlayWindow.Current.OverlayIsOn()) //We opened the overlay on this down
-                        {
-                        }
-                        else
-                        {
-                            this.KeyMap.executeButtonDown("Home");
-                            this.releaseHomeOnNextUpdate = true;
-                        }
-                    }
-                    else
-                    {
-                        this.KeyMap.executeButtonUp(button.Name);
-                    }
-                }
-            }
+            significant |= checkButtonState(buttonState.A, "A");
+            significant |= checkButtonState(buttonState.B, "B");
+            significant |= checkButtonState(buttonState.Down, "Down");
+            significant |= checkButtonState(buttonState.Home, "Home");
+            significant |= checkButtonState(buttonState.Left, "Left");
+            significant |= checkButtonState(buttonState.Minus, "Minus");
+            significant |= checkButtonState(buttonState.One, "One");
+            significant |= checkButtonState(buttonState.Plus, "Plus");
+            significant |= checkButtonState(buttonState.Right, "Right");
+            significant |= checkButtonState(buttonState.Two, "Two");
+            significant |= checkButtonState(buttonState.Up, "Up");
 
             foreach (IOutputHandler handler in outputHandlers)
             {
                 handler.endUpdate();
             }
 
+            if (significant)
+            {
+                Console.WriteLine("********************************significant");
+            }
+
+            return significant;
+        }
+
+        private bool isButtonPressed(ButtonFlag button)
+        {
+            return (PressedButtons & button) != 0;
+        }
+
+        private void setPressedButton(ButtonFlag button, bool value)
+        {
+            if (value)
+                PressedButtons |= button;
+            else
+                PressedButtons &= ~button;
+        }
+
+        private void setPressedButton(string name, bool value)
+        {
+            setPressedButton(getButtonFlag(name), value);
+        }
+
+        private ButtonFlag getButtonFlag(string buttonName)
+        {
+            switch (buttonName)
+            {
+                case "A": return ButtonFlag.A;
+                case "B": return ButtonFlag.B;
+                case "Up": return ButtonFlag.Up;
+                case "Down": return ButtonFlag.Down;
+                case "Left": return ButtonFlag.Left;
+                case "Right": return ButtonFlag.Right;
+                case "Minus": return ButtonFlag.Minus;
+                case "Plus": return ButtonFlag.Plus;
+                case "Home": return ButtonFlag.Home;
+                case "One": return ButtonFlag.One;
+                case "Two": return ButtonFlag.Two;
+                case "Nunchuk.C": return ButtonFlag.NunchukC;
+                case "Nunchuk.Z": return ButtonFlag.NunchukZ;
+                case "Classic.A": return ButtonFlag.ClassicA;
+                case "Classic.B": return ButtonFlag.ClassicB;
+                case "Classic.X": return ButtonFlag.ClassicX;
+                case "Classic.Y": return ButtonFlag.ClassicY;
+                case "Classic.Up": return ButtonFlag.ClassicUp;
+                case "Classic.Down": return ButtonFlag.ClassicDown;
+                case "Classic.Left": return ButtonFlag.ClassicLeft;
+                case "Classic.Right": return ButtonFlag.ClassicRight;
+                case "Classic.Home": return ButtonFlag.ClassicHome;
+                case "Classic.Plus": return ButtonFlag.ClassicPlus;
+                case "Classic.Minus": return ButtonFlag.ClassicMinus;
+                case "Classic.L": return ButtonFlag.ClassicL;
+                case "Classic.R": return ButtonFlag.ClassicR;
+                case "Classic.ZL": return ButtonFlag.ClassicZL;
+                case "Classic.ZR": return ButtonFlag.ClassicZR;
+                default:
+                    throw new NotImplementedException("Unknown button name:" + buttonName);
+            }
+        }
+
+        private bool checkButtonState(bool pressedNow, string buttonName)
+        {
+            bool significant = false;
+            ButtonFlag buttonFlag = getButtonFlag(buttonName);
+            bool pressedBefore = isButtonPressed(buttonFlag);
+
+            if (pressedNow && !pressedBefore) //On down
+            {
+                setPressedButton(buttonFlag, true);
+                significant = true;
+                if (buttonName == "Home")
+                {
+                    Console.WriteLine("home down");
+                    if (OverlayWindow.Current.OverlayIsOn())
+                    {
+                        this.hideOverlayOnUp = true;
+                        Console.WriteLine("hide overlay on up");
+                    }
+                    else
+                    {
+                        this.homeButtonTimer.Start();
+                    }
+                }
+                else
+                {
+                    this.KeyMap.executeButtonDown(buttonName);
+                }
+            }
+            else if (!pressedNow && pressedBefore) //On up
+            {
+                setPressedButton(buttonFlag, false);
+                significant = true;
+                if (buttonName == "Home")
+                {
+                    Console.WriteLine("home up");
+                    this.homeButtonTimer.Stop();
+
+                    if (this.hideOverlayOnUp)
+                    {
+                        this.hideOverlayOnUp = false;
+                        OverlayWindow.Current.HideOverlay();
+                    }
+                    else if (OverlayWindow.Current.OverlayIsOn()) //We opened the overlay on this down
+                    {
+                    }
+                    else
+                    {
+                        this.KeyMap.executeButtonDown("Home");
+                        this.releaseHomeOnNextUpdate = true;
+                    }
+                }
+                else
+                {
+                    this.KeyMap.executeButtonUp(buttonName);
+                }
+            }
 
             return significant;
         }
