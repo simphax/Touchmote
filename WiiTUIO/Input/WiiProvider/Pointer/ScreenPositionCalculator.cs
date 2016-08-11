@@ -26,7 +26,8 @@ namespace WiiTUIO.Provider
 
         private int leftPoint = -1;
 
-        private CursorPos lastPos;
+        private CursorPos lastPos1;
+        private CursorPos lastPos2;
 
         private Screen primaryScreen;
 
@@ -38,7 +39,8 @@ namespace WiiTUIO.Provider
             Settings.Default.PropertyChanged += SettingsChanged;
             SystemEvents.DisplaySettingsChanged +=SystemEvents_DisplaySettingsChanged;
 
-            lastPos = new CursorPos(0, 0, 0, 0, 0);
+            lastPos1 = new CursorPos(0, 0, 0, 0, 0);
+            lastPos2 = new CursorPos(0, 0, 0, 0, 0);
 
         }
 
@@ -70,6 +72,7 @@ namespace WiiTUIO.Provider
             SBPositionOffset = (int)(screen.Bounds.Height * Settings.Default.pointer_sensorBarPosCompensation);
         }
 
+        double R = 0.01;
         public CursorPos CalculateCursorPos(WiimoteState wiimoteState)
         {
             int x;
@@ -201,7 +204,7 @@ namespace WiiTUIO.Provider
 
             if (!foundMidpoint)
             {
-                CursorPos err = lastPos;
+                CursorPos err = lastPos1;
                 err.OutOfReach = true;
 
                 return err;
@@ -239,7 +242,19 @@ namespace WiiTUIO.Provider
                 //relativePosition.X = 1 - relativePosition.X;
                 //relativePosition.Y = 1 - relativePosition.Y;
             }
-            
+
+            double D;
+
+            D = relativePosition.X - lastPos1.RelativeX;
+            double dir = (lastPos2.RelativeX - lastPos1.RelativeX) * D;
+            R = 0.02;
+            if ((D > -R) && (D < R))
+                relativePosition.X = (float)(lastPos1.RelativeX + (Math.Abs(D * (1 / R)) * D));
+
+            D = relativePosition.Y - lastPos1.RelativeY;
+            if ((D > -R) && (D < R))
+                relativePosition.Y = (float)(lastPos1.RelativeY + (Math.Abs(D * (1 / R)) * D));
+
             x = Convert.ToInt32((float)maxWidth * relativePosition.X + minXPos);
             y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;
 
@@ -261,7 +276,8 @@ namespace WiiTUIO.Provider
             }
 
             CursorPos result = new CursorPos(x, y, relativePosition.X, relativePosition.Y, smoothedRotation);
-            lastPos = result;
+            lastPos2 = lastPos1;
+            lastPos1 = result;
             return result;
         }
 
