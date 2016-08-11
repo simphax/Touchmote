@@ -16,14 +16,12 @@ namespace WiiTUIO.Output
     /// </summary>
     class CursorPositionHelper
     {
-        //private SmoothingBuffer smoothingBuffer;
-        private RadiusBuffer smoothingBuffer;
+        private SmoothingBuffer smoothingBuffer;
         private System.Drawing.Rectangle screenBounds;
-        
+
         public CursorPositionHelper()
         {
-            //smoothingBuffer = new SmoothingBuffer(Settings.Default.pointer_positionSmoothing);
-            smoothingBuffer = new RadiusBuffer(Settings.Default.pointer_positionSmoothing);
+            smoothingBuffer = new SmoothingBuffer(Settings.Default.pointer_positionSmoothing);
             screenBounds = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor).Bounds;
 
             Settings.Default.PropertyChanged += SettingsChanged;
@@ -46,18 +44,16 @@ namespace WiiTUIO.Output
 
         public Point getSmoothedPosition(Point relativePosition)
         {
-            //smoothingBuffer.addValue(new System.Windows.Vector(relativePosition.X, relativePosition.Y));
-            //System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-            Vector smoothedVec = smoothingBuffer.AddAndGet(new Vector(relativePosition.X, relativePosition.Y));
+            smoothingBuffer.addValue(new System.Windows.Vector(relativePosition.X, relativePosition.Y));
+            System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
             return new Point(smoothedVec.X, smoothedVec.Y);
-        }   
+        }
 
         public Point getRelativePosition(Point absPosition)
         {
-            //smoothingBuffer.addValue(new System.Windows.Vector(absPosition.X, absPosition.Y));
-            //System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-            Vector smoothedVec = smoothingBuffer.AddAndGet(new Vector(absPosition.X, absPosition.Y));
+            smoothingBuffer.addValue(new System.Windows.Vector(absPosition.X, absPosition.Y));
+            System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
             return new Point(smoothedVec.X / screenBounds.Width, smoothedVec.Y / screenBounds.Height);
-        }        
+        }
     }
 }
