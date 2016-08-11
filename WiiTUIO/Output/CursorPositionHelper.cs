@@ -18,7 +18,7 @@ namespace WiiTUIO.Output
     {
         private SmoothingBuffer smoothingBuffer;
         private System.Drawing.Rectangle screenBounds;
-        
+
         public CursorPositionHelper()
         {
             smoothingBuffer = new SmoothingBuffer(Settings.Default.pointer_positionSmoothing);
@@ -47,13 +47,13 @@ namespace WiiTUIO.Output
             smoothingBuffer.addValue(new System.Windows.Vector(relativePosition.X, relativePosition.Y));
             System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
             return new Point(smoothedVec.X, smoothedVec.Y);
-        }   
+        }
 
         public Point getRelativePosition(Point absPosition)
         {
             smoothingBuffer.addValue(new System.Windows.Vector(absPosition.X, absPosition.Y));
             System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
             return new Point(smoothedVec.X / screenBounds.Width, smoothedVec.Y / screenBounds.Height);
-        }        
+        }
     }
 }

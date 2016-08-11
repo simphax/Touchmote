@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -762,9 +761,9 @@ namespace WiiTUIO.Provider
         {
             // Insert the value then update the counter.
             int lastIndex = (iSmoothIndex - 1) % tSmoothBuffer.Length;
-            if(lastIndex<0)
+            if (lastIndex < 0)
             {
-                lastIndex = tSmoothBuffer.Length-1;
+                lastIndex = tSmoothBuffer.Length - 1;
             }
 
             tSmoothBuffer[lastIndex] = vPoint;

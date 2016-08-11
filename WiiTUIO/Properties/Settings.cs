@@ -348,13 +348,20 @@ namespace WiiTUIO.Properties
         }
 
         private int _pointer_positionSmoothing = 3;
-        public int pointer_positionSmoothing
-        {
+        public int pointer_positionSmoothing {
             get { return _pointer_positionSmoothing; }
-            set
-            {
+            set {
                 _pointer_positionSmoothing = value;
                 OnPropertyChanged("pointer_positionSmoothing");
+            }
+        }
+
+        private double _pointer_positionRadius = 25.0;
+        public double pointer_positionRadius {
+            get { return _pointer_positionRadius; }
+            set {
+                _pointer_positionRadius = value;
+                OnPropertyChanged("pointer_positionRadius");
             }
         }
 

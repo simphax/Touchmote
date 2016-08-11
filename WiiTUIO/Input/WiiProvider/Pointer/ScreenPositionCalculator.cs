@@ -11,6 +11,7 @@ namespace WiiTUIO.Provider
 {
     public class ScreenPositionCalculator
     {
+        private const double R = 0.01;
 
         private int minXPos;
         private int maxXPos;
@@ -239,7 +240,17 @@ namespace WiiTUIO.Provider
                 //relativePosition.X = 1 - relativePosition.X;
                 //relativePosition.Y = 1 - relativePosition.Y;
             }
-            
+
+            double D;
+
+            D = relativePosition.X - lastPos.RelativeX;
+            if ((D > -R) && (D < R))
+                relativePosition.X = (float)(lastPos.RelativeX + (Math.Abs(D * (1 / R)) * D));
+
+            D = relativePosition.Y - lastPos.RelativeY;
+            if ((D > -R) && (D < R))
+                relativePosition.Y = (float)(lastPos.RelativeY + (Math.Abs(D * (1 / R)) * D));
+
             x = Convert.ToInt32((float)maxWidth * relativePosition.X + minXPos);
             y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;
 

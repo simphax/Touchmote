@@ -35,7 +35,7 @@ namespace WiiCPP {
 		Status status;
 		int numberPaired;
 		bool removeMode;
-		array<String^>^ deviceNames;
+		cli::array<String^>^ deviceNames;
 	};
 
 	public interface class WiiPairListener
@@ -135,7 +135,7 @@ namespace WiiCPP {
 
 			report->removeMode = removeMode;
 
-			report->deviceNames = gcnew array<String^>(10);
+			report->deviceNames = gcnew cli::array<String^>(10);
 
 			do
 			{
@@ -476,7 +476,7 @@ namespace WiiCPP {
 		}
 
 
-		static array<MonitorInfo^>^ enumerateMonitors(){
+		static cli::array<MonitorInfo^>^ enumerateMonitors(){
 
 			int numMonitors = 0;
 			int curMonitor = 0;
@@ -512,7 +512,7 @@ namespace WiiCPP {
 				}
 			}
 
-			array<MonitorInfo^>^ monitors = gcnew array<MonitorInfo^>(monitormap.size());
+			cli::array<MonitorInfo^>^ monitors = gcnew cli::array<MonitorInfo^>(monitormap.size());
 			
 			for (map<int, gcroot<MonitorInfo^>>::iterator iter = monitormap.begin();
 				iter != monitormap.end();
