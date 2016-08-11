@@ -206,9 +206,6 @@
     <Compile Include="Autostart.cs" />
     <Compile Include="DeviceUtils\VmultiUtil.cs" />
     <Compile Include="DeviceUtils\DeviceUtil.cs" />
-    <Compile Include="Input\WiiProvider\CircularBuffer.cs" />
-    <Compile Include="Input\WiiProvider\RadiusBuffer.cs" />
-    <Compile Include="Input\WiiProvider\SmoothingBuffer.cs" />
     <Compile Include="Output\CursorPositionHelper.cs" />
     <Compile Include="Output\Handlers\HandlerFactory.cs" />
     <Compile Include="Output\Handlers\ICursorHandler.cs" />
