@@ -38,8 +38,8 @@ namespace WiiTUIO.Provider
             this.primaryScreen = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor);
             this.recalculateScreenBounds(this.primaryScreen);
 
-            Settings.Default.PropertyChanged += SettingsChanged;
-            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            //Settings.Default.PropertyChanged += SettingsChanged;
+            //SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
             lastPos = new CursorPos(0, 0, 0, 0, 0);
 
@@ -180,7 +180,7 @@ namespace WiiTUIO.Provider
                 relativePosition.Y = relativePosition.Y + 0.5F;
             }
 
-            System.Windows.Point filteredPoint = coordFilter.AddGetFilteredCoord(new System.Windows.Point(relativePosition.X, relativePosition.Y), 1.0, 1.0);
+            System.Windows.Point filteredPoint = new System.Windows.Point(relativePosition.X, relativePosition.Y); // coordFilter.AddGetFilteredCoord(new System.Windows.Point(relativePosition.X, relativePosition.Y), 1.0, 1.0);
             relativePosition.X = (float)filteredPoint.X;
             relativePosition.Y = (float)filteredPoint.Y;
 

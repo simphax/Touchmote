@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{87CC8302-A614-490E-9100-1059AF5FE8FC}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WiiTUIO</RootNamespace>
     <AssemblyName>Touchmote</AssemblyName>
@@ -122,7 +122,7 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>WiiTUIO.App</StartupObject>
+    <StartupObject>WiiTUIO.PSKAlgorithmTest</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -271,6 +271,7 @@
     <Compile Include="Properties\Settings.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiimoteControl.cs" />
     <Compile Include="Input\WiiProvider\Pointer\WiiPointerProvider.cs" />
+    <Compile Include="PSKAlgorithmTest.cs" />
     <Compile Include="SubPanel.cs" />
     <Compile Include="SystemProcessMonitor.cs" />
     <Compile Include="UIHelpers.cs" />
@@ -497,7 +498,7 @@
     <PostBuildEvent>copy "$(ProjectDir)VMultiDll_$(PlatformName).dll" "$(TargetDir)VMultiDll.dll" /Y
 xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
 cd "C:\Program Files\Touchmote"
-"C:\Program Files (x86)\Windows Kits\8.1\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.verisign.com/scripts/timstamp.dll "C:\Program Files\Touchmote\Touchmote.exe"</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

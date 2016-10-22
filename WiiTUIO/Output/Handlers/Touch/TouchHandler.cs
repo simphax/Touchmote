@@ -140,7 +140,7 @@ namespace WiiTUIO.Output.Handlers.Touch
                 }
 
                 lastCursorPos = cursorPos;
-
+                
                 lFrame = duoTouch.getFrame();
                 foreach (WiiContact contact in lFrame)
                 {
@@ -243,7 +243,7 @@ namespace WiiTUIO.Output.Handlers.Touch
         public bool connect()
         {
 
-            this.useCustomCursor = Settings.Default.pointer_customCursor;
+            this.useCustomCursor = false;// Settings.Default.pointer_customCursor;
             if (this.useCustomCursor)
             {
                 Color myColor = CursorColor.getColor((int)this.id);

@@ -224,7 +224,7 @@ namespace WiiTUIO.Output.Handlers.Touch
                     else
                     {
                         contactType = ContactType.Hover;
-                        
+
                         Vector smoothedVec = smoothingBuffer.AddAndGet(new Vector(masterPosition.X, masterPosition.Y));
                         masterPosition.X = smoothedVec.X;
                         masterPosition.Y = smoothedVec.Y;
