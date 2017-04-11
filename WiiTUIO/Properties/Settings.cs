@@ -336,7 +336,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _pointer_FPS = 100;
+        private int _pointer_FPS = 200;
         public int pointer_FPS
         {
             get { return _pointer_FPS; }
@@ -380,6 +380,413 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private double _flyfps_horizontal_border = 50;
+        public double flyfps_horizontal_border
+        {
+            get { return _flyfps_horizontal_border; }
+            set
+            {
+                _flyfps_horizontal_border = value;
+                OnPropertyChanged("flyfps_horizontal_border");
+            }
+        }
+
+        private double _flyfps_vertical_border = 80;
+        public double flyfps_vertical_border
+        {
+            get { return _flyfps_vertical_border; }
+            set
+            {
+                _flyfps_vertical_border = value;
+                OnPropertyChanged("flyfps_vertical_border");
+            }
+        }
+
+        private int _flyfps_mouse_finer_low = 85;
+        public int flyfps_mouse_finer_low
+        {
+            get { return _flyfps_mouse_finer_low; }
+            set
+            {
+                _flyfps_mouse_finer_low = value;
+                OnPropertyChanged("flyfps_mouse_finer_low");
+            }
+        }
+
+        private int _flyfps_mouse_finer_high = 75;
+        public int flyfps_mouse_finer_high
+        {
+            get { return _flyfps_mouse_finer_high; }
+            set
+            {
+                _flyfps_mouse_finer_high = value;
+                OnPropertyChanged("flyfps_mouse_finer_high");
+            }
+        }
+
+        private int _flyfps_mouse_finer_threshold = 5;
+        public int flyfps_mouse_finer_threshold
+        {
+            get { return _flyfps_mouse_finer_threshold; }
+            set
+            {
+                _flyfps_mouse_finer_threshold = value;
+                OnPropertyChanged("flyfps_mouse_finer_threshold");
+            }
+        }
+
+        private double _flyfps_out_bound_decceleration = 10;
+        public double flyfps_out_bound_decceleration
+        {
+            get { return _flyfps_out_bound_decceleration; }
+            set
+            {
+                _flyfps_out_bound_decceleration = value;
+                OnPropertyChanged("flyfps_out_bound_decceleration");
+            }
+        }
+
+        private double _flyfps_return_bound_acceleration = 5;
+        public double flyfps_return_bound_acceleration
+        {
+            get { return _flyfps_return_bound_acceleration; }
+            set
+            {
+                _flyfps_return_bound_acceleration = value;
+                OnPropertyChanged("flyfps_return_bound_acceleration");
+            }
+        }
+
+        private int _flyfps_main_buffer = 1;
+        public int flyfps_main_buffer
+        {
+            get { return _flyfps_main_buffer; }
+            set
+            {
+                _flyfps_main_buffer = value;
+                OnPropertyChanged("flyfps_main_buffer");
+            }
+        }
+
+        private double _flyfps_main_sensitivity = 0.25;
+        public double flyfps_main_sensitivity
+        {
+            get { return _flyfps_main_sensitivity; }
+            set
+            {
+                _flyfps_main_sensitivity = value;
+                OnPropertyChanged("flyfps_main_sensitivity");
+            }
+        }
+        
+        private double _flyfps_main_decceleration_low = 4.5;
+        public double flyfps_main_decceleration_low
+        {
+            get { return _flyfps_main_decceleration_low; }
+            set
+            {
+                _flyfps_main_decceleration_low = value;
+                OnPropertyChanged("flyfps_main_decceleration_low");
+            }
+        }
+
+        private double _flyfps_main_decceleration_high = 10;
+        public double flyfps_main_decceleration_high
+        {
+            get { return _flyfps_main_decceleration_high; }
+            set
+            {
+                _flyfps_main_decceleration_high = value;
+                OnPropertyChanged("flyfps_main_decceleration_high");
+            }
+        }
+
+        private double _flyfps_main_decceleration_threshold = 50;
+        public double flyfps_main_decceleration_threshold
+        {
+            get { return _flyfps_main_decceleration_threshold; }
+            set
+            {
+                _flyfps_main_decceleration_threshold = value;
+                OnPropertyChanged("flyfps_main_decceleration_threshold");
+            }
+        }
+
+        private double _flyfps_main_acceleration = 30;
+        public double flyfps_main_acceleration
+        {
+            get { return _flyfps_main_acceleration; }
+            set
+            {
+                _flyfps_main_acceleration = value;
+                OnPropertyChanged("flyfps_main_acceleration");
+            }
+        }
+
+        private double _flyfps_main_acceleration_threshold = 50;
+        public double flyfps_main_acceleration_threshold
+        {
+            get { return _flyfps_main_acceleration_threshold; }
+            set
+            {
+                _flyfps_main_acceleration_threshold = value;
+                OnPropertyChanged("flyfps_main_acceleration_threshold");
+            }
+        }
+
+        private double _flyfps_main_acceleration_finer = 85;
+        public double flyfps_main_acceleration_finer
+        {
+            get { return _flyfps_main_acceleration_finer; }
+            set
+            {
+                _flyfps_main_acceleration_finer = value;
+                OnPropertyChanged("flyfps_main_acceleration_finer");
+            }
+        }
+
+        private bool _flyfps_left_button_fine = true;
+        public bool flyfps_left_button_fine
+        {
+            get { return _flyfps_left_button_fine; }
+            set
+            {
+                _flyfps_left_button_fine = value;
+                OnPropertyChanged("flyfps_left_button_fine");
+            }
+        }
+
+        private double _flyfps_fine_sensitivity = 0.25;
+        public double flyfps_fine_sensitivity
+        {
+            get { return _flyfps_fine_sensitivity; }
+            set
+            {
+                _flyfps_fine_sensitivity = value;
+                OnPropertyChanged("flyfps_fine_sensitivity");
+            }
+        }
+
+        private double _flyfps_fine_decceleration = 5;
+        public double flyfps_fine_decceleration
+        {
+            get { return _flyfps_fine_decceleration; }
+            set
+            {
+                _flyfps_fine_decceleration = value;
+                OnPropertyChanged("flyfps_fine_decceleration");
+            }
+        }
+
+        private double _flyfps_fine_acceleration = 5;
+        public double flyfps_fine_acceleration
+        {
+            get { return _flyfps_fine_acceleration; }
+            set
+            {
+                _flyfps_fine_acceleration = value;
+                OnPropertyChanged("flyfps_fine_acceleration");
+            }
+        }
+
+        private int _flyfps_mouse_smooth_buffer = 10;
+        public int flyfps_mouse_smooth_buffer
+        {
+            get { return _flyfps_mouse_smooth_buffer; }
+            set
+            {
+                _flyfps_mouse_smooth_buffer = value;
+                OnPropertyChanged("flyfps_mouse_smooth_buffer");
+            }
+        }
+
+        private double _flyfps_mouse_forward = 0;
+        public double flyfps_mouse_forward
+        {
+            get { return _flyfps_mouse_forward; }
+            set
+            {
+                _flyfps_mouse_forward = value;
+                OnPropertyChanged("flyfps_mouse_forward");
+            }
+        }
+
+        private double _flyfps_mouse_forward_turn_on_threshold = 25;
+        public double flyfps_mouse_forward_turn_on_threshold
+        {
+            get { return _flyfps_mouse_forward_turn_on_threshold; }
+            set
+            {
+                _flyfps_mouse_forward_turn_on_threshold = value;
+                OnPropertyChanged("flyfps_mouse_forward_turn_on_threshold");
+            }
+        }
+
+        private double _flyfps_mouse_forward_decceleration = 5;
+        public double flyfps_mouse_forward_decceleration
+        {
+            get { return _flyfps_mouse_forward_decceleration; }
+            set
+            {
+                _flyfps_mouse_forward_decceleration = value;
+                OnPropertyChanged("flyfps_mouse_forward_decceleration");
+            }
+        }
+
+        private double _flyfps_extra_turn_sensitivity = 0.0;
+        public double flyfps_extra_turn_sensitivity
+        {
+            get { return _flyfps_extra_turn_sensitivity; }
+            set
+            {
+                _flyfps_extra_turn_sensitivity = value;
+                OnPropertyChanged("flyfps_extra_turn_sensitivity");
+            }
+        }
+
+        private double _flyfps_extra_turn_deadzone = 20;
+        public double flyfps_extra_turn_deadzone
+        {
+            get { return _flyfps_extra_turn_deadzone; }
+            set
+            {
+                _flyfps_extra_turn_deadzone = value;
+                OnPropertyChanged("flyfps_extra_turn_deadzone");
+            }
+        }
+
+        private double _flyfps_extra_turn_easein = 40;
+        public double flyfps_extra_turn_easein
+        {
+            get { return _flyfps_extra_turn_easein; }
+            set
+            {
+                _flyfps_extra_turn_easein = value;
+                OnPropertyChanged("flyfps_extra_turn_easein");
+            }
+        }
+
+        private double _flyfps_border_turn_speed_x = 0;
+        public double flyfps_border_turn_speed_x
+        {
+            get { return _flyfps_border_turn_speed_x; }
+            set
+            {
+                _flyfps_border_turn_speed_x = value;
+                OnPropertyChanged("flyfps_border_turn_speed");
+            }
+        }
+
+        private double _flyfps_border_turn_speed_y = 0;
+        public double flyfps_border_turn_speed_y
+        {
+            get { return _flyfps_border_turn_speed_y; }
+            set
+            {
+                _flyfps_border_turn_speed_y = value;
+                OnPropertyChanged("flyfps_border_turn_speed_y");
+            }
+        }
+
+        private double _flyfps_auto_turn_speed_x = 0;
+        public double flyfps_auto_turn_speed_x
+        {
+            get { return _flyfps_auto_turn_speed_x; }
+            set
+            {
+                _flyfps_auto_turn_speed_x = value;
+                OnPropertyChanged("flyfps_auto_turn_speed_x");
+            }
+        }
+
+        private double _flyfps_auto_turn_speed_y = 0;
+        public double flyfps_auto_turn_speed_y
+        {
+            get { return _flyfps_auto_turn_speed_y; }
+            set
+            {
+                _flyfps_auto_turn_speed_y = value;
+                OnPropertyChanged("flyfps_auto_turn_speed_y");
+            }
+        }
+
+        private double _flyfps_main_sensitivity_y = 0;
+        public double flyfps_main_sensitivity_y
+        {
+            get { return _flyfps_main_sensitivity_y; }
+            set
+            {
+                _flyfps_main_sensitivity_y = value;
+                OnPropertyChanged("flyfps_main_sensitivity_y");
+            }
+        }
+
+        private double _flyfps_main_acceleration_y = 0;
+        public double flyfps_main_acceleration_y
+        {
+            get { return _flyfps_main_acceleration_y; }
+            set
+            {
+                _flyfps_main_acceleration_y = value;
+                OnPropertyChanged("flyfps_main_acceleration_y");
+            }
+        }
+
+        private double _flyfps_fine_sensitivity_y = 0;
+        public double flyfps_fine_sensitivity_y
+        {
+            get { return _flyfps_fine_sensitivity_y; }
+            set
+            {
+                _flyfps_fine_sensitivity_y = value;
+                OnPropertyChanged("flyfps_fine_sensitivity_y");
+            }
+        }
+
+        private double _flyfps_fine_acceleration_y = 0;
+        public double flyfps_fine_acceleration_y
+        {
+            get { return _flyfps_fine_acceleration_y; }
+            set
+            {
+                _flyfps_fine_acceleration_y = value;
+                OnPropertyChanged("flyfps_fine_acceleration_y");
+            }
+        }
+
+        private double _flyfps_mouse_forward_y = 0;
+        public double flyfps_mouse_forward_y
+        {
+            get { return _flyfps_mouse_forward_y; }
+            set
+            {
+                _flyfps_mouse_forward_y = value;
+                OnPropertyChanged("flyfps_mouse_forward_y");
+            }
+        }
+
+        private double _flyfps_extra_turn_sensitivity_y = 0;
+        public double flyfps_extra_turn_sensitivity_y
+        {
+            get { return _flyfps_extra_turn_sensitivity_y; }
+            set
+            {
+                _flyfps_extra_turn_sensitivity_y = value;
+                OnPropertyChanged("flyfps_extra_turn_sensitivity_y");
+            }
+        }
+
+        private bool _flyfps_debug = false;
+        public bool flyfps_debug
+        {
+            get { return _flyfps_debug; }
+            set
+            {
+                _flyfps_debug = value;
+                OnPropertyChanged("flyfps_debug");
+            }
+        }
+
         private int _touch_touchTapThreshold = 40;
         public int touch_touchTapThreshold
         {
@@ -412,7 +819,7 @@ namespace WiiTUIO.Properties
                 OnPropertyChanged("touch_edgeGestureHelperRelease");
             }
         }
-        
+
         private int _xinput_rumbleThreshold_big = 200;
         public int xinput_rumbleThreshold_big
         {
@@ -434,8 +841,8 @@ namespace WiiTUIO.Properties
                 OnPropertyChanged("xinput_rumbleThreshold_small");
             }
         }
-      
-        private static string SETTINGS_FILENAME = System.AppDomain.CurrentDomain.BaseDirectory+"settings.json";
+
+        private static string SETTINGS_FILENAME = System.AppDomain.CurrentDomain.BaseDirectory + "settings.json";
 
         private static Settings defaultInstance;
 
@@ -468,7 +875,7 @@ namespace WiiTUIO.Properties
 
         public void Save()
         {
-            File.WriteAllText(SETTINGS_FILENAME, JsonConvert.SerializeObject(Default,Formatting.Indented));
+            File.WriteAllText(SETTINGS_FILENAME, JsonConvert.SerializeObject(Default, Formatting.Indented));
         }
 
         protected void OnPropertyChanged(string name)
