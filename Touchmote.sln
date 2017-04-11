@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiiTUIO", "WiiTUIO\WiiTUIO.csproj", "{87CC8302-A614-490E-9100-1059AF5FE8FC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -44,7 +44,6 @@ Global
 		{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}.Debug|x86.ActiveCfg = Debug|x86
 		{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}.Debug|x86.Build.0 = Debug|x86
 		{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}.Release|x64.ActiveCfg = Release|x64
-		{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}.Release|x64.Build.0 = Release|x64
 		{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}.Release|x86.ActiveCfg = Release|x86
 		{14BD1D44-261D-4FC2-A7DD-A3CDA413D790}.Release|x86.Build.0 = Release|x86
 		{78EB9DE8-B6FC-47F3-970F-0B4FCB0F38A8}.Debug|x64.ActiveCfg = Debug|x64
@@ -52,7 +51,6 @@ Global
 		{78EB9DE8-B6FC-47F3-970F-0B4FCB0F38A8}.Debug|x86.ActiveCfg = Debug|Win32
 		{78EB9DE8-B6FC-47F3-970F-0B4FCB0F38A8}.Debug|x86.Build.0 = Debug|Win32
 		{78EB9DE8-B6FC-47F3-970F-0B4FCB0F38A8}.Release|x64.ActiveCfg = Release|x64
-		{78EB9DE8-B6FC-47F3-970F-0B4FCB0F38A8}.Release|x64.Build.0 = Release|x64
 		{78EB9DE8-B6FC-47F3-970F-0B4FCB0F38A8}.Release|x86.ActiveCfg = Release|Win32
 		{78EB9DE8-B6FC-47F3-970F-0B4FCB0F38A8}.Release|x86.Build.0 = Release|Win32
 		{9E8F1D50-74EA-4C60-BD5C-AB2C5B53BC66}.Debug|x64.ActiveCfg = Debug|x64
@@ -60,19 +58,16 @@ Global
 		{9E8F1D50-74EA-4C60-BD5C-AB2C5B53BC66}.Debug|x86.ActiveCfg = Debug|x86
 		{9E8F1D50-74EA-4C60-BD5C-AB2C5B53BC66}.Debug|x86.Build.0 = Debug|x86
 		{9E8F1D50-74EA-4C60-BD5C-AB2C5B53BC66}.Release|x64.ActiveCfg = Release|x64
-		{9E8F1D50-74EA-4C60-BD5C-AB2C5B53BC66}.Release|x64.Build.0 = Release|x64
 		{9E8F1D50-74EA-4C60-BD5C-AB2C5B53BC66}.Release|x86.ActiveCfg = Release|x86
 		{9E8F1D50-74EA-4C60-BD5C-AB2C5B53BC66}.Release|x86.Build.0 = Release|x86
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Debug|x64.ActiveCfg = Debug|x64
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Debug|x86.ActiveCfg = Debug|x86
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x64.ActiveCfg = Release|x64
-		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x64.Build.0 = Release|x64
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x86.ActiveCfg = Release|x86
 		{914C6098-F4B6-4AFA-AFD0-5B90411C9271}.Release|x86.Build.0 = Release|x86
 		{D1E85F1A-3BE3-46C1-B086-EF1335457EF5}.Debug|x64.ActiveCfg = Debug|x64
 		{D1E85F1A-3BE3-46C1-B086-EF1335457EF5}.Debug|x86.ActiveCfg = Debug|x86
 		{D1E85F1A-3BE3-46C1-B086-EF1335457EF5}.Release|x64.ActiveCfg = Release|x64
-		{D1E85F1A-3BE3-46C1-B086-EF1335457EF5}.Release|x64.Build.0 = Release|x64
 		{D1E85F1A-3BE3-46C1-B086-EF1335457EF5}.Release|x86.ActiveCfg = Release|x86
 		{D1E85F1A-3BE3-46C1-B086-EF1335457EF5}.Release|x86.Build.0 = Release|x86
 		{4796387A-2F8E-4ED0-96E4-A72137B4428C}.Debug|x64.ActiveCfg = Debug|x64
@@ -80,7 +75,6 @@ Global
 		{4796387A-2F8E-4ED0-96E4-A72137B4428C}.Debug|x86.ActiveCfg = Debug|Win32
 		{4796387A-2F8E-4ED0-96E4-A72137B4428C}.Debug|x86.Build.0 = Debug|Win32
 		{4796387A-2F8E-4ED0-96E4-A72137B4428C}.Release|x64.ActiveCfg = Release|x64
-		{4796387A-2F8E-4ED0-96E4-A72137B4428C}.Release|x64.Build.0 = Release|x64
 		{4796387A-2F8E-4ED0-96E4-A72137B4428C}.Release|x86.ActiveCfg = Release|Win32
 		{4796387A-2F8E-4ED0-96E4-A72137B4428C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
