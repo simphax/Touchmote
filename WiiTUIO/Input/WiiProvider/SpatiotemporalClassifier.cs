@@ -758,6 +758,21 @@ namespace WiiTUIO.Provider
             ++iSmoothIndex;
         }
 
+        /// <summary>
+        /// Fill a value into this buffer. No mouse run when coming back from out of bounds.
+        /// </summary>
+        /// <param name="x">The X coordinate.</param>
+        /// <param name="y">The Y coordinate.</param>
+        public void fill(double x, double y)
+        {
+            // Insert the value then update the counter.
+            for (int i = 0; i < tSmoothBuffer.Length; ++i)
+            {
+                tSmoothBuffer[i].X = x;
+                tSmoothBuffer[i].Y = y;
+            }
+        }
+
         public void replaceLast(Vector vPoint)
         {
             // Insert the value then update the counter.
