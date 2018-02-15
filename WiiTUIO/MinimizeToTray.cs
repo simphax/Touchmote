@@ -20,6 +20,7 @@ public static class MinimizeToTray
     /// <param name="window">Window to enable the behavior for.</param>
     public static void Enable(Window window, bool minimizeNow)
     {
+        UIHelpers.HideFromAltTab(window);
         if (MinimizeInstances.ContainsKey(window))
         {
             Console.WriteLine(string.Format("Minimization already enabled for '{0}'", window.Title));
@@ -43,6 +44,7 @@ public static class MinimizeToTray
 
     public static void Disable(Window window)
     {
+        UIHelpers.RevertHideFromAltTab(window);
         if (!MinimizeInstances.ContainsKey(window))
         {
             Console.WriteLine(string.Format("Minimization not enabled for '{0}'", window.Title));

@@ -37,6 +37,8 @@ namespace WiiTUIO
 
         private System.Windows.Forms.Screen primaryScreen;
 
+        private IntPtr previousForegroundWindow = IntPtr.Zero;
+
         public static OverlayWindow Current
         {
             get
@@ -71,6 +73,9 @@ namespace WiiTUIO
                 //this.baseCanvas.RenderTransform = new MatrixTransform(transformMatrix);
 
                 this.updateWindowToScreen(primaryScreen);
+
+                //Prevent OverlayWindow from showing up in alt+tab menu.
+                UIHelpers.HideFromAltTab(this);
             };
             
         }
@@ -128,6 +133,13 @@ namespace WiiTUIO
         {
             if (this.hidden)
             {
+                this.hidden = false;
+                previousForegroundWindow = UIHelpers.GetForegroundWindow();
+                if(previousForegroundWindow == null)
+                {
+                    previousForegroundWindow = IntPtr.Zero;
+                }
+
                 this.keyMapper = keyMapper;
                 this.keyMapper.SwitchToDefault();
                 this.keyMapper.OnButtonDown += keyMapper_OnButtonDown;
@@ -176,7 +188,6 @@ namespace WiiTUIO
                     };
                     this.baseGrid.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
 
-                    this.hidden = false;
                 }), null);
             }
         }
@@ -354,17 +365,23 @@ namespace WiiTUIO
         {
             if (!this.hidden)
             {
+                Console.WriteLine("HideOverlay");
                 this.hidden = true;
                 this.keyMapper.OnButtonDown -= keyMapper_OnButtonDown;
                 this.keyMapper.OnButtonUp -= keyMapper_OnButtonUp;
                 this.keyMapper.SwitchToFallback();
                 Dispatcher.BeginInvoke(new Action(delegate()
                 {
+                    if (previousForegroundWindow != IntPtr.Zero)
+                    {
+                        UIHelpers.SetForegroundWindow(previousForegroundWindow);
+                    }
                     DoubleAnimation animation = UIHelpers.createDoubleAnimation(0.0, 200, false);
                     animation.FillBehavior = FillBehavior.HoldEnd;
                     animation.Completed += delegate(object sender, EventArgs pEvent)
                     {
                         this.baseGrid.Visibility = Visibility.Hidden;
+
                     };
                     this.baseGrid.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
                 }), null);

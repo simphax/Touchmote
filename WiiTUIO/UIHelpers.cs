@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -119,6 +120,7 @@ namespace WiiTUIO
         [DllImport("user32.dll")]
         public static extern int SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, SetWindowPosFlags uFlags);
 
+
         public static void TopmostFix(Window window)
         {
             IntPtr HWND_TOPMOST = new IntPtr(-1);
@@ -148,6 +150,7 @@ namespace WiiTUIO
         }
 
         private static int WS_EX_TRANSPARENT = 0x00000020;
+        private static int WS_EX_TOOLWINDOW = 0x00000080;
         private static int GWL_EXSTYLE = (-20);
 
         [DllImport("user32.dll")]
@@ -178,5 +181,40 @@ namespace WiiTUIO
             makeExTransparent(hWndHiddenOwner);
         }
 
+        public static void HideFromAltTab(Window window)
+        {
+            IntPtr hWnd = new WindowInteropHelper(window).Handle;
+            int extendedStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+            SetWindowLong(hWnd, GWL_EXSTYLE, extendedStyle | WS_EX_TOOLWINDOW);
+        }
+
+        public static void RevertHideFromAltTab(Window window)
+        {
+            IntPtr hWnd = new WindowInteropHelper(window).Handle;
+            int extendedStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+            SetWindowLong(hWnd, GWL_EXSTYLE, extendedStyle & ~WS_EX_TOOLWINDOW);
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, [Out] StringBuilder lParam);
+        public static string GetWindowTextRaw(IntPtr hwnd)
+        {
+            // Allocate correct string length first
+            int length = (int)SendMessage(hwnd, 0xE, IntPtr.Zero, null);
+            StringBuilder sb = new StringBuilder(length + 1);
+            SendMessage(hwnd, 0xD, (IntPtr)sb.Capacity, sb);
+            return sb.ToString();
+        }
+        
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern int SetActiveWindow(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetActiveWindow();
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+        
     }
 }

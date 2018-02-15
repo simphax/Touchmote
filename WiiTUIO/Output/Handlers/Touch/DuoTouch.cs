@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WiiTUIO.Provider;
 using WiiTUIO.Properties;
 using Microsoft.Win32;
+using WiiTUIO.Filters;
 
 namespace WiiTUIO.Output.Handlers.Touch
 {
@@ -14,8 +15,7 @@ namespace WiiTUIO.Output.Handlers.Touch
     {
         private int masterPriority;
         private int slavePriority;
-
-        private SmoothingBuffer smoothingBuffer;
+        
         public System.Drawing.Rectangle screenBounds;
 
         private bool stepIDs = false;
@@ -74,7 +74,6 @@ namespace WiiTUIO.Output.Handlers.Touch
             {
                 smoothSize = 1;
             }
-            this.smoothingBuffer = new SmoothingBuffer(smoothSize);
         }
 
 
@@ -167,16 +166,16 @@ namespace WiiTUIO.Output.Handlers.Touch
                     {
                         if (this.masterHoldPosition)
                         {
-                            if (Math.Abs(this.firstMasterContact.X - this.masterPosition.X) < TouchHoldThreshold && Math.Abs(this.firstMasterContact.Y - this.masterPosition.Y) < TouchHoldThreshold)
+                           /* if (Math.Abs(this.firstMasterContact.X - this.masterPosition.X) < TouchHoldThreshold && Math.Abs(this.firstMasterContact.Y - this.masterPosition.Y) < TouchHoldThreshold)
                             {
                                 /*Console.WriteLine("DiffX: " + Math.Abs(this.firstMasterContact.X - this.masterPosition.X) + " DiffY: " + Math.Abs(this.firstMasterContact.Y - this.masterPosition.Y));*/
-                                this.masterPosition = this.firstMasterContact;
+                                /*this.masterPosition = this.firstMasterContact;
                                 this.masterHoldPosition = true;
                             }
                             else
-                            {
+                            {*/
                                 this.masterHoldPosition = false;
-                            }
+                            //}
                         }
 
                         //Helps to perform "edge swipe" guestures
@@ -198,10 +197,9 @@ namespace WiiTUIO.Output.Handlers.Touch
                         }
                     }
 
-                    smoothingBuffer.addValue(new System.Windows.Vector(masterPosition.X, masterPosition.Y));
-                    System.Windows.Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-                    this.masterPosition.X = smoothedVec.X;
-                    this.masterPosition.Y = smoothedVec.Y;
+                    System.Windows.Vector vec = new System.Windows.Vector(masterPosition.X, masterPosition.Y);
+                    masterPosition.X = vec.X;
+                    masterPosition.Y = vec.Y;
 
                     this.isFirstMasterContact = false;
                     
@@ -224,10 +222,11 @@ namespace WiiTUIO.Output.Handlers.Touch
                     else
                     {
                         contactType = ContactType.Hover;
-                        smoothingBuffer.addValue(new Vector(masterPosition.X, masterPosition.Y));
-                        Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-                        this.masterPosition.X = smoothedVec.X;
-                        this.masterPosition.Y = smoothedVec.Y;
+                        
+                        Vector vec = new Vector(masterPosition.X, masterPosition.Y);
+                        masterPosition.X = vec.X;
+                        masterPosition.Y = vec.Y;
+
                     }
 
                     this.isFirstMasterContact = true;

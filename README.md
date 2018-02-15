@@ -48,6 +48,11 @@ MultiTouchVista:  http://multitouchvista.codeplex.com<br />
 Release History
 ==============
 
+**v1.0 beta 15**<br />
+- Fix touch input on Windows 10
+- New smoothing algorithm, thanks DevNullx64
+- Performance improvements, thanks yodus
+
 **v1.0 beta 14**<br />
 - FPS cursor mapping and cursor to stick mapping, thanks rVinor
 - Updated OSD GUI
