@@ -85,7 +85,7 @@ namespace WiiTUIO.Filters {
         public virtual void Add(T item) {
 
             base_++;
-            if (base_ > count_) base_ = 0;
+            if (base_ >= count_) base_ = 0;
 
             data_[base_] = item;
 
