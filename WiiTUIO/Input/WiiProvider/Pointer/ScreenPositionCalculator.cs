@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Forms;
 using WiimoteLib;
 using WiiTUIO.Filters;
@@ -31,6 +32,7 @@ namespace WiiTUIO.Provider
 
         private Screen primaryScreen;
 
+        private RadiusBuffer smoothingBuffer;
         private CoordFilter coordFilter;
 
         public ScreenPositionCalculator()
@@ -44,6 +46,7 @@ namespace WiiTUIO.Provider
             lastPos = new CursorPos(0, 0, 0, 0, 0);
 
             coordFilter = new CoordFilter();
+            this.smoothingBuffer = new RadiusBuffer(Settings.Default.pointer_positionSmoothing);
         }
 
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -181,12 +184,15 @@ namespace WiiTUIO.Provider
             }
 
             System.Windows.Point filteredPoint = coordFilter.AddGetFilteredCoord(new System.Windows.Point(relativePosition.X, relativePosition.Y), 1.0, 1.0);
+            
             relativePosition.X = (float)filteredPoint.X;
             relativePosition.Y = (float)filteredPoint.Y;
 
+            Vector smoothedPoint = smoothingBuffer.AddAndGet(new Vector(relativePosition.X, relativePosition.Y));
 
-            x = Convert.ToInt32((float)maxWidth * relativePosition.X + minXPos);
-            y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;
+
+            x = Convert.ToInt32((float)maxWidth * smoothedPoint.X + minXPos);
+            y = Convert.ToInt32((float)maxHeight * smoothedPoint.Y + minYPos) + offsetY;
 
             if (x <= 0)
             {
@@ -205,7 +211,7 @@ namespace WiiTUIO.Provider
                 y = primaryScreen.Bounds.Height - 1;
             }
 
-            CursorPos result = new CursorPos(x, y, relativePosition.X, relativePosition.Y, smoothedRotation);
+            CursorPos result = new CursorPos(x, y, smoothedPoint.X, smoothedPoint.Y, smoothedRotation);
             lastPos = result;
             return result;
         }
