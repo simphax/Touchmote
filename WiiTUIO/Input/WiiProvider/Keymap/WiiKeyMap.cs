@@ -287,24 +287,28 @@ namespace WiiTUIO.Provider
         public void updateNunchuk(NunchukState nunchuk)
         {
             KeymapOutConfig outConfig;
+            double joyX = (nunchuk.RawJoystick.X - 127f) / 128f * 0.5;
+            double joyY = (nunchuk.RawJoystick.Y - 128f) / 127f * 0.5;
+            
+            //Console.WriteLine(nunchuk.RawJoystick.X +"," + nunchuk.RawJoystick.Y + "|" + joyX + "," + joyY);
 
             if (this.config.TryGetValue("Nunchuk.StickRight", out outConfig))
             {
-                if (nunchuk.Joystick.X > 0)
+                if (joyX > 0)
                 {
-                    updateStickHandlers(outConfig, nunchuk.Joystick.X * 2);
+                    updateStickHandlers(outConfig, joyX * 2);
                 }
-                else if (nunchuk.Joystick.X == 0)
+                else if (joyX == 0)
                 {
                     updateStickHandlers(outConfig, 0);
                 }
 
-                if (nunchuk.Joystick.X * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickRight"])
+                if (joyX * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickRight"])
                 {
                     PressedButtons["Nunchuk.StickRight"] = true;
                     this.executeButtonDown("Nunchuk.StickRight");
                 }
-                else if (nunchuk.Joystick.X * 2 < outConfig.Threshold && PressedButtons["Nunchuk.StickRight"])
+                else if (joyX * 2 < outConfig.Threshold && PressedButtons["Nunchuk.StickRight"])
                 {
                     PressedButtons["Nunchuk.StickRight"] = false;
                     this.executeButtonUp("Nunchuk.StickRight");
@@ -313,21 +317,21 @@ namespace WiiTUIO.Provider
 
             if (this.config.TryGetValue("Nunchuk.StickLeft", out outConfig))
             {
-                if (nunchuk.Joystick.X < 0)
+                if (joyX < 0)
                 {
-                    updateStickHandlers(outConfig, nunchuk.Joystick.X * -2);
+                    updateStickHandlers(outConfig, joyX * -2);
                 }
-                else if (nunchuk.Joystick.X == 0)
+                else if (joyX == 0)
                 {
                     updateStickHandlers(outConfig, 0);
                 }
 
-                if (nunchuk.Joystick.X * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickLeft"])
+                if (joyX * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickLeft"])
                 {
                     PressedButtons["Nunchuk.StickLeft"] = true;
                     this.executeButtonDown("Nunchuk.StickLeft");
                 }
-                else if (nunchuk.Joystick.X * -2 < outConfig.Threshold && PressedButtons["Nunchuk.StickLeft"])
+                else if (joyX * -2 < outConfig.Threshold && PressedButtons["Nunchuk.StickLeft"])
                 {
                     PressedButtons["Nunchuk.StickLeft"] = false;
                     this.executeButtonUp("Nunchuk.StickLeft");
@@ -335,21 +339,21 @@ namespace WiiTUIO.Provider
             }
             if (this.config.TryGetValue("Nunchuk.StickUp", out outConfig))
             {
-                if (nunchuk.Joystick.Y > 0)
+                if (joyY > 0)
                 {
-                    updateStickHandlers(outConfig, nunchuk.Joystick.Y * 2);
+                    updateStickHandlers(outConfig, joyY * 2);
                 }
-                else if (nunchuk.Joystick.Y == 0)
+                else if (joyY == 0)
                 {
                     updateStickHandlers(outConfig, 0);
                 }
 
-                if (nunchuk.Joystick.Y * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickUp"])
+                if (joyY * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickUp"])
                 {
                     PressedButtons["Nunchuk.StickUp"] = true;
                     this.executeButtonDown("Nunchuk.StickUp");
                 }
-                else if (nunchuk.Joystick.Y * 2 < outConfig.Threshold && PressedButtons["Nunchuk.StickUp"])
+                else if (joyY * 2 < outConfig.Threshold && PressedButtons["Nunchuk.StickUp"])
                 {
                     PressedButtons["Nunchuk.StickUp"] = false;
                     this.executeButtonUp("Nunchuk.StickUp");
@@ -358,21 +362,21 @@ namespace WiiTUIO.Provider
             }
             if (this.config.TryGetValue("Nunchuk.StickDown", out outConfig))
             {
-                if (nunchuk.Joystick.Y < 0)
+                if (joyY < 0)
                 {
-                    updateStickHandlers(outConfig, nunchuk.Joystick.Y * -2);
+                    updateStickHandlers(outConfig, joyY * -2);
                 }
-                else if (nunchuk.Joystick.Y == 0)
+                else if (joyY == 0)
                 {
                     updateStickHandlers(outConfig, 0);
                 }
 
-                if (nunchuk.Joystick.Y * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickDown"])
+                if (joyY * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickDown"])
                 {
                     PressedButtons["Nunchuk.StickDown"] = true;
                     this.executeButtonDown("Nunchuk.StickDown");
                 }
-                else if (nunchuk.Joystick.Y * -2 < outConfig.Threshold && PressedButtons["Nunchuk.StickDown"])
+                else if (joyY * -2 < outConfig.Threshold && PressedButtons["Nunchuk.StickDown"])
                 {
                     PressedButtons["Nunchuk.StickDown"] = false;
                     this.executeButtonUp("Nunchuk.StickDown");
